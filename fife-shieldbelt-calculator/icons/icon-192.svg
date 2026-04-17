@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="192" height="192" role="img" aria-label="NFCA ShieldBelt icon">
+  <!-- Background -->
+  <rect width="192" height="192" rx="36" fill="#1a3d2b"/>
+
+  <!-- Stylised ShieldBelt: horizontal strip with tree silhouettes -->
+
+  <!-- Ground strip -->
+  <rect x="20" y="118" width="152" height="14" rx="3" fill="#52b788" opacity="0.55"/>
+
+  <!-- Tree 1  tall conifer shape -->
+  <polygon points="58,52 46,102 70,102" fill="#52b788"/>
+  <rect x="52" y="102" width="12" height="16" rx="2" fill="#2d6a4f"/>
+
+  <!-- Tree 2  broader deciduous -->
+  <ellipse cx="96" cy="76" rx="20" ry="26" fill="#52b788"/>
+  <rect x="90" y="102" width="12" height="16" rx="2" fill="#2d6a4f"/>
+
+  <!-- Tree 3  medium conifer -->
+  <polygon points="134,58 122,102 146,102" fill="#52b788"/>
+  <rect x="128" y="102" width="12" height="16" rx="2" fill="#2d6a4f"/>
+
+  <!-- NFCA label -->
+  <text
+    x="96"
+    y="152"
+    text-anchor="middle"
+    font-family="Georgia, serif"
+    font-weight="700"
+    font-size="18"
+    fill="#f4c542"
+    letter-spacing="3"
+  >NFCA</text>
+</svg>

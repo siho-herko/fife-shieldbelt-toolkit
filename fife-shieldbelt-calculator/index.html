@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#1a3d2b" />
+  <meta name="description" content="Calculate the agronomic, carbon and ecosystem outcomes of ShieldBelt interventions on Fife farmland. An NFCA interactive advisory tool." />
+  <meta name="author" content="Nature Finance Certification Alliance (NFCA)" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Fife ShieldBelt Calculator · NFCA" />
+  <meta property="og:description" content="Interactive tool for Fife farmers and land agents: agronomic, carbon &amp; ecosystem impact of linear field-margin ShieldBelt interventions." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://fife-shieldbelt.netlify.app/calculator" />
+  <meta property="og:image" content="icons/icon-512.svg" />
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="icons/icon-192.svg" />
+  <link rel="apple-touch-icon" href="icons/icon-192.svg" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="ShieldBelt Calc" />
+
+  <title>Fife ShieldBelt Calculator · NFCA</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Source+Sans+3:wght@300;400;600&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Design system -->
+  <link rel="stylesheet" href="styles/main.css" />
+</head>
+
+<body>
+
+<!-- ========================================================================
+     PRINT HEADER (hidden on screen, visible in @media print)
+     ======================================================================== -->
+<div class="print-header" aria-hidden="true" data-date=""></div>
+
+<!-- ========================================================================
+     MOBILE DRAWER BACKDROP
+     ======================================================================== -->
+<div id="drawer-backdrop" class="drawer-backdrop" hidden aria-hidden="true"></div>
+
+<div class="app-wrapper">
+
+  <!-- ===================================================================
+       HEADER
+       =================================================================== -->
+  <header class="app-header" role="banner">
+    <div class="app-header__inner">
+      <div class="app-header__brand">
+        <span class="app-header__logo" aria-label="NFCA — Nature Finance Certification Alliance">NFCA</span>
+        <div class="app-header__title">
+          Fife ShieldBelt Calculator
+          <span>Nature Finance Certification Alliance</span>
+        </div>
+      </div>
+      <nav class="app-header__nav" aria-label="External links">
+        <a
+          href="https://fife-shieldbelt.netlify.app"
+          class="app-header__link"
+          target="_blank"
+          rel="noopener noreferrer"
+        >&#8592; Summary Site</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===================================================================
+       MAIN
+       =================================================================== -->
+  <main class="app-main" id="main-content">
+
+    <!-- ---------------------------------------------------------------
+         LEFT PANEL — Controls
+         --------------------------------------------------------------- -->
+    <!-- Mobile: "Adjust inputs" button — visible only on small screens -->
+    <button id="btn-mobile-drawer" class="btn btn-primary mobile-drawer-trigger"
+      aria-expanded="false" aria-controls="controls-form" type="button">
+      &#9881; Adjust inputs
+    </button>
+
+    <aside class="panel-left" aria-label="Calculator controls">
+      <div class="panel-left__header-mobile">
+        <span>Calculator Inputs</span>
+        <button id="btn-close-drawer" type="button" aria-label="Close inputs panel">&#10005;</button>
+      </div>
+      <div id="controls-form">
+
+        <!-- STEP 1 — Biome -->
+        <div class="step-accordion" id="step-biome" data-step="1">
+          <button class="step-accordion__trigger" aria-expanded="true"
+            aria-controls="step-biome-body" id="step-biome-trigger">
+            <span class="step-accordion__number" aria-hidden="true">1</span>
+            <span class="step-accordion__label">Your Biome</span>
+            <span class="step-accordion__summary" id="step-biome-summary">🌊 East Neuk Coast</span>
+            <svg class="step-accordion__chevron" width="16" height="16" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+          <div class="step-accordion__body" id="step-biome-body"
+            role="region" aria-labelledby="step-biome-trigger">
+            <p class="form-hint mb-3">
+              Select the primary landscape context. Each biome has 20 ShieldBelt variants.
+            </p>
+            <fieldset class="biome-grid" aria-label="Micro-biome selector">
+              <legend class="sr-only">Choose your micro-biome</legend>
+
+              <label class="biome-card" title="Coastal farmland and cliff-top edges">
+                <input type="radio" name="biome" value="Fife (East Neuk Coast)" checked />
+                <div class="biome-card__icon">🌊</div>
+                <div class="biome-card__name">East Neuk Coast</div>
+                <div class="biome-card__desc">Cliff-top &amp; seaside margins</div>
+              </label>
+
+              <label class="biome-card" title="Urban fringe and Forth coastline">
+                <input type="radio" name="biome" value="Fife (Forth Urban Coast)" />
+                <div class="biome-card__icon">🏙</div>
+                <div class="biome-card__name">Forth Urban Coast</div>
+                <div class="biome-card__desc">Edge-of-settlement margins</div>
+              </label>
+
+              <label class="biome-card" title="Arable Eden valley and flat farmland">
+                <input type="radio" name="biome" value="Fife (Howe of Fife &amp; Eden)" />
+                <div class="biome-card__icon">💧</div>
+                <div class="biome-card__name">Howe of Fife &amp; Eden</div>
+                <div class="biome-card__desc">Arable &amp; Eden floodplain</div>
+              </label>
+
+              <label class="biome-card" title="Upland LFA grazing ground">
+                <input type="radio" name="biome" value="Fife (Lomond &amp; Cleish Uplands)" />
+                <div class="biome-card__icon">⛰</div>
+                <div class="biome-card__name">Lomond &amp; Cleish</div>
+                <div class="biome-card__desc">LFA hill grazing uplands</div>
+              </label>
+
+              <label class="biome-card" title="Tay-facing cereal slopes">
+                <input type="radio" name="biome" value="Fife (North Fife Hills &amp; Tay)" />
+                <div class="biome-card__icon">🌿</div>
+                <div class="biome-card__name">North Fife &amp; Tay</div>
+                <div class="biome-card__desc">Cereals on Tay-facing slopes</div>
+              </label>
+
+              <label class="biome-card" title="Heavy clay dairy farmland">
+                <input type="radio" name="biome" value="Fife (West Fife Claylands)" />
+                <div class="biome-card__icon">🚜</div>
+                <div class="biome-card__name">West Fife Claylands</div>
+                <div class="biome-card__desc">Dairy &amp; mixed heavy land</div>
+              </label>
+            </fieldset>
+          </div>
+        </div>
+
+        <!-- STEP 2 — Biggest Problem -->
+        <div class="step-accordion" id="step-problem" data-step="2">
+          <button class="step-accordion__trigger" aria-expanded="false"
+            aria-controls="step-problem-body" id="step-problem-trigger">
+            <span class="step-accordion__number" aria-hidden="true">2</span>
+            <span class="step-accordion__label">Biggest Problem</span>
+            <span class="step-accordion__summary" id="step-problem-summary">Not selected</span>
+            <svg class="step-accordion__chevron" width="16" height="16" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+          <div class="step-accordion__body" id="step-problem-body" hidden
+            role="region" aria-labelledby="step-problem-trigger">
+            <p class="form-hint mb-3">
+              Select the challenge that matters most on your holding.
+              The calculator will recommend the highest-scoring ShieldBelt variant.
+            </p>
+            <!-- Populated by populateProblemChips() in app.js -->
+            <div id="problem-chips" role="group" aria-label="Select your primary farming problem">
+              <p class="form-hint">Loading problem data…</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 3 — Farm Type -->
+        <div class="step-accordion" id="step-farmtype" data-step="3">
+          <button class="step-accordion__trigger" aria-expanded="false"
+            aria-controls="step-farmtype-body" id="step-farmtype-trigger">
+            <span class="step-accordion__number" aria-hidden="true">3</span>
+            <span class="step-accordion__label">Farm Type</span>
+            <span class="step-accordion__summary" id="step-farmtype-summary">General Cropping</span>
+            <svg class="step-accordion__chevron" width="16" height="16" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+          <div class="step-accordion__body" id="step-farmtype-body" hidden
+            role="region" aria-labelledby="step-farmtype-trigger">
+            <fieldset class="radio-group" aria-label="Farm type">
+              <legend class="sr-only">Select your farm type</legend>
+
+              <label class="radio-option">
+                <input type="radio" name="farm-type" value="Cereals" />
+                <div class="radio-option__content">
+                  <span class="radio-option__label">🌾 Cereals</span>
+                  <span class="radio-option__desc">Wheat, barley, oilseed rape</span>
+                </div>
+              </label>
+
+              <label class="radio-option">
+                <input type="radio" name="farm-type" value="General Cropping" checked />
+                <div class="radio-option__content">
+                  <span class="radio-option__label">🥕 General Cropping</span>
+                  <span class="radio-option__desc">Potatoes, brassicas, soft fruit</span>
+                </div>
+              </label>
+
+              <label class="radio-option">
+                <input type="radio" name="farm-type" value="Dairy" />
+                <div class="radio-option__content">
+                  <span class="radio-option__label">🐄 Dairy</span>
+                  <span class="radio-option__desc">Milk production, grazing</span>
+                </div>
+              </label>
+
+              <label class="radio-option">
+                <input type="radio" name="farm-type" value="LFA Grazing" />
+                <div class="radio-option__content">
+                  <span class="radio-option__label">🐑 LFA Grazing</span>
+                  <span class="radio-option__desc">Less-favoured area beef &amp; sheep</span>
+                </div>
+              </label>
+            </fieldset>
+          </div>
+        </div>
+
+        <!-- STEP 4 — Variant -->
+        <div class="step-accordion" id="step-variant" data-step="4">
+          <button class="step-accordion__trigger" aria-expanded="false"
+            aria-controls="step-variant-body" id="step-variant-trigger">
+            <span class="step-accordion__number" aria-hidden="true">4</span>
+            <span class="step-accordion__label">ShieldBelt Variant</span>
+            <span class="step-accordion__summary" id="step-variant-summary">Auto-selected</span>
+            <svg class="step-accordion__chevron" width="16" height="16" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+          <div class="step-accordion__body" id="step-variant-body" hidden
+            role="region" aria-labelledby="step-variant-trigger">
+            <!-- Biome context card (populated by JS) -->
+            <div id="biome-context-card" hidden aria-live="polite"></div>
+
+            <div class="form-group">
+              <label class="form-label" for="variant-select">Intervention variant</label>
+              <select class="variant-select" id="variant-select" name="variant"
+                disabled aria-describedby="variant-hint">
+                <option value="">— Loading… —</option>
+              </select>
+              <span class="form-hint" id="variant-hint">
+                Variants are filtered by biome.
+              </span>
+            </div>
+            <div id="variant-detail" class="card card--accent hidden" aria-live="polite">
+              <div class="card__header">
+                <span class="card__title" id="variant-detail-name">—</span>
+                <span class="badge-width" id="variant-detail-badge" data-width="">—</span>
+              </div>
+              <p class="text-sm text-muted mt-2" id="variant-detail-desc"></p>
+              <div class="flex flex-wrap gap-2 mt-3" id="variant-detail-tags"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 5 — Strip Length -->
+        <div class="step-accordion" id="step-length" data-step="5">
+          <button class="step-accordion__trigger" aria-expanded="false"
+            aria-controls="step-length-body" id="step-length-trigger">
+            <span class="step-accordion__number" aria-hidden="true">5</span>
+            <span class="step-accordion__label">Strip Length</span>
+            <span class="step-accordion__summary" id="step-length-summary">1,000 m (1 km)</span>
+            <svg class="step-accordion__chevron" width="16" height="16" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+          <div class="step-accordion__body" id="step-length-body" hidden
+            role="region" aria-labelledby="step-length-trigger">
+            <div class="form-group">
+              <label class="form-label" for="strip-length">Total strip length</label>
+              <div class="form-input--unit">
+                <input type="number" class="form-input" id="strip-length"
+                  name="strip-length" min="10" max="50000" step="10" value="1000"
+                  aria-describedby="strip-length-hint" />
+                <span class="form-input--unit__suffix">m</span>
+              </div>
+              <span class="form-hint" id="strip-length-hint">
+                1,000 m = 1 km (a typical field boundary). Results scale linearly.
+              </span>
+            </div>
+            <div class="card card--flat mt-2" style="background:var(--c-cream);">
+              <div class="flex gap-4 flex-wrap">
+                <div>
+                  <div class="text-xs text-muted">Equivalent</div>
+                  <div class="text-mono font-600 text-forest" id="strip-km">1.00 km</div>
+                </div>
+                <div>
+                  <div class="text-xs text-muted">Strip area</div>
+                  <div class="text-mono font-600 text-forest" id="strip-area">— ha</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 6 — Credit Price -->
+        <div class="step-accordion" id="step-price" data-step="6">
+          <button class="step-accordion__trigger" aria-expanded="false"
+            aria-controls="step-price-body" id="step-price-trigger">
+            <span class="step-accordion__number" aria-hidden="true">6</span>
+            <span class="step-accordion__label">Carbon Credit Price</span>
+            <span class="step-accordion__summary" id="step-price-summary">£60 / tCO₂e</span>
+            <svg class="step-accordion__chevron" width="16" height="16" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+          <div class="step-accordion__body" id="step-price-body" hidden
+            role="region" aria-labelledby="step-price-trigger">
+            <div class="form-group">
+              <label class="form-label" for="credit-price">Market price per tCO₂e</label>
+              <div class="slider-row">
+                <input type="range" class="form-slider" id="credit-price"
+                  name="credit-price" min="20" max="200" step="5" value="60"
+                  aria-valuenow="60" aria-valuemin="20" aria-valuemax="200"
+                  aria-label="Carbon credit price per tonne CO₂e" />
+                <span class="slider-value" id="credit-price-display">£60</span>
+              </div>
+              <div class="flex justify-between text-xs text-muted mt-2">
+                <span>£20</span><span>£200 / tCO₂e</span>
+              </div>
+              <span class="form-hint mt-2">
+                Woodland Carbon Code credits typically £25–£120.
+                BNG units and agri-env payments stack on top.
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="mt-4">
+          <button class="btn btn-primary btn-lg" id="btn-calculate" type="button"
+            style="width:100%;">
+            Calculate Outcomes
+          </button>
+        </div>
+        <div class="mt-3 mb-2">
+          <button class="btn btn-ghost btn-sm" id="btn-reset" type="button"
+            style="width:100%;">Reset all inputs</button>
+        </div>
+
+      </div><!-- /controls-form -->
+
+      <!-- Saved Scenarios -->
+      <div id="saved-scenarios-panel" class="saved-scenarios-panel" hidden aria-live="polite"></div>
+
+    </aside>
+
+    <!-- ---------------------------------------------------------------
+         RIGHT PANEL — Results
+         --------------------------------------------------------------- -->
+    <section class="panel-right" aria-label="Results" aria-live="polite">
+
+      <!-- Empty state -->
+      <div id="results-empty" class="card" style="min-height:420px;">
+        <div class="empty-state">
+          <div class="empty-state__icon">🌿</div>
+          <h2 class="empty-state__title">ShieldBelt Outcomes</h2>
+          <p class="empty-state__body">
+            Results appear here automatically as you choose a biome and variant.
+            Select a problem to get a personalised recommendation.
+          </p>
+          <a href="https://fife-shieldbelt.netlify.app"
+            class="btn btn-ghost btn-sm mt-3"
+            target="_blank" rel="noopener noreferrer">
+            View the ShieldBelt Guide &#8599;
+          </a>
+        </div>
+      </div>
+
+      <!-- Results (populated by renderResults) -->
+      <div id="results-content" class="hidden">
+
+        <!-- Results header -->
+        <div class="results-header" id="results-header">
+          <div>
+            <h2 class="results-header__title" id="results-title">—</h2>
+            <div class="flex flex-wrap gap-2 mt-2" id="results-tags"></div>
+          </div>
+          <div class="results-header__meta" id="results-meta"></div>
+        </div>
+
+        <!-- Problem panel (hidden unless a problem is active) -->
+        <div id="problem-panel" hidden class="card problem-panel mb-4" aria-live="polite">
+          <!-- Populated by renderProblemPanel() in app.js -->
+        </div>
+
+        <!-- ─── STAT BOXES — 5 key metrics ─────────────────────────── -->
+        <div class="results-section">
+          <div class="results-section__title">Key Outcomes</div>
+          <div class="stat-boxes-grid">
+
+            <div class="stat-box">
+              <div class="stat-box__value stat-box__value--gold" id="stat-net-benefit-value">—</div>
+              <div class="stat-box__label">Annual Net Benefit</div>
+              <div class="stat-box__sublabel">All streams − income foregone</div>
+            </div>
+
+            <div class="stat-box">
+              <div class="stat-box__value stat-box__value--leaf" id="stat-seq50yr-value">—</div>
+              <div class="stat-box__label">50yr Carbon Total</div>
+              <div class="stat-box__sublabel">tCO₂e · km⁻¹</div>
+            </div>
+
+            <div class="stat-box">
+              <div class="stat-box__value stat-box__value--leaf" id="stat-sser-value">—</div>
+              <div class="stat-box__label">SSER Biodiversity Units</div>
+              <div class="stat-box__sublabel">For this strip length</div>
+            </div>
+
+            <div class="stat-box">
+              <div class="stat-box__value" id="stat-foregone-value">—</div>
+              <div class="stat-box__label">Income Foregone</div>
+              <div class="stat-box__sublabel">Net production cost · yr⁻¹</div>
+            </div>
+
+            <div class="stat-box">
+              <div class="stat-box__value" id="stat-pollination-value">—</div>
+              <div class="stat-box__label">Pollination Value</div>
+              <div class="stat-box__sublabel">Adjacency benefit · yr⁻¹</div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ─── SECTION 2 — Carbon Trajectory ──────────────────────── -->
+        <div class="results-section card">
+          <div class="card__header">
+            <span class="card__title">Carbon Sequestration Trajectory</span>
+            <span class="text-xs text-muted" id="chart-carbon-total">50-year projection</span>
+          </div>
+          <canvas id="chart-carbon"
+            aria-label="Carbon sequestration trajectory" role="img">
+            <p>Carbon trajectory chart (canvas not supported)</p>
+          </canvas>
+          <div id="chart-carbon-legend" style="margin-top:8px;"></div>
+        </div>
+
+        <!-- ─── SECTION 3 — Water / CREW ────────────────────────────── -->
+        <div class="results-section card">
+          <div class="card__header">
+            <span class="card__title">Water &amp; CREW Ecosystem Services</span>
+            <!-- Placement toggle -->
+            <div class="seg-toggle" role="group" aria-label="Placement">
+              <button class="seg-toggle__btn active" data-placement="riparian">Riparian</button>
+              <button class="seg-toggle__btn" data-placement="crossSlope">Cross-slope</button>
+              <button class="seg-toggle__btn" data-placement="downSlope">Down-slope</button>
+            </div>
+          </div>
+          <div class="results-section-body" style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start;">
+            <canvas id="chart-water-radar"
+              aria-label="Water ecosystem radar chart" role="img">
+              <p>Water radar chart (canvas not supported)</p>
+            </canvas>
+            <div style="flex:1;min-width:180px;">
+              <div class="results-section__title">CREW Service Breakdown</div>
+              <div id="crew-chips" class="crew-chips-grid"></div>
+              <div class="mt-3">
+                <span id="fio-badge" class="biome-tag" style="font-size:0.75rem;">FIO —</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ─── SECTION 4 — Ecosystem Health ───────────────────────── -->
+        <div class="results-section card">
+          <div class="card__header">
+            <span class="card__title">Ecosystem &amp; Agronomic Radar</span>
+          </div>
+          <div class="results-section-body" style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start;">
+            <canvas id="chart-eco-radar"
+              aria-label="Ecosystem health radar chart" role="img">
+              <p>Ecosystem radar chart (canvas not supported)</p>
+            </canvas>
+            <div style="flex:1;min-width:180px;">
+              <div class="results-section__title">Pest &amp; Thermal Regulation</div>
+              <div id="pest-thermal-chips" class="crew-chips-grid"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ─── SECTION 5 — Financial Summary ───────────────────────── -->
+        <div class="results-section card">
+          <div class="card__header">
+            <span class="card__title">Annual Value by Farm Type</span>
+            <span class="text-xs text-muted">Stacked income streams</span>
+          </div>
+          <canvas id="chart-finance-bar"
+            aria-label="Financial summary stacked bar" role="img">
+            <p>Financial bar chart (canvas not supported)</p>
+          </canvas>
+          <div id="chart-finance-legend" style="margin-top:8px;"></div>
+        </div>
+
+        <!-- ─── SECTION 6 — Avoided Costs / Windbreak / SSER ─────────── -->
+        <div class="results-section card">
+          <div class="card__header">
+            <span class="card__title">Avoided Costs &amp; Windbreak Benefits</span>
+            <!-- Windbreak orientation toggle -->
+            <div class="seg-toggle" role="group" aria-label="Windbreak orientation">
+              <button class="seg-toggle__btn active" data-orient="NS">N–S</button>
+              <button class="seg-toggle__btn" data-orient="EW">E–W</button>
+            </div>
+          </div>
+
+          <div class="results-section__title mt-3">Avoided Costs by Component</div>
+          <canvas id="chart-avoided-costs"
+            aria-label="Avoided costs bar chart" role="img">
+            <p>Avoided costs chart (canvas not supported)</p>
+          </canvas>
+
+          <div class="results-section__title mt-4">Windbreak Yield Benefits</div>
+          <canvas id="chart-windbreak"
+            aria-label="Windbreak benefit bar chart" role="img">
+            <p>Windbreak chart (canvas not supported)</p>
+          </canvas>
+
+          <div id="sser-profile" class="mt-4"></div>
+        </div>
+
+        <!-- ─── Registry — Agronomic Notes ──────────────────────────── -->
+        <div class="results-section card">
+          <div class="card__header">
+            <span class="card__title">Agronomic &amp; Registry Notes</span>
+          </div>
+          <div id="agronomic-notes" class="text-sm" style="line-height:1.8;"></div>
+          <div id="biodiversity-impacts" class="text-sm mt-3 text-muted" style="line-height:1.6;"></div>
+        </div>
+
+        <!-- ─── Export / Share / Save / Compare ────────────────────── -->
+        <div class="results-section export-panel flex gap-3 flex-wrap">
+          <button class="btn btn-primary" id="btn-export-pdf" type="button">
+            &#8681; Export PDF
+          </button>
+          <button class="btn btn-ghost" id="btn-export-csv" type="button">
+            &#8615; Export CSV
+          </button>
+          <button class="btn btn-ghost" id="btn-copy-link" type="button">
+            &#8682; Copy link
+          </button>
+          <button class="btn btn-ghost" id="btn-save-scenario" type="button">
+            &#128190; Save scenario
+          </button>
+          <button class="btn btn-ghost" id="btn-compare-biomes" type="button">
+            &#9783; Compare across Fife
+          </button>
+        </div>
+
+      </div><!-- /results-content -->
+
+    </section>
+
+  </main>
+
+  <!-- ===================================================================
+       COMPARISON MODAL
+       =================================================================== -->
+  <dialog id="modal-compare" aria-labelledby="modal-title"
+    style="width:min(680px,95vw);padding:0;border:none;border-radius:12px;overflow:hidden;">
+    <div style="background:var(--c-forest);color:var(--c-cream);padding:16px 20px;
+      display:flex;align-items:center;justify-content:space-between;">
+      <h2 id="modal-title" style="font-family:var(--font-display);font-size:1.125rem;color:var(--c-cream);margin:0;">
+        Cross-Biome Comparison
+      </h2>
+      <button id="btn-close-modal" type="button"
+        style="background:none;border:none;color:var(--c-gold-lt);font-size:1.25rem;cursor:pointer;"
+        aria-label="Close modal">&#10005;</button>
+    </div>
+    <div style="padding:20px;background:#fff;">
+      <p class="text-sm text-muted mb-3">
+        Annual net benefit for the same variant type (matched by width + name) across all 6 Fife biomes.
+      </p>
+      <canvas id="chart-modal-compare"
+        aria-label="Cross-biome comparison chart" role="img">
+        <p>Comparison chart (canvas not supported)</p>
+      </canvas>
+      <div id="modal-sser-chips" class="flex flex-wrap gap-2 mt-3"></div>
+    </div>
+  </dialog>
+
+  <!-- ===================================================================
+       FOOTER
+       =================================================================== -->
+  <footer class="app-footer" role="contentinfo">
+    <strong>Fife ShieldBelt</strong>
+    <span class="app-footer__dots">·</span>
+    <strong>NFCA Research</strong>
+    <span class="app-footer__dots">·</span>
+    120 interventions
+    <span class="app-footer__dots">·</span>
+    6 micro-biomes
+    <span class="app-footer__dots">·</span>
+    <a href="https://natcert.earth" target="_blank" rel="noopener noreferrer">natcert.earth</a>
+  </footer>
+
+</div><!-- /app-wrapper -->
+
+<!-- Single entry-point module — imports db, calc, charts -->
+<script src="app.js" type="module"></script>
+</body>
+</html>

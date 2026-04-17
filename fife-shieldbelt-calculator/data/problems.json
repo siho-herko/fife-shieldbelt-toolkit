@@ -1,0 +1,756 @@
+[
+    {
+        "Category": "Water",
+        "Problem_Code": "FLOOD_RIP",
+        "Stated_Symptom": "River bursts its banks and floods my bottom fields",
+        "Agronomic_Root_Cause": "Lack of riparian peak flow interception",
+        "Applicable_Biomes": "Howe of Fife & Eden",
+        "Applicable_Farm_Types": "General Cropping, Dairy",
+        "Routing_Trigger": "sepaMetrics.riparian.floodControl >= 80",
+        "Farmer_Diagnosis_Copy": "When the river bursts its banks, standard grass margins just get wiped out. A deep-rooted Beaver Buffer Wood uses mature trunks to create 'leaky dams' that physically slow the floodwater, protecting your downstream crops from being washed away.",
+        "Solution_Agronomic": "Shift to wet-meadow grazing/forage rather than prime arable in the floodplain.",
+        "Solution_Infrastructure": "Lower embankments to reconnect floodplains; channel re-meandering.",
+        "Solution_Precision_Tech": "Install SEPA telemetry river-level sensors for early warning.",
+        "Solution_Community": "Coordinate with local flood action groups to align farm management with downstream safety.",
+        "Solution_Emerging_Tech_Landscaping": "Smart/IoT flood attenuation ponds that empty ahead of storms.",
+        "Relevant_ShieldBelt_Variants": [
+            "20m Riparian Flood Wood",
+            "20m Riparian Flood Buffer",
+            "6m Two-Stage Ditch",
+            "12m Native Shelterbelt",
+            "20m Beaver Buffer Wood",
+            "20m Urban Flood Buffer"
+        ],
+        "Linked_Solution_Directory_Keys": [
+            "Shift to wet-meadow grazing",
+            "Lower embankments / Reconnect floodplains",
+            "Channel Re-meandering",
+            "SEPA telemetry river-level sensors"
+        ]
+    },
+    {
+        "Category": "Water",
+        "Problem_Code": "FLOOD_SURFACE",
+        "Stated_Symptom": "Heavy rain creates rivers of mud across the slopes",
+        "Agronomic_Root_Cause": "Unimpeded cross-slope overland flow",
+        "Applicable_Biomes": "North Fife Hills & Tay, Lomond & Cleish Uplands",
+        "Applicable_Farm_Types": "Cereals, General Cropping",
+        "Routing_Trigger": "sepaMetrics.crossSlope.floodControl >= 80",
+        "Farmer_Diagnosis_Copy": "When heavy rain hits a slope, it builds speed and washes mud right through your fields. A cross-slope physical barrier acts as a speedbump, dropping the sediment out of the water and saving your crop from being washed away.",
+        "Solution_Agronomic": "Adopt minimum tillage (min-till) to leave stubble; sow winter cover crops.",
+        "Solution_Infrastructure": "Create a Two-Stage Ditch to hold surge water; WASCOBs (Water & Sediment Control Basins).",
+        "Solution_Precision_Tech": "Drone LiDAR to map exact overland flow paths.",
+        "Solution_Community": "Ensure mud isn't washing onto public highways.",
+        "Solution_Emerging_Tech_Landscaping": "Keyline Design ploughing (Australia/N. America) to spread water laterally.",
+        "Relevant_ShieldBelt_Variants": [
+            "12m Planted Contour Swale",
+            "6m Grassed Waterway",
+            "6m Wide Silt Buffer",
+            "12m Wide Biomass Coppice",
+            "20m Clay Runoff Buffer",
+            "20m Steep Bank Stabilisation Wood"
+        ],
+        "Linked_Solution_Directory_Keys": [
+            "Minimum Tillage (Min-Till) / Zero-Till",
+            "Winter Cover Crops / Tillage Radish",
+            "WASCOBs (Water & Sediment Control Basins)",
+            "Drone LiDAR mapping",
+            "Keyline Design ploughing (Australia)"
+        ]
+    },
+    {
+        "Category": "Water",
+        "Problem_Code": "DROUGHT_SUMMER",
+        "Stated_Symptom": "Fields dry out too fast in summer / burns run dry",
+        "Agronomic_Root_Cause": "Poor baseline aquifer recharge",
+        "Applicable_Biomes": "East Neuk Coast, Howe of Fife & Eden",
+        "Applicable_Farm_Types": "Cereals, General Cropping, Dairy",
+        "Routing_Trigger": "crewValuations.crossSlopeTotal >= 1000",
+        "Farmer_Diagnosis_Copy": "With summers getting drier, burns and aquifers are running low. Deep-rooting trees shatter underground soil pans, allowing winter rain to percolate down into the aquifer rather than running straight into the river. It stores the water for when you need it.",
+        "Solution_Agronomic": "Establish deep-rooting Multi-Species Herbal Leys to access deep subsoil moisture.",
+        "Solution_Infrastructure": "Install rainwater harvesting tanks off large shed roofs.",
+        "Solution_Precision_Tech": "Soil moisture probes to optimize irrigation timing.",
+        "Solution_Community": "Participate in catchment-level water abstraction groups.",
+        "Solution_Emerging_Tech_Landscaping": "Biological Inoculants (Mycorrhizal fungi) to expand root access to water; Argentine Direct Drilling to maximize moisture retention.",
+        "Relevant_ShieldBelt_Variants": [
+            "12m Native Shelterbelt",
+            "12m Alley Cropping Trees",
+            "6m Biochar Shrub Coppice",
+            "12m Biochar Timber Block"
+        ],
+        "Linked_Solution_Directory_Keys": [
+            "Multi-Species Herbal Leys",
+            "Catchment-level water abstraction groups",
+            "Biological Inoculants (Mycorrhizal fungi)",
+            "Argentine Direct Drilling (Siembra Directa)"
+        ]
+    },
+    {
+        "Category": "Water",
+        "Problem_Code": "CLAY_WATERLOG",
+        "Stated_Symptom": "Tractor bogs down in the mud every October",
+        "Agronomic_Root_Cause": "Compacted heavy clay / poor infiltration",
+        "Applicable_Biomes": "West Fife Claylands",
+        "Applicable_Farm_Types": "Cereals, Dairy",
+        "Routing_Trigger": "radarMetrics.soilCarbonAndHealth >= 60",
+        "Farmer_Diagnosis_Copy": "Heavy Fife clay turns into a poached mess under tractor tires. The deep taproots of these specific shrubs act like a biological subsoiler, fracturing the underground pan to let water drain naturally. This saves you red diesel on remedial ploughing.",
+        "Solution_Agronomic": "Sow tillage radish to biologically fracture the clay pan; Johnson-Su compost teas to rebuild structure.",
+        "Solution_Infrastructure": "Clear 1970s tile drain outfalls; mole draining.",
+        "Solution_Precision_Tech": "Controlled Traffic Farming (CTF) utilizing RTK GPS.",
+        "Solution_Community": "Machinery rings to access low-ground-pressure (LGP) tracked equipment.",
+        "Solution_Emerging_Tech_Landscaping": "Heavy-Lift agricultural drones (Japan) for seeding/spraying when soil is too wet for tractors.",
+        "Relevant_ShieldBelt_Variants": [
+            "6m Shallow Root Shrubs",
+            "12m Wide Biomass Coppice",
+            "6m Biochar Shrub Coppice",
+            "6m Botanical Shrub Strip",
+            "20m Clay Runoff Buffer",
+            "6m Clay-Tolerant Shrub Strip"
+        ],
+        "Linked_Solution_Directory_Keys": [
+            "Winter Cover Crops / Tillage Radish",
+            "Clear tile drain outfalls / Mole draining",
+            "Controlled Traffic Farming (CTF) via RTK GPS",
+            "Machinery rings",
+            "Heavy-Lift agricultural drones (Japan)"
+        ]
+    },
+    {
+        "Category": "Soil",
+        "Problem_Code": "TOPSOIL_LOSS",
+        "Stated_Symptom": "I'm losing my best topsoil down the hill",
+        "Agronomic_Root_Cause": "Cross-slope sediment erosion",
+        "Applicable_Biomes": "North Fife Hills & Tay",
+        "Applicable_Farm_Types": "Cereals, General Cropping",
+        "Routing_Trigger": "sepaMetrics.crossSlope.sedimentTrapping >= 80",
+        "Farmer_Diagnosis_Copy": "If heavy October rain is stripping topsoil off your slopes, a contour swale acts as a physical trench and tree-root barrier. It catches the mud and water mid-field, keeping your prime topsoil where it belongs.",
+        "Solution_Agronomic": "Plough across the slope; establish Prairie Strips (N. America) across 10% of field area.",
+        "Solution_Infrastructure": "Physical bunds or French drains at the field edge.",
+        "Solution_Precision_Tech": "Yield mapping to convert unprofitable eroded areas.",
+        "Solution_Community": "Keep soil out of local fishing rivers to avoid SEPA fines.",
+        "Solution_Emerging_Tech_Landscaping": "Fish-scale terracing (China) for steep North Fife Hills tree planting; Argentine Zero-Tillage.",
+        "Relevant_ShieldBelt_Variants": [
+            "12m Planted Contour Swale",
+            "6m Wide Silt Buffer",
+            "3m Grass Silt Buffer",
+            "12m Alley Cropping Trees",
+            "20m Steep Bank Stabilisation Wood"
+        ],
+        "Linked_Solution_Directory_Keys": [
+            "Plough across the slope",
+            "Prairie Strips (Iowa STRIPS project)",
+            "Argentine Direct Drilling (Siembra Directa)",
+            "Fish-scale terracing (China)"
+        ]
+    },
+    {
+        "Category": "Soil",
+        "Problem_Code": "COASTAL_ERODE",
+        "Stated_Symptom": "Losing field edges to the sea/estuary",
+        "Agronomic_Root_Cause": "Riparian/coastal bank destabilization",
+        "Applicable_Biomes": "East Neuk Coast, Forth Urban Coast",
+        "Applicable_Farm_Types": "General Cropping, LFA Grazing",
+        "Routing_Trigger": "variant contains 'Erosion Wood'",
+        "Farmer_Diagnosis_Copy": "Winter storms and high tides are physically eating your land. A specialized coastal wood binds the soil with massive root structures while absorbing the wave/wind energy, locking the bank in place.",
+        "Solution_Agronomic": "Retreat arable operations from the immediate cliff/estuary edge.",
+        "Solution_Infrastructure": "Install soft-engineering coastal defenses (e.g., willow spiling).",
+        "Solution_Precision_Tech": "Satellite imagery to track erosion rates and predict future loss.",
+        "Solution_Community": "Engage with FCCT regarding rerouting eroded footpaths.",
+        "Solution_Emerging_Tech_Landscaping": "Engineered salt-marsh restoration to absorb wave energy.",
+        "Relevant_ShieldBelt_Variants": [
+            "20m Riparian Flood Wood",
+            "12m Native Shelterbelt",
+            "6m Shallow Root Shrubs",
+            "20m Coastal Erosion Wood"
+        ],
+        "Linked_Solution_Directory_Keys": []
+    },
+    {
+        "Category": "Soil",
+        "Problem_Code": "COMPACTION_POACH",
+        "Stated_Symptom": "Cows are poaching the ground around the gates/troughs",
+        "Agronomic_Root_Cause": "High livestock hoof-pressure on wet soils",
+        "Applicable_Biomes": "West Fife Claylands, Lomond & Cleish Uplands",
+        "Applicable_Farm_Types": "Dairy, LFA Grazing",
+        "Routing_Trigger": "radarMetrics.habitatDistinctiveness >= 50",
+        "Farmer_Diagnosis_Copy": "Livestock gathering around gates in wet winters destroys the soil structure. A shallow-root shrub buffer combined with a hardstanding area gives you a sacrificial zone that recovers quickly without ruining field drainage.",
+        "Solution_Agronomic": "Implement bale grazing (on suitable soils) and rotational mob-grazing.",
+        "Solution_Infrastructure": "Install hardcore pads around field gates and permanent troughs; NZ-style standoff pads.",
+        "Solution_Precision_Tech": "GPS-collared virtual fencing (e.g., Halter) to dynamically keep cattle off wet ground.",
+        "Solution_Community": "Avoid poaching near public footpaths to reduce walker complaints.",
+        "Solution_Emerging_Tech_Landscaping": "Autonomous lightweight robotics (e.g., FarmDroid) to eliminate heavy tractor passes.",
+        "Relevant_ShieldBelt_Variants": [
+            "6m Shallow Root Shrubs",
+            "12m Livestock Shade Trees",
+            "3m Grass Silt Buffer"
+        ],
+        "Linked_Solution_Directory_Keys": [
+            "Bale Grazing & Outwintering",
+            "Rotational Mob-Grazing",
+            "NZ-style Woodchip Standoff Pads",
+            "GPS-collared virtual fencing (Halter / Nofence)",
+            "Autonomous lightweight robotics (FarmDroid)"
+        ]
+    },
+    {
+        "Category": "Climate",
+        "Problem_Code": "HAAR_SALT",
+        "Stated_Symptom": "The Haar and salt-spray is burning my brassicas",
+        "Agronomic_Root_Cause": "Coastal wind-shear and salinity",
+        "Applicable_Biomes": "East Neuk Coast",
+        "Applicable_Farm_Types": "General Cropping",
+        "Routing_Trigger": "agronomicWindProfile contains 'Salt-Spray'",
+        "Farmer_Diagnosis_Copy": "The Haar carries salt particles that burn brassica leaves and set broccoli heads unevenly. A 12m porous belt raises the airstream over the crop rather than blocking it, meaning the salt deposits on the belt, not your plants.",
+        "Solution_Agronomic": "Select hardier crop varieties for the most exposed eastern fields.",
+        "Solution_Infrastructure": "Erect temporary artificial windbreak netting (Paraweb).",
+        "Solution_Precision_Tech": "Hyper-local weather stations to predict Haar events.",
+        "Solution_Community": "None directly applicable.",
+        "Solution_Emerging_Tech_Landscaping": "Saline Seed Priming (Netherlands) to make standard crops resistant to salt-shock.",
+        "Relevant_ShieldBelt_Variants": [
+            "12m Native Shelterbelt",
+            "3m Dense Wildlife Hedge",
+            "6m Botanical Shrub Strip",
+            "12m Coastal Salt-Spray Screen"
+        ],
+        "Linked_Solution_Directory_Keys": [
+            "Windbreak netting (Paraweb)",
+            "Hyper-local weather stations / LoRaWAN",
+            "Saline Seed Priming (Netherlands)"
+        ]
+    },
+    {
+        "Category": "Climate",
+        "Problem_Code": "WINTER_CHILL",
+        "Stated_Symptom": "Losing lambs to the wind and cold / feed bills too high",
+        "Agronomic_Root_Cause": "High-altitude exposure causing thermal stress",
+        "Applicable_Biomes": "Lomond & Cleish Uplands",
+        "Applicable_Farm_Types": "LFA Grazing",
+        "Routing_Trigger": "farmImpacts.LFA Grazing.thermalRegulation >= 100",
+        "Farmer_Diagnosis_Copy": "Every degree of wind-chill burns your sheep's winter fodder just to keep them warm. A targeted snow-fence breaks the upland gales, improving your flock's feed conversion ratio and lamb survival rates without taking up prime grazing.",
+        "Solution_Agronomic": "Adjust lambing dates; integrate Silvopasture to provide 3D thermal buffering.",
+        "Solution_Infrastructure": "Build permanent roofed lambing sheds.",
+        "Solution_Precision_Tech": "Thermal imaging drones to identify the coldest parts of the hill.",
+        "Solution_Community": "Local sheep-worrying awareness campaigns.",
+        "Solution_Emerging_Tech_Landscaping": "Smart thermal rumen boluses (SmaXtec) to detect cold stress instantly.",
+        "Relevant_ShieldBelt_Variants": [
+            "12m Native Shelterbelt",
+            "3m Dense Wildlife Hedge",
+            "6m Biomass Coppice Strip",
+            "12m Montane Snow-Fence"
+        ],
+        "Linked_Solution_Directory_Keys": [
+            "Silvopasture Integration",
+            "Thermal imaging drones",
+            "Smart thermal rumen boluses (SmaXtec)"
+        ]
+    },
+    {
+        "Category": "Climate",
+        "Problem_Code": "SUMMER_HEAT",
+        "Stated_Symptom": "Cows dropping milk yield on hot summer days",
+        "Agronomic_Root_Cause": "Heat stress due to lack of canopy shade",
+        "Applicable_Biomes": "West Fife Claylands, Howe of Fife & Eden",
+        "Applicable_Farm_Types": "Dairy",
+        "Routing_Trigger": "farmImpacts.Dairy.thermalRegulation >= 100",
+        "Farmer_Diagnosis_Copy": "At 20 degrees, a dairy cow starts suffering heat stress and drops milk yield. Mature shade trees create a cool microclimate, allowing them to ruminate comfortably out of the direct sun.",
+        "Solution_Agronomic": "Integrate Silvopasture; shift dairy grazing to cooler evening/night hours.",
+        "Solution_Infrastructure": "Install heavy-duty fans and misting systems in collecting yards.",
+        "Solution_Precision_Tech": "Smart collars to detect heat stress early via rumination drops.",
+        "Solution_Community": "None directly applicable.",
+        "Solution_Emerging_Tech_Landscaping": "Smart thermal rumen boluses (SmaXtec) to detect core body temp spikes.",
+        "Relevant_ShieldBelt_Variants": [
+            "12m Livestock Shade Trees",
+            "12m Alley Cropping Trees",
+            "20m Riparian Flood Wood",
+            "12m Native Shelterbelt"
+        ],
+        "Linked_Solution_Directory_Keys": [
+            "Silvopasture Integration",
+            "Shift dairy grazing to night",
+            "Smart thermal rumen boluses (SmaXtec)"
+        ]
+    },
+    {
+        "Category": "Climate",
+        "Problem_Code": "VALLEY_FROST",
+        "Stated_Symptom": "Late spring frost pockets killing early growth",
+        "Agronomic_Root_Cause": "Cold air pooling in valleys",
+        "Applicable_Biomes": "Howe of Fife & Eden",
+        "Applicable_Farm_Types": "General Cropping, Cereals",
+        "Routing_Trigger": "agronomicWindProfile contains 'Frost Pockets'",
+        "Farmer_Diagnosis_Copy": "Cold air rolls down the hills and pools in the Howe of Fife, creating lethal frost pockets for early growth. A porous shelterbelt slows the cold air movement and slightly lifts ground temperatures, protecting delicate crops.",
+        "Solution_Agronomic": "Avoid planting sensitive early crops in the lowest topographical dips.",
+        "Solution_Infrastructure": "Ensure cold air drainage pathways are kept clear of brush.",
+        "Solution_Precision_Tech": "Deploy orchard frost-fans or heaters for high-value fruit.",
+        "Solution_Community": "None directly applicable.",
+        "Solution_Emerging_Tech_Landscaping": "Hyper-Local IoT Microclimate networks to trigger automated frost protection.",
+        "Relevant_ShieldBelt_Variants": [
+            "12m Native Shelterbelt",
+            "3m Heritage Species Hedge",
+            "6m Botanical Shrub Strip"
+        ],
+        "Linked_Solution_Directory_Keys": []
+    },
+    {
+        "Category": "Biology",
+        "Problem_Code": "PEST_APHID",
+        "Stated_Symptom": "Spending a fortune on aphid sprays",
+        "Agronomic_Root_Cause": "Lack of predatory insect populations (e.g., ladybirds)",
+        "Applicable_Biomes": "East Neuk Coast, Howe of Fife & Eden",
+        "Applicable_Farm_Types": "Cereals, General Cropping",
+        "Routing_Trigger": "farmImpacts.General Cropping.pestRegulation >= 100",
+        "Farmer_Diagnosis_Copy": "Aphicides are expensive. A heritage hedge bridges the 'hungry gap' for predatory insects like ladybirds. By providing winter shelter, you build a standing army of predators right next to your crop, naturally regulating aphid outbreaks.",
+        "Solution_Agronomic": "Companion Cropping / Intercropping to confuse insect pests visually and olfactorily.",
+        "Solution_Infrastructure": "Establish beetle banks in the center of large arable fields.",
+        "Solution_Precision_Tech": "Drone-based multispectral imaging to spot crop-stress early.",
+        "Solution_Community": "Engage with LEAF to certify pesticide-reduction efforts.",
+        "Solution_Emerging_Tech_Landscaping": "UV-C Autonomous Robots (Belgium) or AI-Guided Spot Spraying (SoilEssentials).",
+        "Relevant_ShieldBelt_Variants": [
+            "3m Heritage Species Hedge",
+            "6m Botanical Shrub Strip",
+            "12m Botanical Harvest Wood",
+            "3m Dense Wildlife Hedge",
+            "6m Distillery Foraging Strip",
+            "6m Upland Foraging Strip",
+            "6m Urban Foraging Strip"
+        ],
+        "Linked_Solution_Directory_Keys": [
+            "Companion Cropping / Intercropping",
+            "Beetle banks",
+            "UV-C Autonomous Robots (Belgium)",
+            "AI-Guided Spot Spraying (SoilEssentials)"
+        ]
+    },
+    {
+        "Category": "Biology",
+        "Problem_Code": "POOR_FRUIT_SET",
+        "Stated_Symptom": "Fruit isn't setting right / need more bees",
+        "Agronomic_Root_Cause": "Pollinator deficit during crucial flowering windows",
+        "Applicable_Biomes": "East Neuk Coast",
+        "Applicable_Farm_Types": "General Cropping",
+        "Routing_Trigger": "farmImpacts.General Cropping.pollinationValue >= 720",
+        "Farmer_Diagnosis_Copy": "Soft fruit needs continuous pollinator activity to set properly. This strip guarantees nectar flow from early spring through to autumn, sustaining a massive localized bumblebee population exactly where your crop needs them.",
+        "Solution_Agronomic": "Undersow crops with flowering clovers to sustain wild pollinators.",
+        "Solution_Infrastructure": "Bring in commercial bumblebee hives during peak blossom.",
+        "Solution_Precision_Tech": "Automated yield monitoring to identify field zones suffering from poor fruit set.",
+        "Solution_Community": "Communicate spraying intentions with local beekeepers.",
+        "Solution_Emerging_Tech_Landscaping": "Acoustic & Laser Pest Deterrents (Netherlands) to protect fruit from birds.",
+        "Relevant_ShieldBelt_Variants": [
+            "6m Botanical Shrub Strip",
+            "3m Heritage Species Hedge",
+            "12m Botanical Harvest Wood",
+            "6m Biochar Shrub Coppice",
+            "12m Distillery Harvest Wood",
+            "6m Distillery Foraging Strip",
+            "6m Upland Foraging Strip",
+            "6m Urban Foraging Strip"
+        ],
+        "Linked_Solution_Directory_Keys": [
+            "Undersow with flowering clovers"
+        ]
+    },
+    {
+        "Category": "Biology",
+        "Problem_Code": "BIODIV_AUDIT",
+        "Stated_Symptom": "Supermarkets/Auditors demanding more biodiversity",
+        "Agronomic_Root_Cause": "Low habitat distinctiveness score on farm",
+        "Applicable_Biomes": "All",
+        "Applicable_Farm_Types": "All",
+        "Routing_Trigger": "radarMetrics.habitatDistinctiveness >= 80",
+        "Farmer_Diagnosis_Copy": "Supply chains and supermarket buyers are getting aggressive about farm biodiversity scores. Planting a heritage hedge gives you an instant, massive boost to your habitat distinctiveness metrics, keeping the auditors happy.",
+        "Solution_Agronomic": "Delay cutting grass margins until late summer to allow seed set.",
+        "Solution_Infrastructure": "In-Stream Large Woody Debris (LWD) to restore river habitats.",
+        "Solution_Precision_Tech": "Acoustic monitoring sensors to record bat/bird calls for auditors.",
+        "Solution_Community": "Host farm walks for local schools.",
+        "Solution_Emerging_Tech_Landscaping": "Prairie Strips (Iowa STRIPS project) - integrating 10% native botany into crops.",
+        "Relevant_ShieldBelt_Variants": [
+            "3m Heritage Species Hedge",
+            "12m Botanical Harvest Wood",
+            "20m Riparian Flood Wood",
+            "6m Botanical Shrub Strip",
+            "12m Distillery Harvest Wood",
+            "12m Urban Foraging Wood"
+        ],
+        "Linked_Solution_Directory_Keys": [
+            "In-Stream Large Woody Debris (LWD)",
+            "Prairie Strips (Iowa STRIPS project)"
+        ]
+    },
+    {
+        "Category": "Compliance",
+        "Problem_Code": "NVZ_LETTER",
+        "Stated_Symptom": "SEPA is on my back about nitrate levels",
+        "Agronomic_Root_Cause": "Subsurface nitrate leaching into watercourses",
+        "Applicable_Biomes": "Howe of Fife & Eden",
+        "Applicable_Farm_Types": "General Cropping, Dairy",
+        "Routing_Trigger": "sepaMetrics.riparian.nutrientRetention >= 80",
+        "Farmer_Diagnosis_Copy": "SEPA nitrate rules are tightening. Deep-rooting Alder and Willow along the ditch actively pump and lock up leached nitrogen before it hits the watercourse.",
+        "Solution_Agronomic": "Implement rigorous Nutrient Management Planning (NMP); NZ Nitrogen capping strategies.",
+        "Solution_Infrastructure": "Permeable Reactive Barriers (PRBs) / Woodchip Bioreactors to intercept tile drainage.",
+        "Solution_Precision_Tech": "N-Sensors for variable-rate nitrogen application.",
+        "Solution_Community": "FAS compliance audits.",
+        "Solution_Emerging_Tech_Landscaping": "Saturated Riparian Buffers (Iowa) to route tile drains into soil profile; Plasma Slurry treatment (Norway).",
+        "Relevant_ShieldBelt_Variants": [
+            "6m Wetland Nitrate Filter",
+            "6m Wide Silt Buffer",
+            "20m Riparian Flood Buffer",
+            "12m Wide Biomass Coppice"
+        ],
+        "Linked_Solution_Directory_Keys": [
+            "Nutrient Management Planning (NMP)",
+            "Permeable Reactive Barriers (PRBs)",
+            "N-Sensors for variable-rate nitrogen",
+            "FAS compliance audits",
+            "Saturated Riparian Buffers (Iowa)",
+            "Plasma Slurry treatment (Norway)"
+        ]
+    },
+    {
+        "Category": "Compliance",
+        "Problem_Code": "FIO_BEACH",
+        "Stated_Symptom": "Blamed for local beach bathing water failures",
+        "Agronomic_Root_Cause": "Fecal Indicator Organisms (FIO) in surface runoff",
+        "Applicable_Biomes": "East Neuk Coast",
+        "Applicable_Farm_Types": "Dairy, LFA Grazing",
+        "Routing_Trigger": "farmImpacts.Dairy.fioTrappingEfficiency >= 80",
+        "Farmer_Diagnosis_Copy": "Protecting the local Blue Flag beach is critical. A wide, densely sown grass buffer acts as a physical sponge for surface manure, trapping E. coli and letting soil microbes break down the pathogens before they reach the watercourse.",
+        "Solution_Agronomic": "Exclude livestock from riparian zones entirely.",
+        "Solution_Infrastructure": "Offline Treatment Wetlands & Sediment Ponds to settle pathogens.",
+        "Solution_Precision_Tech": "Track exact slurry application zones via GPS.",
+        "Solution_Community": "Align with FCCT to protect local Blue Flag beaches.",
+        "Solution_Emerging_Tech_Landscaping": "Fungal Bio-Filters (Rhizocore) inoculated into buffers to bind pathogens.",
+        "Relevant_ShieldBelt_Variants": [
+            "6m Wide Silt Buffer",
+            "6m Wetland Nitrate Filter",
+            "3m Grass Silt Buffer",
+            "20m Riparian Flood Buffer"
+        ],
+        "Linked_Solution_Directory_Keys": [
+            "Offline Treatment Wetlands",
+            "Fungal Bio-Filters (Rhizocore)"
+        ]
+    },
+    {
+        "Category": "Compliance",
+        "Problem_Code": "SPRAY_DRIFT",
+        "Stated_Symptom": "Can't spray my fields when it's windy without drifting",
+        "Agronomic_Root_Cause": "Unbuffered field margins adjacent to sensitive areas",
+        "Applicable_Biomes": "Forth Urban Coast, East Neuk Coast",
+        "Applicable_Farm_Types": "Cereals, General Cropping",
+        "Routing_Trigger": "assumedBiomassHeight contains '4m - 6m'",
+        "Farmer_Diagnosis_Copy": "You lose valuable spraying days waiting for the wind to drop so you don't drift onto roads or neighbors. A porous 5-meter screen creates a massive wind shadow, giving you more safe spraying days and cutting chemical waste.",
+        "Solution_Agronomic": "Switch to low-drift nozzles and coarser spray qualities.",
+        "Solution_Infrastructure": "Establish a permanent 5m uncultivated buffer zone next to roads.",
+        "Solution_Precision_Tech": "PWM (Pulse Width Modulation) sprayer tech to maintain droplet size.",
+        "Solution_Community": "WhatsApp group with neighboring beekeepers/properties.",
+        "Solution_Emerging_Tech_Landscaping": "AI-Guided Spot Spraying (SoilEssentials) to radically reduce spray volume.",
+        "Relevant_ShieldBelt_Variants": [
+            "12m Native Shelterbelt",
+            "6m Biomass Coppice Strip",
+            "3m Dense Wildlife Hedge"
+        ],
+        "Linked_Solution_Directory_Keys": [
+            "PWM (Pulse Width Modulation) sprayers",
+            "WhatsApp group with beekeepers",
+            "AI-Guided Spot Spraying (SoilEssentials)"
+        ]
+    },
+    {
+        "Category": "Social",
+        "Problem_Code": "DOG_WORRYING",
+        "Stated_Symptom": "Walkers and off-lead dogs getting into livestock fields",
+        "Agronomic_Root_Cause": "Permeable physical boundaries",
+        "Applicable_Biomes": "Forth Urban Coast, East Neuk Coast",
+        "Applicable_Farm_Types": "Dairy, LFA Grazing",
+        "Routing_Trigger": "variant contains 'Hedge'",
+        "Farmer_Diagnosis_Copy": "Farming next to towns means dealing with trespass and off-lead dogs stressing livestock. A dense, thorny wildlife hedge creates an impenetrable physical barrier that is far cheaper to maintain long-term than wire fencing.",
+        "Solution_Agronomic": "Move pregnant ewes away from fields with public footpaths.",
+        "Solution_Infrastructure": "Upgrade fencing to high-tensile wire; secure gates.",
+        "Solution_Precision_Tech": "Remote trail cameras to monitor trespassers.",
+        "Solution_Community": "Install NFUS educational signage.",
+        "Solution_Emerging_Tech_Landscaping": "Virtual Fencing (Nofence / Halter NZ) to dynamically move stock away from walkers.",
+        "Relevant_ShieldBelt_Variants": [
+            "3m Dense Wildlife Hedge",
+            "3m Heritage Species Hedge",
+            "6m Botanical Shrub Strip"
+        ],
+        "Linked_Solution_Directory_Keys": [
+            "GPS-collared virtual fencing (Halter / Nofence)"
+        ]
+    },
+    {
+        "Category": "Social",
+        "Problem_Code": "URBAN_POLLUTION",
+        "Stated_Symptom": "Road dust and noise making fields next to town useless",
+        "Agronomic_Root_Cause": "Proximity to urban infrastructure (PM2.5)",
+        "Applicable_Biomes": "Forth Urban Coast",
+        "Applicable_Farm_Types": "Cereals, General Cropping",
+        "Routing_Trigger": "farmImpacts.urbanProximityMultiplier >= 3.0",
+        "Farmer_Diagnosis_Copy": "Farming next to the ring road brings exhaust dust and trespass risk. A dense, thorny 3D canopy acts as both a physical barrier to keep people out, and an aerodynamic filter that scrubs PM2.5 particulates from the air before they hit your fields.",
+        "Solution_Agronomic": "Avoid growing high-value aesthetic leafy greens directly adjacent to roads.",
+        "Solution_Infrastructure": "Erect solid boundary fences to deter fly-tipping.",
+        "Solution_Precision_Tech": "None directly applicable.",
+        "Solution_Community": "Engage with the local council regarding road-sweeping.",
+        "Solution_Emerging_Tech_Landscaping": "Plasma Slurry treatment (Norway) to completely eliminate manure smell near towns.",
+        "Relevant_ShieldBelt_Variants": [
+            "12m Native Shelterbelt",
+            "6m Botanical Shrub Strip",
+            "3m Dense Wildlife Hedge",
+            "12m Urban Air-Quality Screen",
+            "12m Urban Foraging Wood",
+            "20m Urban Flood Buffer",
+            "6m Urban Foraging Strip"
+        ],
+        "Linked_Solution_Directory_Keys": [
+            "Plasma Slurry treatment (Norway)"
+        ]
+    },
+    {
+        "Category": "Economic",
+        "Problem_Code": "CARBON_INCOME",
+        "Stated_Symptom": "I want to earn money from Carbon Credits",
+        "Agronomic_Root_Cause": "Need for high-yielding, verified carbon sequestration",
+        "Applicable_Biomes": "All",
+        "Applicable_Farm_Types": "All",
+        "Routing_Trigger": "carbonSequestration.yr_21_25 >= 20",
+        "Farmer_Diagnosis_Copy": "With BPS changing, locking in private carbon income is a solid hedge. A fast-growing native block allows you to register with the Woodland Carbon Code, providing verified, saleable credits over the next 50 years.",
+        "Solution_Agronomic": "Adopt minimal till and Bale Grazing to rapidly build Soil Organic Carbon (SOC).",
+        "Solution_Infrastructure": "None directly applicable.",
+        "Solution_Precision_Tech": "Deep-core soil testing mapped via GPS.",
+        "Solution_Community": "Ensure planting complies with WCC community consultation.",
+        "Solution_Emerging_Tech_Landscaping": "Biochar/Advanced Digestates (Carbogenics) for permanent carbon drawdown.",
+        "Relevant_ShieldBelt_Variants": [
+            "12m Biochar Timber Block",
+            "12m Native Shelterbelt",
+            "20m Riparian Flood Wood",
+            "12m Wide Biomass Coppice"
+        ],
+        "Linked_Solution_Directory_Keys": [
+            "Bale Grazing & Outwintering",
+            "Biochar / Advanced Digestates (Carbogenics)"
+        ]
+    },
+    {
+        "Category": "Economic",
+        "Problem_Code": "DIESEL_COSTS",
+        "Stated_Symptom": "Burning too much red diesel fixing ruts and gullies",
+        "Agronomic_Root_Cause": "Mechanical intervention required to fix water erosion",
+        "Applicable_Biomes": "North Fife Hills & Tay",
+        "Applicable_Farm_Types": "Cereals",
+        "Routing_Trigger": "crewValuations.crossSlopeTotal >= 1000",
+        "Farmer_Diagnosis_Copy": "Grading soil back up the hill every spring burns thousands of liters of red diesel. Fixing the erosion at the source with a cross-slope hedge stops the gullies forming in the first place.",
+        "Solution_Agronomic": "Combine operations (e.g., drill and fertilize in one pass); Argentine Direct Drilling.",
+        "Solution_Infrastructure": "Grade farm tracks to reduce rolling resistance.",
+        "Solution_Precision_Tech": "GPS auto-steer to eliminate overlap.",
+        "Solution_Community": "Machinery rings.",
+        "Solution_Emerging_Tech_Landscaping": "Autonomous Lightweight Robotics running on solar power.",
+        "Relevant_ShieldBelt_Variants": [
+            "12m Planted Contour Swale",
+            "6m Grassed Waterway",
+            "6m Two-Stage Ditch"
+        ],
+        "Linked_Solution_Directory_Keys": [
+            "Machinery rings",
+            "Argentine Direct Drilling (Siembra Directa)",
+            "Autonomous lightweight robotics (FarmDroid)"
+        ]
+    },
+    {
+        "Category": "Economic",
+        "Problem_Code": "HEATING_BILLS",
+        "Stated_Symptom": "Heating the sheds/farmhouse is costing a fortune",
+        "Agronomic_Root_Cause": "Need for cheap, sustainable on-farm biomass",
+        "Applicable_Biomes": "All",
+        "Applicable_Farm_Types": "Dairy, General Cropping",
+        "Routing_Trigger": "variant contains 'Coppice'",
+        "Farmer_Diagnosis_Copy": "Gas and oil for the sheds are squeezing margins. A dedicated biomass coppice strip gives you a fast-growing, renewable supply of woodchip to feed the farm boiler every 3 to 5 years.",
+        "Solution_Agronomic": "None directly applicable.",
+        "Solution_Infrastructure": "Upgrade shed insulation; install biomass boilers.",
+        "Solution_Precision_Tech": "Smart thermostats and zoned heating controls.",
+        "Solution_Community": "Community energy schemes.",
+        "Solution_Emerging_Tech_Landscaping": "Biochar additives to Anaerobic Digesters to max out biogas yields.",
+        "Relevant_ShieldBelt_Variants": [
+            "6m Biomass Coppice Strip",
+            "12m Wide Biomass Coppice",
+            "6m Biochar Shrub Coppice",
+            "12m Biochar Timber Block"
+        ],
+        "Linked_Solution_Directory_Keys": [
+            "Biochar / Advanced Digestates (Carbogenics)"
+        ]
+    },
+    {
+        "Category": "Soil",
+        "Problem_Code": "SOILORGAN_LOW",
+        "Stated_Symptom": "Soil organic matter declining / soils losing structure and water-holding capacity",
+        "Agronomic_Root_Cause": "Intensive tillage, potato/root vegetable production, lack of cover crops breaking down soil aggregates",
+        "Applicable_Biomes": "Dreel Burn Catchment",
+        "Applicable_Farm_Types": "General Cropping, Arable",
+        "Routing_Trigger": "soilMetrics.organicMatter < 3.0",
+        "Farmer_Diagnosis_Copy": "When soils lose organic matter, they lose their ability to hold water, support crop growth, and store carbon. Reduced tillage, cover crops, and multi-species leys work together with linear shelterbelts to protect and rebuild your soil capital.",
+        "Solution_Agronomic": "Reduced tillage / direct drilling; cover crops; legume rotations; organic manure incorporation",
+        "Solution_Infrastructure": "Beetle banks to reduce surface compaction pathways; contour swales to slow water loss",
+        "Solution_Precision_Tech": "Drone LiDAR mapping for compaction zones; N-sensors for variable rate nitrogen",
+        "Solution_Community": "Machinery rings for sharing min-till equipment; FAS advice on soil carbon audits",
+        "Solution_Emerging_Tech_Landscaping": "Biological Inoculants (mycorrhizal fungi) applied at drilling; Biochar / Advanced Digestates (Carbogenics)",
+        "Relevant_ShieldBelt_Variants": [
+            "12m Alley Cropping Trees",
+            "6m Biomass Coppice Strip",
+            "12m Wide Biomass Coppice"
+        ],
+        "Linked_Solution_Directory_Keys": [
+            "Minimum Tillage (Min-Till) / Zero-Till",
+            "Winter Cover Crops / Tillage Radish",
+            "Multi-Species Herbal Leys",
+            "Biochar / Advanced Digestates (Carbogenics)",
+            "Liquid Carbon Pathway Management",
+            "Chop and Drop Agroforestry"
+        ]
+    },
+    {
+        "Category": "Water",
+        "Problem_Code": "DROUGHT_BURN",
+        "Stated_Symptom": "Dreel Burn / watercourses running low or dry in summer \u2013 aquatic stress and irrigation risk",
+        "Agronomic_Root_Cause": "Insufficient water infiltration and soil storage capacity across catchment; historical abstraction; climate-driven drought",
+        "Applicable_Biomes": "Dreel Burn Catchment",
+        "Applicable_Farm_Types": "General Cropping, Arable, Dairy, Horticulture",
+        "Routing_Trigger": "sepaMetrics.streamFlow.summerLow <= threshold OR irrigationAbstractionRisk == true",
+        "Farmer_Diagnosis_Copy": "When the burn runs low, abstraction licences get harder to obtain and aquatic wildlife suffers. Improving soil infiltration catchment-wide, combined with rainwater harvesting and buffer woodland, is the most effective way to manage summer water stress.",
+        "Solution_Agronomic": "Rainwater harvesting (roof-mounted 50,000L systems); irrigation lagoons; reduced summer abstraction",
+        "Solution_Infrastructure": "Offline Treatment Wetlands to store and slowly release water; check dams in ditches",
+        "Solution_Precision_Tech": "SEPA telemetry river-level sensors; hyper-local weather stations for irrigation scheduling",
+        "Solution_Community": "Catchment-level water abstraction groups; coordinated irrigation scheduling across DBIRP farms",
+        "Solution_Emerging_Tech_Landscaping": "Saturated Riparian Buffers (Iowa) to recharge groundwater; Keyline Design to route water across contour",
+        "Relevant_ShieldBelt_Variants": [
+            "20m Riparian Flood Wood",
+            "20m Riparian Flood Buffer",
+            "6m Two-Stage Ditch",
+            "12m Native Shelterbelt",
+            "12m Planted Contour Swale"
+        ],
+        "Linked_Solution_Directory_Keys": [
+            "SEPA telemetry river-level sensors",
+            "Lower embankments / Reconnect floodplains",
+            "Channel Re-meandering",
+            "Catchment-level water abstraction groups",
+            "Engineered Aquifer Storage and Recovery (ASR)",
+            "Evapotranspiration (ET) Network Sensors"
+        ]
+    },
+    {
+        "Category": "Biodiversity",
+        "Problem_Code": "HEDGEROW_SPARSE",
+        "Stated_Symptom": "Farm has inadequate hedgerow network \u2013 fields large and open, poor habitat connectivity",
+        "Agronomic_Root_Cause": "Historical removal of hedgerows during farm intensification; insufficient replanting",
+        "Applicable_Biomes": "Dreel Burn Catchment",
+        "Applicable_Farm_Types": "General Cropping, Arable, Dairy",
+        "Routing_Trigger": "biodivMetrics.hedgerowDensity < 50m/ha",
+        "Farmer_Diagnosis_Copy": "Open fields with no hedgerows are exposed to wind erosion, have low biodiversity, and struggle to meet the Whole Farm Plan biodiversity audit requirements. Building a hedgerow network pays back through shelter, carbon credits, AECS payments, and long-term soil protection.",
+        "Solution_Agronomic": "Companion Cropping / Intercropping as a short-term connectivity measure",
+        "Solution_Infrastructure": "Beetle banks as interim linear habitat before hedgerows establish",
+        "Solution_Precision_Tech": "Drone LiDAR mapping to identify optimal hedgerow locations based on slope and flow paths",
+        "Solution_Community": "Machinery rings for hedgerow planting machinery; FAS compliance audits for AECS applications",
+        "Solution_Emerging_Tech_Landscaping": "Prairie Strips (Iowa STRIPS project) as a template for cross-field habitat strips",
+        "Relevant_ShieldBelt_Variants": [
+            "3m Dense Wildlife Hedge",
+            "3m Heritage Species Hedge",
+            "6m Shallow Root Shrubs",
+            "6m Botanical Shrub Strip",
+            "12m Native Shelterbelt"
+        ],
+        "Linked_Solution_Directory_Keys": [
+            "FAS compliance audits",
+            "Beetle banks",
+            "Drone LiDAR mapping",
+            "Community Supported Agriculture (CSA) Hedgerow Sponsorship",
+            "Syntropic Agroforestry (Brazil)"
+        ]
+    },
+    {
+        "Category": "Livestock",
+        "Problem_Code": "LIVESTOCK_RIPARIAN",
+        "Stated_Symptom": "Cattle/livestock accessing burns and ditches, causing bank erosion and diffuse pollution",
+        "Agronomic_Root_Cause": "Unfenced watercourses; no standoff infrastructure; intensive grazing pressure on riparian zones",
+        "Applicable_Biomes": "Dreel Burn Catchment",
+        "Applicable_Farm_Types": "Dairy, Mixed",
+        "Routing_Trigger": "livestockMetrics.waterCourseAccess == true OR fioRisk.livestock == HIGH",
+        "Farmer_Diagnosis_Copy": "Unrestricted livestock access to burns is one of the biggest sources of diffuse pollution in Fife and can trigger SEPA enforcement. Fencing the burn, combined with a standoff pad and riparian planting, is a low-cost way to protect your water quality, reduce your regulatory risk, and generate biodiversity and carbon income.",
+        "Solution_Agronomic": "Rotational Mob-Grazing to reduce continuous bank pressure; shift dairy grazing to night away from burn areas",
+        "Solution_Infrastructure": "NZ-style Woodchip Standoff Pads at key water access points; fencing setback from bank",
+        "Solution_Precision_Tech": "GPS-collared virtual fencing (Halter / Nofence) to dynamically exclude from riparian zones",
+        "Solution_Community": "Catchment-level water abstraction groups; FIO beach monitoring coordination with SEPA",
+        "Solution_Emerging_Tech_Landscaping": "Saturated Riparian Buffers (Iowa) \u2013 modified for Scottish conditions",
+        "Relevant_ShieldBelt_Variants": [
+            "20m Riparian Flood Wood",
+            "20m Riparian Flood Buffer",
+            "6m Two-Stage Ditch",
+            "6m Wetland Nitrate Filter"
+        ],
+        "Linked_Solution_Directory_Keys": [
+            "NZ-style Woodchip Standoff Pads",
+            "GPS-collared virtual fencing (Halter / Nofence)",
+            "Rotational Mob-Grazing",
+            "Shift dairy grazing to night",
+            "Solar-Powered Pasture Pumps (Nose Pumps)",
+            "Riparian Floating Treatment Wetlands (FTWs)"
+        ]
+    },
+    {
+        "Category": "Carbon",
+        "Problem_Code": "CARBON_BASELINE",
+        "Stated_Symptom": "No carbon audit in place / farm not yet measuring or managing its carbon footprint",
+        "Agronomic_Root_Cause": "Carbon auditing not yet mandatory; limited farm advisory support; cost and complexity",
+        "Applicable_Biomes": "Dreel Burn Catchment",
+        "Applicable_Farm_Types": "General Cropping, Arable, Dairy, Horticulture",
+        "Routing_Trigger": "carbonMetrics.auditStatus == NONE OR carbonMetrics.auditAge > 5",
+        "Farmer_Diagnosis_Copy": "By 2028, all Scottish farms must complete a carbon audit to receive basic payment. Starting now gives you time to make changes that reduce your footprint and potentially open up carbon credit income through schemes like ONCRA and the UK Woodland Carbon Code.",
+        "Solution_Agronomic": "Minimum Tillage; Cover Crops; Multi-Species Herbal Leys; legume integration; organic matter additions",
+        "Solution_Infrastructure": "Hedgerow creation; riparian woodland; native woodland creation",
+        "Solution_Precision_Tech": "N-Sensors for variable-rate nitrogen; Drone LiDAR mapping for carbon stock assessment",
+        "Solution_Community": "FAS compliance audits; machinery rings for min-till equipment",
+        "Solution_Emerging_Tech_Landscaping": "Biochar / Advanced Digestates (Carbogenics); Biological Inoculants (Mycorrhizal fungi)",
+        "Relevant_ShieldBelt_Variants": [
+            "12m Native Shelterbelt",
+            "20m Riparian Flood Wood",
+            "12m Alley Cropping Trees",
+            "12m Biochar Timber Block",
+            "6m Biomass Coppice Strip"
+        ],
+        "Linked_Solution_Directory_Keys": [
+            "Minimum Tillage (Min-Till) / Zero-Till",
+            "Winter Cover Crops / Tillage Radish",
+            "Biochar / Advanced Digestates (Carbogenics)",
+            "FAS compliance audits",
+            "Enhanced Rock Weathering (Basalt Dust)",
+            "Eddy Covariance Flux Towers"
+        ]
+    },
+    {
+        "Category": "Biodiversity",
+        "Problem_Code": "ASH_DIEBACK",
+        "Stated_Symptom": "Ash dieback disease killing mature ash trees in hedgerows and woodland",
+        "Agronomic_Root_Cause": "Hymenoscyphus fraxineus fungal disease; ash historically dominant in East Neuk hedgerows and dens",
+        "Applicable_Biomes": "Dreel Burn Catchment",
+        "Applicable_Farm_Types": "General Cropping, Arable, Mixed",
+        "Routing_Trigger": "biodivMetrics.ashDieback == CONFIRMED",
+        "Farmer_Diagnosis_Copy": "Ash dieback is reshaping hedgerows and woodland across Fife. Infected trees should be retained as standing deadwood where safe (invaluable for bats, woodpeckers, fungi) and gaps replanted with disease-resistant species. This is actually an opportunity to diversify your hedgerow from monoculture hawthorn/ash into a genuinely species-rich native mix.",
+        "Solution_Agronomic": "Replanting with resistant/alternative native species: rowan, hazel, wild cherry, bird cherry, crab apple, guelder rose",
+        "Solution_Infrastructure": "Deadwood retention zones; new hedgerow planting to replace lost structure",
+        "Solution_Precision_Tech": "Thermal imaging drones to identify standing deadwood extent and bat roost potential",
+        "Solution_Community": "WhatsApp group with beekeepers and bat groups to coordinate deadwood retention; FAS advice",
+        "Solution_Emerging_Tech_Landscaping": "Fungal Bio-Filters (Rhizocore) applied at new planting sites",
+        "Relevant_ShieldBelt_Variants": [
+            "3m Heritage Species Hedge",
+            "3m Dense Wildlife Hedge",
+            "12m Native Shelterbelt",
+            "6m Botanical Shrub Strip"
+        ],
+        "Linked_Solution_Directory_Keys": [
+            "WhatsApp group with beekeepers",
+            "FAS compliance audits",
+            "Fungal Bio-Filters (Rhizocore)",
+            "Genomic Marker Assisted Selection",
+            "Veteran Tree Halo Thinning"
+        ]
+    }
+]

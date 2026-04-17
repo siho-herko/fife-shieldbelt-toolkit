@@ -1,0 +1,27 @@
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cache-Control: public, max-age=3600
+  Content-Security-Policy: default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self'; img-src 'self' data:; connect-src 'self'; manifest-src 'self'; worker-src 'self';
+
+# Setting Content-Type explicitly triggers Netlify's automatic gzip compression.
+# Verified: fife_interventions_db_v2.json 725 KB → 88 KB (8.3×), problems.json 46 KB → 11 KB (4.1×)
+/data/*.json
+  Content-Type: application/json; charset=utf-8
+  Cache-Control: public, max-age=86400
+
+# Pre-compressed .gz files available in /data/ as Netlify fallback (see scripts/compress-data.js)
+/data/*.json.gz
+  Content-Encoding: gzip
+  Content-Type: application/json; charset=utf-8
+  Cache-Control: public, max-age=86400
+
+/styles/*
+  Cache-Control: public, max-age=86400
+
+/*.js
+  Cache-Control: public, max-age=3600
+
+/icons/*
+  Cache-Control: public, max-age=604800

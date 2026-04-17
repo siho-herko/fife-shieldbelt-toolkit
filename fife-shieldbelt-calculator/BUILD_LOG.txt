@@ -1,0 +1,352 @@
+================================================================================
+FIFE SHIELDBELT CALCULATOR — BUILD LOG
+Nature Finance Certification Alliance (NFCA)
+natcert.earth
+================================================================================
+Generated: 2026-04-16
+Project path: fife-shieldbelt-calculator/
+Sister site: https://fife-shieldbelt.netlify.app
+================================================================================
+
+
+--------------------------------------------------------------------------------
+PROMPT 1 — Project Shell & Design System
+--------------------------------------------------------------------------------
+
+STATUS: COMPLETE
+
+FILES CREATED
+  index.html
+  app.js                  (stub — wiring not yet implemented)
+  calc.js                 (stub — replaced in Prompt 3)
+  charts.js               (stub — rendering not yet implemented)
+  styles/main.css
+  data/fife_interventions_db.json   (placeholder — replaced in Prompt 2)
+  icons/icon-192.svg
+  icons/icon-512.svg
+  manifest.json
+
+DESIGN SYSTEM — styles/main.css
+  - 9 NFCA brand CSS variables (--c-forest through --c-muted)
+  - 4 width colour-coding variables (--c-w3m, --c-w6m, --c-w12m, --c-w20m)
+  - 3 font stacks: Playfair Display (display/headers), Source Sans 3 (body/UI),
+    JetBrains Mono (figures/data outputs)
+  - Google Fonts loaded via <link> in index.html
+  - Two-panel layout: 380px fixed left panel + flex right panel; max-width 1200px
+  - Left panel: sticky, --c-forest left-border accent, custom scrollbar
+  - Full responsive breakpoint at 768px (stacks vertically; border pivots top)
+  - Components defined:
+      .card (.card--flat, .card--accent)
+      .badge-width[data-width="3m|6m|12m|20m"] — coloured pills
+      .stat-box (.stat-box__value--gold, .stat-box__value--leaf)
+      .biome-tag (.biome-tag--light)
+      .problem-chip (.problem-chip--selected, aria-pressed)
+      .btn-primary, .btn-ghost, .btn-leaf, .btn-sm, .btn-lg
+      .progress-bar (.progress-bar--gold, .progress-labeled)
+      .step-accordion (trigger, body, chevron, number, summary)
+      .biome-grid (2-col responsive grid of .biome-card)
+      .radio-option (card-style radio buttons)
+      .form-slider (custom --c-gold thumb)
+      .variant-select (custom chevron arrow)
+      .stat-boxes-grid (auto-fit minmax 160px)
+      .empty-state
+      .results-section, .results-header, .chart-placeholder
+  - Utility classes: text-*, font-*, mt-*, mb-*, flex, gap-*, hidden, sr-only
+  - Print media query: hides header, left panel, footer
+
+INDEX.HTML SHELL
+  - Full PWA <head>: charset, viewport, theme-color, description, OG tags,
+    manifest link, apple-touch-icon, mobile-web-app meta tags
+  - Sticky --c-forest header:
+      Left:  NFCA gold-lt badge + "Fife ShieldBelt Calculator" title
+      Right: "← Summary Site" link → https://fife-shieldbelt.netlify.app
+  - Left panel — 6 accordion steps (collapsed by default, aria-expanded):
+      Step 1: Biome — 6 biome-card radio grid
+              (Coastal Edge, Lowland Arable, Upland Pastoral,
+               Riparian Valley, Woodland Edge, Transition Mosaic)
+      Step 2: Biggest Problem — 8 .problem-chip buttons
+              (Wind erosion, Water runoff, Poor biodiversity, Low carbon score,
+               Soil health, Livestock shelter, Noise & visual amenity,
+               Pollination deficit)
+      Step 3: Farm Type — 4 .radio-option cards
+              (Arable, Livestock, Mixed, Horticulture)
+      Step 4: ShieldBelt Variant — <select> (disabled until biome chosen)
+              + variant detail .card with .badge-width and .biome-tag slots
+      Step 5: Strip Length — numeric input (default 1000m) + derived km/ha display
+      Step 6: Credit Price — range slider £20–£200 (default £60)
+      CTA:    "Calculate Outcomes" .btn-primary (disabled until all steps done)
+              "Reset all inputs" .btn-ghost
+  - Right panel:
+      Empty state (.empty-state with tree emoji + copy)
+      Results content (hidden until first calculation):
+        - Results header with title, tags, meta
+        - stat-boxes-grid: carbon sequestered, annual sequestration,
+          est. credit revenue, strip area
+        - Ecosystem services card: 5 .progress-labeled bars
+          (Biodiversity, Soil Health, Water Quality, Wind Shelter, Pollination)
+        - Carbon accumulation <canvas id="chart-carbon">
+        - Species composition card with .biome-tag slots
+        - Revenue streams <canvas id="chart-revenue">
+        - Agronomic notes card
+        - Export row: Download PDF, Share, Save scenario buttons
+  - Footer: "Fife ShieldBelt · NFCA Research · 120 interventions ·
+             6 micro-biomes · natcert.earth"
+  - <script type="module"> for db.js, calc.js, charts.js, app.js
+
+PWA ASSETS
+  manifest.json:
+    name: "Fife ShieldBelt Calculator"
+    short_name: "ShieldBelt"
+    display: standalone
+    theme_color / background_color: #1a3d2b
+    icons: icon-192.svg + icon-512.svg (SVG, maskable)
+
+  icons/icon-192.svg:
+    Forest-green rounded rect, 3 tree silhouettes (2 conifers + 1 deciduous),
+    ground strip in --c-leaf, "NFCA" in --c-gold-lt serif text
+
+  icons/icon-512.svg:
+    Same motif, richer detail — horizon arc, foreground grass tufts,
+    "NFCA" large wordmark + "ShieldBelt Calculator" sub-label
+
+STUBS (app.js, calc.js, charts.js)
+  All four JS files created with full JSDoc, named function stubs,
+  and TODO comments for each function body.
+
+
+--------------------------------------------------------------------------------
+PROMPT 2 — Data File & IndexedDB Layer
+--------------------------------------------------------------------------------
+
+STATUS: COMPLETE
+
+FILES CREATED / UPDATED
+  data/fife_interventions_db_v2.json   (placeholder + full v2 schema reference)
+  db.js                                (full implementation — replaced stub)
+  data/fife_interventions_db.json      (DELETED — superseded by v2)
+
+DATA FILE — fife_interventions_db_v2.json
+  Format:  { "interventions": [ ...120 records... ] }
+           OR bare JSON array — both accepted by db.js
+  Records: 120 total, 20 per biome, 6 biomes
+  Biomes (exact strings as used by the DB index):
+    "Fife (East Neuk Coast)"
+    "Fife (Forth Urban Coast)"
+    "Fife (Howe of Fife & Eden)"
+    "Fife (Lomond & Cleish Uplands)"
+    "Fife (North Fife Hills & Tay)"
+    "Fife (West Fife Claylands)"
+
+  V2 SCHEMA — 17 top-level fields per record:
+    id                       string (lowercase + underscores)
+    biome                    string (exact biome name)
+    variant                  string
+    width                    "3m" | "6m" | "12m" | "20m"
+    assumedBiomassHeight     string
+    bespokePlantingRegime    string
+    agronomicWindProfile     string
+    carbonSequestration      { yr_1_5 … yr_46_50 } — 10 × 5yr period floats
+    sepaMetrics              { riparian, crossSlope, downSlope } × 3 scores 0–100
+    crewValuations           totals + airFiltration + catchmentHydrology
+                             + waterPurification sub-objects
+    radarMetrics             4 global scores + placement-specific hydro/water
+    farmImpacts              4 farm types × 3 value fields
+    economicAssessment  *** v2 new *** — 3 placements × 5 avoided-cost components
+                             + windbreakNS + windbreakEW
+    advancedEcosystemServices *** v2 new *** — pestRegulation, thermalRegulation
+                             (by farm type) + fioTrappingEfficiency
+    registry            *** v2 new *** — 11 fields incl. sserGrossUnitsPerKm
+    seq50yrTotal        *** v2 new *** — pre-computed 50yr carbon sum
+
+DB.JS — EXPORTS
+  openDB()            Opens IndexedDB "FifeShieldBelt" v2. On upgrade/first load:
+                      drops old store, creates "interventions" store (keyPath: id),
+                      creates by_biome index, fetches JSON, bulk-inserts all 120
+                      records in a single onupgradeneeded transaction.
+                      Logs: "FifeShieldBelt DB v2 seeded: 120 records" on seed
+                            "FifeShieldBelt DB: loaded existing v2 store" on reload
+
+  dbReady             Exported Promise — app.js awaits this before first query
+
+  getAll()            Returns all 120 records
+  getByBiome(name)    Uses by_biome index; returns 20 records for that biome
+  getById(id)         Single record lookup by string id
+  getBiomes()         Reads unique biome keys from index cursor (sorted)
+  validateStore()     Dev helper — checks all v2 schema rules, logs console.table
+                      of any violations. Rules checked:
+                        - Exactly 120 records, 20 per biome
+                        - id format (lowercase + underscores)
+                        - width in allowed set
+                        - carbonSequestration: all 10 periods ≥ 0
+                        - seq50yrTotal cross-check (within 0.01 tolerance)
+                        - sepaMetrics: all scores 0–100
+                        - crewValuations totals ≥ 0 + 3 sub-objects present
+                        - farmImpacts: all 4 farm types, all 3 fields each
+                        - economicAssessment present
+                        - advancedEcosystemServices.fioTrappingEfficiency 0–100
+                        - registry: all 11 keys present
+                        - sserGrossUnitsPerKm in 9-tier allowed set
+
+  BIOMES              Exported const object — 6 biome string values
+  FARM_TYPES          Exported array — ['Cereals','General Cropping','Dairy','LFA Grazing']
+  WIDTHS              Exported array — ['3m','6m','12m','20m']
+  SSER_TIERS          Exported array — [3.96, 5.28, 7.92, 10.56, 11.88,
+                                         15.84, 19.8, 23.76, 39.6]
+
+  DB_VERSION = 2      Forces onupgradeneeded / re-seed if browser cached v1
+
+
+--------------------------------------------------------------------------------
+PROMPT 3 — Calculation Engine
+--------------------------------------------------------------------------------
+
+STATUS: COMPLETE — SMOKE TEST PASSED
+
+FILES UPDATED
+  calc.js    (full implementation — replaced stub from Prompt 1)
+
+SMOKE TEST — node --input-type=module (synthetic v2 record, Dense Wildlife Hedge)
+  Inputs:  6m width, 1km length, General Cropping, crossSlope, £60, NS windbreak
+  Results (all correct, zero NaN):
+    widthM:                 6
+    areaMHa:                0.6  (6m × 1000m = 6,000m² = 0.6 ha)
+    seq50yrTotal:           1480 tCO₂e/km
+    seqTrajectory[0]:       120  (cumulative yr 1-5)
+    seqTrajectory[9]:       1480 (full 50yr total — matches seq50yrTotal ✅)
+    annualCarbonIncome:     £1,066/yr
+    netIncomeForegone:      £32/yr
+    pollinationValue:       £85/yr
+    netAgronomicImpact:     £53/yr
+    crewValueTotal:         £950/yr
+    crewBreakdown:          { airFiltration: 60, catchmentHydrology: 350,
+                              waterPurification: 540 }
+    pestRegulationValue:    £120/yr
+    thermalRegulationValue: £80/yr
+    fioTrappingEfficiency:  72%
+    windbreakValue:         £750/yr
+    windbreakBreakdown:     { yieldBump: 320, waterRetention: 290, nutrientPump: 140 }
+    avoidedCosts:           £2,610/yr
+    avoidedCostsBreakdown:  { floodControl: 750, avoidedErosion: 900,
+                              avoidedCompaction: 250, avoidedDownErosion: 500,
+                              avoidedFuelCosts: 210 }
+    sserUnitsTotal:         19.80 units
+    annualNetBenefit:       £5,629/yr  ← strongly positive ✅
+    radarData:              { ecosystemHealth: 85, habitatDistinctiveness: 90,
+                              soilCarbonAndHealth: 75, agronomicYield: 30,
+                              catchmentHydrology: 75, waterQuality: 82 }
+    sepaData:               { floodControl: 72, sedimentTrapping: 85,
+                              nutrientRetention: 70 }
+    NaN check:              none ✅
+    annualNetBenefit > 0:   YES ✅
+
+CALC.JS — EXPORTS
+  calculate(inputs, record)
+    Master function. Returns full results object (35+ fields).
+    Inputs: { biome, variantId, farmType, placement, lengthM,
+              creditPrice, windbreakOrient }
+
+  totalSeq50yr(record)
+    Reads record.seq50yrTotal directly (no re-summation of periods).
+
+  cumulativeSeqTrajectory(carbonSequestration)
+    Returns 10-element array of running totals across 5-year periods.
+    Used by the trajectory line chart.
+
+  scaleToLength(perKmValue, lengthM)
+    perKmValue × (lengthM / 1000)
+
+  annualCarbonIncome(record, lengthM, creditPrice)
+    Formula: (seq50yrTotal / 50) × (widthM × lengthM / 10000) × creditPrice
+
+  netIncomeForegone(record, farmType, lengthM)
+    record.farmImpacts[farmType].netIncomeForegone scaled to length.
+
+  pollinationValue(record, farmType, lengthM)
+    record.farmImpacts[farmType].pollinationValue scaled to length.
+
+  crewValue(record, placement, lengthM)
+    Top-level placement total (riparianTotal / crossSlopeTotal /
+    downSlopeTotal) scaled to length.
+
+  crewBreakdown(record, placement, lengthM)   *** v2 new ***
+    Disaggregated: airFiltration + catchmentHydrology + waterPurification
+    each read from crewValuations[subKey][placement] and scaled.
+
+  pestRegulationValue(record, farmType, lengthM)   *** v2 new ***
+    record.advancedEcosystemServices.pestRegulation[farmType] scaled.
+
+  thermalRegulationValue(record, farmType, lengthM)   *** v2 new ***
+    record.advancedEcosystemServices.thermalRegulation[farmType] scaled.
+
+  windbreakValue(record, orientation, lengthM)   *** v2 new ***
+    Sum of yieldBump + waterRetention + nutrientPump from
+    economicAssessment.windbreakNS or .windbreakEW, scaled.
+
+  windbreakBreakdown(record, orientation, lengthM)   *** v2 new ***
+    Per-component object: { yieldBump, waterRetention, nutrientPump }
+
+  avoidedCosts(record, placement, lengthM)   *** v2 new ***
+    Sum of 5 components from economicAssessment[placement]:
+    floodControl + avoidedErosion + avoidedCompaction +
+    avoidedDownErosion + avoidedFuelCosts, scaled.
+
+  avoidedCostsBreakdown(record, placement, lengthM)   *** v2 new ***
+    Per-component object for all 5 avoided-cost fields.
+
+  sserUnits(record, lengthM)   *** v2 new ***
+    record.registry.sserGrossUnitsPerKm × (lengthM / 1000)
+
+  parseWidth(widthStr)
+    '6m' → 6
+
+  fmt(n, dp)     toLocaleString('en-GB') with fixed decimal places
+  fmtGBP(n)      '£' + rounded integer with thousand separators
+  fmtCarbon(n)   fmt(n, 1) + ' tCO₂e'
+  fmtSSER(n)     fmt(n, 2) + ' units'
+
+  annualNetBenefit formula:
+    carbonIncome + pollinationValue + crewValueTotal
+    + pestRegulationValue + thermalRegulationValue
+    + windbreakValue + avoidedCosts
+    − netIncomeForegone
+
+  All numeric fields are guarded by safeNum() — engine never produces NaN
+  regardless of missing or null fields in sparse records.
+
+
+--------------------------------------------------------------------------------
+CURRENT FILE TREE
+--------------------------------------------------------------------------------
+
+fife-shieldbelt-calculator/
+├── index.html                        PWA shell — loads without errors
+├── app.js                            UI wiring stubs (Prompt 4+)
+├── calc.js                           Calculation engine — COMPLETE
+├── charts.js                         Canvas chart stubs (Prompt 4+)
+├── db.js                             IndexedDB layer — COMPLETE
+├── manifest.json                     PWA manifest
+├── BUILD_LOG.txt                     This file
+├── styles/
+│   └── main.css                      Full design system — COMPLETE
+├── data/
+│   └── fife_interventions_db_v2.json Awaiting 120-record data paste
+└── icons/
+    ├── icon-192.svg                  PWA icon placeholder
+    └── icon-512.svg                  PWA icon placeholder
+
+
+--------------------------------------------------------------------------------
+PENDING (future prompts)
+--------------------------------------------------------------------------------
+
+  Prompt 4   charts.js    — Canvas chart rendering (carbon trajectory,
+                            revenue breakdown, radar chart)
+  Prompt 5   app.js       — Full UI wiring: accordion nav, biome→variant
+                            cascade, slider/input handlers, results render
+  Prompt 6   Data paste   — Replace interventions: [] in
+                            fife_interventions_db_v2.json with 120 records
+  Prompt 7+  Export / PDF — Print layout, shareable URL, saved scenarios
+
+================================================================================
+END OF LOG
+================================================================================

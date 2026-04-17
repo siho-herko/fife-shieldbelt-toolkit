@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="NFCA ShieldBelt icon  large">
+  <!-- Background -->
+  <rect width="512" height="512" rx="96" fill="#1a3d2b"/>
+
+  <!-- Decorative top arc  horizon line -->
+  <path d="M 40 300 Q 256 230 472 300" stroke="#2d6a4f" stroke-width="3" fill="none" opacity="0.5"/>
+
+  <!-- Ground strip -->
+  <rect x="40" y="308" width="432" height="38" rx="8" fill="#52b788" opacity="0.5"/>
+
+  <!-- Left tree cluster  conifers -->
+  <polygon points="102,120 74,250 130,250" fill="#52b788"/>
+  <polygon points="128,148 108,250 148,250" fill="#2d6a4f"/>
+  <rect x="108" y="250" width="28" height="58" rx="4" fill="#2d6a4f"/>
+
+  <!-- Centre focal tree  large deciduous -->
+  <ellipse cx="256" cy="188" rx="64" ry="78" fill="#52b788"/>
+  <ellipse cx="256" cy="164" rx="46" ry="56" fill="#3d9970" opacity="0.7"/>
+  <rect x="236" y="264" width="40" height="44" rx="4" fill="#2d6a4f"/>
+
+  <!-- Right tree cluster -->
+  <polygon points="386,132 358,250 414,250" fill="#52b788"/>
+  <polygon points="410,158 390,250 430,250" fill="#2d6a4f"/>
+  <rect x="366" y="250" width="28" height="58" rx="4" fill="#2d6a4f"/>
+
+  <!-- Foreground grass tufts -->
+  <ellipse cx="80"  cy="312" rx="18" ry="6" fill="#52b788" opacity="0.7"/>
+  <ellipse cx="180" cy="316" rx="22" ry="6" fill="#52b788" opacity="0.6"/>
+  <ellipse cx="330" cy="316" rx="20" ry="6" fill="#52b788" opacity="0.6"/>
+  <ellipse cx="432" cy="312" rx="18" ry="6" fill="#52b788" opacity="0.7"/>
+
+  <!-- NFCA wordmark -->
+  <text
+    x="256"
+    y="412"
+    text-anchor="middle"
+    font-family="Georgia, serif"
+    font-weight="700"
+    font-size="52"
+    fill="#f4c542"
+    letter-spacing="8"
+  >NFCA</text>
+
+  <!-- Sub-label -->
+  <text
+    x="256"
+    y="452"
+    text-anchor="middle"
+    font-family="Georgia, serif"
+    font-weight="400"
+    font-size="18"
+    fill="#e8f5ee"
+    letter-spacing="2"
+    opacity="0.75"
+  >ShieldBelt Calculator</text>
+</svg>

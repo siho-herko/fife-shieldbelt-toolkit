@@ -1,0 +1,1576 @@
+/**
+ * app.js — Fife ShieldBelt Calculator
+ * Full application wiring: DB → calc → charts → DOM.
+ * Implements the Problem→Solution engine, URL state, comparison modal,
+ * service worker registration, and all event handlers.
+ *
+ * Author: NFCA / Fife ShieldBelt project
+ */
+
+import { dbReady, getByBiome, getById, getAll, BIOMES, FARM_TYPES } from './db.js';
+import { calculate, fmt, fmtGBP, fmtCarbon, fmtSSER, parseWidth }   from './calc.js';
+import { hBar, hStackedBar, lineChart, radarChart, htmlLegend, clearCharts } from './charts.js';
+
+// =============================================================================
+// A. Domain constants
+// =============================================================================
+
+const BIOME_DISPLAY = {
+  'Fife (East Neuk Coast)':         '🌊 East Neuk Coast',
+  'Fife (Forth Urban Coast)':       '🏙 Forth Urban Coast',
+  'Fife (Howe of Fife & Eden)':     '💧 Howe of Fife & Eden',
+  'Fife (Lomond & Cleish Uplands)': '⛰ Lomond & Cleish Uplands',
+  'Fife (North Fife Hills & Tay)':  '🌿 North Fife Hills & Tay',
+  'Fife (West Fife Claylands)':     '🚜 West Fife Claylands',
+};
+
+const BIOME_CONTEXT = {
+  'Fife (East Neuk Coast)':         { km: 330, value: '£820,000+', farmType: 'General Cropping / Soft Fruit', tagline: 'Highest-value biome. Pollination premium drives the economics.' },
+  'Fife (Forth Urban Coast)':       { km: 150, value: '£200,000+', farmType: 'Edge-of-Settlement',            tagline: 'Urban flood, air quality and community function.' },
+  'Fife (Howe of Fife & Eden)':     { km: 280, value: '£450,000+', farmType: 'Arable / Potatoes',            tagline: 'NVZ compliance and flood buffering in the Eden catchment.' },
+  'Fife (Lomond & Cleish Uplands)': { km: 550, value: '£350,000+', farmType: 'LFA Grazing',                  tagline: 'Largest capacity. Carbon at near-zero net cost.' },
+  'Fife (North Fife Hills & Tay)':  { km: 220, value: '£300,000+', farmType: 'Cereals / Mixed',              tagline: 'Topsoil retention on Tay-facing slopes.' },
+  'Fife (West Fife Claylands)':     { km: 400, value: '£400,000+', farmType: 'Dairy / Mixed',                tagline: 'Thermal regulation and compaction relief for dairy.' },
+};
+
+// URL slug ↔ BIOMES key
+const BIOME_SLUG = {
+  east_neuk:   BIOMES.EAST_NEUK,
+  forth_urban: BIOMES.FORTH_URBAN,
+  howe:        BIOMES.HOWE,
+  lomond:      BIOMES.LOMOND,
+  north_fife:  BIOMES.NORTH_FIFE,
+  west_clay:   BIOMES.WEST_CLAY,
+};
+const SLUG_BIOME = Object.fromEntries(Object.entries(BIOME_SLUG).map(([k, v]) => [v, k]));
+
+const FARM_SLUG = {
+  cereals:          'Cereals',
+  general_cropping: 'General Cropping',
+  dairy:            'Dairy',
+  lfa_grazing:      'LFA Grazing',
+};
+const SLUG_FARM = Object.fromEntries(Object.entries(FARM_SLUG).map(([k, v]) => [v, k]));
+
+const CATEGORY_ICONS = {
+  'Water':        '💧',
+  'Soil':         '⛰',
+  'Climate':      '🌤',
+  'Biology':      '🐛',
+  'Compliance':   '📋',
+  'Social':       '🏙',
+  'Economic':     '💷',
+  'Livestock':    '🐑',
+  'Biodiversity': '🌿',
+  'Carbon':       '🌱',
+};
+
+// Colour palette for chart datasets
+const CHART_COLORS = {
+  carbon:   '#2d6a4f',
+  crew:     '#52b788',
+  pest:     '#b5830a',
+  windbreak:'#1d4ed8',
+  avoided:  '#9d174d',
+  foregone: '#9b2226',
+};
+
+// Width → chart line colour
+const WIDTH_COLOR = {
+  '3m':  '#1d4ed8',
+  '6m':  '#15803d',
+  '12m': '#a16207',
+  '20m': '#9d174d',
+};
+
+// =============================================================================
+// B. Application state
+// =============================================================================
+
+const state = {
+  biome:           BIOMES.EAST_NEUK,
+  variantId:       null,
+  farmType:        'General Cropping',
+  placement:       'crossSlope',
+  lengthM:         1000,
+  creditPrice:     60,
+  problemCode:     null,
+  windbreakOrient: 'NS',
+  // Derived (never set directly by user)
+  biomeRecords:    [],
+  currentRecord:   null,
+  results:         null,
+  lastResults:     null,
+  activeProblem:   null,
+};
+
+// =============================================================================
+// A. Problems data
+// =============================================================================
+
+let problemsData   = [];
+let problemsByCode = {};
+
+async function loadProblems() {
+  try {
+    const data = await fetch('data/problems.json').then(r => r.json());
+    problemsData   = Array.isArray(data) ? data : (data.problems ?? []);
+    problemsByCode = Object.fromEntries(problemsData.map(p => [p.Problem_Code, p]));
+  } catch (e) {
+    console.warn('problems.json not yet available — problem chips will not load.', e);
+  }
+}
+
+// =============================================================================
+// DB helpers
+// =============================================================================
+
+async function loadBiomeRecords(biome) {
+  state.biomeRecords = await getByBiome(biome);
+}
+
+// =============================================================================
+// Accordion
+// =============================================================================
+
+function initAccordions() {
+  document.querySelectorAll('.step-accordion__trigger').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const expanded = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', String(!expanded));
+      const bodyId = btn.getAttribute('aria-controls');
+      const body   = document.getElementById(bodyId);
+      if (body) body.hidden = expanded;
+    });
+  });
+}
+
+function openStep(stepIndex) {
+  const accordion = document.querySelector(`.step-accordion[data-step="${stepIndex}"]`);
+  if (!accordion) return;
+  const btn  = accordion.querySelector('.step-accordion__trigger');
+  const body = accordion.querySelector('.step-accordion__body');
+  if (btn)  btn.setAttribute('aria-expanded', 'true');
+  if (body) body.hidden = false;
+}
+
+function closeStep(stepIndex) {
+  const accordion = document.querySelector(`.step-accordion[data-step="${stepIndex}"]`);
+  if (!accordion) return;
+  const btn  = accordion.querySelector('.step-accordion__trigger');
+  const body = accordion.querySelector('.step-accordion__body');
+  if (btn)  btn.setAttribute('aria-expanded', 'false');
+  if (body) body.hidden = true;
+}
+
+// =============================================================================
+// Biome selector
+// =============================================================================
+
+function populateBiomeSelector() {
+  // Biome cards already in HTML; we just need to sync state → checked radio
+  const radios = document.querySelectorAll('input[name="biome"]');
+  radios.forEach(r => { r.checked = r.value === state.biome; });
+}
+
+function initBiomeSelector() {
+  document.querySelectorAll('input[name="biome"]').forEach(radio => {
+    radio.addEventListener('change', async () => {
+      if (!radio.checked) return;
+      state.biome = radio.value;
+      setText('step-biome-summary', BIOME_DISPLAY[state.biome] || state.biome);
+      await loadBiomeRecords(state.biome);
+      populateVariantSelector();
+      if (state.problemCode) {
+        const rec = recommendVariant(state.problemCode, state.biomeRecords, state.farmType);
+        if (rec) { state.variantId = rec.id; syncVariantSelect(); }
+      }
+      await applyVariantAndRecalc();
+    });
+  });
+}
+
+// =============================================================================
+// Problem chips
+// =============================================================================
+
+function populateProblemChips() {
+  const container = document.getElementById('problem-chips');
+  if (!container) return;
+  container.innerHTML = '';
+
+  if (problemsData.length === 0) {
+    container.innerHTML = '<p class="form-hint">Problem data not yet loaded — paste data/problems.json to enable.</p>';
+    return;
+  }
+
+  // Group by Category
+  const grouped = {};
+  for (const p of problemsData) {
+    (grouped[p.Category] = grouped[p.Category] || []).push(p);
+  }
+
+  for (const [cat, problems] of Object.entries(grouped)) {
+    // Category header
+    const header = document.createElement('div');
+    header.className = 'problem-category-header';
+    header.textContent = `${CATEGORY_ICONS[cat] || '●'} ${cat}`;
+    container.appendChild(header);
+
+    const row = document.createElement('div');
+    row.className = 'problem-chips-row';
+
+    for (const p of problems) {
+      const isPhase2 = p.Applicable_Biomes === 'Dreel Burn Catchment';
+      const appBiomes = p.Applicable_Biomes
+        .split(',').map(s => s.trim()).filter(Boolean);
+      const biomeMismatch = !isPhase2
+        && p.Applicable_Biomes !== 'All'
+        && !appBiomes.some(b => state.biome.includes(b));
+
+      const btn = document.createElement('button');
+      btn.type      = 'button';
+      btn.className = 'problem-chip';
+      btn.dataset.code = p.Problem_Code;
+
+      const symptom = p.Stated_Symptom.length > 40
+        ? p.Stated_Symptom.slice(0, 40) + '…'
+        : p.Stated_Symptom;
+
+      if (isPhase2) {
+        btn.setAttribute('data-phase', '2');
+        btn.style.pointerEvents = 'none';
+        btn.title = 'Coming soon — Dreel Burn Catchment phase';
+        btn.innerHTML = `<span class="problem-chip__icon">${CATEGORY_ICONS[cat] || ''}</span>${symptom} <span style="font-size:0.7em;opacity:0.6">🔒 Coming soon</span>`;
+      } else {
+        btn.setAttribute('aria-pressed', String(p.Problem_Code === state.problemCode));
+        if (biomeMismatch) btn.style.opacity = '0.5';
+        if (biomeMismatch) btn.title = `Best match: ${p.Applicable_Biomes} — will switch biome`;
+        btn.innerHTML = `<span class="problem-chip__icon">${CATEGORY_ICONS[cat] || ''}</span>${symptom}`;
+        if (biomeMismatch) btn.innerHTML += ' 🔒';
+
+        btn.addEventListener('click', () => handleProblemChipClick(p.Problem_Code, p.Applicable_Biomes));
+      }
+
+      row.appendChild(btn);
+    }
+    container.appendChild(row);
+  }
+
+  // Clear button (rendered once at the top)
+  if (state.problemCode) renderProblemClearBtn();
+}
+
+function renderProblemClearBtn() {
+  let btn = document.getElementById('btn-clear-problem');
+  if (btn) return;
+  const container = document.getElementById('problem-chips');
+  if (!container) return;
+  btn = document.createElement('button');
+  btn.id        = 'btn-clear-problem';
+  btn.type      = 'button';
+  btn.className = 'btn btn-ghost btn-sm';
+  btn.style.cssText = 'width:100%;margin-bottom:8px;';
+  btn.textContent = '✕ Clear problem filter';
+  btn.addEventListener('click', handleClearProblem);
+  container.insertAdjacentElement('afterbegin', btn);
+}
+
+async function handleProblemChipClick(code, applicableBiomes) {
+  // Switch biome if needed
+  const biomes = applicableBiomes.split(',').map(s => s.trim());
+  if (applicableBiomes !== 'All' && !biomes.some(b => state.biome.includes(b))) {
+    const matchBiome = Object.values(BIOMES).find(bv => biomes.some(b => bv.includes(b)));
+    if (matchBiome) {
+      state.biome = matchBiome;
+      syncBiomeRadio();
+      await loadBiomeRecords(state.biome);
+    }
+  }
+
+  state.problemCode   = code;
+  state.activeProblem = problemsByCode[code];
+  updateProblemChipUI(code);
+  renderProblemClearBtn();
+  setText('step-problem-summary', state.activeProblem?.Stated_Symptom?.slice(0, 30) + '…' || code);
+
+  const rec = recommendVariant(code, state.biomeRecords, state.farmType);
+  if (rec) {
+    state.variantId = rec.id;
+    syncVariantSelect();
+  }
+
+  await applyVariantAndRecalc();
+}
+
+async function handleClearProblem() {
+  state.problemCode   = null;
+  state.activeProblem = null;
+  document.getElementById('btn-clear-problem')?.remove();
+  setText('step-problem-summary', 'Not selected');
+  updateProblemChipUI(null);
+  const panel = document.getElementById('problem-panel');
+  if (panel) panel.hidden = true;
+  if (state.results) renderResults(state.results);
+}
+
+function updateProblemChipUI(activeCode) {
+  document.querySelectorAll('.problem-chip').forEach(btn => {
+    const isActive = btn.dataset.code === activeCode;
+    btn.setAttribute('aria-pressed', String(isActive));
+    btn.classList.toggle('problem-chip--selected', isActive);
+  });
+}
+
+// =============================================================================
+// Farm type selector
+// =============================================================================
+
+function populateFarmTypeSelector() {
+  const radios = document.querySelectorAll('input[name="farm-type"]');
+  radios.forEach(r => { r.checked = r.value === state.farmType; });
+}
+
+function initFarmTypeSelector() {
+  document.querySelectorAll('input[name="farm-type"]').forEach(radio => {
+    radio.addEventListener('change', async () => {
+      if (!radio.checked) return;
+      state.farmType = radio.value;
+      setText('step-farmtype-summary', radio.value);
+      if (state.problemCode) {
+        const rec = recommendVariant(state.problemCode, state.biomeRecords, state.farmType);
+        if (rec) { state.variantId = rec.id; syncVariantSelect(); }
+      }
+      await applyVariantAndRecalc();
+    });
+  });
+}
+
+// =============================================================================
+// Variant selector
+// =============================================================================
+
+function populateVariantSelector() {
+  const sel = document.getElementById('variant-select');
+  if (!sel) return;
+  sel.innerHTML = '';
+  if (!state.biomeRecords.length) {
+    sel.disabled = true;
+    sel.innerHTML = '<option value="">— No variants for this biome —</option>';
+    return;
+  }
+  sel.disabled = false;
+  sel.innerHTML = '<option value="">— Choose a variant —</option>';
+  const widthEmoji = { '3m': '🔵', '6m': '🟢', '12m': '🟡', '20m': '🔴' };
+  state.biomeRecords.forEach(r => {
+    const opt       = document.createElement('option');
+    opt.value       = r.id;
+    opt.textContent = `${widthEmoji[r.width] || ''} ${r.width} · ${r.variant}`;
+    sel.appendChild(opt);
+  });
+  sel.value = state.variantId || '';
+  setText('variant-hint', 'Select a variant for this biome.');
+}
+
+function syncVariantSelect() {
+  const sel = document.getElementById('variant-select');
+  if (sel) sel.value = state.variantId || '';
+  if (state.variantId) {
+    const rec = state.biomeRecords.find(r => r.id === state.variantId);
+    if (rec) setText('step-variant-summary', `${rec.width} ${rec.variant}`);
+  }
+}
+
+function initVariantSelector() {
+  const sel = document.getElementById('variant-select');
+  if (!sel) return;
+  sel.addEventListener('change', async () => {
+    state.variantId = sel.value || null;
+    if (state.variantId) {
+      const rec = state.biomeRecords.find(r => r.id === state.variantId);
+      if (rec) setText('step-variant-summary', `${rec.width} ${rec.variant}`);
+    }
+    await applyVariantAndRecalc();
+  });
+}
+
+function renderVariantDetail(record) {
+  const card = document.getElementById('variant-detail');
+  if (!card) return;
+  if (!record) { card.classList.add('hidden'); return; }
+
+  card.classList.remove('hidden');
+  setText('variant-detail-name', record.variant);
+
+  const badge = document.getElementById('variant-detail-badge');
+  if (badge) { badge.textContent = record.width; badge.dataset.width = record.width; }
+
+  const desc = document.getElementById('variant-detail-desc');
+  if (desc) desc.textContent = record.registry?.soilTypeCondition || record.bespokePlantingRegime || '';
+
+  const tags = document.getElementById('variant-detail-tags');
+  if (tags) {
+    tags.innerHTML = '';
+    const height = document.createElement('span');
+    height.className = 'biome-tag biome-tag--light';
+    height.textContent = record.assumedBiomassHeight;
+    tags.appendChild(height);
+
+    const sser = document.createElement('span');
+    sser.className = 'biome-tag';
+    sser.textContent = `SSER ${record.registry?.sserGrossUnitsPerKm ?? '—'}/km`;
+    tags.appendChild(sser);
+  }
+}
+
+// =============================================================================
+// Strip length
+// =============================================================================
+
+function initStripLengthInput() {
+  const input = document.getElementById('strip-length');
+  if (!input) return;
+
+  // FIX [input-validation]: track last valid value so non-numeric input reverts
+  let lastValidLength = state.lengthM;
+  let debounceTimer;
+
+  input.addEventListener('input', () => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(async () => {
+      const raw = input.value.trim();
+      const val = parseInt(raw, 10);
+      if (!raw || isNaN(val) || !isFinite(val)) {
+        // Non-numeric — silently revert
+        input.value = lastValidLength;
+        return;
+      }
+      if (val <= 0) {
+        showInputError('strip-length', 'Enter a length greater than 0 m');
+        return;
+      }
+      clearInputError('strip-length');
+      lastValidLength   = val;
+      state.lengthM     = val;
+      updateLengthDerived();
+      setText('step-length-summary', `${val.toLocaleString('en-GB')} m (${(val / 1000).toFixed(2)} km)`);
+      await recalc();
+    }, 300);
+  });
+}
+
+function updateLengthDerived() {
+  setText('strip-km', (state.lengthM / 1000).toFixed(2) + ' km');
+  if (state.currentRecord) {
+    const widthM = parseWidth(state.currentRecord.width);
+    const ha     = ((widthM * state.lengthM) / 10000).toFixed(3);
+    setText('strip-area', ha + ' ha');
+  }
+}
+
+// =============================================================================
+// Credit price slider
+// =============================================================================
+
+function initCreditPriceSlider() {
+  const slider  = document.getElementById('credit-price');
+  const display = document.getElementById('credit-price-display');
+  if (!slider) return;
+
+  const update = async () => {
+    state.creditPrice = parseInt(slider.value, 10);
+    if (display) display.textContent = '£' + state.creditPrice;
+    slider.setAttribute('aria-valuenow', state.creditPrice);
+    setText('step-price-summary', `£${state.creditPrice} / tCO₂e`);
+    await recalc();
+  };
+
+  slider.addEventListener('input',  update);
+  slider.addEventListener('change', update);
+}
+
+// =============================================================================
+// Placement toggle
+// =============================================================================
+
+function initPlacementToggle() {
+  document.querySelectorAll('[data-placement]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      state.placement = btn.dataset.placement;
+      document.querySelectorAll('[data-placement]').forEach(b => {
+        b.classList.toggle('active', b.dataset.placement === state.placement);
+      });
+      await recalc();
+    });
+  });
+}
+
+// =============================================================================
+// Windbreak orientation toggle
+// =============================================================================
+
+function initWindbreakToggle() {
+  document.querySelectorAll('[data-orient]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      state.windbreakOrient = btn.dataset.orient;
+      document.querySelectorAll('[data-orient]').forEach(b => {
+        b.classList.toggle('active', b.dataset.orient === state.windbreakOrient);
+      });
+      await recalc();
+    });
+  });
+}
+
+// =============================================================================
+// D. Problem → Variant matching
+// =============================================================================
+
+/**
+ * Resolve a dot-path against a record.
+ * Supports simple dotted paths; handles farmType substitution in key segments.
+ */
+function getNestedValue(record, path, farmType) {
+  const parts = path.split('.');
+  let cur = record;
+  for (const part of parts) {
+    if (cur == null) return undefined;
+    cur = cur[part] !== undefined ? cur[part] : cur[farmType];
+  }
+  return cur;
+}
+
+/**
+ * Evaluate a routing trigger string against a record. Returns 0–30 pts.
+ */
+function evalRoutingTrigger(trigger, record, farmType) {
+  if (!trigger) return 10;
+  try {
+    if (trigger.includes(' >= ')) {
+      const [path, , thresh] = trigger.split(' ');
+      const val = getNestedValue(record, path, farmType);
+      return (typeof val === 'number' && val >= parseFloat(thresh)) ? 30 : 0;
+    }
+    if (trigger.includes(' <= ')) {
+      const [path, , thresh] = trigger.split(' ');
+      const val = getNestedValue(record, path, farmType);
+      return (typeof val === 'number' && val <= parseFloat(thresh)) ? 30 : 0;
+    }
+    if (trigger.includes(" contains '")) {
+      const parts     = trigger.split(" contains '");
+      const path      = parts[0].trim();
+      const target    = parts[1].replace(/'/g, '').trim();
+      const val       = getNestedValue(record, path, farmType);
+      return (typeof val === 'string' && val.toLowerCase().includes(target.toLowerCase())) ? 30 : 0;
+    }
+    return 10; // complex/unrecognised trigger → partial credit
+  } catch {
+    return 0;
+  }
+}
+
+/**
+ * Score and rank all records in a biome against a problem.
+ * Returns the top-ranked record, or null.
+ */
+function recommendVariant(problemCode, biomeRecords, farmType) {
+  const problem = problemsByCode[problemCode];
+  if (!problem || !biomeRecords.length) return null;
+
+  const rawVariants = problem.Relevant_ShieldBelt_Variants;
+  const targetVariants = (Array.isArray(rawVariants) ? rawVariants : [])
+    .map(v => {
+      const spaceIdx = v.indexOf(' ');
+      return spaceIdx < 0
+        ? { width: '', nameFrag: v.toLowerCase() }
+        : { width: v.slice(0, spaceIdx), nameFrag: v.slice(spaceIdx + 1).toLowerCase() };
+    });
+
+  const scored = biomeRecords.map(record => {
+    let score = 0;
+    const vname = record.variant.toLowerCase();
+    const width = record.width;
+
+    // 1. Direct variant match (0–40 pts)
+    for (const tv of targetVariants) {
+      const nameMatch  = vname.includes(tv.nameFrag);
+      const widthMatch = width === tv.width;
+      if (nameMatch && widthMatch) { score += 40; break; }
+      if (nameMatch)               { score += 20; break; }
+    }
+
+    // 2. Routing trigger (0–30 pts)
+    score += evalRoutingTrigger(problem.Routing_Trigger, record, farmType);
+
+    // 3. Farm type relevance (0–15 pts)
+    const applicableFTs = problem.Applicable_Farm_Types.split(', ');
+    if (applicableFTs.includes(farmType))         score += 15;
+    else if (problem.Applicable_Farm_Types === 'All') score += 5;
+
+    // 4. SSER bonus (0–10 pts)
+    const sser = record.registry?.sserGrossUnitsPerKm || 0;
+    score += (sser / 39.6) * 10;
+
+    // 5. Carbon bonus for carbon problems (0–5 pts)
+    if (['CARBON_INCOME', 'CARBON_BASELINE'].includes(problemCode)) {
+      score += Math.min(record.seq50yrTotal / 400, 1) * 5;
+    }
+
+    return { record, score };
+  });
+
+  scored.sort((a, b) => b.score - a.score);
+  return scored[0]?.record || null;
+}
+
+// =============================================================================
+// E. Problem result panel
+// =============================================================================
+
+function renderProblemPanel(problem, record) {
+  const panel = document.getElementById('problem-panel');
+  if (!panel || !problem) return;
+
+  panel.hidden = false;
+  const icon = CATEGORY_ICONS[problem.Category] || '●';
+
+  // Recommended variant chip
+  const variantChip = record
+    ? `<span class="badge-width" data-width="${record.width}">${record.width}</span>
+       <strong>${record.variant}</strong>`
+    : '<em class="text-muted">No variant matched</em>';
+
+  // Linked solution pills
+  const linkedKeys = Array.isArray(problem.Linked_Solution_Directory_Keys)
+    ? problem.Linked_Solution_Directory_Keys
+    : [];
+  const pillsHTML = linkedKeys.map(k =>
+    `<span class="solution-pill" title="Solutions Directory — coming soon">${k}</span>`
+  ).join('');
+
+  const communityStyle = problem.Solution_Community === 'None directly applicable.'
+    ? 'style="color:var(--c-muted);font-style:italic;"'
+    : '';
+
+  panel.innerHTML = `
+    <div class="problem-panel__head">
+      <span class="problem-panel__icon">${icon}</span>
+      <div>
+        <div class="problem-panel__code">${problem.Problem_Code}</div>
+        <div class="problem-panel__symptom">${problem.Stated_Symptom}</div>
+      </div>
+    </div>
+
+    <div class="problem-panel__section-label">Farmer Diagnosis</div>
+    <blockquote class="problem-diagnosis">${problem.Farmer_Diagnosis_Copy}</blockquote>
+
+    <div class="problem-panel__section-label">ShieldBelt Solution</div>
+    <div class="problem-panel__recommendation">
+      Recommended: ${variantChip}
+    </div>
+
+    <div class="problem-panel__section-label">5-Point Solution Map</div>
+    <div class="solution-map">
+      <div class="solution-map__row">
+        <span class="solution-map__icon">🌱</span>
+        <span class="solution-map__label">Agronomic</span>
+        <span class="solution-map__text">${problem.Solution_Agronomic}</span>
+      </div>
+      <div class="solution-map__row">
+        <span class="solution-map__icon">🏗</span>
+        <span class="solution-map__label">Infrastructure</span>
+        <span class="solution-map__text">${problem.Solution_Infrastructure}</span>
+      </div>
+      <div class="solution-map__row">
+        <span class="solution-map__icon">📡</span>
+        <span class="solution-map__label">Precision Tech</span>
+        <span class="solution-map__text">${problem.Solution_Precision_Tech}</span>
+      </div>
+      <div class="solution-map__row">
+        <span class="solution-map__icon">🤝</span>
+        <span class="solution-map__label">Community</span>
+        <span class="solution-map__text" ${communityStyle}>${problem.Solution_Community}</span>
+      </div>
+      <div class="solution-map__row">
+        <span class="solution-map__icon">🚀</span>
+        <span class="solution-map__label">Emerging Tech</span>
+        <span class="solution-map__text">${problem.Solution_Emerging_Tech_Landscaping}</span>
+      </div>
+    </div>
+
+    ${pillsHTML ? `
+    <div class="problem-panel__section-label">Also Consider</div>
+    <div class="solution-pills">${pillsHTML}</div>
+    ` : ''}
+  `;
+}
+
+// =============================================================================
+// G. renderResults — all 6 sections
+// =============================================================================
+
+function renderResults(results) {
+  if (!results) return;
+
+  document.getElementById('results-empty')?.classList.add('hidden');
+  document.getElementById('results-content')?.classList.remove('hidden');
+
+  const r = results;
+  const c = state.currentRecord;
+
+  flashStatBoxes();
+  updateSSERWidthColor(r.width);
+
+  // --- Header ---
+  setText('results-title', r.variantName || '—');
+  const metaEl = document.getElementById('results-meta');
+  if (metaEl) metaEl.textContent = `${BIOME_DISPLAY[r.biome] || r.biome} · ${r.width} · ${state.lengthM.toLocaleString('en-GB')} m`;
+
+  const tagsEl = document.getElementById('results-tags');
+  if (tagsEl) {
+    tagsEl.innerHTML = '';
+    const wb = document.createElement('span');
+    wb.className = 'badge-width'; wb.dataset.width = r.width; wb.textContent = r.width;
+    tagsEl.appendChild(wb);
+    const bt = document.createElement('span');
+    bt.className = 'biome-tag'; bt.textContent = BIOME_DISPLAY[r.biome] || r.biome;
+    tagsEl.appendChild(bt);
+    if (state.activeProblem) {
+      const pt = document.createElement('span');
+      pt.className = 'biome-tag'; pt.style.background = 'var(--c-gold)';
+      pt.textContent = `${CATEGORY_ICONS[state.activeProblem.Category] || ''} ${state.activeProblem.Problem_Code}`;
+      tagsEl.appendChild(pt);
+    }
+  }
+
+  // --- Stat boxes (5) ---
+  setStatBox('stat-net-benefit-value',   fmtGBP(r.annualNetBenefit) + '/yr');
+  // FIX [ux]: show stat box in red when net benefit is negative
+  const nbBox = document.getElementById('stat-net-benefit-value')?.closest('.stat-box');
+  if (nbBox) nbBox.classList.toggle('stat-box--negative', r.annualNetBenefit < 0);
+
+  setStatBox('stat-seq50yr-value',       fmtCarbon(r.seq50yrTotal) + ' / 50yr');
+  setStatBox('stat-sser-value',          fmtSSER(r.sserUnitsTotal));
+  setStatBox('stat-foregone-value',      fmtGBP(r.netIncomeForegone) + '/yr');
+  setStatBox('stat-pollination-value',   fmtGBP(r.pollinationValue) + '/yr');
+
+  // Legacy boxes (from Prompt 1 HTML — update if they exist)
+  setStatBox('stat-carbon-value',        fmtCarbon(r.seq50yrTotal));
+  setStatBox('stat-annual-carbon-value', fmt(r.seq50yrTotal / 50, 1) + ' tCO₂e');
+  setStatBox('stat-revenue-value',       fmtGBP(r.annualCarbonIncome) + '/yr');
+  setStatBox('stat-area-value',          fmt(r.areaMHa, 3) + ' ha');
+
+  updateLengthDerived();
+
+  // --- Section 2: Carbon trajectory ---
+  // FIX [accessibility]: aria-label on each canvas describes its content
+  const setCanvasLabel = (id, desc) => {
+    const el = document.getElementById(id);
+    if (el) { el.setAttribute('role', 'img'); el.setAttribute('aria-label', desc); }
+  };
+
+  const xLabels = ['Yr5','Yr10','Yr15','Yr20','Yr25','Yr30','Yr35','Yr40','Yr45','Yr50'];
+  setCanvasLabel('chart-carbon', `Carbon trajectory chart: 50-year cumulative sequestration for ${r.variantName}`);
+  lineChart(
+    'chart-carbon',
+    xLabels,
+    [{ label: `${r.width} ${r.variantName}`, color: WIDTH_COLOR[r.width] || '#2d6a4f', values: r.seqTrajectory }],
+    'chart-carbon-legend'
+  );
+  setText('chart-carbon-total', `50yr total: ${fmtCarbon(r.seq50yrTotal)}`);
+
+  // --- Section 3: Water / CREW radar ---
+  setCanvasLabel('chart-water-radar', `Water services radar chart for ${r.variantName}: flood control, sediment trapping, nutrient retention, catchment hydrology, water quality`);
+  radarChart(
+    'chart-water-radar',
+    ['Flood Control', 'Sediment Trap', 'Nutrient Retention', 'Catchment Hydro', 'Water Quality'],
+    [{
+      label: r.variantName,
+      color: '#2d6a4f',
+      values: [
+        r.sepaData.floodControl,
+        r.sepaData.sedimentTrapping,
+        r.sepaData.nutrientRetention,
+        r.radarData.catchmentHydrology,
+        r.radarData.waterQuality,
+      ],
+    }],
+    null
+  );
+
+  // CREW sub-service chips
+  const crewContainer = document.getElementById('crew-chips');
+  if (crewContainer) {
+    crewContainer.innerHTML = `
+      <div class="crew-chip">
+        <div class="crew-chip__value">${fmtGBP(r.crewBreakdown.airFiltration)}</div>
+        <div class="crew-chip__label">Air filtration / yr</div>
+      </div>
+      <div class="crew-chip">
+        <div class="crew-chip__value">${fmtGBP(r.crewBreakdown.catchmentHydrology)}</div>
+        <div class="crew-chip__label">Catchment hydrology / yr</div>
+      </div>
+      <div class="crew-chip">
+        <div class="crew-chip__value">${fmtGBP(r.crewBreakdown.waterPurification)}</div>
+        <div class="crew-chip__label">Water purification / yr</div>
+      </div>
+    `;
+  }
+
+  // FIO badge
+  const fio = document.getElementById('fio-badge');
+  if (fio) {
+    fio.textContent = `FIO Trapping Efficiency: ${r.fioTrappingEfficiency}%`;
+    fio.style.background = r.fioTrappingEfficiency > 70 ? 'var(--c-leaf)' : 'var(--c-stone)';
+    fio.style.color       = r.fioTrappingEfficiency > 70 ? '#fff' : 'var(--c-ink)';
+  }
+
+  // --- Section 4: Ecosystem / eco radar ---
+  setCanvasLabel('chart-eco-radar', `Ecosystem health radar chart for ${r.variantName}: health, habitat, soil carbon, agronomic yield, pest regulation, thermal regulation`);
+  radarChart(
+    'chart-eco-radar',
+    ['Ecosystem Health', 'Habitat', 'Soil Carbon', 'Agronomic Yield', 'Pest Reg', 'Thermal Reg'],
+    [{
+      label: r.variantName,
+      color: '#52b788',
+      values: [
+        r.radarData.ecosystemHealth,
+        r.radarData.habitatDistinctiveness,
+        r.radarData.soilCarbonAndHealth,
+        r.radarData.agronomicYield,
+        Math.min((r.pestRegulationValue / (r.lengthM / 1000)) / 2, 100),
+        Math.min((r.thermalRegulationValue / (r.lengthM / 1000)) / 2, 100),
+      ],
+    }],
+    null
+  );
+
+  // Pest & thermal chips
+  const ptChips = document.getElementById('pest-thermal-chips');
+  if (ptChips) {
+    ptChips.innerHTML = `
+      <div class="crew-chip">
+        <div class="crew-chip__value">${fmtGBP(r.pestRegulationValue)}</div>
+        <div class="crew-chip__label">Pest regulation / yr</div>
+      </div>
+      <div class="crew-chip">
+        <div class="crew-chip__value">${fmtGBP(r.thermalRegulationValue)}</div>
+        <div class="crew-chip__label">Thermal regulation / yr</div>
+      </div>
+    `;
+  }
+
+  // --- Section 5: Financial stacked bar (all 4 farm types × 5 income streams) ---
+  setCanvasLabel('chart-finance-bar', `Financial summary: stacked bar chart of annual income streams by farm type for ${r.variantName}`);
+  const ftCalcs = FARM_TYPES.map(ft => calculate(
+    { biome: state.biome, variantId: state.variantId, farmType: ft,
+      placement: state.placement, lengthM: state.lengthM,
+      creditPrice: state.creditPrice, windbreakOrient: state.windbreakOrient },
+    c
+  ));
+
+  hStackedBar(
+    'chart-finance-bar',
+    FARM_TYPES,
+    [
+      { label: 'Carbon income',   color: CHART_COLORS.carbon,    values: ftCalcs.map(f => f.annualCarbonIncome) },
+      { label: 'CREW services',   color: CHART_COLORS.crew,      values: ftCalcs.map(f => f.crewValueTotal) },
+      { label: 'Pest & thermal',  color: CHART_COLORS.pest,      values: ftCalcs.map(f => f.pestRegulationValue + f.thermalRegulationValue) },
+      { label: 'Windbreak',       color: CHART_COLORS.windbreak, values: ftCalcs.map(f => f.windbreakValue) },
+      { label: 'Avoided costs',   color: CHART_COLORS.avoided,   values: ftCalcs.map(f => f.avoidedCosts) },
+    ],
+    null,
+    v => fmtGBP(v),
+    'chart-finance-legend'
+  );
+
+  // --- Section 6a: Avoided costs hBar ---
+  setCanvasLabel('chart-avoided-costs', `Avoided costs chart for ${r.variantName}: flood control, erosion, compaction, downslope erosion, fuel savings`);
+  const ac = r.avoidedCostsBreakdown;
+  hBar(
+    'chart-avoided-costs',
+    ['Flood control', 'Erosion avoided', 'Compaction avoided', 'Down erosion', 'Fuel savings'],
+    [ac.floodControl, ac.avoidedErosion, ac.avoidedCompaction, ac.avoidedDownErosion, ac.avoidedFuelCosts],
+    [CHART_COLORS.carbon, CHART_COLORS.crew, CHART_COLORS.pest, CHART_COLORS.windbreak, CHART_COLORS.avoided],
+    null,
+    v => fmtGBP(v),
+    null
+  );
+
+  // --- Section 6b: Windbreak hBar ---
+  setCanvasLabel('chart-windbreak', `Windbreak benefits chart for ${r.variantName}: yield bump, water retention, nutrient pump`);
+  const wb2 = r.windbreakBreakdown;
+  hBar(
+    'chart-windbreak',
+    ['Yield bump', 'Water retention', 'Nutrient pump'],
+    [wb2.yieldBump, wb2.waterRetention, wb2.nutrientPump],
+    [CHART_COLORS.carbon, CHART_COLORS.crew, CHART_COLORS.pest],
+    null,
+    v => fmtGBP(v),
+    null
+  );
+
+  // --- SSER profile ---
+  const sserEl = document.getElementById('sser-profile');
+  if (sserEl) {
+    sserEl.innerHTML = `
+      <div class="stat-box">
+        <div class="stat-box__value stat-box__value--leaf">${fmtSSER(r.sserUnitsTotal)}</div>
+        <div class="stat-box__label">SSER Biodiversity Units</div>
+        <div class="stat-box__sublabel">${fmt(r.sserPerKm, 2)} units/km · ${fmt(state.lengthM / 1000, 2)} km strip</div>
+      </div>
+    `;
+  }
+
+  // --- Agronomic notes ---
+  const agro = document.getElementById('agronomic-notes');
+  if (agro) {
+    agro.innerHTML = [
+      r.plantingRegime && `<p><strong>Planting:</strong> ${r.plantingRegime}</p>`,
+      r.maintenanceRegime && `<p><strong>Maintenance:</strong> ${r.maintenanceRegime}</p>`,
+      r.rootArchitecture && `<p><strong>Root architecture:</strong> ${r.rootArchitecture}</p>`,
+      r.regulatoryAlignment && `<p><strong>Regulatory alignment:</strong> ${r.regulatoryAlignment}</p>`,
+      r.additionality && `<p><strong>Additionality:</strong> ${r.additionality}</p>`,
+    ].filter(Boolean).join('');
+  }
+
+  // --- Biodiversity impacts ---
+  const bioEl = document.getElementById('biodiversity-impacts');
+  if (bioEl) bioEl.textContent = r.biodiversityImpacts || '';
+
+  // --- Problem panel ---
+  if (state.activeProblem) {
+    renderProblemPanel(state.activeProblem, c);
+  }
+
+  // Encode URL
+  encodeStateToURL();
+}
+
+// =============================================================================
+// H. Cross-biome comparison modal
+// =============================================================================
+
+async function openComparisonModal() {
+  const modal = document.getElementById('modal-compare');
+  if (!modal) return;
+  modal.showModal?.() || (modal.hidden = false);
+
+  const rec = state.currentRecord;
+  if (!rec) return;
+
+  // Match variant by width + name fragment across all biomes
+  const allRecords = await getAll();
+  const widthM     = rec.width;
+  const nameFrag   = rec.variant.toLowerCase().replace(/^\d+\.\s*/, '').trim();
+
+  const results = Object.values(BIOMES).map(biome => {
+    const match = allRecords.find(r =>
+      r.biome === biome &&
+      r.width === widthM &&
+      r.variant.toLowerCase().includes(nameFrag.slice(0, 12))
+    );
+    if (!match) return { biome, value: 0, sserPerKm: 0, available: false };
+
+    const res = calculate(
+      { biome, variantId: match.id, farmType: state.farmType,
+        placement: state.placement, lengthM: state.lengthM,
+        creditPrice: state.creditPrice, windbreakOrient: state.windbreakOrient },
+      match
+    );
+    return { biome, value: res.annualNetBenefit, sserPerKm: res.sserPerKm, available: true };
+  });
+
+  const labels = results.map(r =>
+    BIOME_DISPLAY[r.biome]?.replace(/^[^\s]+\s/, '') || r.biome
+  );
+  const values = results.map(r => Math.max(r.value, 0));
+  const colors = results.map(r => r.available ? '#2d6a4f' : '#e8e4dc');
+
+  hBar(
+    'chart-modal-compare',
+    labels, values, colors,
+    null,
+    v => fmtGBP(v),
+    null
+  );
+
+  // SSER sub-labels
+  const sserEl = document.getElementById('modal-sser-chips');
+  if (sserEl) {
+    sserEl.innerHTML = results.map(r =>
+      r.available
+        ? `<span class="biome-tag biome-tag--light">${fmt(r.sserPerKm, 2)} SSER/km</span>`
+        : `<span class="text-muted text-xs">Not available</span>`
+    ).join('');
+  }
+}
+
+function initModal() {
+  const btn   = document.getElementById('btn-compare-biomes');
+  const modal = document.getElementById('modal-compare');
+  const close = document.getElementById('btn-close-modal');
+  if (!modal) return;
+
+  btn?.addEventListener('click', openComparisonModal);
+  close?.addEventListener('click', () => modal.close?.() || (modal.hidden = true));
+  modal.addEventListener('click', e => {
+    if (e.target === modal) modal.close?.() || (modal.hidden = true);
+  });
+}
+
+// =============================================================================
+// I. URL state encoding / decoding
+// =============================================================================
+
+function encodeStateToURL() {
+  const p = new URLSearchParams({
+    biome:   SLUG_BIOME[state.biome]     || 'east_neuk',
+    farm:    SLUG_FARM[state.farmType]   || 'general_cropping',
+    length:  state.lengthM,
+    price:   state.creditPrice,
+    orient:  state.windbreakOrient,
+    placement: state.placement,
+  });
+  if (state.variantId) {
+    const num = state.variantId.match(/\d+/)?.[0];
+    if (num) p.set('variant', num);
+  }
+  if (state.problemCode) p.set('problem', state.problemCode);
+
+  const url = `${window.location.pathname}?${p.toString()}`;
+  window.history.replaceState({}, '', url);
+}
+
+function restoreStateFromURL() {
+  const p = new URLSearchParams(window.location.search);
+
+  // FIX [url-robustness]: validate all URL params — silently use defaults for invalid values
+  const rawBiome = p.get('biome');
+  if (rawBiome && BIOME_SLUG[rawBiome]) state.biome = BIOME_SLUG[rawBiome];
+
+  const rawFarm = p.get('farm');
+  if (rawFarm && FARM_SLUG[rawFarm]) state.farmType = FARM_SLUG[rawFarm];
+
+  const rawLength = parseInt(p.get('length'), 10);
+  if (p.has('length') && isFinite(rawLength) && rawLength > 0) state.lengthM = rawLength;
+
+  const rawPrice = parseInt(p.get('price'), 10);
+  if (p.has('price') && isFinite(rawPrice) && rawPrice >= 0) state.creditPrice = rawPrice;
+
+  if (p.has('orient'))   state.windbreakOrient = p.get('orient') === 'EW' ? 'EW' : 'NS';
+  if (p.has('placement'))state.placement       = ['riparian','crossSlope','downSlope'].includes(p.get('placement')) ? p.get('placement') : 'crossSlope';
+
+  // FIX [url-robustness]: only restore problem if it exists in our data set
+  const rawProblem = p.get('problem');
+  if (rawProblem && problemsByCode[rawProblem]) state.problemCode = rawProblem;
+
+  if (p.has('variant'))  state._urlVariantNum  = p.get('variant'); // resolved after records load
+}
+
+// =============================================================================
+// Loading screen
+// =============================================================================
+
+function showLoadingScreen() {
+  let el = document.getElementById('loading-screen');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'loading-screen';
+    el.innerHTML = `
+      <div class="loading-screen__inner">
+        <div class="loading-screen__logo">NFCA</div>
+        <div class="loading-screen__title">ShieldBelt Calculator</div>
+        <div class="loading-screen__spinner"></div>
+        <div class="loading-screen__msg">Loading intervention data…</div>
+      </div>
+    `;
+    document.body.appendChild(el);
+  }
+  el.hidden = false;
+}
+
+function hideLoadingScreen() {
+  const el = document.getElementById('loading-screen');
+  if (el) {
+    el.style.opacity = '0';
+    setTimeout(() => { el.hidden = true; el.style.opacity = ''; }, 350);
+  }
+}
+
+// =============================================================================
+// Service worker
+// =============================================================================
+
+function registerServiceWorker() {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  }
+}
+
+// =============================================================================
+// Export / Share / Reset
+// =============================================================================
+
+function handleExportPDF() {
+  const ph = document.querySelector('.print-header');
+  if (ph) ph.dataset.date = new Date().toLocaleDateString('en-GB');
+  window.print();
+}
+
+async function handleShare() {
+  const url = window.location.href;
+  if (navigator.share) {
+    await navigator.share({ title: 'Fife ShieldBelt Results', url });
+  } else if (navigator.clipboard) {
+    await navigator.clipboard.writeText(url);
+    showToast('Link copied to clipboard');
+  }
+}
+
+// =============================================================================
+// Export — CSV
+// =============================================================================
+
+function downloadFile(filename, content, type) {
+  const blob = new Blob([content], { type });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function exportCSV(results, st) {
+  const headers = [
+    'Variant', 'Biome', 'Width', 'Farm Type', 'Placement', 'Windbreak Orientation',
+    'Length (m)', 'Strip Area (ha)', '50yr Carbon (tCO2e/km)', 'Annual Carbon Income (£)',
+    'Pollination Value (£/yr)', 'CREW Value (£/yr)', 'Pest Regulation (£/yr)',
+    'Thermal Regulation (£/yr)', 'Windbreak Value (£/yr)', 'Avoided Costs (£/yr)',
+    'Net Income Foregone (£/yr)', 'Net Annual Benefit (£/yr)',
+    'SSER Units (total)', 'SSER Units per km', 'Credit Price (£/tCO2)', 'FIO Trapping Efficiency (%)',
+  ];
+
+  const q  = v => `"${String(v).replace(/"/g, '""')}"`;
+  const row = [
+    q(results.variantName), q(results.biome), results.width, q(st.farmType),
+    st.placement, st.windbreakOrient, results.lengthM, results.areaMHa.toFixed(4),
+    results.seq50yrTotal, results.annualCarbonIncome.toFixed(0),
+    results.pollinationValue.toFixed(0), results.crewValueTotal.toFixed(0),
+    results.pestRegulationValue.toFixed(0), results.thermalRegulationValue.toFixed(0),
+    results.windbreakValue.toFixed(0), results.avoidedCosts.toFixed(0),
+    results.netIncomeForegone.toFixed(0), results.annualNetBenefit.toFixed(0),
+    results.sserUnitsTotal.toFixed(2), results.sserPerKm,
+    st.creditPrice, results.fioTrappingEfficiency,
+  ];
+
+  if (st.problemCode) {
+    headers.push('Active Problem Code', 'Active Problem Category');
+    row.push(st.problemCode, q(st.activeProblem?.Category || ''));
+  }
+
+  const csv  = [headers, row].map(r => r.join(',')).join('\n');
+  const slug = results.variantName.replace(/\s+/g, '-').replace(/[^\w-]/g, '').slice(0, 40);
+  downloadFile(`shieldbelt-${slug}.csv`, csv, 'text/csv;charset=utf-8;');
+}
+
+function showToast(msg) {
+  let toast = document.getElementById('toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'toast';
+    toast.style.cssText = `position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+      background:var(--c-forest);color:#fff;padding:10px 20px;border-radius:8px;
+      font-size:0.875rem;z-index:999;transition:opacity 0.3s;`;
+    document.body.appendChild(toast);
+  }
+  toast.textContent = msg;
+  toast.style.opacity = '1';
+  setTimeout(() => { toast.style.opacity = '0'; }, 2500);
+}
+
+// =============================================================================
+// Saved scenarios (localStorage)
+// =============================================================================
+
+const MAX_SCENARIOS = 5;
+
+function saveScenario(label, st, results) {
+  const scenarios = getSavedScenarios();
+  // FIX [security/xss]: cap label at 80 chars; rendered with textContent not innerHTML
+  const rawLabel  = label || `${results.variantName} — ${results.biome.replace('Fife (', '').replace(')', '')}`;
+  const safeLabel = String(rawLabel).slice(0, 80);
+  const entry = {
+    label:      safeLabel,
+    url:        window.location.href,
+    netBenefit: results.annualNetBenefit,
+    sserUnits:  results.sserUnitsTotal,
+    savedAt:    new Date().toISOString(),
+  };
+  scenarios.unshift(entry);
+  if (scenarios.length > MAX_SCENARIOS) scenarios.pop();
+  localStorage.setItem('shieldbelt_scenarios', JSON.stringify(scenarios));
+  renderSavedScenarios();
+  showToast('Scenario saved');
+}
+
+function getSavedScenarios() {
+  try { return JSON.parse(localStorage.getItem('shieldbelt_scenarios') || '[]'); }
+  catch { return []; }
+}
+
+// FIX [security/xss]: render scenario labels with textContent only —
+// labels come from localStorage and could contain script injection attempts.
+function renderSavedScenarios() {
+  const panel = document.getElementById('saved-scenarios-panel');
+  if (!panel) return;
+  const scenarios = getSavedScenarios();
+  if (!scenarios.length) { panel.hidden = true; return; }
+  panel.hidden = false;
+
+  panel.innerHTML = '';  // clear first
+
+  const title = document.createElement('div');
+  title.className   = 'saved-scenarios__title';
+  title.textContent = '💾 Saved Scenarios';
+  panel.appendChild(title);
+
+  for (const s of scenarios) {
+    const row = document.createElement('div');
+    row.className = 'saved-scenario';
+
+    const labelEl = document.createElement('div');
+    labelEl.className   = 'saved-scenario__label';
+    labelEl.textContent = s.label;   // safe — never innerHTML
+
+    const metaEl = document.createElement('div');
+    metaEl.className   = 'saved-scenario__meta';
+    metaEl.textContent = `${fmtGBP(s.netBenefit)}/yr · ${fmt(s.sserUnits, 2)} SSER`;
+
+    const loadA = document.createElement('a');
+    loadA.className   = 'saved-scenario__load btn btn-ghost btn-sm';
+    loadA.href        = s.url;   // safe URL (was window.location.href at save time)
+    loadA.textContent = 'Load ↗';
+    loadA.rel         = 'noopener';
+
+    row.append(labelEl, metaEl, loadA);
+    panel.appendChild(row);
+  }
+}
+
+// =============================================================================
+// Mobile drawer
+// =============================================================================
+
+function initMobileDrawer() {
+  const btn      = document.getElementById('btn-mobile-drawer');
+  const closeBtn = document.getElementById('btn-close-drawer');
+  const panel    = document.querySelector('.panel-left');
+  const backdrop = document.getElementById('drawer-backdrop');
+  if (!panel) return;
+
+  const openDrawer = () => {
+    panel.classList.add('drawer-open');
+    if (backdrop) backdrop.hidden = false;
+    document.body.style.overflow = 'hidden';
+  };
+  const closeDrawer = () => {
+    panel.classList.remove('drawer-open');
+    if (backdrop) backdrop.hidden = true;
+    document.body.style.overflow = '';
+  };
+
+  btn?.addEventListener('click', openDrawer);
+  closeBtn?.addEventListener('click', closeDrawer);
+  backdrop?.addEventListener('click', closeDrawer);
+}
+
+// =============================================================================
+// Scroll-to-results (mobile)
+// =============================================================================
+
+function scrollToResults() {
+  if (window.innerWidth < 768) {
+    const el = document.getElementById('results-content');
+    el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+// =============================================================================
+// Biome context card
+// =============================================================================
+
+function renderBiomeContextCard(biome) {
+  const ctx = BIOME_CONTEXT[biome];
+  const el  = document.getElementById('biome-context-card');
+  if (!el) return;
+  if (!ctx) { el.hidden = true; return; }
+  el.hidden = false;
+  el.innerHTML = `
+    <div class="biome-context-card">
+      <div class="biome-context-card__tagline">${ctx.tagline}</div>
+      <div class="biome-context-card__stats">
+        <span><strong>${ctx.km}</strong> km capacity</span>
+        <span><strong>${ctx.value}</strong>/yr potential</span>
+        <span><em>${ctx.farmType}</em></span>
+      </div>
+    </div>
+  `;
+}
+
+// =============================================================================
+// Stat box flash animation
+// =============================================================================
+
+function flashStatBoxes() {
+  document.querySelectorAll('.stat-box').forEach(el => {
+    el.classList.remove('stat-box--flash');
+    void el.offsetWidth; // reflow to restart animation
+    el.classList.add('stat-box--flash');
+  });
+}
+
+// =============================================================================
+// SSER width colour on stat box
+// =============================================================================
+
+function updateSSERWidthColor(width) {
+  const el = document.getElementById('stat-sser-value')?.closest('.stat-box');
+  if (!el) return;
+  const map = { '3m': 'var(--c-w3m)', '6m': 'var(--c-w6m)', '12m': 'var(--c-w12m)', '20m': 'var(--c-w20m)' };
+  el.style.borderColor = map[width] || '';
+}
+
+function handleReset() {
+  Object.assign(state, {
+    biome: BIOMES.EAST_NEUK, variantId: null, farmType: 'General Cropping',
+    placement: 'crossSlope', lengthM: 1000, creditPrice: 60,
+    problemCode: null, windbreakOrient: 'NS',
+    biomeRecords: [], currentRecord: null, results: null, activeProblem: null,
+  });
+
+  // Reset form controls
+  const lenInput = document.getElementById('strip-length');
+  if (lenInput) lenInput.value = 1000;
+  const slider = document.getElementById('credit-price');
+  if (slider) { slider.value = 60; }
+  const display = document.getElementById('credit-price-display');
+  if (display) display.textContent = '£60';
+
+  document.querySelectorAll('input[name="biome"]').forEach(r => { r.checked = r.value === BIOMES.EAST_NEUK; });
+  document.querySelectorAll('input[name="farm-type"]').forEach(r => { r.checked = r.value === 'General Cropping'; });
+
+  clearCharts();
+  document.getElementById('results-empty')?.classList.remove('hidden');
+  document.getElementById('results-content')?.classList.add('hidden');
+  document.getElementById('problem-panel') && (document.getElementById('problem-panel').hidden = true);
+  document.getElementById('btn-clear-problem')?.remove();
+  updateProblemChipUI(null);
+
+  window.history.replaceState({}, '', window.location.pathname);
+}
+
+// =============================================================================
+// Core recalc
+// =============================================================================
+
+async function applyVariantAndRecalc() {
+  if (!state.variantId && state.biomeRecords.length) {
+    state.variantId = state.biomeRecords[0]?.id || null;
+    syncVariantSelect();
+  }
+  if (!state.variantId) return;
+
+  state.currentRecord = await getById(state.variantId);
+  if (!state.currentRecord) return;
+
+  renderBiomeContextCard(state.biome);
+  renderVariantDetail(state.currentRecord);
+  updateLengthDerived();
+  await recalc();
+  scrollToResults();
+}
+
+async function recalc() {
+  if (!state.currentRecord) return;
+
+  // FIX [input-validation]: abort and show error if inputs are invalid
+  if (!validateInputs(state)) return;
+
+  const inputs = {
+    biome:           state.biome,
+    variantId:       state.variantId,
+    farmType:        state.farmType,
+    placement:       state.placement,
+    lengthM:         state.lengthM,
+    creditPrice:     state.creditPrice,
+    windbreakOrient: state.windbreakOrient,
+  };
+
+  state.results     = calculate(inputs, state.currentRecord);
+  state.lastResults = state.results;
+  renderResults(state.results);
+  encodeStateToURL();
+}
+
+// =============================================================================
+// Utility
+// =============================================================================
+
+function setText(id, text) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = text;
+}
+
+function setStatBox(id, text) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = text;
+}
+
+// FIX [input-validation]: show/clear inline field errors
+function showInputError(fieldId, message) {
+  const field = document.getElementById(fieldId);
+  if (!field) return;
+  field.setAttribute('aria-invalid', 'true');
+  let errEl = document.getElementById(fieldId + '-error');
+  if (!errEl) {
+    errEl = document.createElement('span');
+    errEl.id        = fieldId + '-error';
+    errEl.className = 'input-error';
+    errEl.setAttribute('role', 'alert');
+    errEl.setAttribute('aria-live', 'assertive');
+    field.insertAdjacentElement('afterend', errEl);
+  }
+  errEl.textContent = message;
+}
+
+function clearInputError(fieldId) {
+  const field = document.getElementById(fieldId);
+  if (field) field.removeAttribute('aria-invalid');
+  document.getElementById(fieldId + '-error')?.remove();
+}
+
+// FIX [input-validation]: guard against zero/negative length, NaN credit price
+function validateInputs(st) {
+  let valid = true;
+  if (!st.lengthM || st.lengthM <= 0 || !isFinite(st.lengthM)) {
+    showInputError('strip-length', 'Enter a length greater than 0 m');
+    valid = false;
+  } else {
+    clearInputError('strip-length');
+  }
+  return valid;
+}
+
+function syncBiomeRadio() {
+  document.querySelectorAll('input[name="biome"]').forEach(r => {
+    r.checked = r.value === state.biome;
+  });
+  setText('step-biome-summary', BIOME_DISPLAY[state.biome] || state.biome);
+}
+
+// =============================================================================
+// K. Initialisation
+// =============================================================================
+
+// FIX [performance/loading-screen]: showLoadingScreen() is called synchronously
+// BEFORE the first await, so the loading overlay paints within the first frame.
+// This satisfies the <200ms loading screen requirement on Slow 3G connections.
+async function init() {
+  showLoadingScreen();  // synchronous — runs before any await below
+
+  try {
+    await dbReady;
+    await loadProblems();
+
+    restoreStateFromURL();
+    await loadBiomeRecords(state.biome);
+
+    // Sync initial form state from state object
+    populateBiomeSelector();
+    populateFarmTypeSelector();
+    populateProblemChips();
+    populateVariantSelector();
+
+    // Resolve URL variant number if present
+    if (state._urlVariantNum) {
+      const match = state.biomeRecords.find(r =>
+        r.variant.startsWith(state._urlVariantNum + '.')
+      );
+      if (match) state.variantId = match.id;
+      delete state._urlVariantNum;
+    }
+
+    // Resolve problem→variant recommendation
+    if (state.problemCode) {
+      state.activeProblem = problemsByCode[state.problemCode] || null;
+      const rec = recommendVariant(state.problemCode, state.biomeRecords, state.farmType);
+      if (rec && !state.variantId) state.variantId = rec.id;
+      updateProblemChipUI(state.problemCode);
+      if (state.activeProblem) renderProblemClearBtn();
+    }
+
+    // Initialise all controls and event handlers
+    initAccordions();
+    initBiomeSelector();
+    initFarmTypeSelector();
+    initVariantSelector();
+    initStripLengthInput();
+    initCreditPriceSlider();
+    initPlacementToggle();
+    initWindbreakToggle();
+    initModal();
+
+    document.getElementById('btn-calculate')?.addEventListener('click', applyVariantAndRecalc);
+    document.getElementById('btn-reset')?.addEventListener('click', handleReset);
+    document.getElementById('btn-export-pdf')?.addEventListener('click', handleExportPDF);
+    document.getElementById('btn-share')?.addEventListener('click', handleShare);
+
+    document.getElementById('btn-export-csv')?.addEventListener('click', () => {
+      if (state.lastResults) exportCSV(state.lastResults, state);
+    });
+
+    document.getElementById('btn-copy-link')?.addEventListener('click', () => {
+      navigator.clipboard.writeText(window.location.href)
+        .then(() => showToast('Copied!'))
+        .catch(() => showToast('Copy failed'));
+    });
+
+    document.getElementById('btn-save-scenario')?.addEventListener('click', () => {
+      if (state.lastResults) saveScenario(null, state, state.lastResults);
+    });
+
+    initMobileDrawer();
+    renderSavedScenarios();
+    renderBiomeContextCard(state.biome);
+
+    // FIX [print/canvas]: re-render charts synchronously before printing so
+    // canvas bitmaps are committed — some browsers clear canvas before print.
+    window.addEventListener('beforeprint', () => {
+      if (state.results) renderResults(state.results);
+    });
+
+    // FIX [iOS PWA]: IndexedDB on iOS PWA may be evicted after 7 days inactivity
+    if (window.navigator.standalone === true) {
+      const banner = document.createElement('div');
+      banner.className = 'ios-standalone-tip';
+      banner.textContent = 'Tip: open occasionally to keep your saved data.';
+      document.querySelector('.app-header__inner')?.appendChild(banner);
+    }
+
+    // Run initial calculation
+    await applyVariantAndRecalc();
+
+    // Open step 1 by default
+    openStep(1);
+
+  } catch (err) {
+    console.error('ShieldBelt init failed:', err);
+  } finally {
+    hideLoadingScreen();
+    registerServiceWorker();
+  }
+}
+
+document.addEventListener('DOMContentLoaded', init);

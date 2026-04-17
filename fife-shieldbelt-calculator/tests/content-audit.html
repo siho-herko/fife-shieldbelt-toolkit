@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Content Audit — Fife ShieldBelt Problems</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 900px; margin: 40px auto; padding: 0 20px; color: #1c1c1c; }
+    h1 { color: #1a3d2b; border-bottom: 3px solid #1a3d2b; padding-bottom: 12px; }
+    #summary { font-size: 14px; color: #6b7280; margin-bottom: 8px; }
+    #stats { display: flex; gap: 24px; margin-bottom: 32px; flex-wrap: wrap; }
+    .stat { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 12px 20px; font-size: 14px; }
+    .stat strong { display: block; font-size: 24px; color: #1a3d2b; }
+    .problem { border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin: 20px 0; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+    .problem.phase2 { opacity: 0.55; border-style: dashed; background: #fafafa; }
+    .problem.has-issues { border-color: #fca5a5; background: #fff7f7; }
+    .code { font-family: monospace; background: #f5f5f5; padding: 2px 8px; border-radius: 4px; font-size: 12px; border: 1px solid #e5e7eb; }
+    .category { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #6b7280; margin-bottom: 6px; }
+    .symptom { font-size: 20px; font-weight: 700; margin: 6px 0 10px; color: #111; }
+    .meta { font-size: 12px; color: #6b7280; margin-bottom: 10px; }
+    .diagnosis { background: #fffbeb; border-left: 3px solid #b5830a; padding: 12px 16px; margin: 14px 0; font-style: italic; font-size: 15px; line-height: 1.6; color: #44300a; }
+    .solutions { display: grid; gap: 6px; margin: 14px 0; background: #f9fafb; border-radius: 6px; padding: 12px; }
+    .solution-row { display: grid; grid-template-columns: 160px 1fr; gap: 10px; font-size: 14px; line-height: 1.5; }
+    .sol-label { color: #555; font-weight: 600; padding-top: 1px; }
+    .sol-text { color: #1c1c1c; }
+    .pills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+    .pill { background: #e8e4dc; padding: 3px 12px; border-radius: 12px; font-size: 12px; color: #44300a; }
+    .variants { font-size: 12px; color: #6b7280; margin-top: 10px; padding-top: 8px; border-top: 1px solid #eee; }
+    .flag { display: inline-block; background: #fee2e2; color: #991b1b; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; margin-right: 6px; }
+    .warn { background: #fff3cd; border: 1px solid #fbbf24; border-radius: 6px; padding: 10px 14px; margin-top: 10px; font-size: 13px; color: #78350f; }
+    h2 { margin-top: 48px; border-bottom: 2px solid #1a3d2b; padding-bottom: 8px; color: #1a3d2b; font-size: 18px; }
+    .phase2-label { font-size: 12px; color: #9ca3af; font-weight: normal; margin-left: 8px; }
+    #toc { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px 20px; margin-bottom: 32px; }
+    #toc h3 { margin: 0 0 10px; font-size: 14px; color: #374151; }
+    #toc ul { margin: 0; padding: 0 0 0 18px; font-size: 13px; line-height: 2; }
+    #toc a { color: #1a3d2b; text-decoration: none; }
+    #toc a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <h1>Content Audit: Fife ShieldBelt Problem → Solution Map</h1>
+  <p id="summary">Loading…</p>
+  <div id="stats"></div>
+  <div id="toc"><h3>Categories</h3><ul id="toc-list"></ul></div>
+  <div id="by-category"></div>
+
+  <script type="module">
+    const DREEL = 'Dreel Burn Catchment';
+    const REQUIRED_SOLUTION_FIELDS = [
+      'Farmer_Diagnosis_Copy', 'Solution_Agronomic', 'Solution_Infrastructure',
+      'Solution_Precision_Tech', 'Solution_Community', 'Solution_Emerging_Tech_Landscaping',
+    ];
+    const SOL_LABELS = {
+      Solution_Agronomic:                '🌱 Agronomic',
+      Solution_Infrastructure:           '🏗 Infrastructure',
+      Solution_Precision_Tech:           '📡 Precision Tech',
+      Solution_Community:                '🤝 Community',
+      Solution_Emerging_Tech_Landscaping:'🚀 Emerging',
+    };
+
+    const res = await fetch('../data/problems.json');
+    if (!res.ok) {
+      document.getElementById('summary').textContent =
+        `ERROR: Could not load problems.json (${res.status}). Serve this file from localhost.`;
+      throw new Error('fetch failed');
+    }
+
+    const problems = await res.json();
+
+    const phase1 = problems.filter(p => p.Applicable_Biomes !== DREEL);
+    const phase2 = problems.filter(p => p.Applicable_Biomes === DREEL);
+    let totalIssues = 0;
+
+    const byCategory = problems.reduce((acc, p) => {
+      (acc[p.Category] = acc[p.Category] || []).push(p);
+      return acc;
+    }, {});
+
+    document.getElementById('summary').textContent =
+      `${problems.length} problems total · ${phase1.length} phase-1 · ${phase2.length} phase-2 (Dreel Burn) · ${Object.keys(byCategory).length} categories`;
+
+    const statsEl = document.getElementById('stats');
+    statsEl.innerHTML = [
+      ['Total problems', problems.length],
+      ['Phase-1 (live)', phase1.length],
+      ['Phase-2 (Dreel Burn)', phase2.length],
+      ['Categories', Object.keys(byCategory).length],
+    ].map(([l,v]) => `<div class="stat"><strong>${v}</strong>${l}</div>`).join('');
+
+    const tocList = document.getElementById('toc-list');
+    const container = document.getElementById('by-category');
+
+    for (const [category, probs] of Object.entries(byCategory)) {
+      // TOC link
+      const li = document.createElement('li');
+      li.innerHTML = `<a href="#cat-${category.toLowerCase()}">${category}</a> (${probs.length})`;
+      tocList.appendChild(li);
+
+      // Category heading
+      const h2 = document.createElement('h2');
+      h2.id = `cat-${category.toLowerCase()}`;
+      const p2count = probs.filter(p => p.Applicable_Biomes === DREEL).length;
+      h2.innerHTML = `${category}
+        <span class="phase2-label">${probs.length} problems${p2count ? `, ${p2count} phase-2` : ''}</span>`;
+      container.appendChild(h2);
+
+      for (const p of probs) {
+        const isPhase2 = p.Applicable_Biomes === DREEL;
+
+        // Find missing fields
+        const missingFields = REQUIRED_SOLUTION_FIELDS.filter(f => !p[f] || p[f].trim() === '');
+
+        if (missingFields.length) totalIssues++;
+
+        const div = document.createElement('div');
+        div.className = 'problem' + (isPhase2 ? ' phase2' : '') + (missingFields.length ? ' has-issues' : '');
+
+        // Header
+        const header = document.createElement('div');
+        header.innerHTML = `
+          <div class="category">
+            ${category}
+            ${isPhase2 ? '<span class="flag">PHASE 2 — Dreel Burn</span>' : ''}
+          </div>
+          <div class="symptom">${p.Stated_Symptom}</div>
+          <div class="meta">
+            <span class="code">${p.Problem_Code}</span>
+            &nbsp;·&nbsp; Biomes: <strong>${p.Applicable_Biomes}</strong>
+            &nbsp;·&nbsp; Farm types: ${p.Applicable_Farm_Types}
+          </div>`;
+        div.appendChild(header);
+
+        // Diagnosis
+        const diag = document.createElement('div');
+        diag.className = 'diagnosis';
+        diag.textContent = p.Farmer_Diagnosis_Copy;
+        div.appendChild(diag);
+
+        // Solution map
+        const solGrid = document.createElement('div');
+        solGrid.className = 'solutions';
+        for (const [field, label] of Object.entries(SOL_LABELS)) {
+          const row = document.createElement('div');
+          row.className = 'solution-row';
+          const labelEl = document.createElement('span');
+          labelEl.className = 'sol-label';
+          labelEl.textContent = label;
+          const textEl = document.createElement('span');
+          textEl.className = 'sol-text';
+          textEl.textContent = p[field] || '—';
+          if (!p[field]) textEl.style.color = '#ef4444';
+          row.append(labelEl, textEl);
+          solGrid.appendChild(row);
+        }
+        div.appendChild(solGrid);
+
+        // Variants
+        const varEl = document.createElement('div');
+        varEl.className = 'variants';
+        varEl.textContent = 'ShieldBelt variants: ' + (p.Relevant_ShieldBelt_Variants ?? []).join(' · ');
+        div.appendChild(varEl);
+
+        // Solution pills
+        if (p.Linked_Solution_Directory_Keys?.length) {
+          const pillsEl = document.createElement('div');
+          pillsEl.className = 'pills';
+          p.Linked_Solution_Directory_Keys.forEach(k => {
+            const pill = document.createElement('span');
+            pill.className = 'pill';
+            pill.textContent = k;
+            pillsEl.appendChild(pill);
+          });
+          div.appendChild(pillsEl);
+        }
+
+        // Missing field warnings
+        if (missingFields.length) {
+          const warn = document.createElement('div');
+          warn.className = 'warn';
+          warn.textContent = `⚠ Missing fields: ${missingFields.join(', ')}`;
+          div.appendChild(warn);
+        }
+
+        container.appendChild(div);
+      }
+    }
+
+    // Summary footer
+    const footer = document.createElement('p');
+    footer.style.cssText = 'margin-top:48px;padding:16px;background:#f0fdf4;border-radius:8px;font-size:14px;';
+    footer.textContent = totalIssues === 0
+      ? `✓ Content audit complete — all ${problems.length} panels rendered without issues.`
+      : `✗ ${totalIssues} panel(s) have missing fields — see ⚠ warnings above.`;
+    footer.style.color = totalIssues === 0 ? '#14532d' : '#991b1b';
+    container.appendChild(footer);
+
+    document.getElementById('summary').textContent += ` · ${totalIssues === 0 ? '✓ no issues' : '⚠ ' + totalIssues + ' issue(s)'}`;
+  </script>
+</body>
+</html>
