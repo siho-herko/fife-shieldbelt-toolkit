@@ -13,7 +13,7 @@
 // ---------------------------------------------------------------------------
 
 const DB_NAME    = 'FifeShieldBelt';
-const DB_VERSION = 2;
+const DB_VERSION = 3;   // FIX [cloudflare/indexeddb]: bumped from 2→3 to force re-seed
 const STORE      = 'interventions';
 
 // ---------------------------------------------------------------------------
@@ -51,24 +51,60 @@ let _db = null;
  * Open the IndexedDB, creating and seeding it if this is a fresh install
  * or a DB_VERSION upgrade. Resolves to the open IDBDatabase.
  *
- * Seeds from /data/fife_interventions_db_v2.json in a single bulk transaction.
+ * FIX [cloudflare/indexeddb]: The onupgradeneeded event handler must be
+ * synchronous.  IndexedDB's versionchange transaction auto-commits as soon as
+ * the synchronous handler returns, so any async/await or fetch() inside it
+ * will be executing against a closed transaction — causing silent failures
+ * (no records stored, app stalls at loading screen).
+ *
+ * Correct pattern: pre-fetch seed data BEFORE calling indexedDB.open(),
+ * then seed synchronously inside onupgradeneeded using the data already in memory.
  *
  * @returns {Promise<IDBDatabase>}
  */
 export function openDB() {
   if (_db) return Promise.resolve(_db);
 
+  // Step 1 — pre-fetch seed data so it is available synchronously during
+  // onupgradeneeded.  On returning visits the service worker serves this
+  // from cache (~instant).  On first visit it downloads once, then caches.
+  return fetch('/data/fife_interventions_db_v2.json')
+    .then(res => {
+      if (!res.ok) throw new Error(`HTTP ${res.status} fetching interventions DB`);
+      return res.json();
+    })
+    .then(json => {
+      const seedRecords = Array.isArray(json) ? json : (json.interventions ?? []);
+      console.info(`FifeShieldBelt: fetched ${seedRecords.length} seed records`);
+      return _openIndexedDB(seedRecords);
+    })
+    .catch(fetchErr => {
+      // Fetch failed (offline, first load).  Try to open the DB anyway —
+      // it may already be seeded from a previous visit.
+      console.warn('FifeShieldBelt: seed fetch failed, opening DB without re-seed:', fetchErr);
+      return _openIndexedDB([]);
+    });
+}
+
+/**
+ * Internal: open (and optionally seed) the IndexedDB with pre-fetched records.
+ * onupgradeneeded is synchronous — no async, no await.
+ *
+ * @param {Object[]} seedRecords  Already-fetched records (may be [] on offline re-open)
+ * @returns {Promise<IDBDatabase>}
+ */
+function _openIndexedDB(seedRecords) {
   return new Promise((resolve, reject) => {
     const req = indexedDB.open(DB_NAME, DB_VERSION);
 
     // -----------------------------------------------------------------------
-    // Schema creation / migration
+    // Schema creation / migration — MUST be synchronous
     // -----------------------------------------------------------------------
-    req.onupgradeneeded = async (event) => {
-      const db      = event.target.result;
-      const oldVer  = event.oldVersion;
+    req.onupgradeneeded = (event) => {            // NOT async
+      const db     = event.target.result;
+      const oldVer = event.oldVersion;
 
-      // Drop the old store if upgrading from v1
+      // Drop the old store when upgrading from a previous version
       if (oldVer > 0 && db.objectStoreNames.contains(STORE)) {
         db.deleteObjectStore(STORE);
       }
@@ -79,36 +115,26 @@ export function openDB() {
       // Index on biome for fast getByBiome() queries
       store.createIndex('by_biome', 'biome', { unique: false });
 
-      // Fetch and bulk-insert all 120 records within the same upgrade transaction
-      try {
-        const res  = await fetch('/data/fife_interventions_db_v2.json');
-        if (!res.ok) throw new Error(`HTTP ${res.status} fetching interventions DB`);
-        const json = await res.json();
-
-        const records = Array.isArray(json) ? json : (json.interventions ?? []);
+      // Seed synchronously — all puts happen within the still-open
+      // versionchange transaction, before it auto-commits on return.
+      if (seedRecords.length) {
         const tx = event.target.transaction;
-
-        for (const record of records) {
+        for (const record of seedRecords) {
           tx.objectStore(STORE).put(record);
         }
-
-        console.info(`FifeShieldBelt DB v2 seeded: ${records.length} records`);
-      } catch (err) {
-        console.error('FifeShieldBelt DB seed failed:', err);
-        reject(err);
+        console.info(`FifeShieldBelt DB v${DB_VERSION} seeded: ${seedRecords.length} records`);
+      } else {
+        console.warn('FifeShieldBelt DB upgrade ran but no seed records were available.');
       }
     };
 
     req.onsuccess = (event) => {
       _db = event.target.result;
-
-      // Log on subsequent loads (no upgrade ran)
       _db.onversionchange = () => {
         _db.close();
         _db = null;
       };
-
-      console.info('FifeShieldBelt DB: loaded existing v2 store');
+      console.info('FifeShieldBelt DB: loaded v' + DB_VERSION);
       resolve(_db);
     };
 
