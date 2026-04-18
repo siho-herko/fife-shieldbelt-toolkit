@@ -222,11 +222,6 @@ function populateProblemChips() {
 
     for (const p of problems) {
       const isPhase2 = p.Applicable_Biomes === 'Dreel Burn Catchment';
-      const appBiomes = p.Applicable_Biomes
-        .split(',').map(s => s.trim()).filter(Boolean);
-      const biomeMismatch = !isPhase2
-        && p.Applicable_Biomes !== 'All'
-        && !appBiomes.some(b => state.biome.includes(b));
 
       const btn = document.createElement('button');
       btn.type      = 'button';
@@ -244,12 +239,8 @@ function populateProblemChips() {
         btn.innerHTML = `<span class="problem-chip__icon">${CATEGORY_ICONS[cat] || ''}</span>${symptom} <span style="font-size:0.7em;opacity:0.6">🔒 Coming soon</span>`;
       } else {
         btn.setAttribute('aria-pressed', String(p.Problem_Code === state.problemCode));
-        if (biomeMismatch) btn.style.opacity = '0.5';
-        if (biomeMismatch) btn.title = `Best match: ${p.Applicable_Biomes} — will switch biome`;
         btn.innerHTML = `<span class="problem-chip__icon">${CATEGORY_ICONS[cat] || ''}</span>${symptom}`;
-        if (biomeMismatch) btn.innerHTML += ' 🔒';
-
-        btn.addEventListener('click', () => handleProblemChipClick(p.Problem_Code, p.Applicable_Biomes));
+        btn.addEventListener('click', () => handleProblemChipClick(p.Problem_Code));
       }
 
       row.appendChild(btn);
@@ -276,18 +267,7 @@ function renderProblemClearBtn() {
   container.insertAdjacentElement('afterbegin', btn);
 }
 
-async function handleProblemChipClick(code, applicableBiomes) {
-  // Switch biome if needed
-  const biomes = applicableBiomes.split(',').map(s => s.trim());
-  if (applicableBiomes !== 'All' && !biomes.some(b => state.biome.includes(b))) {
-    const matchBiome = Object.values(BIOMES).find(bv => biomes.some(b => bv.includes(b)));
-    if (matchBiome) {
-      state.biome = matchBiome;
-      syncBiomeRadio();
-      await loadBiomeRecords(state.biome);
-    }
-  }
-
+async function handleProblemChipClick(code) {
   state.problemCode   = code;
   state.activeProblem = problemsByCode[code];
   updateProblemChipUI(code);
