@@ -1583,6 +1583,11 @@ async function init() {
 
   } catch (err) {
     console.error('ShieldBelt init failed:', err);
+    // Show a visible diagnostic banner so remote debugging is possible.
+    const banner = document.createElement('div');
+    banner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:99999;background:#9b2226;color:#fff;font:14px/1.5 monospace;padding:12px 16px;white-space:pre-wrap;word-break:break-all';
+    banner.textContent = '⚠ ShieldBelt init error — please screenshot this:\n' + (err?.stack || err?.message || String(err));
+    document.body.appendChild(banner);
   } finally {
     hideLoadingScreen();
     registerServiceWorker();
