@@ -1103,16 +1103,24 @@ function hideLoadingScreen() {
 
 function registerServiceWorker() {
   if (!('serviceWorker' in navigator)) return;
-  navigator.serviceWorker.register('sw.js').then(() => {
-    // When a new SW activates (via skipWaiting) reload once so the page runs
-    // the freshly-cached assets instead of the old in-memory modules.
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
-      if (!sessionStorage.getItem('sw-reloaded')) {
-        sessionStorage.setItem('sw-reloaded', '1');
-        window.location.reload();
-      }
-    });
-  }).catch(() => {});
+
+  // FIX [sw-cycling]: capture whether the page was already controlled BEFORE
+  // we call register(). If the page had no SW controller when it loaded, the
+  // first controllerchange event means "new SW just took over a fresh page" —
+  // the app already loaded correctly from the network, so no reload needed.
+  // Only reload on an actual SW UPDATE (old SW → new SW), i.e. wasControlled.
+  const wasControlled = !!navigator.serviceWorker.controller;
+
+  // Add listener before register() to avoid race where controllerchange fires
+  // before the .then() callback has a chance to attach the listener.
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (wasControlled && !sessionStorage.getItem('sw-reloaded')) {
+      sessionStorage.setItem('sw-reloaded', '1');
+      window.location.reload();
+    }
+  });
+
+  navigator.serviceWorker.register('sw.js').catch(() => {});
 }
 
 // =============================================================================
