@@ -4,7 +4,7 @@
  * Strategy: Cache-first for assets; network-first for data files.
  */
 
-const CACHE_NAME = 'fife-shieldbelt-v3';
+const CACHE_NAME = 'fife-shieldbelt-v4';
 
 const PRECACHE = [
   '/',
@@ -23,9 +23,14 @@ const PRECACHE = [
 
 // ── Install: pre-cache all listed assets ────────────────────────────────────
 self.addEventListener('install', event => {
+  // FIX [sw-update]: use cache:'reload' so the SW always fetches fresh asset
+  // bytes from the network, bypassing the browser's HTTP cache.  Without this,
+  // cache.addAll() can silently store a previously-cached (stale) db.js inside
+  // the new SW cache, perpetuating the old broken version.
+  const freshRequests = PRECACHE.map(url => new Request(url, { cache: 'reload' }));
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(PRECACHE))
+      .then(cache => cache.addAll(freshRequests))
       .then(() => self.skipWaiting())
   );
 });
