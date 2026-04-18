@@ -1102,9 +1102,17 @@ function hideLoadingScreen() {
 // =============================================================================
 
 function registerServiceWorker() {
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js').catch(() => {});
-  }
+  if (!('serviceWorker' in navigator)) return;
+  navigator.serviceWorker.register('sw.js').then(() => {
+    // When a new SW activates (via skipWaiting) reload once so the page runs
+    // the freshly-cached assets instead of the old in-memory modules.
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!sessionStorage.getItem('sw-reloaded')) {
+        sessionStorage.setItem('sw-reloaded', '1');
+        window.location.reload();
+      }
+    });
+  }).catch(() => {});
 }
 
 // =============================================================================
