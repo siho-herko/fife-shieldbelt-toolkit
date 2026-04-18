@@ -4,7 +4,7 @@
  * Strategy: Cache-first for assets; network-first for data files.
  */
 
-const CACHE_NAME = 'fife-shieldbelt-v5';
+const CACHE_NAME = 'fife-shieldbelt-v6';
 
 const PRECACHE = [
   '/',
