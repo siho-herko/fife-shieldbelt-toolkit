@@ -1093,7 +1093,11 @@ function hideLoadingScreen() {
   const el = document.getElementById('loading-screen');
   if (el) {
     el.style.opacity = '0';
-    setTimeout(() => { el.hidden = true; el.style.opacity = ''; }, 350);
+    setTimeout(() => {
+      el.hidden = true;
+      el.style.display = 'none'; // override display:flex from CSS — hidden attr alone isn't enough
+      el.style.opacity = '';
+    }, 350);
   }
 }
 
