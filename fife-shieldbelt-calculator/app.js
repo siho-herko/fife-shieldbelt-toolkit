@@ -470,7 +470,10 @@ function initStripLengthInput() {
     });
   }
 
+  // Sync DOM to state on init (URL may have set a different value)
+  input.value = state.lengthM;
   syncSlider(state.lengthM);
+  updateLengthDerived();
 }
 
 function updateLengthDerived() {
@@ -498,6 +501,11 @@ function initCreditPriceSlider() {
     setText('step-price-summary', `£${state.creditPrice} / tCO₂e`);
     await recalc();
   };
+
+  // Sync DOM from state on init (URL restoration may have set a different value)
+  slider.value = state.creditPrice;
+  slider.setAttribute('aria-valuenow', state.creditPrice);
+  if (display) display.textContent = '£' + state.creditPrice;
 
   slider.addEventListener('input',  update);
   slider.addEventListener('change', update);
