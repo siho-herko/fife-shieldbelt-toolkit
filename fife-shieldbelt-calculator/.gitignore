@@ -1,0 +1,10 @@
+# Dependencies
+node_modules/
+
+# Lock files (optional — remove this line if you want to commit package-lock.json)
+package-lock.json
+
+# Playwright test artefacts
+test-results/
+tests/e2e/report/
+playwright-report/
