@@ -270,6 +270,12 @@
               <p class="text-sm text-muted mt-2" id="variant-detail-desc"></p>
               <div class="flex flex-wrap gap-2 mt-3" id="variant-detail-tags"></div>
             </div>
+
+            <div style="margin-top:1rem;">
+              <button id="btn-confirm-variant" class="btn btn-primary" type="button" style="width:100%;">
+                ✓ Confirm selection
+              </button>
+            </div>
           </div>
         </div>
 
@@ -421,66 +427,70 @@
           <div class="results-header__meta" id="results-meta"></div>
         </div>
 
-        <!-- Problem panel (hidden unless a problem is active) -->
+        <!-- ─── OUTPUT SUMMARY heading ───────────────────────────── -->
+        <div class="results-section__heading-major">Output Summary</div>
+
+        <!-- ─── STAT BOXES — 3 key clickable metrics ─────────────── -->
+        <div class="results-section" id="section-key-outcomes">
+          <div class="results-section__title">Key Outcomes</div>
+          <div class="stat-boxes-grid stat-boxes-grid--3col">
+
+            <div class="stat-box stat-box--clickable" id="stat-agro-box" role="button" tabindex="0"
+              aria-label="Net Agronomic Benefit — click to see breakdown"
+              title="Go to Avoided Costs and Productivity Benefits">
+              <div class="stat-box__value stat-box__value--gold" id="stat-agro-benefit">—</div>
+              <div class="stat-box__label">Net Agronomic Benefit</div>
+              <div class="stat-box__sublabel">Productivity + avoided costs − income foregone</div>
+              <div class="stat-box__arrow">↓</div>
+            </div>
+
+            <div class="stat-box stat-box--clickable" id="stat-carbon-box" role="button" tabindex="0"
+              aria-label="25-Year Carbon Revenue — click to see trajectory"
+              title="Go to Carbon Sequestration Trajectory">
+              <div class="stat-box__value stat-box__value--leaf" id="stat-25yr-carbon">—</div>
+              <div class="stat-box__label">25-Year Carbon Revenue</div>
+              <div class="stat-box__sublabel">25yr sequestration × credit price</div>
+              <div class="stat-box__arrow">↓</div>
+            </div>
+
+            <div class="stat-box stat-box--clickable" id="stat-eco-box" role="button" tabindex="0"
+              aria-label="Wider Ecosystem Service Value — click to see breakdown"
+              title="Go to Wider Ecosystem Services">
+              <div class="stat-box__value stat-box__value--leaf" id="stat-wider-eco">—</div>
+              <div class="stat-box__label">Wider Ecosystem Service Value</div>
+              <div class="stat-box__sublabel">Air + catchment + water purification / yr</div>
+              <div class="stat-box__arrow">↓</div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ─── SOLUTION SUMMARY (problem panel) ────────────────── -->
         <div id="problem-panel" hidden class="card problem-panel mb-4" aria-live="polite">
           <!-- Populated by renderProblemPanel() in app.js -->
         </div>
 
-        <!-- ─── STAT BOXES — 5 key metrics ─────────────────────────── -->
-        <div class="results-section">
-          <div class="results-section__title">Key Outcomes</div>
-          <div class="stat-boxes-grid">
-
-            <div class="stat-box">
-              <div class="stat-box__value stat-box__value--gold" id="stat-net-benefit-value">—</div>
-              <div class="stat-box__label">Annual Net Benefit</div>
-              <div class="stat-box__sublabel">All streams − income foregone</div>
+        <!-- ─── SECTION 1 — Agronomic Services ──────────────────── -->
+        <div class="results-section card" id="section-agronomic">
+          <div class="card__header">
+            <span class="card__title">Agronomic Services</span>
+          </div>
+          <div class="results-section-body" style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start;">
+            <canvas id="chart-eco-radar"
+              aria-label="Agronomic services radar chart" role="img">
+              <p>Agronomic services radar chart (canvas not supported)</p>
+            </canvas>
+            <div style="flex:1;min-width:180px;">
+              <div class="results-section__title">Pest, Thermal &amp; Pollination</div>
+              <div id="pest-thermal-chips" class="crew-chips-grid"></div>
             </div>
-
-            <div class="stat-box">
-              <div class="stat-box__value stat-box__value--leaf" id="stat-seq50yr-value">—</div>
-              <div class="stat-box__label">50yr Carbon Total</div>
-              <div class="stat-box__sublabel">tCO₂e · km⁻¹</div>
-            </div>
-
-            <div class="stat-box">
-              <div class="stat-box__value stat-box__value--leaf" id="stat-sser-value">—</div>
-              <div class="stat-box__label">SSER Biodiversity Units</div>
-              <div class="stat-box__sublabel">For this strip length</div>
-            </div>
-
-            <div class="stat-box">
-              <div class="stat-box__value" id="stat-foregone-value">—</div>
-              <div class="stat-box__label">Income Foregone</div>
-              <div class="stat-box__sublabel">Net production cost · yr⁻¹</div>
-            </div>
-
-            <div class="stat-box">
-              <div class="stat-box__value" id="stat-pollination-value">—</div>
-              <div class="stat-box__label">Pollination Value</div>
-              <div class="stat-box__sublabel">Adjacency benefit · yr⁻¹</div>
-            </div>
-
           </div>
         </div>
 
-        <!-- ─── SECTION 2 — Carbon Trajectory ──────────────────────── -->
-        <div class="results-section card">
+        <!-- ─── SECTION 2 — Wider Ecosystem Services ─────────────── -->
+        <div class="results-section card" id="section-wider-eco">
           <div class="card__header">
-            <span class="card__title">Carbon Sequestration Trajectory</span>
-            <span class="text-xs text-muted" id="chart-carbon-total">50-year projection</span>
-          </div>
-          <canvas id="chart-carbon"
-            aria-label="Carbon sequestration trajectory" role="img">
-            <p>Carbon trajectory chart (canvas not supported)</p>
-          </canvas>
-          <div id="chart-carbon-legend" style="margin-top:8px;"></div>
-        </div>
-
-        <!-- ─── SECTION 3 — Water / CREW ────────────────────────────── -->
-        <div class="results-section card">
-          <div class="card__header">
-            <span class="card__title">Water &amp; CREW Ecosystem Services</span>
+            <span class="card__title">Wider Ecosystem Services</span>
             <!-- Placement toggle -->
             <div class="seg-toggle" role="group" aria-label="Placement">
               <button class="seg-toggle__btn active" data-placement="riparian">Riparian</button>
@@ -496,47 +506,15 @@
             <div style="flex:1;min-width:180px;">
               <div class="results-section__title">CREW Service Breakdown</div>
               <div id="crew-chips" class="crew-chips-grid"></div>
-              <div class="mt-3">
-                <span id="fio-badge" class="biome-tag" style="font-size:0.75rem;">FIO —</span>
-              </div>
+              <div class="crew-chips-grid mt-3" id="wider-eco-extra"></div>
             </div>
           </div>
         </div>
 
-        <!-- ─── SECTION 4 — Ecosystem Health ───────────────────────── -->
-        <div class="results-section card">
+        <!-- ─── SECTION 3 — Avoided Costs & Productivity ──────────── -->
+        <div class="results-section card" id="section-avoided-costs">
           <div class="card__header">
-            <span class="card__title">Ecosystem &amp; Agronomic Radar</span>
-          </div>
-          <div class="results-section-body" style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start;">
-            <canvas id="chart-eco-radar"
-              aria-label="Ecosystem health radar chart" role="img">
-              <p>Ecosystem radar chart (canvas not supported)</p>
-            </canvas>
-            <div style="flex:1;min-width:180px;">
-              <div class="results-section__title">Pest &amp; Thermal Regulation</div>
-              <div id="pest-thermal-chips" class="crew-chips-grid"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- ─── SECTION 5 — Financial Summary ───────────────────────── -->
-        <div class="results-section card">
-          <div class="card__header">
-            <span class="card__title">Annual Value by Farm Type</span>
-            <span class="text-xs text-muted">Stacked income streams</span>
-          </div>
-          <canvas id="chart-finance-bar"
-            aria-label="Financial summary stacked bar" role="img">
-            <p>Financial bar chart (canvas not supported)</p>
-          </canvas>
-          <div id="chart-finance-legend" style="margin-top:8px;"></div>
-        </div>
-
-        <!-- ─── SECTION 6 — Avoided Costs / Windbreak / SSER ─────────── -->
-        <div class="results-section card">
-          <div class="card__header">
-            <span class="card__title">Avoided Costs &amp; Windbreak Benefits</span>
+            <span class="card__title">Avoided Costs and Productivity Benefits</span>
             <!-- Windbreak orientation toggle -->
             <div class="seg-toggle" role="group" aria-label="Windbreak orientation">
               <button class="seg-toggle__btn active" data-orient="NS">N–S</button>
@@ -544,19 +522,32 @@
             </div>
           </div>
 
-          <div class="results-section__title mt-3">Avoided Costs by Component</div>
+          <div class="results-section__title mt-3">Avoided Costs</div>
           <canvas id="chart-avoided-costs"
             aria-label="Avoided costs bar chart" role="img">
             <p>Avoided costs chart (canvas not supported)</p>
           </canvas>
 
-          <div class="results-section__title mt-4">Windbreak Yield Benefits</div>
+          <div class="results-section__title mt-4">Productivity Benefits</div>
           <canvas id="chart-windbreak"
-            aria-label="Windbreak benefit bar chart" role="img">
-            <p>Windbreak chart (canvas not supported)</p>
+            aria-label="Productivity benefits bar chart" role="img">
+            <p>Productivity benefits chart (canvas not supported)</p>
           </canvas>
 
-          <div id="sser-profile" class="mt-4"></div>
+          <div id="income-foregone-row" class="mt-3"></div>
+        </div>
+
+        <!-- ─── SECTION 4 — Carbon Trajectory ──────────────────────── -->
+        <div class="results-section card" id="section-carbon">
+          <div class="card__header">
+            <span class="card__title">Carbon Sequestration Trajectory</span>
+            <span class="text-xs text-muted" id="chart-carbon-total">50-year projection</span>
+          </div>
+          <canvas id="chart-carbon"
+            aria-label="Carbon sequestration trajectory" role="img">
+            <p>Carbon trajectory chart (canvas not supported)</p>
+          </canvas>
+          <div id="chart-carbon-legend" style="margin-top:8px;"></div>
         </div>
 
         <!-- ─── Registry — Agronomic Notes ──────────────────────────── -->

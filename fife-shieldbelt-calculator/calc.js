@@ -360,6 +360,11 @@ export function calculate(inputs, record) {
   // 7 benefit streams: carbon + pollination + CREW + pest + thermal + windbreak + avoidedCosts
   const annualNetBenefit = carbIncome + poll + crewTotal + pest + thermal + wbVal + acVal - nif;
 
+  // Derived summary metrics
+  const netAgronomicBenefit = acVal + wbVal + poll + pest + thermal - nif;
+  const seq25yrRevenue      = (seqTraj[4] ?? 0) * (lengthM / 1000) * creditPrice;
+  const widerEcoValue       = crewTotal; // air filtration + catchment hydrology + water purification
+
   // --- Radar (placement-specific) ---
   const rm = record.radarMetrics ?? {};
   const placementRadar = rm[placement] ?? {};
@@ -428,6 +433,9 @@ export function calculate(inputs, record) {
 
     // Full value stack
     annualNetBenefit,
+    netAgronomicBenefit,
+    seq25yrRevenue,
+    widerEcoValue,
 
     // Radar & SEPA
     radarData,

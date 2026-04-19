@@ -776,6 +776,42 @@ input, select, textarea {
   gap: var(--space-3);
 }
 
+.stat-boxes-grid--3col {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.results-section__heading-major {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--c-forest);
+  margin: var(--space-6) 0 var(--space-3);
+  padding-bottom: var(--space-2);
+  border-bottom: 2px solid var(--c-stone);
+}
+
+.stat-box--clickable {
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+  position: relative;
+}
+
+.stat-box--clickable:hover,
+.stat-box--clickable:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  outline: 2px solid var(--c-forest);
+  outline-offset: 2px;
+}
+
+.stat-box__arrow {
+  font-size: 1rem;
+  color: var(--c-muted);
+  margin-top: var(--space-2);
+  text-align: center;
+  opacity: 0.6;
+}
+
 /* ==========================================================================
    13. Buttons
    ========================================================================== */
@@ -1146,6 +1182,9 @@ input, select, textarea {
   .stat-boxes-grid {
     grid-template-columns: 1fr 1fr;
   }
+  .stat-boxes-grid--3col {
+    grid-template-columns: repeat(3, 1fr);
+  }
 
   .biome-grid {
     grid-template-columns: 1fr 1fr 1fr;
@@ -1158,6 +1197,9 @@ input, select, textarea {
   }
 
   .stat-boxes-grid {
+    grid-template-columns: 1fr;
+  }
+  .stat-boxes-grid--3col {
     grid-template-columns: 1fr;
   }
 

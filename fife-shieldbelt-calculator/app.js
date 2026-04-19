@@ -88,14 +88,15 @@ const WIDTH_COLOR = {
 // =============================================================================
 
 const state = {
-  biome:           BIOMES.EAST_NEUK,
-  variantId:       null,
-  farmType:        'General Cropping',
-  placement:       'crossSlope',
-  lengthM:         1000,
-  creditPrice:     60,
-  problemCode:     null,
-  windbreakOrient: 'NS',
+  biome:                BIOMES.EAST_NEUK,
+  variantId:            null,
+  recommendedVariantId: null,
+  farmType:             'General Cropping',
+  placement:            'crossSlope',
+  lengthM:              1000,
+  creditPrice:          60,
+  problemCode:          null,
+  windbreakOrient:      'NS',
   // Derived (never set directly by user)
   biomeRecords:    [],
   currentRecord:   null,
@@ -268,7 +269,8 @@ async function handleProblemChipClick(code) {
 
   const rec = recommendVariant(code, state.biomeRecords, state.farmType);
   if (rec) {
-    state.variantId = rec.id;
+    state.variantId            = rec.id;
+    state.recommendedVariantId = rec.id;
     syncVariantSelect();
   }
 
@@ -365,7 +367,15 @@ function initVariantSelector() {
       if (rec) setText('step-variant-summary', `${rec.width} ${rec.variant}`);
     }
     await applyVariantAndRecalc();
-    closeStep(4); openStep(5);
+    // No auto-advance: user must press Confirm Selection
+  });
+}
+
+function initConfirmVariant() {
+  document.getElementById('btn-confirm-variant')?.addEventListener('click', () => {
+    closeStep(4);
+    openStep(5);
+    openStep(6);
   });
 }
 
@@ -411,7 +421,6 @@ function initStripLengthInput() {
   // FIX [input-validation]: track last valid value so non-numeric input reverts
   let lastValidLength = state.lengthM;
   let debounceTimer;
-  let hasAdvanced = false;
 
   function syncSlider(val) {
     if (!slider) return;
@@ -421,7 +430,7 @@ function initStripLengthInput() {
     if (sliderDisplay) sliderDisplay.textContent = val.toLocaleString('en-GB') + ' m';
   }
 
-  const applyValue = async (val, autoAdvance = false) => {
+  const applyValue = async (val) => {
     clearInputError('strip-length');
     lastValidLength   = val;
     state.lengthM     = val;
@@ -430,10 +439,6 @@ function initStripLengthInput() {
     updateLengthDerived();
     setText('step-length-summary', `${val.toLocaleString('en-GB')} m (${(val / 1000).toFixed(2)} km)`);
     await recalc();
-    if (autoAdvance && !hasAdvanced) {
-      hasAdvanced = true;
-      closeStep(5); openStep(6);
-    }
   };
 
   input.addEventListener('input', () => {
@@ -449,7 +454,7 @@ function initStripLengthInput() {
         showInputError('strip-length', 'Enter a length greater than 0 m');
         return;
       }
-      await applyValue(val, true);
+      await applyValue(val);
     }, 300);
   });
 
@@ -461,7 +466,7 @@ function initStripLengthInput() {
     });
     slider.addEventListener('change', async () => {
       const val = parseInt(slider.value, 10);
-      await applyValue(val, true);
+      await applyValue(val);
     });
   }
 
@@ -631,19 +636,50 @@ function recommendVariant(problemCode, biomeRecords, farmType) {
   return scored[0]?.record || null;
 }
 
+/** Returns top 3 alternate variants for "Also consider" section. */
+function getAlternateVariants(problemCode, currentRecord) {
+  if (!problemCode || !state.biomeRecords.length) return [];
+  const allScored = state.biomeRecords.map(record => {
+    let score = 0;
+    const problem = problemsByCode[problemCode];
+    if (problem) {
+      const rawVariants = problem.Relevant_ShieldBelt_Variants;
+      const tvs = (Array.isArray(rawVariants) ? rawVariants : []).map(v => {
+        const si = v.indexOf(' ');
+        return si < 0 ? { width: '', nameFrag: v.toLowerCase() }
+          : { width: v.slice(0, si), nameFrag: v.slice(si + 1).toLowerCase() };
+      });
+      const vname = record.variant.toLowerCase();
+      for (const tv of tvs) {
+        if (vname.includes(tv.nameFrag) && record.width === tv.width) { score += 40; break; }
+        if (vname.includes(tv.nameFrag))                               { score += 20; break; }
+      }
+      score += evalRoutingTrigger(problem.Routing_Trigger, record, state.farmType);
+    }
+    return { record, score };
+  });
+  allScored.sort((a, b) => b.score - a.score);
+  return allScored
+    .filter(s => s.record.id !== currentRecord?.id && s.score > 0)
+    .slice(0, 3)
+    .map(s => s.record);
+}
+
 // =============================================================================
 // E. Problem result panel
 // =============================================================================
 
-function renderProblemPanel(problem, record) {
+function renderProblemPanel(problem, record, otherVariants = []) {
   const panel = document.getElementById('problem-panel');
   if (!panel || !problem) return;
 
   panel.hidden = false;
   const icon = CATEGORY_ICONS[problem.Category] || '●';
 
-  // Recommended variant chip
-  const variantChip = record
+  // Determine "Recommended" vs "Selected"
+  const isRecommended = !state.recommendedVariantId || record?.id === state.recommendedVariantId;
+  const variantLabel  = isRecommended ? 'Recommended' : 'Selected';
+  const variantChip   = record
     ? `<span class="badge-width" data-width="${record.width}">${record.width}</span>
        <strong>${record.variant}</strong>`
     : '<em class="text-muted">No variant matched</em>';
@@ -656,11 +692,22 @@ function renderProblemPanel(problem, record) {
     `<span class="solution-pill" title="Solutions Directory — coming soon">${k}</span>`
   ).join('');
 
+  // "Also consider" variant chips
+  const alsoConsiderHTML = otherVariants.length
+    ? `<div class="problem-panel__section-label">Also Consider</div>
+       <div class="solution-pills">
+         ${otherVariants.map(v =>
+           `<span class="solution-pill"><span class="badge-width" data-width="${v.width}" style="font-size:0.7em">${v.width}</span> ${v.variant}</span>`
+         ).join('')}
+       </div>`
+    : '';
+
   const communityStyle = problem.Solution_Community === 'None directly applicable.'
     ? 'style="color:var(--c-muted);font-style:italic;"'
     : '';
 
   panel.innerHTML = `
+    <div class="problem-panel__section-label" style="font-size:1rem;font-weight:700;color:var(--c-forest);margin-bottom:0.5rem;">Solution Summary</div>
     <div class="problem-panel__head">
       <span class="problem-panel__icon">${icon}</span>
       <div>
@@ -672,10 +719,12 @@ function renderProblemPanel(problem, record) {
     <div class="problem-panel__section-label">Farmer Diagnosis</div>
     <blockquote class="problem-diagnosis">${problem.Farmer_Diagnosis_Copy}</blockquote>
 
-    <div class="problem-panel__section-label">ShieldBelt Solution</div>
+    <div class="problem-panel__section-label">Field Margin Intervention</div>
     <div class="problem-panel__recommendation">
-      Recommended: ${variantChip}
+      ${variantLabel}: ${variantChip}
     </div>
+
+    ${alsoConsiderHTML}
 
     <div class="problem-panel__section-label">5-Point Solution Map</div>
     <div class="solution-map">
@@ -707,7 +756,7 @@ function renderProblemPanel(problem, record) {
     </div>
 
     ${pillsHTML ? `
-    <div class="problem-panel__section-label">Also Consider</div>
+    <div class="problem-panel__section-label">Linked Solutions</div>
     <div class="solution-pills">${pillsHTML}</div>
     ` : ''}
   `;
@@ -751,47 +800,74 @@ function renderResults(results) {
     }
   }
 
-  // --- Stat boxes (5) ---
-  setStatBox('stat-net-benefit-value',   fmtGBP(r.annualNetBenefit) + '/yr');
-  // FIX [ux]: show stat box in red when net benefit is negative
-  const nbBox = document.getElementById('stat-net-benefit-value')?.closest('.stat-box');
-  if (nbBox) nbBox.classList.toggle('stat-box--negative', r.annualNetBenefit < 0);
+  // --- Stat boxes (3 key outcomes) ---
+  setStatBox('stat-agro-benefit',
+    fmtGBP(r.netAgronomicBenefit) + '/yr');
+  const agroBox = document.getElementById('stat-agro-benefit')?.closest('.stat-box');
+  if (agroBox) agroBox.classList.toggle('stat-box--negative', r.netAgronomicBenefit < 0);
 
-  setStatBox('stat-seq50yr-value',       fmtCarbon(r.seq50yrTotal) + ' / 50yr');
-  setStatBox('stat-sser-value',          fmtSSER(r.sserUnitsTotal));
-  setStatBox('stat-foregone-value',      fmtGBP(r.netIncomeForegone) + '/yr');
-  setStatBox('stat-pollination-value',   fmtGBP(r.pollinationValue) + '/yr');
+  setStatBox('stat-25yr-carbon',
+    fmtGBP(r.seq25yrRevenue));
 
-  // Legacy boxes (from Prompt 1 HTML — update if they exist)
-  setStatBox('stat-carbon-value',        fmtCarbon(r.seq50yrTotal));
-  setStatBox('stat-annual-carbon-value', fmt(r.seq50yrTotal / 50, 1) + ' tCO₂e');
-  setStatBox('stat-revenue-value',       fmtGBP(r.annualCarbonIncome) + '/yr');
-  setStatBox('stat-area-value',          fmt(r.areaMHa, 3) + ' ha');
+  setStatBox('stat-wider-eco',
+    fmtGBP(r.widerEcoValue) + '/yr');
+
+  // Click-to-scroll for each stat box
+  setupStatBoxScroll('stat-agro-box',   'section-avoided-costs');
+  setupStatBoxScroll('stat-carbon-box', 'section-carbon');
+  setupStatBoxScroll('stat-eco-box',    'section-wider-eco');
 
   updateLengthDerived();
 
-  // --- Section 2: Carbon trajectory ---
-  // FIX [accessibility]: aria-label on each canvas describes its content
   const setCanvasLabel = (id, desc) => {
     const el = document.getElementById(id);
     if (el) { el.setAttribute('role', 'img'); el.setAttribute('aria-label', desc); }
   };
 
-  const xLabels = ['Yr5','Yr10','Yr15','Yr20','Yr25','Yr30','Yr35','Yr40','Yr45','Yr50'];
-  setCanvasLabel('chart-carbon', `Carbon trajectory chart: 50-year cumulative sequestration for ${r.variantName}`);
-  lineChart(
-    'chart-carbon',
-    xLabels,
-    [{ label: `${r.width} ${r.variantName}`, color: WIDTH_COLOR[r.width] || '#2d6a4f', values: r.seqTrajectory }],
-    'chart-carbon-legend'
+  // --- Section 1: Agronomic Services radar ---
+  setCanvasLabel('chart-eco-radar', `Agronomic services radar chart for ${r.variantName}`);
+  radarChart(
+    'chart-eco-radar',
+    ['Ecosystem\nHealth', 'Habitat', 'Soil Carbon', 'Agronomic\nYield', 'Pest Reg', 'Thermal'],
+    [{
+      label: r.variantName,
+      color: '#52b788',
+      values: [
+        r.radarData.ecosystemHealth,
+        r.radarData.habitatDistinctiveness,
+        r.radarData.soilCarbonAndHealth,
+        r.radarData.agronomicYield,
+        Math.min((r.pestRegulationValue / (r.lengthM / 1000)) / 2, 100),
+        Math.min((r.thermalRegulationValue / (r.lengthM / 1000)) / 2, 100),
+      ],
+    }],
+    null
   );
-  setText('chart-carbon-total', `50yr total: ${fmtCarbon(r.seq50yrTotal)}`);
 
-  // --- Section 3: Water / CREW radar ---
-  setCanvasLabel('chart-water-radar', `Water services radar chart for ${r.variantName}: flood control, sediment trapping, nutrient retention, catchment hydrology, water quality`);
+  // Pest, thermal & pollination chips
+  const ptChips = document.getElementById('pest-thermal-chips');
+  if (ptChips) {
+    ptChips.innerHTML = `
+      <div class="crew-chip">
+        <div class="crew-chip__value">${fmtGBP(r.pestRegulationValue)}</div>
+        <div class="crew-chip__label">Pest regulation / yr</div>
+      </div>
+      <div class="crew-chip">
+        <div class="crew-chip__value">${fmtGBP(r.thermalRegulationValue)}</div>
+        <div class="crew-chip__label">Thermal regulation / yr</div>
+      </div>
+      <div class="crew-chip">
+        <div class="crew-chip__value">${fmtGBP(r.pollinationValue)}</div>
+        <div class="crew-chip__label">Pollination value / yr</div>
+      </div>
+    `;
+  }
+
+  // --- Section 2: Wider Ecosystem Services radar ---
+  setCanvasLabel('chart-water-radar', `Wider ecosystem services radar for ${r.variantName}`);
   radarChart(
     'chart-water-radar',
-    ['Flood Control', 'Sediment Trap', 'Nutrient Retention', 'Catchment Hydro', 'Water Quality'],
+    ['Flood Control', 'Sediment Trap', 'Nutrient\nRetention', 'Catchment\nHydro', 'Water\nQuality'],
     [{
       label: r.variantName,
       color: '#2d6a4f',
@@ -806,7 +882,7 @@ function renderResults(results) {
     null
   );
 
-  // CREW sub-service chips
+  // CREW sub-service chips + SSER + 50yr carbon
   const crewContainer = document.getElementById('crew-chips');
   if (crewContainer) {
     crewContainer.innerHTML = `
@@ -824,76 +900,22 @@ function renderResults(results) {
       </div>
     `;
   }
-
-  // FIO badge
-  const fio = document.getElementById('fio-badge');
-  if (fio) {
-    fio.textContent = `FIO Trapping Efficiency: ${r.fioTrappingEfficiency}%`;
-    fio.style.background = r.fioTrappingEfficiency > 70 ? 'var(--c-leaf)' : 'var(--c-stone)';
-    fio.style.color       = r.fioTrappingEfficiency > 70 ? '#fff' : 'var(--c-ink)';
-  }
-
-  // --- Section 4: Ecosystem / eco radar ---
-  setCanvasLabel('chart-eco-radar', `Ecosystem health radar chart for ${r.variantName}: health, habitat, soil carbon, agronomic yield, pest regulation, thermal regulation`);
-  radarChart(
-    'chart-eco-radar',
-    ['Ecosystem Health', 'Habitat', 'Soil Carbon', 'Agronomic Yield', 'Pest Reg', 'Thermal Reg'],
-    [{
-      label: r.variantName,
-      color: '#52b788',
-      values: [
-        r.radarData.ecosystemHealth,
-        r.radarData.habitatDistinctiveness,
-        r.radarData.soilCarbonAndHealth,
-        r.radarData.agronomicYield,
-        Math.min((r.pestRegulationValue / (r.lengthM / 1000)) / 2, 100),
-        Math.min((r.thermalRegulationValue / (r.lengthM / 1000)) / 2, 100),
-      ],
-    }],
-    null
-  );
-
-  // Pest & thermal chips
-  const ptChips = document.getElementById('pest-thermal-chips');
-  if (ptChips) {
-    ptChips.innerHTML = `
+  const widerEcoExtra = document.getElementById('wider-eco-extra');
+  if (widerEcoExtra) {
+    widerEcoExtra.innerHTML = `
       <div class="crew-chip">
-        <div class="crew-chip__value">${fmtGBP(r.pestRegulationValue)}</div>
-        <div class="crew-chip__label">Pest regulation / yr</div>
+        <div class="crew-chip__value stat-box__value--leaf">${fmtSSER(r.sserUnitsTotal)}</div>
+        <div class="crew-chip__label">Biodiversity Units (${fmt(r.sserPerKm, 2)}/km)</div>
       </div>
       <div class="crew-chip">
-        <div class="crew-chip__value">${fmtGBP(r.thermalRegulationValue)}</div>
-        <div class="crew-chip__label">Thermal regulation / yr</div>
+        <div class="crew-chip__value stat-box__value--leaf">${fmtCarbon(r.seq50yrTotal)}</div>
+        <div class="crew-chip__label">50yr carbon total (tCO₂e/km)</div>
       </div>
     `;
   }
 
-  // --- Section 5: Financial stacked bar (all 4 farm types × 5 income streams) ---
-  setCanvasLabel('chart-finance-bar', `Financial summary: stacked bar chart of annual income streams by farm type for ${r.variantName}`);
-  const ftCalcs = FARM_TYPES.map(ft => calculate(
-    { biome: state.biome, variantId: state.variantId, farmType: ft,
-      placement: state.placement, lengthM: state.lengthM,
-      creditPrice: state.creditPrice, windbreakOrient: state.windbreakOrient },
-    c
-  ));
-
-  hStackedBar(
-    'chart-finance-bar',
-    FARM_TYPES,
-    [
-      { label: 'Carbon income',   color: CHART_COLORS.carbon,    values: ftCalcs.map(f => f.annualCarbonIncome) },
-      { label: 'CREW services',   color: CHART_COLORS.crew,      values: ftCalcs.map(f => f.crewValueTotal) },
-      { label: 'Pest & thermal',  color: CHART_COLORS.pest,      values: ftCalcs.map(f => f.pestRegulationValue + f.thermalRegulationValue) },
-      { label: 'Windbreak',       color: CHART_COLORS.windbreak, values: ftCalcs.map(f => f.windbreakValue) },
-      { label: 'Avoided costs',   color: CHART_COLORS.avoided,   values: ftCalcs.map(f => f.avoidedCosts) },
-    ],
-    null,
-    v => fmtGBP(v),
-    'chart-finance-legend'
-  );
-
-  // --- Section 6a: Avoided costs hBar ---
-  setCanvasLabel('chart-avoided-costs', `Avoided costs chart for ${r.variantName}: flood control, erosion, compaction, downslope erosion, fuel savings`);
+  // --- Section 3: Avoided costs ---
+  setCanvasLabel('chart-avoided-costs', `Avoided costs chart for ${r.variantName}`);
   const ac = r.avoidedCostsBreakdown;
   hBar(
     'chart-avoided-costs',
@@ -905,8 +927,8 @@ function renderResults(results) {
     null
   );
 
-  // --- Section 6b: Windbreak hBar ---
-  setCanvasLabel('chart-windbreak', `Windbreak benefits chart for ${r.variantName}: yield bump, water retention, nutrient pump`);
+  // Productivity Benefits (windbreak)
+  setCanvasLabel('chart-windbreak', `Productivity benefits chart for ${r.variantName}`);
   const wb2 = r.windbreakBreakdown;
   hBar(
     'chart-windbreak',
@@ -918,17 +940,27 @@ function renderResults(results) {
     null
   );
 
-  // --- SSER profile ---
-  const sserEl = document.getElementById('sser-profile');
-  if (sserEl) {
-    sserEl.innerHTML = `
-      <div class="stat-box">
-        <div class="stat-box__value stat-box__value--leaf">${fmtSSER(r.sserUnitsTotal)}</div>
-        <div class="stat-box__label">SSER Biodiversity Units</div>
-        <div class="stat-box__sublabel">${fmt(r.sserPerKm, 2)} units/km · ${fmt(state.lengthM / 1000, 2)} km strip</div>
+  // Income foregone row
+  const ifrEl = document.getElementById('income-foregone-row');
+  if (ifrEl) {
+    ifrEl.innerHTML = `
+      <div class="crew-chip" style="border-left:3px solid var(--c-negative,#9b2226);">
+        <div class="crew-chip__value" style="color:var(--c-negative,#9b2226);">${fmtGBP(r.netIncomeForegone)}</div>
+        <div class="crew-chip__label">Income foregone / yr</div>
       </div>
     `;
   }
+
+  // --- Section 4: Carbon trajectory ---
+  const xLabels = ['Yr5','Yr10','Yr15','Yr20','Yr25','Yr30','Yr35','Yr40','Yr45','Yr50'];
+  setCanvasLabel('chart-carbon', `Carbon trajectory chart: 50-year cumulative sequestration for ${r.variantName}`);
+  lineChart(
+    'chart-carbon',
+    xLabels,
+    [{ label: `${r.width} ${r.variantName}`, color: WIDTH_COLOR[r.width] || '#2d6a4f', values: r.seqTrajectory }],
+    'chart-carbon-legend'
+  );
+  setText('chart-carbon-total', `50yr total: ${fmtCarbon(r.seq50yrTotal)}`);
 
   // --- Agronomic notes ---
   const agro = document.getElementById('agronomic-notes');
@@ -942,13 +974,13 @@ function renderResults(results) {
     ].filter(Boolean).join('');
   }
 
-  // --- Biodiversity impacts ---
   const bioEl = document.getElementById('biodiversity-impacts');
   if (bioEl) bioEl.textContent = r.biodiversityImpacts || '';
 
-  // --- Problem panel ---
+  // --- Problem / Solution panel ---
   if (state.activeProblem) {
-    renderProblemPanel(state.activeProblem, c);
+    const otherVariants = getAlternateVariants(state.problemCode, c);
+    renderProblemPanel(state.activeProblem, c, otherVariants);
   }
 
   // Encode URL
@@ -1383,6 +1415,20 @@ function renderBiomeContextCard(biome) {
 // Stat box flash animation
 // =============================================================================
 
+function setupStatBoxScroll(boxId, targetId) {
+  const box = document.getElementById(boxId);
+  if (!box) return;
+  // Only attach once
+  if (box.dataset.scrollBound) return;
+  box.dataset.scrollBound = '1';
+  const activate = () => {
+    const target = document.getElementById(targetId);
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+  box.addEventListener('click', activate);
+  box.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') activate(); });
+}
+
 function flashStatBoxes() {
   document.querySelectorAll('.stat-box').forEach(el => {
     el.classList.remove('stat-box--flash');
@@ -1576,6 +1622,7 @@ async function init() {
     initBiomeSelector();
     initFarmTypeSelector();
     initVariantSelector();
+    initConfirmVariant();
     initStripLengthInput();
     initCreditPriceSlider();
     initPlacementToggle();
