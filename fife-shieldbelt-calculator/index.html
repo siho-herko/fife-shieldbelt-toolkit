@@ -371,12 +371,26 @@
       <!-- Saved Scenarios -->
       <div id="saved-scenarios-panel" class="saved-scenarios-panel" hidden aria-live="polite"></div>
 
+      <!-- Drawer footer (visible only in mobile drawer mode) -->
+      <div class="panel-left__footer-mobile">
+        <button id="btn-drawer-goto-outputs" class="btn btn-primary" type="button" style="width:100%;">
+          &#8594; Go to Outputs
+        </button>
+      </div>
+
     </aside>
 
     <!-- ---------------------------------------------------------------
          RIGHT PANEL — Results
          --------------------------------------------------------------- -->
     <section class="panel-right" aria-label="Results" aria-live="polite">
+
+      <!-- Mobile: Adjust Inputs button at top of results -->
+      <div class="mobile-results-nav mobile-results-nav--top">
+        <button id="btn-adjust-inputs-top" class="btn btn-ghost mobile-results-nav__btn" type="button">
+          &#9881; Adjust Inputs
+        </button>
+      </div>
 
       <!-- Empty state -->
       <div id="results-empty" class="card" style="min-height:420px;">
@@ -574,6 +588,13 @@
         </div>
 
       </div><!-- /results-content -->
+
+      <!-- Mobile: Adjust Inputs button at bottom of results -->
+      <div class="mobile-results-nav mobile-results-nav--bottom">
+        <button id="btn-adjust-inputs-bottom" class="btn btn-ghost mobile-results-nav__btn" type="button">
+          &#9881; Adjust Inputs
+        </button>
+      </div>
 
     </section>
 

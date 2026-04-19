@@ -1293,26 +1293,57 @@ function renderSavedScenarios() {
 // =============================================================================
 
 function initMobileDrawer() {
-  const btn      = document.getElementById('btn-mobile-drawer');
-  const closeBtn = document.getElementById('btn-close-drawer');
-  const panel    = document.querySelector('.panel-left');
-  const backdrop = document.getElementById('drawer-backdrop');
+  const btn         = document.getElementById('btn-mobile-drawer');
+  const closeBtn    = document.getElementById('btn-close-drawer');
+  const gotoBtn     = document.getElementById('btn-drawer-goto-outputs');
+  const adjustTop   = document.getElementById('btn-adjust-inputs-top');
+  const adjustBot   = document.getElementById('btn-adjust-inputs-bottom');
+  const panel       = document.querySelector('.panel-left');
+  const backdrop    = document.getElementById('drawer-backdrop');
   if (!panel) return;
 
   const openDrawer = () => {
     panel.classList.add('drawer-open');
     if (backdrop) backdrop.hidden = false;
     document.body.style.overflow = 'hidden';
+    if (btn) {
+      btn.setAttribute('aria-expanded', 'true');
+      btn.innerHTML = '&#8594; Go to Outputs';
+    }
   };
+
   const closeDrawer = () => {
     panel.classList.remove('drawer-open');
     if (backdrop) backdrop.hidden = true;
     document.body.style.overflow = '';
+    if (btn) {
+      btn.setAttribute('aria-expanded', 'false');
+      btn.innerHTML = '&#9881; Adjust inputs';
+    }
   };
 
-  btn?.addEventListener('click', openDrawer);
+  const gotoOutputs = () => {
+    closeDrawer();
+    // Scroll to the results panel on mobile
+    const results = document.getElementById('results-content') ||
+                    document.getElementById('results-empty');
+    if (results) results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  // Floating bottom button: open drawer when closed, go to outputs when open
+  btn?.addEventListener('click', () => {
+    if (panel.classList.contains('drawer-open')) {
+      gotoOutputs();
+    } else {
+      openDrawer();
+    }
+  });
+
   closeBtn?.addEventListener('click', closeDrawer);
   backdrop?.addEventListener('click', closeDrawer);
+  gotoBtn?.addEventListener('click', gotoOutputs);
+  adjustTop?.addEventListener('click', openDrawer);
+  adjustBot?.addEventListener('click', openDrawer);
 }
 
 // =============================================================================

@@ -1552,6 +1552,14 @@ input, select, textarea {
   display: none;
 }
 
+.panel-left__footer-mobile {
+  display: none;
+}
+
+.mobile-results-nav {
+  display: none;
+}
+
 .drawer-backdrop {
   position: fixed;
   inset: 0;
@@ -1560,6 +1568,7 @@ input, select, textarea {
 }
 
 @media (max-width: 767px) {
+  /* Floating trigger button — fixed at bottom of viewport */
   .mobile-drawer-trigger {
     display: block;
     position: fixed;
@@ -1567,32 +1576,35 @@ input, select, textarea {
     left: 50%;
     transform: translateX(-50%);
     z-index: 200;
-    min-width: 180px;
+    min-width: 190px;
     text-align: center;
     box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+    transition: background 200ms, color 200ms;
   }
 
+  /* The drawer itself — flex column so header/footer are fixed, body scrolls */
   .panel-left {
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    height: 80vh;
+    height: 85vh;
     background: var(--c-bg);
     border-top: 3px solid var(--c-forest);
     border-radius: 16px 16px 0 0;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+    overflow: hidden;              /* no scroll on the outer element */
+    display: flex;
+    flex-direction: column;
     transform: translateY(105%);
     transition: transform 280ms cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 300;
-    padding: 0 0 2rem;
   }
 
   .panel-left.drawer-open {
     transform: translateY(0);
   }
 
+  /* Sticky header — never scrolls away */
   .panel-left__header-mobile {
     display: flex;
     align-items: center;
@@ -1603,10 +1615,8 @@ input, select, textarea {
     color: var(--c-forest);
     font-size: 1rem;
     border-bottom: 1px solid var(--c-stone);
-    margin-bottom: 0.5rem;
-    position: sticky;
-    top: 0;
     background: var(--c-bg);
+    flex-shrink: 0;
     z-index: 1;
   }
 
@@ -1617,6 +1627,44 @@ input, select, textarea {
     color: var(--c-muted);
     cursor: pointer;
     padding: 4px 8px;
+  }
+
+  /* Scrollable body — grows to fill remaining drawer height */
+  #controls-form {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    padding-bottom: 0.5rem;
+  }
+
+  /* Sticky footer inside drawer */
+  .panel-left__footer-mobile {
+    display: flex;
+    flex-shrink: 0;
+    padding: 0.75rem 1.25rem;
+    border-top: 1px solid var(--c-stone);
+    background: var(--c-bg);
+  }
+
+  /* "Adjust Inputs" nav buttons embedded in results panel */
+  .mobile-results-nav {
+    display: flex;
+    justify-content: center;
+    padding: 0.5rem 0;
+  }
+
+  .mobile-results-nav--top {
+    margin-bottom: 0.25rem;
+  }
+
+  .mobile-results-nav--bottom {
+    margin-top: 0.5rem;
+    padding-bottom: 5rem; /* clear the floating button */
+  }
+
+  .mobile-results-nav__btn {
+    min-width: 170px;
   }
 }
 
@@ -1886,13 +1934,8 @@ input[type="range"]::-moz-range-thumb {
   white-space: nowrap;
 }
 
-/* FIX [mobile/2a]: overflow guard for drawer on small screens */
+/* FIX [mobile/2a]: prevent horizontal scroll at any viewport */
 @media (max-width: 767px) {
-  .panel-left {
-    max-height: 85vh;
-  }
-
-  /* Prevent horizontal scroll at any viewport */
   body, .app-wrapper {
     overflow-x: hidden;
   }
