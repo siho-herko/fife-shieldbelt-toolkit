@@ -186,6 +186,7 @@ function initBiomeSelector() {
         if (rec) { state.variantId = rec.id; syncVariantSelect(); }
       }
       await applyVariantAndRecalc();
+      closeStep(1); openStep(2);
     });
   });
 }
@@ -221,8 +222,6 @@ function populateProblemChips() {
     row.className = 'problem-chips-row';
 
     for (const p of problems) {
-      const isPhase2 = p.Applicable_Biomes === 'Dreel Burn Catchment';
-
       const btn = document.createElement('button');
       btn.type      = 'button';
       btn.className = 'problem-chip';
@@ -232,16 +231,9 @@ function populateProblemChips() {
         ? p.Stated_Symptom.slice(0, 40) + '…'
         : p.Stated_Symptom;
 
-      if (isPhase2) {
-        btn.setAttribute('data-phase', '2');
-        btn.style.pointerEvents = 'none';
-        btn.title = 'Coming soon — Dreel Burn Catchment phase';
-        btn.innerHTML = `<span class="problem-chip__icon">${CATEGORY_ICONS[cat] || ''}</span>${symptom} <span style="font-size:0.7em;opacity:0.6">🔒 Coming soon</span>`;
-      } else {
-        btn.setAttribute('aria-pressed', String(p.Problem_Code === state.problemCode));
-        btn.innerHTML = `<span class="problem-chip__icon">${CATEGORY_ICONS[cat] || ''}</span>${symptom}`;
-        btn.addEventListener('click', () => handleProblemChipClick(p.Problem_Code));
-      }
+      btn.setAttribute('aria-pressed', String(p.Problem_Code === state.problemCode));
+      btn.innerHTML = `<span class="problem-chip__icon">${CATEGORY_ICONS[cat] || ''}</span>${symptom}`;
+      btn.addEventListener('click', () => handleProblemChipClick(p.Problem_Code));
 
       row.appendChild(btn);
     }
@@ -281,6 +273,7 @@ async function handleProblemChipClick(code) {
   }
 
   await applyVariantAndRecalc();
+  closeStep(2); openStep(3);
 }
 
 async function handleClearProblem() {
@@ -322,6 +315,7 @@ function initFarmTypeSelector() {
         if (rec) { state.variantId = rec.id; syncVariantSelect(); }
       }
       await applyVariantAndRecalc();
+      closeStep(3); openStep(4);
     });
   });
 }
@@ -371,6 +365,7 @@ function initVariantSelector() {
       if (rec) setText('step-variant-summary', `${rec.width} ${rec.variant}`);
     }
     await applyVariantAndRecalc();
+    closeStep(4); openStep(5);
   });
 }
 
@@ -408,12 +403,38 @@ function renderVariantDetail(record) {
 // =============================================================================
 
 function initStripLengthInput() {
-  const input = document.getElementById('strip-length');
+  const input  = document.getElementById('strip-length');
+  const slider = document.getElementById('strip-length-slider');
+  const sliderDisplay = document.getElementById('strip-length-slider-display');
   if (!input) return;
 
   // FIX [input-validation]: track last valid value so non-numeric input reverts
   let lastValidLength = state.lengthM;
   let debounceTimer;
+  let hasAdvanced = false;
+
+  function syncSlider(val) {
+    if (!slider) return;
+    const clamped = Math.min(Math.max(val, 100), 5000);
+    slider.value = clamped;
+    slider.setAttribute('aria-valuenow', clamped);
+    if (sliderDisplay) sliderDisplay.textContent = val.toLocaleString('en-GB') + ' m';
+  }
+
+  const applyValue = async (val, autoAdvance = false) => {
+    clearInputError('strip-length');
+    lastValidLength   = val;
+    state.lengthM     = val;
+    input.value       = val;
+    syncSlider(val);
+    updateLengthDerived();
+    setText('step-length-summary', `${val.toLocaleString('en-GB')} m (${(val / 1000).toFixed(2)} km)`);
+    await recalc();
+    if (autoAdvance && !hasAdvanced) {
+      hasAdvanced = true;
+      closeStep(5); openStep(6);
+    }
+  };
 
   input.addEventListener('input', () => {
     clearTimeout(debounceTimer);
@@ -421,7 +442,6 @@ function initStripLengthInput() {
       const raw = input.value.trim();
       const val = parseInt(raw, 10);
       if (!raw || isNaN(val) || !isFinite(val)) {
-        // Non-numeric — silently revert
         input.value = lastValidLength;
         return;
       }
@@ -429,14 +449,23 @@ function initStripLengthInput() {
         showInputError('strip-length', 'Enter a length greater than 0 m');
         return;
       }
-      clearInputError('strip-length');
-      lastValidLength   = val;
-      state.lengthM     = val;
-      updateLengthDerived();
-      setText('step-length-summary', `${val.toLocaleString('en-GB')} m (${(val / 1000).toFixed(2)} km)`);
-      await recalc();
+      await applyValue(val, true);
     }, 300);
   });
+
+  if (slider) {
+    slider.addEventListener('input', () => {
+      const val = parseInt(slider.value, 10);
+      if (sliderDisplay) sliderDisplay.textContent = val.toLocaleString('en-GB') + ' m';
+      input.value = val;
+    });
+    slider.addEventListener('change', async () => {
+      const val = parseInt(slider.value, 10);
+      await applyValue(val, true);
+    });
+  }
+
+  syncSlider(state.lengthM);
 }
 
 function updateLengthDerived() {
