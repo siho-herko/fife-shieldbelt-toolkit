@@ -1412,18 +1412,19 @@ function renderBiomeContextCard(biome) {
     if (!ctx) { accordionEl.hidden = true; }
     else {
       accordionEl.hidden = false;
-      accordionEl.innerHTML = buildBiomeCardHTML(ctx);
+      accordionEl.innerHTML = buildBiomeCardHTML(biome, ctx);
     }
   }
 
   if (outputEl) {
-    outputEl.innerHTML = ctx ? buildBiomeCardHTML(ctx) : '';
+    outputEl.innerHTML = ctx ? buildBiomeCardHTML(biome, ctx) : '';
   }
 }
 
-function buildBiomeCardHTML(ctx) {
+function buildBiomeCardHTML(biome, ctx) {
   return `
     <div class="biome-context-card">
+      <div class="biome-context-card__name">${biome}</div>
       <div class="biome-context-card__tagline">${ctx.tagline}</div>
       <div class="biome-context-card__stats">
         <span><strong>${ctx.km}</strong> km capacity</span>
