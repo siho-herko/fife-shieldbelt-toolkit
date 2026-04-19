@@ -1403,11 +1403,26 @@ function scrollToResults() {
 
 function renderBiomeContextCard(biome) {
   const ctx = BIOME_CONTEXT[biome];
-  const el  = document.getElementById('biome-context-card');
-  if (!el) return;
-  if (!ctx) { el.hidden = true; return; }
-  el.hidden = false;
-  el.innerHTML = `
+
+  // Populate both the accordion card (mobile) and the output-panel banner (all layouts)
+  const accordionEl = document.getElementById('biome-context-card');
+  const outputEl    = document.getElementById('biome-info-output');
+
+  if (accordionEl) {
+    if (!ctx) { accordionEl.hidden = true; }
+    else {
+      accordionEl.hidden = false;
+      accordionEl.innerHTML = buildBiomeCardHTML(ctx);
+    }
+  }
+
+  if (outputEl) {
+    outputEl.innerHTML = ctx ? buildBiomeCardHTML(ctx) : '';
+  }
+}
+
+function buildBiomeCardHTML(ctx) {
+  return `
     <div class="biome-context-card">
       <div class="biome-context-card__tagline">${ctx.tagline}</div>
       <div class="biome-context-card__stats">

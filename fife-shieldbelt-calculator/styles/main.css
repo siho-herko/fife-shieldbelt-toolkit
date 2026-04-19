@@ -1722,6 +1722,42 @@ input, select, textarea {
   margin-bottom: 0.875rem;
 }
 
+/* On desktop the biome card inside the accordion is redundant — the banner
+   above Output Summary covers it. Hide it when both panels are side-by-side. */
+@media (min-width: 768px) {
+  #biome-context-card { display: none !important; }
+}
+
+/* ─── BIOME & INTERVENTION BANNER (above Output Summary) ─── */
+.biome-variant-banner {
+  background: var(--c-bg);
+  border: 1px solid var(--c-stone);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4) var(--space-5);
+  margin-bottom: var(--space-5);
+}
+
+.biome-variant-banner__heading {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--c-muted);
+  margin-bottom: var(--space-3);
+}
+
+/* No border-bottom separator needed when results-header lives inside the banner */
+.biome-variant-banner .results-header {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+/* Remove the extra bottom margin from the biome card when inside the banner */
+.biome-variant-banner .biome-context-card {
+  margin-bottom: var(--space-3);
+}
+
 .biome-context-card__tagline {
   font-family: var(--font-display);
   font-style: italic;
