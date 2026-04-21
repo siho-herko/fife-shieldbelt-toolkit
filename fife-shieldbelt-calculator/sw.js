@@ -1,10 +1,12 @@
 /**
  * sw.js — Service Worker for Fife ShieldBelt Calculator
- * Cache name: fife-shieldbelt-v2
  * Strategy: Cache-first for assets; network-first for data files.
+ * Bump SHIELDBELT_CACHE_VERSION in version.js on every deploy.
  */
 
-const CACHE_NAME = 'fife-shieldbelt-v6';
+importScripts('version.js');
+
+const CACHE_NAME = 'fife-shieldbelt-' + SHIELDBELT_CACHE_VERSION;
 
 const PRECACHE = [
   '/',
@@ -23,28 +25,29 @@ const PRECACHE = [
 
 // ── Install: pre-cache all listed assets ────────────────────────────────────
 self.addEventListener('install', event => {
+  // Take over immediately; do not wait for tabs to close (pairs with clients.claim in activate).
+  self.skipWaiting();
   // FIX [sw-update]: use cache:'reload' so the SW always fetches fresh asset
   // bytes from the network, bypassing the browser's HTTP cache.  Without this,
   // cache.addAll() can silently store a previously-cached (stale) db.js inside
   // the new SW cache, perpetuating the old broken version.
   const freshRequests = PRECACHE.map(url => new Request(url, { cache: 'reload' }));
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(freshRequests))
-      .then(() => self.skipWaiting())
+    caches.open(CACHE_NAME).then(cache => cache.addAll(freshRequests))
   );
 });
 
-// ── Activate: delete old cache versions ─────────────────────────────────────
+// ── Activate: delete old cache versions and claim all clients ───────────────
 self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(
-        keys
-          .filter(key => key !== CACHE_NAME)
-          .map(key => caches.delete(key))
-      )
-    ).then(() => self.clients.claim())
+    Promise.all([
+      caches.keys().then(keys =>
+        Promise.all(
+          keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
+        )
+      ),
+      self.clients.claim(),
+    ])
   );
 });
 

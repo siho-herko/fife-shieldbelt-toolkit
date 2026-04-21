@@ -1050,18 +1050,20 @@ function paintCompareCharts(rows) {
     if (mw && mw > 24) {
       capW = Math.min(capW, Math.max(200, Math.floor(mw) - 40));
     }
-    // Never use || 560 when width is 0 — that overflows the dialog and clips the chart bitmap.
-    let minW = Math.min(320, capW);
+    // Target width = chart column width (use full wrap — avoid raw-12 leaving empty margins).
+    let targetW = capW;
     if (wrap) {
       const rw = wrap.getBoundingClientRect().width;
       const cw = wrap.clientWidth;
       let raw = rw > 8 ? Math.floor(rw) : (cw > 8 ? cw : 0);
       if (raw <= 8) raw = capW;
-      minW = Math.min(capW, Math.max(200, raw - 12));
-    } else {
-      minW = capW;
+      targetW = Math.min(capW, Math.max(200, raw));
     }
-    const chartOpts = { minFallbackWidth: minW, maxCanvasWidth: capW };
+    const chartOpts = {
+      minFallbackWidth:      targetW,
+      maxCanvasWidth:        capW,
+      hideXAxisTickLabels:   true,
+    };
 
     const labels = rows.map(r => r.label);
     const green  = '#2d6a4f';
@@ -1315,26 +1317,66 @@ function hideLoadingScreen() {
 // Service worker
 // =============================================================================
 
-function registerServiceWorker() {
-  if (!('serviceWorker' in navigator)) return;
+let updateBannerShown = false;
 
-  // FIX [sw-cycling]: capture whether the page was already controlled BEFORE
-  // we call register(). If the page had no SW controller when it loaded, the
-  // first controllerchange event means "new SW just took over a fresh page" —
-  // the app already loaded correctly from the network, so no reload needed.
-  // Only reload on an actual SW UPDATE (old SW → new SW), i.e. wasControlled.
-  const wasControlled = !!navigator.serviceWorker.controller;
+function showUpdateBannerOnce() {
+  if (updateBannerShown || document.getElementById('update-banner')) return;
+  updateBannerShown = true;
+  const banner = document.createElement('div');
+  banner.id = 'update-banner';
+  banner.className = 'update-banner';
+  banner.setAttribute('role', 'status');
+  const span = document.createElement('span');
+  span.className = 'update-banner__text';
+  span.textContent = 'A new version of the ShieldBelt Calculator is available.';
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'update-banner__btn';
+  btn.textContent = 'Update now';
+  btn.addEventListener('click', () => {
+    window.location.reload();
+  });
+  banner.append(span, btn);
+  document.body.appendChild(banner);
+}
 
-  // Add listener before register() to avoid race where controllerchange fires
-  // before the .then() callback has a chance to attach the listener.
-  navigator.serviceWorker.addEventListener('controllerchange', () => {
-    if (wasControlled && !sessionStorage.getItem('sw-reloaded')) {
-      sessionStorage.setItem('sw-reloaded', '1');
-      window.location.reload();
+function wireWaitingWorker(worker) {
+  if (!worker) return;
+  worker.addEventListener('statechange', () => {
+    if (worker.state === 'installed' && navigator.serviceWorker.controller) {
+      showUpdateBannerOnce();
     }
   });
+}
 
-  navigator.serviceWorker.register('sw.js').catch(() => {});
+async function registerServiceWorker() {
+  if (!('serviceWorker' in navigator)) return;
+  const hadControllerAtLoad = !!navigator.serviceWorker.controller;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!navigator.serviceWorker.controller) return;
+    if (hadControllerAtLoad) showUpdateBannerOnce();
+  });
+
+  try {
+    const reg = await navigator.serviceWorker.register('sw.js');
+
+    if (reg.waiting && navigator.serviceWorker.controller) {
+      showUpdateBannerOnce();
+    }
+
+    reg.addEventListener('updatefound', () => {
+      const w = reg.installing;
+      if (w) wireWaitingWorker(w);
+    });
+
+    if (reg.installing) wireWaitingWorker(reg.installing);
+
+    setInterval(() => {
+      reg.update().catch(() => {});
+    }, 60 * 60 * 1000);
+  } catch (_) {
+    /* offline or SW blocked */
+  }
 }
 
 let toastHideTimer = null;
