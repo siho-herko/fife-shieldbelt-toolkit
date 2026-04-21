@@ -15,6 +15,7 @@ export default defineConfig({
   reporter: [['list'], ['html', { open: 'never', outputFolder: 'tests/e2e/report' }]],
 
   use: {
+    // Serve `fife-shieldbelt-calculator/` at this origin (e.g. `node server.tmp.cjs` on port 8080).
     baseURL: 'http://localhost:8080',
     // Generous timeout — app fetches JSON on load
     actionTimeout: 10_000,

@@ -1523,7 +1523,10 @@ input, select, textarea {
 #chart-avoided-costs,
 #chart-windbreak,
 #chart-carbon,
-#chart-modal-compare {
+#chart-modal-compare,
+#chart-compare-agro,
+#chart-compare-carbon,
+#chart-compare-eco {
   width: 100%;
   display: block;
 }
@@ -1708,6 +1711,13 @@ input, select, textarea {
   .mobile-results-nav--bottom {
     margin-top: 0.5rem;
     padding-bottom: 5rem; /* clear the floating button */
+    /* Sit above the fixed "Adjust inputs" FAB (z-index 200) so taps reach this row */
+    position: relative;
+    z-index: 210;
+    background: var(--c-bg);
+    padding-top: 0.5rem;
+    margin-bottom: 0;
+    box-shadow: 0 -4px 12px rgba(26, 61, 43, 0.06);
   }
 
   .mobile-results-nav__btn {

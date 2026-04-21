@@ -999,17 +999,85 @@ function renderResults(results) {
 // H. Compare Scenarios modal
 // =============================================================================
 
+/** Normalise a saved-scenario object (or partial) for charting. */
+function normalizeCompareRow(s) {
+  if (!s || typeof s !== 'object') return null;
+  const label = String(s.label || 'Scenario').slice(0, 80);
+  const agro = Number(
+    s.agroNetBenefit ?? s.netAgronomicBenefit ?? s.netBenefit ?? 0
+  ) || 0;
+  const carbon = Number(s.carbonRevenue25 ?? s.seq25yrRevenue ?? 0) || 0;
+  const eco = Number(s.widerEcoValue ?? 0) || 0;
+  return { label, agroNetBenefit: agro, carbonRevenue25: carbon, widerEcoValue: eco };
+}
+
+/** Rows for compare charts: saved scenarios, else current session if results exist. */
+function buildCompareRows() {
+  const saved = getSavedScenarios()
+    .filter(x => x && typeof x === 'object')
+    .map(normalizeCompareRow)
+    .filter(Boolean);
+  if (saved.length) return saved;
+  if (state.lastResults) {
+    return [normalizeCompareRow({
+      label:           'Current session',
+      agroNetBenefit:  state.lastResults.netAgronomicBenefit,
+      carbonRevenue25: state.lastResults.seq25yrRevenue,
+      widerEcoValue:   state.lastResults.widerEcoValue,
+    })];
+  }
+  return [];
+}
+
+function paintCompareCharts(rows) {
+  const labels = rows.map(r => r.label);
+  const green  = '#2d6a4f';
+  const gold   = '#b5830a';
+  const teal   = '#52b788';
+
+  hBar(
+    'chart-compare-agro',
+    labels,
+    rows.map(r => r.agroNetBenefit),
+    labels.map(() => green),
+    null,
+    v => fmtGBP(v) + '/yr',
+    null
+  );
+
+  hBar(
+    'chart-compare-carbon',
+    labels,
+    rows.map(r => r.carbonRevenue25),
+    labels.map(() => gold),
+    null,
+    v => fmtGBP(v),
+    null
+  );
+
+  hBar(
+    'chart-compare-eco',
+    labels,
+    rows.map(r => r.widerEcoValue),
+    labels.map(() => teal),
+    null,
+    v => fmtGBP(v) + '/yr',
+    null
+  );
+}
+
 function openComparisonModal() {
   const modal = document.getElementById('modal-compare');
   if (!modal) return;
   modal.showModal?.() || (modal.hidden = false);
 
-  const scenarios  = getSavedScenarios();
+  const rows       = buildCompareRows();
   const chartsEl   = document.getElementById('modal-compare-charts');
   const emptyEl    = document.getElementById('modal-compare-empty');
   const descEl     = document.getElementById('modal-compare-desc');
+  const savedCount = getSavedScenarios().filter(x => x && typeof x === 'object').length;
 
-  if (!scenarios.length) {
+  if (!rows.length) {
     if (chartsEl) chartsEl.style.display = 'none';
     if (emptyEl)  emptyEl.style.display  = '';
     if (descEl)   descEl.style.display   = 'none';
@@ -1020,49 +1088,22 @@ function openComparisonModal() {
   if (emptyEl)  emptyEl.style.display  = 'none';
   if (descEl) {
     descEl.style.display = '';
-    if (scenarios.length === 1) {
+    if (savedCount === 0) {
+      descEl.textContent =
+        'No saved scenarios yet — showing this session only. Use Save scenario to store runs, then reopen here to compare Net Agronomic Benefit (£/yr), 25-Year Carbon Revenue (£), and Wider Ecosystem Value (£/yr).';
+    } else if (savedCount === 1) {
       descEl.textContent =
         'You have one saved scenario. Save another to compare Net Agronomic Benefit (£/yr), 25-Year Carbon Revenue (£), and Wider Ecosystem Value (£/yr) side-by-side.';
     } else {
       descEl.textContent =
-        `Comparing ${scenarios.length} saved scenarios: Net Agronomic Benefit (£/yr), 25-Year Carbon Revenue (£), and Wider Ecosystem Value (£/yr).`;
+        `Comparing ${savedCount} saved scenarios: Net Agronomic Benefit (£/yr), 25-Year Carbon Revenue (£), and Wider Ecosystem Value (£/yr).`;
     }
   }
 
-  const labels = scenarios.map(s => s.label);
-  const green  = '#2d6a4f';
-  const gold   = '#b5830a';
-  const teal   = '#52b788';
-
-  hBar(
-    'chart-compare-agro',
-    labels,
-    scenarios.map(s => s.agroNetBenefit ?? 0),
-    scenarios.map(() => green),
-    null,
-    v => fmtGBP(v) + '/yr',
-    null
-  );
-
-  hBar(
-    'chart-compare-carbon',
-    labels,
-    scenarios.map(s => s.carbonRevenue25 ?? 0),
-    scenarios.map(() => gold),
-    null,
-    v => fmtGBP(v),
-    null
-  );
-
-  hBar(
-    'chart-compare-eco',
-    labels,
-    scenarios.map(s => s.widerEcoValue ?? 0),
-    scenarios.map(() => teal),
-    null,
-    v => fmtGBP(v) + '/yr',
-    null
-  );
+  // Dialog must layout before canvas width is known — paint on next frames.
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => paintCompareCharts(rows));
+  });
 }
 
 function initModal() {

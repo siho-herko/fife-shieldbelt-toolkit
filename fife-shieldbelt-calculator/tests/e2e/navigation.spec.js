@@ -587,6 +587,14 @@ test.describe('Mobile drawer', () => {
     await expect(page.locator('#btn-adjust-inputs-bottom')).toBeAttached();
   });
 
+  test('bottom Adjust Inputs opens the drawer', async ({ page }) => {
+    const bottom = page.locator('#btn-adjust-inputs-bottom');
+    await bottom.scrollIntoViewIfNeeded();
+    await bottom.click();
+    await page.waitForTimeout(450);
+    await expect(page.locator('.panel-left')).toHaveClass(/drawer-open/);
+  });
+
   // Backdrop tap is no longer applicable — the drawer is full-screen (100dvh),
   // so no backdrop area is exposed to tap. Close is via the ✕ button or
   // the "Go to Outputs" / floating button instead.
@@ -617,6 +625,14 @@ test.describe('Compare Scenarios modal', () => {
     await page.locator('#btn-compare-scenarios').click();
     await page.waitForTimeout(400);
     await expect(page.locator('#modal-compare')).toBeVisible();
+  });
+
+  test('compare modal renders chart canvases with height', async ({ page }) => {
+    await page.locator('#btn-compare-scenarios').click();
+    await page.waitForTimeout(600);
+    await expect(page.locator('#modal-compare-charts')).toBeVisible();
+    const h = await page.locator('#chart-compare-agro').evaluate((el) => el.getBoundingClientRect().height);
+    expect(h).toBeGreaterThan(24);
   });
 
   test('modal can be dismissed', async ({ page }) => {
