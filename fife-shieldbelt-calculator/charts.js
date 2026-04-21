@@ -148,15 +148,15 @@ export function setupCanvas(canvasId, heightPx, sizing = 0) {
  * @param {number} xMax
  * @param {string} stoneColor
  */
-function drawXGrid(ctx, x0, y0, pw, ph, xMax, stoneColor) {
-  const steps = 4;
+function drawXGrid(ctx, x0, y0, pw, ph, xMax, stoneColor, steps = 4) {
+  const s = Math.max(1, Math.min(8, Math.floor(steps) || 4));
   ctx.save();
   ctx.strokeStyle = stoneColor;
   ctx.globalAlpha = 0.5;
   ctx.lineWidth   = 1;
 
-  for (let i = 0; i <= steps; i++) {
-    const x = x0 + (pw / steps) * i;
+  for (let i = 0; i <= s; i++) {
+    const x = x0 + (pw / s) * i;
     ctx.beginPath();
     ctx.moveTo(x, y0);
     ctx.lineTo(x, y0 + ph);
@@ -167,9 +167,45 @@ function drawXGrid(ctx, x0, y0, pw, ph, xMax, stoneColor) {
   ctx.globalAlpha = 0.9;
   ctx.beginPath();
   ctx.moveTo(x0, y0 + ph);
-  ctx.lineTo(x0 + pw, y0 + ph);
-  ctx.stroke();
+    ctx.lineTo(x0 + pw, y0 + ph);
+    ctx.stroke();
   ctx.restore();
+}
+
+/**
+ * Pick tick count so formatted labels do not overlap (compare + main hBar use long GBP strings).
+ * @param {CanvasRenderingContext2D} ctx
+ * @param {number} pw
+ * @param {number} xMax
+ * @param {Function} formatter
+ * @returns {number} steps in [1, 4] → (steps + 1) tick positions
+ */
+function resolveXAxisSteps(ctx, pw, xMax, formatter) {
+  if (!Number.isFinite(pw) || pw < 24) return 1;
+  ctx.save();
+  ctx.font = `11px ${FONT_MONO}`;
+  const candidates = [4, 3, 2, 1];
+  for (const s of candidates) {
+    const gap = pw / s;
+    if (gap < 20) continue;
+    let ok = true;
+    for (let i = 0; i <= s; i++) {
+      const val = (xMax / s) * i;
+      const t = String(formatter(val));
+      const tw = ctx.measureText(t).width;
+      const slack = i === 0 || i === s ? 12 : 14;
+      if (tw > gap - slack) {
+        ok = false;
+        break;
+      }
+    }
+    if (ok) {
+      ctx.restore();
+      return s;
+    }
+  }
+  ctx.restore();
+  return 1;
 }
 
 /**
@@ -182,19 +218,30 @@ function drawXGrid(ctx, x0, y0, pw, ph, xMax, stoneColor) {
  * @param {number} xMax
  * @param {Function} formatter
  * @param {string} mutedColor
+ * @param {number} [steps=4]
  */
-function drawXTickLabels(ctx, x0, y0, pw, ph, xMax, formatter, mutedColor) {
-  const steps = 4;
+function drawXTickLabels(ctx, x0, y0, pw, ph, xMax, formatter, mutedColor, steps = 4) {
+  const s = Math.max(1, Math.min(8, Math.floor(steps) || 4));
   ctx.save();
-  ctx.font        = `11px ${FONT_MONO}`;
-  ctx.fillStyle   = mutedColor;
-  ctx.textAlign   = 'center';
+  ctx.font         = `11px ${FONT_MONO}`;
+  ctx.fillStyle    = mutedColor;
   ctx.textBaseline = 'top';
 
-  for (let i = 0; i <= steps; i++) {
-    const x   = x0 + (pw / steps) * i;
-    const val = (xMax / steps) * i;
-    ctx.fillText(formatter(val), x, y0 + ph + 5);
+  for (let i = 0; i <= s; i++) {
+    const tickX = x0 + (pw / s) * i;
+    const val   = (xMax / s) * i;
+    const text  = String(formatter(val));
+
+    if (i === 0) {
+      ctx.textAlign = 'left';
+      ctx.fillText(text, x0 + 2, y0 + ph + 5);
+    } else if (i === s) {
+      ctx.textAlign = 'right';
+      ctx.fillText(text, x0 + pw - 2, y0 + ph + 5);
+    } else {
+      ctx.textAlign = 'center';
+      ctx.fillText(text, tickX, y0 + ph + 5);
+    }
   }
   ctx.restore();
 }
@@ -313,7 +360,8 @@ export function hBar(canvasId, labels, values, colors, xMax, formatter, legendId
   const y0 = PAD_V;
   const ph = rows * (BAR_H + BAR_GAP) - BAR_GAP;
 
-  drawXGrid(ctx, x0, y0, pw, ph, max, c.stone);
+  const xSteps = resolveXAxisSteps(ctx, pw, max, formatter);
+  drawXGrid(ctx, x0, y0, pw, ph, max, c.stone, xSteps);
 
   for (let i = 0; i < rows; i++) {
     const barY   = y0 + i * (BAR_H + BAR_GAP);
@@ -348,7 +396,7 @@ export function hBar(canvasId, labels, values, colors, xMax, formatter, legendId
     ctx.restore();
   }
 
-  drawXTickLabels(ctx, x0, y0, pw, ph, max, formatter, c.muted);
+  drawXTickLabels(ctx, x0, y0, pw, ph, max, formatter, c.muted, xSteps);
 
   if (legendId) {
     const ds = labels.map((label, i) => ({ label, color: resolveColor(colors, i) }));
@@ -392,7 +440,8 @@ export function hStackedBar(canvasId, rowLabels, datasets, xMax, formatter, lege
   const pw = w - lW - PAD_RIGHT;
   const ph = rows * (BAR_H + BAR_GAP) - BAR_GAP;
 
-  drawXGrid(ctx, x0, y0, pw, ph, max, c.stone);
+  const xSteps = resolveXAxisSteps(ctx, pw, max, formatter);
+  drawXGrid(ctx, x0, y0, pw, ph, max, c.stone, xSteps);
 
   for (let i = 0; i < rows; i++) {
     const barY = y0 + i * (BAR_H + BAR_GAP);
@@ -435,7 +484,7 @@ export function hStackedBar(canvasId, rowLabels, datasets, xMax, formatter, lege
     ctx.restore();
   }
 
-  drawXTickLabels(ctx, x0, y0, pw, ph, max, formatter, c.muted);
+  drawXTickLabels(ctx, x0, y0, pw, ph, max, formatter, c.muted, xSteps);
 
   if (legendId) {
     htmlLegend(legendId, datasets.map(ds => ({ label: ds.label, color: ds.color })));

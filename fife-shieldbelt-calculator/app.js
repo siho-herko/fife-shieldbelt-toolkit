@@ -1042,8 +1042,10 @@ function paintCompareCharts(rows) {
       const client = document.documentElement?.clientWidth;
       vv = [vvW, inner, client].find(x => typeof x === 'number' && x > 16) ?? inner ?? 400;
     }
-    // Cap by viewport so setupCanvas never keeps a stale wide width that mobile clips.
-    let capW = Math.max(200, Math.min(Math.floor(vv) - 32, 520));
+    // Cap by viewport and dialog inner width (modal is max 700px — do not hard-cap at 520
+    // or laptop charts stay narrow). Mobile still clamps via mw when the sheet is narrow.
+    const DIALOG_CHART_MAX = 660;
+    let capW = Math.max(200, Math.min(Math.floor(vv) - 32, DIALOG_CHART_MAX));
     const mw = modal?.getBoundingClientRect?.().width;
     if (mw && mw > 24) {
       capW = Math.min(capW, Math.max(200, Math.floor(mw) - 40));
