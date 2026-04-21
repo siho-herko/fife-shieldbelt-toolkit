@@ -587,10 +587,12 @@ test.describe('Mobile drawer', () => {
     await expect(page.locator('#btn-adjust-inputs-bottom')).toBeAttached();
   });
 
-  test('backdrop tap closes the drawer', async ({ page }) => {
+  // Backdrop tap is no longer applicable — the drawer is full-screen (100dvh),
+  // so no backdrop area is exposed to tap. Close is via the ✕ button or
+  // the "Go to Outputs" / floating button instead.
+  test.skip('backdrop tap closes the drawer', async ({ page }) => {
     await page.locator('#btn-mobile-drawer').click();
     await page.waitForTimeout(400);
-    // Use force:true since the backdrop is behind the drawer
     await page.locator('#drawer-backdrop').click({ position: { x: 10, y: 10 }, force: true });
     await page.waitForTimeout(500);
     await expect(page.locator('.panel-left')).not.toHaveClass(/drawer-open/);
