@@ -537,18 +537,36 @@ export function lineChart(canvasId, xLabels, datasets, legendId) {
 // 9. radarChart — Radar / spider chart
 // ---------------------------------------------------------------------------
 
+/** Draw axis label at (x,y); supports "\\n" for two-line labels (canvas fillText does not wrap). */
+function fillRadarAxisLabel(ctx, text, x, y, textAlign) {
+  const lines = String(text)
+    .split(/\n/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+  if (!lines.length) return;
+  const m = ctx.font.match(/(\d+)px/);
+  const fontPx = m ? parseInt(m[1], 10) : 11;
+  const lineHeight = fontPx + 3;
+  ctx.textAlign = textAlign;
+  ctx.textBaseline = 'middle';
+  const mid = (lines.length - 1) / 2;
+  for (let li = 0; li < lines.length; li++) {
+    ctx.fillText(lines[li], x, y + (li - mid) * lineHeight);
+  }
+}
+
 /**
  * Radar / spider chart.
  *
  * @param {string}   canvasId
- * @param {string[]} axes      Polygon vertex labels
+ * @param {string[]} axes      Polygon vertex labels (use "\\n" for short two-line labels)
  * @param {Array<{ label: string, color: string, values: number[] }>} datasets
  *                             Values must be 0–100 each
  * @param {string|null} legendId
  */
 export function radarChart(canvasId, axes, datasets, legendId) {
   const sides = axes.length;
-  const size  = 280;  // logical px square — clamp between 240 and 300
+  const size  = 340;  // logical px — extra margin so axis labels are not clipped
   const setup = setupCanvas(canvasId, size);
   if (!setup) return;
 
@@ -568,7 +586,23 @@ export function radarChart(canvasId, axes, datasets, legendId) {
   const c    = C();
   const cx   = w / 2;
   const cy   = h / 2;
-  const rMax = Math.min(w, h) / 2 - 36;  // leave room for axis labels
+
+  // Room for axis labels — inset from canvas edge based on longest line (incl. \n splits)
+  const radarFontSize = w < 320 ? 10 : 11;
+  ctx.save();
+  ctx.font = `${radarFontSize}px ${FONT_BODY}`;
+  let maxHalfLabel = 0;
+  for (const ax of axes) {
+    for (const line of String(ax).split(/\n/)) {
+      const t = line.trim();
+      if (!t) continue;
+      maxHalfLabel = Math.max(maxHalfLabel, ctx.measureText(t).width / 2);
+    }
+  }
+  ctx.restore();
+  const labelRadialGap = 14;
+  const inset = Math.ceil(maxHalfLabel + labelRadialGap + 18);
+  const rMax = Math.max(44, Math.min(w, h) / 2 - Math.max(52, inset));
 
   // Helper: polar → cartesian, angle 0 at top (−π/2), clockwise
   const vertex = (i, r) => {
@@ -622,21 +656,19 @@ export function radarChart(canvasId, axes, datasets, legendId) {
     ctx.restore();
   }
 
-  // Axis labels — just outside the outermost ring
-  // FIX [mobile/narrow-canvas]: reduce font size on small canvases
-  const radarFontSize = w < 300 ? 9 : 12;
+  // Axis labels — just outside the outermost ring (multi-line aware)
   ctx.save();
   ctx.font      = `${radarFontSize}px ${FONT_BODY}`;
   ctx.fillStyle = c.forest;
   for (let i = 0; i < sides; i++) {
-    const v     = vertex(i, rMax + 16);
+    const v     = vertex(i, rMax + labelRadialGap);
     const angle = (2 * Math.PI * i) / sides - Math.PI / 2;
     const cos   = Math.cos(angle);
 
-    // Text alignment based on which side of centre the label falls
-    ctx.textAlign    = Math.abs(cos) < 0.15 ? 'center' : cos > 0 ? 'left' : 'right';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(axes[i], v.x, v.y);
+    // Anchor so text grows toward canvas edge, not off-canvas
+    const align =
+      Math.abs(cos) < 0.12 ? 'center' : cos > 0 ? 'right' : 'left';
+    fillRadarAxisLabel(ctx, axes[i], v.x, v.y, align);
   }
   ctx.restore();
 

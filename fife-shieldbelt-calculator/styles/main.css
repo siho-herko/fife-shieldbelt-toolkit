@@ -1511,11 +1511,12 @@ input, select, textarea {
   margin-top: var(--space-3);
 }
 
-/* Keep radar canvases from growing beyond 300px */
+/* Radar canvases — match logical chart size in charts.js (340px) */
 #chart-water-radar,
 #chart-eco-radar {
   flex-shrink: 0;
-  max-width: 300px;
+  max-width: 360px;
+  width: 100%;
 }
 
 /* Finance and avoided-cost charts need full width */
