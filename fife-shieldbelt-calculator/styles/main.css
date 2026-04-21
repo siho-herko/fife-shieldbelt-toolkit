@@ -1875,6 +1875,34 @@ input, select, textarea {
    COMPARE SCENARIOS MODAL
    ============================================================================ */
 
+/* <dialog> closed state: UA uses display:none — an inline display:flex would break
+   that and show #modal-compare-charts in the main scroll. Open state uses flex. */
+.modal-compare {
+  box-sizing: border-box;
+  width: min(700px, 95vw);
+  max-width: 100%;
+  max-height: 90dvh;
+  padding: 0;
+  margin: auto;
+  border: none;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.modal-compare:not([open]):not(.modal-compare--open) {
+  display: none !important;
+}
+
+.modal-compare[open],
+.modal-compare.modal-compare--open {
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-compare::backdrop {
+  background: rgba(0, 0, 0, 0.45);
+}
+
 .modal-compare__body {
   /* flex child of <dialog> — min-height:0 lets overflow-y scroll correctly */
   display: block;

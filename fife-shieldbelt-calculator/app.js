@@ -1032,60 +1032,111 @@ function buildCompareRows() {
 }
 
 function paintCompareCharts(rows) {
-  const wrap = document.getElementById('modal-compare-charts');
-  // Never use || 560 when width is 0 — that overflows the dialog and clips the chart bitmap.
-  let minW = 320;
-  if (wrap) {
-    const rw = wrap.getBoundingClientRect().width;
-    const cw = wrap.clientWidth;
-    const raw = rw > 8 ? Math.floor(rw) : (cw > 8 ? cw : 0);
-    minW = raw > 8 ? Math.max(260, Math.min(raw - 12, 520)) : 320;
+  try {
+    const wrap = document.getElementById('modal-compare-charts');
+    // Never use || 560 when width is 0 — that overflows the dialog and clips the chart bitmap.
+    let minW = 320;
+    if (wrap) {
+      const rw = wrap.getBoundingClientRect().width;
+      const cw = wrap.clientWidth;
+      const raw = rw > 8 ? Math.floor(rw) : (cw > 8 ? cw : 0);
+      minW = raw > 8 ? Math.max(260, Math.min(raw - 12, 520)) : 320;
+    }
+    const chartOpts = { minFallbackWidth: minW };
+
+    const labels = rows.map(r => r.label);
+    const green  = '#2d6a4f';
+    const gold   = '#b5830a';
+    const teal   = '#52b788';
+
+    hBar(
+      'chart-compare-agro',
+      labels,
+      rows.map(r => r.agroNetBenefit),
+      labels.map(() => green),
+      null,
+      v => fmtGBP(v) + '/yr',
+      null,
+      chartOpts
+    );
+
+    hBar(
+      'chart-compare-carbon',
+      labels,
+      rows.map(r => r.carbonRevenue25),
+      labels.map(() => gold),
+      null,
+      v => fmtGBP(v),
+      null,
+      chartOpts
+    );
+
+    hBar(
+      'chart-compare-eco',
+      labels,
+      rows.map(r => r.widerEcoValue),
+      labels.map(() => teal),
+      null,
+      v => fmtGBP(v) + '/yr',
+      null,
+      chartOpts
+    );
+  } catch (e) {
+    console.error('paintCompareCharts', e);
   }
-  const chartOpts = { minFallbackWidth: minW };
+}
 
-  const labels = rows.map(r => r.label);
-  const green  = '#2d6a4f';
-  const gold   = '#b5830a';
-  const teal   = '#52b788';
+let compareModalResizeObserver = null;
+let compareModalResizeTimer    = null;
 
-  hBar(
-    'chart-compare-agro',
-    labels,
-    rows.map(r => r.agroNetBenefit),
-    labels.map(() => green),
-    null,
-    v => fmtGBP(v) + '/yr',
-    null,
-    chartOpts
-  );
+function detachCompareModalResizeObserver() {
+  if (compareModalResizeObserver) {
+    compareModalResizeObserver.disconnect();
+    compareModalResizeObserver = null;
+  }
+  clearTimeout(compareModalResizeTimer);
+  compareModalResizeTimer = null;
+}
 
-  hBar(
-    'chart-compare-carbon',
-    labels,
-    rows.map(r => r.carbonRevenue25),
-    labels.map(() => gold),
-    null,
-    v => fmtGBP(v),
-    null,
-    chartOpts
-  );
+function attachCompareModalResizeObserver(rows) {
+  detachCompareModalResizeObserver();
+  const modal = document.getElementById('modal-compare');
+  const body = modal?.querySelector('.modal-compare__body');
+  if (!body || typeof ResizeObserver === 'undefined') return;
+  compareModalResizeObserver = new ResizeObserver(() => {
+    clearTimeout(compareModalResizeTimer);
+    compareModalResizeTimer = setTimeout(() => paintCompareCharts(rows), 60);
+  });
+  compareModalResizeObserver.observe(body);
+}
 
-  hBar(
-    'chart-compare-eco',
-    labels,
-    rows.map(r => r.widerEcoValue),
-    labels.map(() => teal),
-    null,
-    v => fmtGBP(v) + '/yr',
-    null,
-    chartOpts
-  );
+function closeCompareModal() {
+  detachCompareModalResizeObserver();
+  const modal = document.getElementById('modal-compare');
+  if (!modal) return;
+  try {
+    if (modal.open) modal.close();
+  } catch (_) { /* ignore */ }
+  modal.hidden = true;
+  modal.classList.remove('modal-compare--open');
 }
 
 function openComparisonModal() {
+  detachCompareModalResizeObserver();
+
   const modal = document.getElementById('modal-compare');
   if (!modal) return;
-  modal.showModal?.() || (modal.hidden = false);
+
+  modal.hidden = false;
+  if (typeof modal.showModal === 'function') {
+    try {
+      modal.showModal();
+    } catch (_) {
+      modal.classList.add('modal-compare--open');
+    }
+  } else {
+    modal.classList.add('modal-compare--open');
+  }
 
   const rows       = buildCompareRows();
   const chartsEl   = document.getElementById('modal-compare-charts');
@@ -1118,6 +1169,8 @@ function openComparisonModal() {
       setTimeout(paint, 400);
     });
   });
+
+  attachCompareModalResizeObserver(rows);
 }
 
 function initModal() {
@@ -1126,10 +1179,12 @@ function initModal() {
   const close = document.getElementById('btn-close-modal');
   if (!modal) return;
 
+  modal.addEventListener('close', detachCompareModalResizeObserver);
+
   btn?.addEventListener('click', openComparisonModal);
-  close?.addEventListener('click', () => modal.close?.() || (modal.hidden = true));
+  close?.addEventListener('click', closeCompareModal);
   modal.addEventListener('click', e => {
-    if (e.target === modal) modal.close?.() || (modal.hidden = true);
+    if (e.target === modal) closeCompareModal();
   });
 }
 
