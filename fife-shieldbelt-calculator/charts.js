@@ -71,13 +71,26 @@ const LINE_H     = 260;  // px, logical height for line charts
  *
  * @param {string} canvasId
  * @param {number} heightPx  Logical CSS height in pixels
+ * @param {number|{ minFallbackWidth?: number, maxCanvasWidth?: number }} [sizing]
+ *        If a number, treated as minFallbackWidth (back-compat). maxCanvasWidth caps
+ *        logical width so charts in narrow modals (mobile dialog) are not wider than
+ *        the viewport — avoids clipped or invisible bar areas.
  * @returns {{ canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, w: number, h: number }}
  */
-export function setupCanvas(canvasId, heightPx, minFallbackWidth = 0) {
+export function setupCanvas(canvasId, heightPx, sizing = 0) {
   const canvas = document.getElementById(canvasId);
   if (!canvas) {
     console.warn(`charts.js: canvas "${canvasId}" not found`);
     return null;
+  }
+
+  let minFallbackWidth = 0;
+  let maxCanvasWidth = 0;
+  if (typeof sizing === 'number') {
+    minFallbackWidth = sizing;
+  } else if (sizing && typeof sizing === 'object') {
+    minFallbackWidth = sizing.minFallbackWidth ?? 0;
+    maxCanvasWidth = sizing.maxCanvasWidth ?? 0;
   }
 
   const dpr = window.devicePixelRatio || 1;
@@ -95,6 +108,9 @@ export function setupCanvas(canvasId, heightPx, minFallbackWidth = 0) {
   }
   if (!w || w < 8) {
     w = 600;
+  }
+  if (maxCanvasWidth > 8) {
+    w = Math.min(w, maxCanvasWidth);
   }
   const h   = heightPx;
 
@@ -271,25 +287,33 @@ const HBAR_X_TICK_RESERVE = 26;
 export function hBar(canvasId, labels, values, colors, xMax, formatter, legendId, chartOptions = {}) {
   const rows = labels.length;
   const heightPx = rows * (BAR_H + BAR_GAP) + PAD_V * 2 + 20 + HBAR_X_TICK_RESERVE;
-  const setup = setupCanvas(canvasId, heightPx, chartOptions.minFallbackWidth ?? 0);
+  const setup = setupCanvas(canvasId, heightPx, {
+    minFallbackWidth: chartOptions.minFallbackWidth ?? 0,
+    maxCanvasWidth:   chartOptions.maxCanvasWidth ?? 0,
+  });
   if (!setup) return;
 
   const { ctx, w, h } = setup;
   const c      = C();
-  const max    = xMax ?? (Math.max(...values) * 1.1 || 1);
-  const lW     = dynamicLabelW(w);    // FIX [mobile]: responsive label column
+  const numericVals = values.map(v => {
+    const n = Number(v);
+    return Number.isFinite(n) ? n : 0;
+  });
+  const scaleMax = numericVals.length ? Math.max(...numericVals) : 0;
+  const max      = xMax ?? (scaleMax > 0 ? scaleMax * 1.1 : 1);
+  const lW       = dynamicLabelW(w);    // FIX [mobile]: responsive label column
 
-  // Plot area
+  // Plot area — guard pw so narrow mis-measured widths never yield NaN bar geometry.
+  const pw = Math.max(8, w - lW - PAD_RIGHT);
   const x0 = lW;
   const y0 = PAD_V;
-  const pw = w - lW - PAD_RIGHT;
   const ph = rows * (BAR_H + BAR_GAP) - BAR_GAP;
 
   drawXGrid(ctx, x0, y0, pw, ph, max, c.stone);
 
   for (let i = 0; i < rows; i++) {
     const barY   = y0 + i * (BAR_H + BAR_GAP);
-    const barW   = Math.max(0, (values[i] / max) * pw);
+    const barW   = Math.max(0, (numericVals[i] / max) * pw);
     const color  = resolveColor(colors, i);
 
     // Row label — truncated to fit label column
@@ -316,7 +340,7 @@ export function hBar(canvasId, labels, values, colors, xMax, formatter, legendId
     ctx.fillStyle   = c.ink;
     ctx.textAlign   = 'left';
     ctx.textBaseline = 'middle';
-    ctx.fillText(formatter(values[i]), x0 + barW + 6, barY + BAR_H / 2);
+    ctx.fillText(formatter(numericVals[i]), x0 + barW + 6, barY + BAR_H / 2);
     ctx.restore();
   }
 

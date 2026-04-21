@@ -1034,15 +1034,23 @@ function buildCompareRows() {
 function paintCompareCharts(rows) {
   try {
     const wrap = document.getElementById('modal-compare-charts');
+    const vv = typeof window !== 'undefined'
+      ? (window.visualViewport?.width || window.innerWidth || 400)
+      : 400;
+    // Cap by viewport so setupCanvas never keeps a stale wide width that mobile clips.
+    const capW = Math.max(200, Math.min(Math.floor(vv) - 32, 520));
     // Never use || 560 when width is 0 — that overflows the dialog and clips the chart bitmap.
-    let minW = 320;
+    let minW = Math.min(320, capW);
     if (wrap) {
       const rw = wrap.getBoundingClientRect().width;
       const cw = wrap.clientWidth;
-      const raw = rw > 8 ? Math.floor(rw) : (cw > 8 ? cw : 0);
-      minW = raw > 8 ? Math.max(260, Math.min(raw - 12, 520)) : 320;
+      let raw = rw > 8 ? Math.floor(rw) : (cw > 8 ? cw : 0);
+      if (raw <= 8) raw = capW;
+      minW = Math.min(capW, Math.max(200, raw - 12));
+    } else {
+      minW = capW;
     }
-    const chartOpts = { minFallbackWidth: minW };
+    const chartOpts = { minFallbackWidth: minW, maxCanvasWidth: capW };
 
     const labels = rows.map(r => r.label);
     const green  = '#2d6a4f';
@@ -1100,14 +1108,13 @@ function detachCompareModalResizeObserver() {
 
 function attachCompareModalResizeObserver(rows) {
   detachCompareModalResizeObserver();
-  const modal = document.getElementById('modal-compare');
-  const body = modal?.querySelector('.modal-compare__body');
-  if (!body || typeof ResizeObserver === 'undefined') return;
+  const wrap = document.getElementById('modal-compare-charts');
+  if (!wrap || typeof ResizeObserver === 'undefined') return;
   compareModalResizeObserver = new ResizeObserver(() => {
     clearTimeout(compareModalResizeTimer);
     compareModalResizeTimer = setTimeout(() => paintCompareCharts(rows), 60);
   });
-  compareModalResizeObserver.observe(body);
+  compareModalResizeObserver.observe(wrap);
 }
 
 function closeCompareModal() {

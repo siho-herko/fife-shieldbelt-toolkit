@@ -1908,6 +1908,12 @@ input, select, textarea {
   display: block;
 }
 
+#modal-compare-charts {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
 #modal-compare-charts canvas {
   max-width: 100%;
   display: block;

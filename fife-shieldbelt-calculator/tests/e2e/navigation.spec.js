@@ -635,6 +635,15 @@ test.describe('Compare Scenarios modal', () => {
     expect(h).toBeGreaterThan(24);
   });
 
+  test('compare modal charts use viewport width on narrow screens', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 780 });
+    await page.locator('#btn-compare-scenarios').click();
+    await page.waitForTimeout(900);
+    const w = await page.locator('#chart-compare-agro').evaluate((el) => el.getBoundingClientRect().width);
+    expect(w).toBeGreaterThan(100);
+    expect(w).toBeLessThanOrEqual(390);
+  });
+
   test('modal can be dismissed', async ({ page }) => {
     await page.locator('#btn-compare-scenarios').click();
     await page.waitForTimeout(400);
