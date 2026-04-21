@@ -629,7 +629,7 @@ test.describe('Compare Scenarios modal', () => {
 
   test('compare modal renders chart canvases with height', async ({ page }) => {
     await page.locator('#btn-compare-scenarios').click();
-    await page.waitForTimeout(600);
+    await page.waitForTimeout(800);
     await expect(page.locator('#modal-compare-charts')).toBeVisible();
     const h = await page.locator('#chart-compare-agro').evaluate((el) => el.getBoundingClientRect().height);
     expect(h).toBeGreaterThan(24);

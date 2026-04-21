@@ -73,7 +73,7 @@ const LINE_H     = 260;  // px, logical height for line charts
  * @param {number} heightPx  Logical CSS height in pixels
  * @returns {{ canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, w: number, h: number }}
  */
-export function setupCanvas(canvasId, heightPx) {
+export function setupCanvas(canvasId, heightPx, minFallbackWidth = 0) {
   const canvas = document.getElementById(canvasId);
   if (!canvas) {
     console.warn(`charts.js: canvas "${canvasId}" not found`);
@@ -81,7 +81,21 @@ export function setupCanvas(canvasId, heightPx) {
   }
 
   const dpr = window.devicePixelRatio || 1;
-  const w   = canvas.offsetWidth || canvas.clientWidth || 600;
+  let w = canvas.offsetWidth || canvas.clientWidth;
+  if ((!w || w < 8) && canvas.parentElement) {
+    const p = canvas.parentElement;
+    w = p.clientWidth || Math.floor(p.getBoundingClientRect().width) || 0;
+  }
+  if (!w || w < 8) {
+    const r = canvas.getBoundingClientRect();
+    w = Math.floor(r.width) || 0;
+  }
+  if ((!w || w < 8) && minFallbackWidth > 0) {
+    w = minFallbackWidth;
+  }
+  if (!w || w < 8) {
+    w = 600;
+  }
   const h   = heightPx;
 
   // Set the bitmap size
@@ -251,10 +265,10 @@ export function htmlLegend(legendId, datasets) {
  * @param {Function}       formatter    (value) => string
  * @param {string|null}    legendId
  */
-export function hBar(canvasId, labels, values, colors, xMax, formatter, legendId) {
+export function hBar(canvasId, labels, values, colors, xMax, formatter, legendId, chartOptions = {}) {
   const rows = labels.length;
   const heightPx = rows * (BAR_H + BAR_GAP) + PAD_V * 2 + 20;
-  const setup = setupCanvas(canvasId, heightPx);
+  const setup = setupCanvas(canvasId, heightPx, chartOptions.minFallbackWidth ?? 0);
   if (!setup) return;
 
   const { ctx, w, h } = setup;

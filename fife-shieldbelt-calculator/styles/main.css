@@ -1653,6 +1653,11 @@ input, select, textarea {
     transform: translateY(0);
   }
 
+  /* Closed drawer is off-screen but was still receiving taps in some browsers — let clicks reach results + FAB */
+  .panel-left:not(.drawer-open) {
+    pointer-events: none;
+  }
+
   /* Sticky header — never scrolls away */
   .panel-left__header-mobile {
     display: flex;
