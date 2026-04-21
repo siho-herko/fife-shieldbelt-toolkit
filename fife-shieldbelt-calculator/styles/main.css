@@ -1630,13 +1630,14 @@ input, select, textarea {
   /* The drawer itself — flex column so header/footer are fixed, body scrolls */
   .panel-left {
     position: fixed;
+    top: 0;
     bottom: 0;
     left: 0;
     right: 0;
-    height: 92dvh;
+    height: 100dvh;
     background: var(--c-bg);
-    border-top: 3px solid var(--c-forest);
-    border-radius: 16px 16px 0 0;
+    border-top: none;
+    border-radius: 0;
     overflow: hidden;              /* no scroll on the outer element */
     display: flex;
     flex-direction: column;
@@ -1688,6 +1689,7 @@ input, select, textarea {
     display: flex;
     flex-shrink: 0;
     padding: 0.75rem 1.25rem;
+    padding-bottom: max(0.75rem, calc(0.5rem + env(safe-area-inset-bottom)));
     border-top: 1px solid var(--c-stone);
     background: var(--c-bg);
   }

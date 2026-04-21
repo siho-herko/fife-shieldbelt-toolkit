@@ -1384,6 +1384,14 @@ function initMobileDrawer() {
   gotoBtn?.addEventListener('click', gotoOutputs);
   adjustTop?.addEventListener('click', openDrawer);
   adjustBot?.addEventListener('click', openDrawer);
+
+  // On mobile, "Calculate Outcomes" should close the drawer and show results
+  document.getElementById('btn-calculate')?.addEventListener('click', () => {
+    if (panel.classList.contains('drawer-open')) {
+      // Small delay so the calculation can render before we scroll to results
+      setTimeout(gotoOutputs, 120);
+    }
+  });
 }
 
 // =============================================================================
