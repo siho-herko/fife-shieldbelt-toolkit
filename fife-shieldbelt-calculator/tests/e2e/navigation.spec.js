@@ -600,43 +600,38 @@ test.describe('Mobile drawer', () => {
 });
 
 // ---------------------------------------------------------------------------
-// 14. Cross-biome comparison modal
+// 14. Compare Scenarios modal
 // ---------------------------------------------------------------------------
-test.describe('Cross-biome comparison modal', () => {
+test.describe('Compare Scenarios modal', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(`${BASE}/?biome=east_neuk&farm=general_cropping&length=1000&price=60&orient=NS&placement=crossSlope&variant=1`);
     await waitForAppReady(page);
   });
 
-  test('"Compare across Fife" button is present', async ({ page }) => {
-    await expect(page.locator('#btn-compare-biomes')).toBeVisible();
+  test('"Compare across Scenarios" button is present', async ({ page }) => {
+    await expect(page.locator('#btn-compare-scenarios')).toBeVisible();
+    await expect(page.locator('#btn-compare-scenarios')).toContainText(/compare across scenarios/i);
   });
 
   test('clicking the button opens the modal', async ({ page }) => {
-    await page.locator('#btn-compare-biomes').click();
-    await page.waitForTimeout(800);
+    await page.locator('#btn-compare-scenarios').click();
+    await page.waitForTimeout(400);
     await expect(page.locator('#modal-compare')).toBeVisible();
   });
 
   test('modal can be dismissed', async ({ page }) => {
-    await page.locator('#btn-compare-biomes').click();
-    await page.waitForTimeout(800);
-    // Try close button or Escape
-    const closeBtn = page.locator('#modal-compare [id="btn-modal-close"], button[aria-label="Close"]').first();
-    if (await closeBtn.isVisible()) {
-      await closeBtn.click();
-    } else {
-      await page.keyboard.press('Escape');
-    }
+    await page.locator('#btn-compare-scenarios').click();
+    await page.waitForTimeout(400);
+    await page.locator('#btn-close-modal').click();
     await page.waitForTimeout(400);
     await expect(page.locator('#modal-compare')).toBeHidden();
   });
 });
 
 // ---------------------------------------------------------------------------
-// 15. Copy link and export buttons presence
+// 15. Copy link and save scenario buttons
 // ---------------------------------------------------------------------------
-test.describe('Export and share buttons', () => {
+test.describe('Copy link and save scenario', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(`${BASE}/?biome=east_neuk&farm=general_cropping&length=1000&price=60&orient=NS&placement=crossSlope&variant=1`);
     await waitForAppReady(page);
@@ -646,15 +641,46 @@ test.describe('Export and share buttons', () => {
     await expect(page.locator('#btn-copy-link')).toBeVisible();
   });
 
-  test('Export CSV button is present', async ({ page }) => {
-    await expect(page.locator('#btn-export-csv')).toBeVisible();
-  });
-
-  test('Export PDF button is present', async ({ page }) => {
-    await expect(page.locator('#btn-export-pdf')).toBeVisible();
-  });
-
   test('Save scenario button is present', async ({ page }) => {
     await expect(page.locator('#btn-save-scenario')).toBeVisible();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// 16. Saved scenario delete
+// ---------------------------------------------------------------------------
+test.describe('Saved scenario delete', () => {
+  test.use({ viewport: { width: 390, height: 844 } });
+
+  test('Delete button removes scenario from panel and localStorage', async ({ page }) => {
+    await page.addInitScript(() => {
+      localStorage.setItem(
+        'shieldbelt_scenarios',
+        JSON.stringify([
+          {
+            id: 999001,
+            label: 'E2E delete test',
+            url: 'http://localhost:8080/',
+            netBenefit: 100,
+            sserUnits: 1,
+            agroNetBenefit: 50,
+            carbonRevenue25: 200,
+            widerEcoValue: 30,
+            savedAt: new Date().toISOString(),
+          },
+        ])
+      );
+    });
+    await page.goto(BASE);
+    await waitForAppReady(page);
+    await page.locator('#btn-mobile-drawer').click();
+    await page.waitForTimeout(400);
+    await expect(page.locator('#saved-scenarios-panel')).toBeVisible();
+    await expect(page.locator('#saved-scenarios-panel')).toContainText('E2E delete test');
+    await page.locator('#saved-scenarios-panel button.saved-scenario__delete').click();
+    await page.waitForTimeout(300);
+    await expect(page.locator('#saved-scenarios-panel')).toBeHidden();
+    const stored = await page.evaluate(() => localStorage.getItem('shieldbelt_scenarios'));
+    expect(JSON.parse(stored || '[]')).toHaveLength(0);
   });
 });

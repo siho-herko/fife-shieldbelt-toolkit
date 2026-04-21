@@ -565,22 +565,16 @@
           <div id="biodiversity-impacts" class="text-sm mt-3 text-muted" style="line-height:1.6;"></div>
         </div>
 
-        <!-- ─── Export / Share / Save / Compare ────────────────────── -->
+        <!-- ─── Share / Save / Compare ──────────────────────────────── -->
         <div class="results-section export-panel flex gap-3 flex-wrap">
-          <button class="btn btn-primary" id="btn-export-pdf" type="button">
-            &#8681; Export PDF
-          </button>
-          <button class="btn btn-ghost" id="btn-export-csv" type="button">
-            &#8615; Export CSV
-          </button>
           <button class="btn btn-ghost" id="btn-copy-link" type="button">
             &#8682; Copy link
           </button>
           <button class="btn btn-ghost" id="btn-save-scenario" type="button">
             &#128190; Save scenario
           </button>
-          <button class="btn btn-ghost" id="btn-compare-biomes" type="button">
-            &#9783; Compare across Fife
+          <button class="btn btn-ghost" id="btn-compare-scenarios" type="button">
+            &#9783; Compare across Scenarios
           </button>
         </div>
 
@@ -601,25 +595,37 @@
        COMPARISON MODAL
        =================================================================== -->
   <dialog id="modal-compare" aria-labelledby="modal-title"
-    style="width:min(680px,95vw);padding:0;border:none;border-radius:12px;overflow:hidden;">
+    style="width:min(700px,95vw);max-height:90dvh;padding:0;border:none;border-radius:12px;overflow:hidden;display:flex;flex-direction:column;">
     <div style="background:var(--c-forest);color:var(--c-cream);padding:16px 20px;
-      display:flex;align-items:center;justify-content:space-between;">
+      display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
       <h2 id="modal-title" style="font-family:var(--font-display);font-size:1.125rem;color:var(--c-cream);margin:0;">
-        Cross-Biome Comparison
+        Compare across Scenarios
       </h2>
       <button id="btn-close-modal" type="button"
         style="background:none;border:none;color:var(--c-gold-lt);font-size:1.25rem;cursor:pointer;"
         aria-label="Close modal">&#10005;</button>
     </div>
-    <div style="padding:20px;background:#fff;">
-      <p class="text-sm text-muted mb-3">
-        Annual net benefit for the same variant type (matched by width + name) across all 6 Fife biomes.
+    <div style="padding:20px;background:#fff;overflow-y:auto;flex:1;">
+      <p class="text-sm text-muted mb-3" id="modal-compare-desc">
+        Save two or more scenarios to compare Net Agronomic Benefit (£/yr), 25-Year Carbon Revenue (£), and Wider Ecosystem Value (£/yr) side-by-side.
       </p>
-      <canvas id="chart-modal-compare"
-        aria-label="Cross-biome comparison chart" role="img">
-        <p>Comparison chart (canvas not supported)</p>
-      </canvas>
-      <div id="modal-sser-chips" class="flex flex-wrap gap-2 mt-3"></div>
+      <div id="modal-compare-empty" class="text-sm text-muted" style="display:none;">
+        No saved scenarios yet — use <strong>Save scenario</strong> below the results, then open this view to compare Net Agronomic Benefit, 25-Year Carbon Revenue, and Wider Ecosystem Value.
+      </div>
+      <div id="modal-compare-charts">
+        <div class="modal-chart-block">
+          <h3 class="modal-chart-title">Net Agronomic Benefit (£/yr)</h3>
+          <canvas id="chart-compare-agro" aria-label="Net Agronomic Benefit comparison" role="img"></canvas>
+        </div>
+        <div class="modal-chart-block">
+          <h3 class="modal-chart-title">25-Year Carbon Revenue (£)</h3>
+          <canvas id="chart-compare-carbon" aria-label="25-Year Carbon Revenue comparison" role="img"></canvas>
+        </div>
+        <div class="modal-chart-block">
+          <h3 class="modal-chart-title">Wider Ecosystem Value (£/yr)</h3>
+          <canvas id="chart-compare-eco" aria-label="Wider Ecosystem Value comparison" role="img"></canvas>
+        </div>
+      </div>
     </div>
   </dialog>
 

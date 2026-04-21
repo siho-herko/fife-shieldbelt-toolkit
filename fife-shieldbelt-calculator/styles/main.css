@@ -1813,9 +1813,9 @@ input, select, textarea {
 
 .saved-scenario {
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: 1fr auto auto;
   grid-template-rows: auto auto;
-  gap: 0.125rem 0.75rem;
+  gap: 0.125rem 0.5rem;
   padding: 0.5rem 0;
   border-bottom: 1px solid var(--c-stone);
 }
@@ -1844,6 +1844,32 @@ input, select, textarea {
   font-size: 0.75rem;
   padding: 4px 10px;
   text-decoration: none;
+}
+
+.saved-scenario__delete {
+  grid-column: 3; grid-row: 1 / 3;
+  align-self: center;
+  white-space: nowrap;
+}
+.saved-scenario__delete:hover {
+  color: var(--c-negative);
+}
+
+/* ============================================================================
+   COMPARE SCENARIOS MODAL
+   ============================================================================ */
+
+.modal-chart-block {
+  margin-bottom: 1.5rem;
+}
+.modal-chart-block:last-child { margin-bottom: 0; }
+
+.modal-chart-title {
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--c-forest);
+  margin-bottom: 0.5rem;
 }
 
 /* ============================================================================

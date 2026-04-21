@@ -996,66 +996,77 @@ function renderResults(results) {
 }
 
 // =============================================================================
-// H. Cross-biome comparison modal
+// H. Compare Scenarios modal
 // =============================================================================
 
-async function openComparisonModal() {
+function openComparisonModal() {
   const modal = document.getElementById('modal-compare');
   if (!modal) return;
   modal.showModal?.() || (modal.hidden = false);
 
-  const rec = state.currentRecord;
-  if (!rec) return;
+  const scenarios  = getSavedScenarios();
+  const chartsEl   = document.getElementById('modal-compare-charts');
+  const emptyEl    = document.getElementById('modal-compare-empty');
+  const descEl     = document.getElementById('modal-compare-desc');
 
-  // Match variant by width + name fragment across all biomes
-  const allRecords = await getAll();
-  const widthM     = rec.width;
-  const nameFrag   = rec.variant.toLowerCase().replace(/^\d+\.\s*/, '').trim();
+  if (!scenarios.length) {
+    if (chartsEl) chartsEl.style.display = 'none';
+    if (emptyEl)  emptyEl.style.display  = '';
+    if (descEl)   descEl.style.display   = 'none';
+    return;
+  }
 
-  const results = Object.values(BIOMES).map(biome => {
-    const match = allRecords.find(r =>
-      r.biome === biome &&
-      r.width === widthM &&
-      r.variant.toLowerCase().includes(nameFrag.slice(0, 12))
-    );
-    if (!match) return { biome, value: 0, sserPerKm: 0, available: false };
+  if (chartsEl) chartsEl.style.display = '';
+  if (emptyEl)  emptyEl.style.display  = 'none';
+  if (descEl) {
+    descEl.style.display = '';
+    if (scenarios.length === 1) {
+      descEl.textContent =
+        'You have one saved scenario. Save another to compare Net Agronomic Benefit (£/yr), 25-Year Carbon Revenue (£), and Wider Ecosystem Value (£/yr) side-by-side.';
+    } else {
+      descEl.textContent =
+        `Comparing ${scenarios.length} saved scenarios: Net Agronomic Benefit (£/yr), 25-Year Carbon Revenue (£), and Wider Ecosystem Value (£/yr).`;
+    }
+  }
 
-    const res = calculate(
-      { biome, variantId: match.id, farmType: state.farmType,
-        placement: state.placement, lengthM: state.lengthM,
-        creditPrice: state.creditPrice, windbreakOrient: state.windbreakOrient },
-      match
-    );
-    return { biome, value: res.annualNetBenefit, sserPerKm: res.sserPerKm, available: true };
-  });
-
-  const labels = results.map(r =>
-    BIOME_DISPLAY[r.biome]?.replace(/^[^\s]+\s/, '') || r.biome
-  );
-  const values = results.map(r => Math.max(r.value, 0));
-  const colors = results.map(r => r.available ? '#2d6a4f' : '#e8e4dc');
+  const labels = scenarios.map(s => s.label);
+  const green  = '#2d6a4f';
+  const gold   = '#b5830a';
+  const teal   = '#52b788';
 
   hBar(
-    'chart-modal-compare',
-    labels, values, colors,
+    'chart-compare-agro',
+    labels,
+    scenarios.map(s => s.agroNetBenefit ?? 0),
+    scenarios.map(() => green),
+    null,
+    v => fmtGBP(v) + '/yr',
+    null
+  );
+
+  hBar(
+    'chart-compare-carbon',
+    labels,
+    scenarios.map(s => s.carbonRevenue25 ?? 0),
+    scenarios.map(() => gold),
     null,
     v => fmtGBP(v),
     null
   );
 
-  // SSER sub-labels
-  const sserEl = document.getElementById('modal-sser-chips');
-  if (sserEl) {
-    sserEl.innerHTML = results.map(r =>
-      r.available
-        ? `<span class="biome-tag biome-tag--light">${fmt(r.sserPerKm, 2)} SSER/km</span>`
-        : `<span class="text-muted text-xs">Not available</span>`
-    ).join('');
-  }
+  hBar(
+    'chart-compare-eco',
+    labels,
+    scenarios.map(s => s.widerEcoValue ?? 0),
+    scenarios.map(() => teal),
+    null,
+    v => fmtGBP(v) + '/yr',
+    null
+  );
 }
 
 function initModal() {
-  const btn   = document.getElementById('btn-compare-biomes');
+  const btn   = document.getElementById('btn-compare-scenarios');
   const modal = document.getElementById('modal-compare');
   const close = document.getElementById('btn-close-modal');
   if (!modal) return;
@@ -1176,74 +1187,6 @@ function registerServiceWorker() {
   navigator.serviceWorker.register('sw.js').catch(() => {});
 }
 
-// =============================================================================
-// Export / Share / Reset
-// =============================================================================
-
-function handleExportPDF() {
-  const ph = document.querySelector('.print-header');
-  if (ph) ph.dataset.date = new Date().toLocaleDateString('en-GB');
-  window.print();
-}
-
-async function handleShare() {
-  const url = window.location.href;
-  if (navigator.share) {
-    await navigator.share({ title: 'Fife ShieldBelt Results', url });
-  } else if (navigator.clipboard) {
-    await navigator.clipboard.writeText(url);
-    showToast('Link copied to clipboard');
-  }
-}
-
-// =============================================================================
-// Export — CSV
-// =============================================================================
-
-function downloadFile(filename, content, type) {
-  const blob = new Blob([content], { type });
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement('a');
-  a.href = url; a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-}
-
-function exportCSV(results, st) {
-  const headers = [
-    'Variant', 'Biome', 'Width', 'Farm Type', 'Placement', 'Windbreak Orientation',
-    'Length (m)', 'Strip Area (ha)', '50yr Carbon (tCO2e/km)', 'Annual Carbon Income (£)',
-    'Pollination Value (£/yr)', 'CREW Value (£/yr)', 'Pest Regulation (£/yr)',
-    'Thermal Regulation (£/yr)', 'Windbreak Value (£/yr)', 'Avoided Costs (£/yr)',
-    'Net Income Foregone (£/yr)', 'Net Annual Benefit (£/yr)',
-    'SSER Units (total)', 'SSER Units per km', 'Credit Price (£/tCO2)', 'FIO Trapping Efficiency (%)',
-  ];
-
-  const q  = v => `"${String(v).replace(/"/g, '""')}"`;
-  const row = [
-    q(results.variantName), q(results.biome), results.width, q(st.farmType),
-    st.placement, st.windbreakOrient, results.lengthM, results.areaMHa.toFixed(4),
-    results.seq50yrTotal, results.annualCarbonIncome.toFixed(0),
-    results.pollinationValue.toFixed(0), results.crewValueTotal.toFixed(0),
-    results.pestRegulationValue.toFixed(0), results.thermalRegulationValue.toFixed(0),
-    results.windbreakValue.toFixed(0), results.avoidedCosts.toFixed(0),
-    results.netIncomeForegone.toFixed(0), results.annualNetBenefit.toFixed(0),
-    results.sserUnitsTotal.toFixed(2), results.sserPerKm,
-    st.creditPrice, results.fioTrappingEfficiency,
-  ];
-
-  if (st.problemCode) {
-    headers.push('Active Problem Code', 'Active Problem Category');
-    row.push(st.problemCode, q(st.activeProblem?.Category || ''));
-  }
-
-  const csv  = [headers, row].map(r => r.join(',')).join('\n');
-  const slug = results.variantName.replace(/\s+/g, '-').replace(/[^\w-]/g, '').slice(0, 40);
-  downloadFile(`shieldbelt-${slug}.csv`, csv, 'text/csv;charset=utf-8;');
-}
-
 function showToast(msg) {
   let toast = document.getElementById('toast');
   if (!toast) {
@@ -1271,11 +1214,15 @@ function saveScenario(label, st, results) {
   const rawLabel  = label || `${results.variantName} — ${results.biome.replace('Fife (', '').replace(')', '')}`;
   const safeLabel = String(rawLabel).slice(0, 80);
   const entry = {
-    label:      safeLabel,
-    url:        window.location.href,
-    netBenefit: results.annualNetBenefit,
-    sserUnits:  results.sserUnitsTotal,
-    savedAt:    new Date().toISOString(),
+    id:              Date.now(),
+    label:           safeLabel,
+    url:             window.location.href,
+    netBenefit:      results.annualNetBenefit,
+    sserUnits:       results.sserUnitsTotal,
+    agroNetBenefit:  results.netAgronomicBenefit,
+    carbonRevenue25: results.seq25yrRevenue,
+    widerEcoValue:   results.widerEcoValue,
+    savedAt:         new Date().toISOString(),
   };
   scenarios.unshift(entry);
   if (scenarios.length > MAX_SCENARIOS) scenarios.pop();
@@ -1287,6 +1234,12 @@ function saveScenario(label, st, results) {
 function getSavedScenarios() {
   try { return JSON.parse(localStorage.getItem('shieldbelt_scenarios') || '[]'); }
   catch { return []; }
+}
+
+function deleteScenario(id) {
+  const scenarios = getSavedScenarios().filter(s => s.id !== id);
+  localStorage.setItem('shieldbelt_scenarios', JSON.stringify(scenarios));
+  renderSavedScenarios();
 }
 
 // FIX [security/xss]: render scenario labels with textContent only —
@@ -1323,7 +1276,17 @@ function renderSavedScenarios() {
     loadA.textContent = 'Load ↗';
     loadA.rel         = 'noopener';
 
-    row.append(labelEl, metaEl, loadA);
+    const delBtn = document.createElement('button');
+    delBtn.className = 'saved-scenario__delete btn btn-ghost btn-sm';
+    delBtn.type      = 'button';
+    delBtn.textContent = 'Delete';
+    delBtn.setAttribute('aria-label', `Delete saved scenario: ${s.label}`);
+    delBtn.addEventListener('click', () => {
+      deleteScenario(s.id);
+      showToast('Scenario removed');
+    });
+
+    row.append(labelEl, metaEl, loadA, delBtn);
     panel.appendChild(row);
   }
 }
@@ -1663,12 +1626,6 @@ async function init() {
 
     document.getElementById('btn-calculate')?.addEventListener('click', applyVariantAndRecalc);
     document.getElementById('btn-reset')?.addEventListener('click', handleReset);
-    document.getElementById('btn-export-pdf')?.addEventListener('click', handleExportPDF);
-    document.getElementById('btn-share')?.addEventListener('click', handleShare);
-
-    document.getElementById('btn-export-csv')?.addEventListener('click', () => {
-      if (state.lastResults) exportCSV(state.lastResults, state);
-    });
 
     document.getElementById('btn-copy-link')?.addEventListener('click', () => {
       navigator.clipboard.writeText(window.location.href)
