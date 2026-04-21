@@ -1524,13 +1524,14 @@ input, select, textarea {
 #chart-avoided-costs,
 #chart-windbreak,
 #chart-carbon,
-#chart-modal-compare,
-#chart-compare-agro,
-#chart-compare-carbon,
-#chart-compare-eco {
+#chart-modal-compare {
   width: 100%;
   display: block;
 }
+
+/* Compare modal canvases: JS sets explicit width/height. Do not use width:100% here —
+   with max-width:100% on a parent that briefly measures 0 during iOS dialog layout,
+   the canvas used width can become 0 and charts look empty. */
 
 /* ============================================================================
    PRINT
@@ -1915,7 +1916,7 @@ input, select, textarea {
 }
 
 #modal-compare-charts canvas {
-  max-width: 100%;
+  max-width: none;
   display: block;
   box-sizing: border-box;
 }
@@ -1932,6 +1933,37 @@ input, select, textarea {
   color: var(--c-forest);
   margin-bottom: 0.5rem;
   position: static;
+}
+
+/* Full-screen compare sheet on phones — base .modal-compare is content-height + max-height
+   90dvh, which reads as a short strip; stretch edge-to-edge so the chart area can scroll. */
+@media (max-width: 768px) {
+  .modal-compare[open],
+  .modal-compare.modal-compare--open {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-width: none;
+    max-height: none;
+    height: 100vh;
+    height: 100dvh;
+    margin: 0;
+    border-radius: 0;
+    box-sizing: border-box;
+    /* Safe areas: forest matches header so padding is not a white strip */
+    background: var(--c-forest);
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .modal-compare__body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
 }
 
 /* ============================================================================

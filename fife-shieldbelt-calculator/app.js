@@ -1034,11 +1034,20 @@ function buildCompareRows() {
 function paintCompareCharts(rows) {
   try {
     const wrap = document.getElementById('modal-compare-charts');
-    const vv = typeof window !== 'undefined'
-      ? (window.visualViewport?.width || window.innerWidth || 400)
-      : 400;
+    const modal = document.getElementById('modal-compare');
+    let vv = 400;
+    if (typeof window !== 'undefined') {
+      const vvW = window.visualViewport?.width;
+      const inner = window.innerWidth;
+      const client = document.documentElement?.clientWidth;
+      vv = [vvW, inner, client].find(x => typeof x === 'number' && x > 16) ?? inner ?? 400;
+    }
     // Cap by viewport so setupCanvas never keeps a stale wide width that mobile clips.
-    const capW = Math.max(200, Math.min(Math.floor(vv) - 32, 520));
+    let capW = Math.max(200, Math.min(Math.floor(vv) - 32, 520));
+    const mw = modal?.getBoundingClientRect?.().width;
+    if (mw && mw > 24) {
+      capW = Math.min(capW, Math.max(200, Math.floor(mw) - 40));
+    }
     // Never use || 560 when width is 0 — that overflows the dialog and clips the chart bitmap.
     let minW = Math.min(320, capW);
     if (wrap) {
@@ -1096,11 +1105,16 @@ function paintCompareCharts(rows) {
 
 let compareModalResizeObserver = null;
 let compareModalResizeTimer    = null;
+let compareModalVvHandler      = null;
 
 function detachCompareModalResizeObserver() {
   if (compareModalResizeObserver) {
     compareModalResizeObserver.disconnect();
     compareModalResizeObserver = null;
+  }
+  if (compareModalVvHandler && typeof window !== 'undefined' && window.visualViewport) {
+    window.visualViewport.removeEventListener('resize', compareModalVvHandler);
+    compareModalVvHandler = null;
   }
   clearTimeout(compareModalResizeTimer);
   compareModalResizeTimer = null;
@@ -1109,12 +1123,24 @@ function detachCompareModalResizeObserver() {
 function attachCompareModalResizeObserver(rows) {
   detachCompareModalResizeObserver();
   const wrap = document.getElementById('modal-compare-charts');
-  if (!wrap || typeof ResizeObserver === 'undefined') return;
+  const modal = document.getElementById('modal-compare');
+  const paint = () => paintCompareCharts(rows);
+
+  if (typeof window !== 'undefined' && window.visualViewport) {
+    compareModalVvHandler = () => {
+      clearTimeout(compareModalResizeTimer);
+      compareModalResizeTimer = setTimeout(paint, 50);
+    };
+    window.visualViewport.addEventListener('resize', compareModalVvHandler, { passive: true });
+  }
+
+  if (typeof ResizeObserver === 'undefined') return;
   compareModalResizeObserver = new ResizeObserver(() => {
     clearTimeout(compareModalResizeTimer);
-    compareModalResizeTimer = setTimeout(() => paintCompareCharts(rows), 60);
+    compareModalResizeTimer = setTimeout(paint, 60);
   });
-  compareModalResizeObserver.observe(wrap);
+  if (wrap) compareModalResizeObserver.observe(wrap);
+  if (modal) compareModalResizeObserver.observe(modal);
 }
 
 function closeCompareModal() {
@@ -1168,12 +1194,17 @@ function openComparisonModal() {
   }
 
   // Dialog must layout before canvas width is known — paint after layout + delayed repaints.
+  // iOS Safari often reports 0×0 for in-dialog nodes until after reflow / address bar settle.
   const paint = () => paintCompareCharts(rows);
+  void modal.offsetWidth;
+  queueMicrotask(paint);
+  setTimeout(paint, 0);
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
       paint();
       setTimeout(paint, 120);
       setTimeout(paint, 400);
+      setTimeout(paint, 750);
     });
   });
 

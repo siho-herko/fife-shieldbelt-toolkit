@@ -114,6 +114,10 @@ export function setupCanvas(canvasId, heightPx, sizing = 0) {
   }
   const h   = heightPx;
 
+  // iOS/WebKit: max-width:100% on a zero-width flex ancestor can clamp used width to 0
+  // even when we set style.width in px — clear it so layout matches the bitmap.
+  canvas.style.maxWidth = 'none';
+
   // Set the bitmap size
   canvas.width  = Math.round(w * dpr);
   canvas.height = Math.round(h * dpr);
