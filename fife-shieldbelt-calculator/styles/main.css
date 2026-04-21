@@ -1875,6 +1875,17 @@ input, select, textarea {
    COMPARE SCENARIOS MODAL
    ============================================================================ */
 
+.modal-compare__body {
+  /* flex child of <dialog> — min-height:0 lets overflow-y scroll correctly */
+  display: block;
+}
+
+#modal-compare-charts canvas {
+  max-width: 100%;
+  display: block;
+  box-sizing: border-box;
+}
+
 .modal-chart-block {
   margin-bottom: 1.5rem;
 }
@@ -1886,6 +1897,7 @@ input, select, textarea {
   font-weight: 600;
   color: var(--c-forest);
   margin-bottom: 0.5rem;
+  position: static;
 }
 
 /* ============================================================================

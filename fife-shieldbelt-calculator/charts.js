@@ -265,9 +265,12 @@ export function htmlLegend(legendId, datasets) {
  * @param {Function}       formatter    (value) => string
  * @param {string|null}    legendId
  */
+/** Extra canvas height so x-axis tick labels (below the plot) are not clipped. */
+const HBAR_X_TICK_RESERVE = 26;
+
 export function hBar(canvasId, labels, values, colors, xMax, formatter, legendId, chartOptions = {}) {
   const rows = labels.length;
-  const heightPx = rows * (BAR_H + BAR_GAP) + PAD_V * 2 + 20;
+  const heightPx = rows * (BAR_H + BAR_GAP) + PAD_V * 2 + 20 + HBAR_X_TICK_RESERVE;
   const setup = setupCanvas(canvasId, heightPx, chartOptions.minFallbackWidth ?? 0);
   if (!setup) return;
 

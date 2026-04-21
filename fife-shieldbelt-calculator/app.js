@@ -1033,10 +1033,13 @@ function buildCompareRows() {
 
 function paintCompareCharts(rows) {
   const wrap = document.getElementById('modal-compare-charts');
-  let minW = 560;
+  // Never use || 560 when width is 0 — that overflows the dialog and clips the chart bitmap.
+  let minW = 320;
   if (wrap) {
-    const r = wrap.getBoundingClientRect();
-    minW = Math.max(280, Math.floor(r.width) || wrap.clientWidth || 560);
+    const rw = wrap.getBoundingClientRect().width;
+    const cw = wrap.clientWidth;
+    const raw = rw > 8 ? Math.floor(rw) : (cw > 8 ? cw : 0);
+    minW = raw > 8 ? Math.max(260, Math.min(raw - 12, 520)) : 320;
   }
   const chartOpts = { minFallbackWidth: minW };
 
@@ -1106,12 +1109,13 @@ function openComparisonModal() {
     descEl.hidden = true;
   }
 
-  // Dialog must layout before canvas width is known — paint after layout + delayed repaint for Safari.
+  // Dialog must layout before canvas width is known — paint after layout + delayed repaints.
   const paint = () => paintCompareCharts(rows);
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
       paint();
       setTimeout(paint, 120);
+      setTimeout(paint, 400);
     });
   });
 }
@@ -1238,19 +1242,29 @@ function registerServiceWorker() {
   navigator.serviceWorker.register('sw.js').catch(() => {});
 }
 
+let toastHideTimer = null;
+
 function showToast(msg) {
   let toast = document.getElementById('toast');
   if (!toast) {
     toast = document.createElement('div');
     toast.id = 'toast';
+    // pointer-events:none so the toast never blocks taps on the FAB / bottom nav after save
     toast.style.cssText = `position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
       background:var(--c-forest);color:#fff;padding:10px 20px;border-radius:8px;
-      font-size:0.875rem;z-index:999;transition:opacity 0.3s;`;
+      font-size:0.875rem;z-index:400;transition:opacity 0.3s,visibility 0.3s;
+      pointer-events:none;max-width:min(92vw,420px);text-align:center;`;
     document.body.appendChild(toast);
   }
   toast.textContent = msg;
+  toast.style.visibility = 'visible';
   toast.style.opacity = '1';
-  setTimeout(() => { toast.style.opacity = '0'; }, 2500);
+  clearTimeout(toastHideTimer);
+  toastHideTimer = setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.visibility = 'hidden';
+    toastHideTimer = null;
+  }, 2500);
 }
 
 // =============================================================================
