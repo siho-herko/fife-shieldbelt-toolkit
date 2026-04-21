@@ -66,6 +66,9 @@
   /* Transitions */
   --transition-fast: 120ms ease;
   --transition-mid:  220ms ease;
+
+  /* Background */
+  --c-bg: #faf7f0;
 }
 
 /* ==========================================================================
@@ -1630,7 +1633,7 @@ input, select, textarea {
     bottom: 0;
     left: 0;
     right: 0;
-    height: 85vh;
+    height: 92dvh;
     background: var(--c-bg);
     border-top: 3px solid var(--c-forest);
     border-radius: 16px 16px 0 0;
