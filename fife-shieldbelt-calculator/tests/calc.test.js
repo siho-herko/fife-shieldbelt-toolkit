@@ -37,7 +37,7 @@ import { readFileSync } from 'fs';
 // Test harness
 // ---------------------------------------------------------------------------
 
-const db   = JSON.parse(readFileSync('./data/fife_interventions_db_v2.json', 'utf8'));
+const db   = JSON.parse(readFileSync('./data/fife_interventions_db_v3.json', 'utf8'));
 const byId = Object.fromEntries(db.map(r => [r.id, r]));
 
 let passed = 0, failed = 0;
@@ -182,20 +182,19 @@ assert(near(pestRegulationValue(r2, 'General Cropping', 1000), 150.00, 0.01),
 assert(near(thermalRegulationValue(r2, 'Dairy', 1000), 250.00, 0.01),
   'r2: thermalRegulationValue Dairy ≈ £250.00', 250.00, thermalRegulationValue(r2, 'Dairy', 1000));
 
-assert(windbreakValue(r2, 'NS', 1000) === 0,
-  'r2: windbreakValue NS = £0.00');
+assert(near(windbreakValue(r2, 'NS', 1000), 1016, 0.01),
+  'r2: windbreakValue NS ≈ £1016.00', 1016, windbreakValue(r2, 'NS', 1000));
 
-assert(avoidedCosts(r2, 'crossSlope', 1000) === 0,
-  'r2: avoidedCosts crossSlope = £0.00');
+assert(near(avoidedCosts(r2, 'crossSlope', 1000), 1600, 0.01),
+  'r2: avoidedCosts crossSlope ≈ £1600.00', 1600, avoidedCosts(r2, 'crossSlope', 1000));
 
 assert(sserUnits(r2, 1000) === 7.92,
   'r2: sserUnits(1000) = 7.92', 7.92, sserUnits(r2, 1000));
 
-// Correct annualNetBenefit for GC: carbIncome+poll+crew+pest+thermal(GC=0)+wb+ac−nif
-// = 134.64 + 1200 + 648.9 + 150 + 0 + 0 + 0 − 66.8 = 2066.74
+// v3 DB: includes windbreak + avoided-cost components for this variant at 1000m.
 const r2_net = calculate(inputs(r2), r2).annualNetBenefit;
-assert(near(r2_net, 2066.74, 1.00),
-  'r2: annualNetBenefit GC crossSlope NS ≈ £2066.74', 2066.74, r2_net.toFixed(2));
+assert(near(r2_net, 4682.74, 1.00),
+  'r2: annualNetBenefit GC crossSlope NS ≈ £4682.74', 4682.74, r2_net.toFixed(2));
 
 // ---------------------------------------------------------------------------
 // Section E — Record 3: Coastal Erosion Wood (20m)
@@ -238,10 +237,10 @@ assert(near(thermalRegulationValue(r4, 'Dairy', 1000), 250.00, 0.01),
 assert(sserUnits(r4, 1000) === 15.84,
   'r4: sserUnits(1000) = 15.84', 15.84, sserUnits(r4, 1000));
 
-// Correct annualNetBenefit for GC: 550.8+1200+1497+150+0+0+0−167 = 3230.80
+// v3 DB: full calculate() ground truth for GC crossSlope NS at 1000m.
 const r4_net = calculate(inputs(r4), r4).annualNetBenefit;
-assert(near(r4_net, 3230.80, 1.00),
-  'r4: annualNetBenefit GC crossSlope NS ≈ £3230.80', 3230.80, r4_net.toFixed(2));
+assert(near(r4_net, 6382.80, 1.00),
+  'r4: annualNetBenefit GC crossSlope NS ≈ £6382.80', 6382.80, r4_net.toFixed(2));
 
 // ---------------------------------------------------------------------------
 // Section G — Record 5: Dense Wildlife Hedge (3m) — windbreak NS vs EW

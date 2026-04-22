@@ -1,7 +1,7 @@
 /**
  * db.js — Fife ShieldBelt Calculator
  *
- * Data layer: fetches /data/fife_interventions_db_v2.json once per page load
+ * Data layer: fetches /data/fife_interventions_db_v3.json once per page load
  * and holds all 120 records in a plain JS array.  The service worker caches
  * the JSON so subsequent loads are instant (no network request).
  *
@@ -48,7 +48,7 @@ let _records = [];
  * The service worker caches this file so subsequent page loads are instant.
  * @type {Promise<void>}
  */
-export const dbReady = fetch('/data/fife_interventions_db_v2.json')
+export const dbReady = fetch('/data/fife_interventions_db_v3.json')
   .then(res => {
     if (!res.ok) throw new Error(`HTTP ${res.status} loading intervention data`);
     return res.json();
