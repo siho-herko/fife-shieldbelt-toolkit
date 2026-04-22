@@ -95,19 +95,24 @@ export function setupCanvas(canvasId, heightPx, sizing = 0) {
 
   const dpr = window.devicePixelRatio || 1;
   let w = canvas.offsetWidth || canvas.clientWidth;
-  if ((!w || w < 8) && canvas.parentElement) {
+  let pwParent = 0;
+  if (canvas.parentElement) {
     const p = canvas.parentElement;
-    w = p.clientWidth || Math.floor(p.getBoundingClientRect().width) || 0;
+    pwParent = p.clientWidth || Math.floor(p.getBoundingClientRect().width) || 0;
+    if (!w || w < 8) w = pwParent;
   }
   if (!w || w < 8) {
     const r = canvas.getBoundingClientRect();
     w = Math.floor(r.width) || 0;
   }
-  if ((!w || w < 8) && minFallbackWidth > 0) {
-    w = minFallbackWidth;
-  }
+  // Widen to the chart card when the canvas is still intrinsic (~300px) or a stale narrow inline width.
+  if (pwParent > (w || 0) + 2) w = pwParent;
   if (!w || w < 8) {
-    w = 600;
+    w = minFallbackWidth > 8 ? minFallbackWidth : 600;
+  }
+  // Caller-measured target (compare modal / narrow layouts) must not sit below the real box width.
+  if (minFallbackWidth > 8) {
+    w = Math.max(w, minFallbackWidth);
   }
   if (maxCanvasWidth > 8) {
     w = Math.min(w, maxCanvasWidth);
@@ -334,10 +339,19 @@ export function htmlLegend(legendId, datasets) {
  */
 /** Extra canvas height so x-axis tick labels (below the plot) are not clipped. */
 const HBAR_X_TICK_RESERVE = 26;
+/** When axis tick text is hidden (e.g. compare modal — values on bars), keep a sliver for the baseline. */
+const HBAR_X_NO_TICK_RESERVE = 6;
 
 export function hBar(canvasId, labels, values, colors, xMax, formatter, legendId, chartOptions = {}) {
   const rows = labels.length;
-  const heightPx = rows * (BAR_H + BAR_GAP) + PAD_V * 2 + 20 + HBAR_X_TICK_RESERVE;
+  // Compare modal canvases: no x-axis tick text (values on bars). Also match by id so older app.js
+  // bundles still behave; chartOptions.hideXAxisTickLabels is set by paintCompareCharts.
+  const isCompareCanvas =
+    typeof canvasId === 'string' && canvasId.startsWith('chart-compare-');
+  const hideXAxisTickLabels =
+    !!chartOptions.hideXAxisTickLabels || isCompareCanvas;
+  const xTickReserve = hideXAxisTickLabels ? HBAR_X_NO_TICK_RESERVE : HBAR_X_TICK_RESERVE;
+  const heightPx = rows * (BAR_H + BAR_GAP) + PAD_V * 2 + 20 + xTickReserve;
   const setup = setupCanvas(canvasId, heightPx, {
     minFallbackWidth: chartOptions.minFallbackWidth ?? 0,
     maxCanvasWidth:   chartOptions.maxCanvasWidth ?? 0,
@@ -396,7 +410,9 @@ export function hBar(canvasId, labels, values, colors, xMax, formatter, legendId
     ctx.restore();
   }
 
-  drawXTickLabels(ctx, x0, y0, pw, ph, max, formatter, c.muted, xSteps);
+  if (!hideXAxisTickLabels) {
+    drawXTickLabels(ctx, x0, y0, pw, ph, max, formatter, c.muted, xSteps);
+  }
 
   if (legendId) {
     const ds = labels.map((label, i) => ({ label, color: resolveColor(colors, i) }));
