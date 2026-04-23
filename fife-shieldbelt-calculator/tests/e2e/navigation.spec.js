@@ -15,7 +15,6 @@ import {
   openStep,
   isStepOpen,
   selectBiome,
-  clickProblemChip,
   confirmVariant,
   statBoxText,
 } from './helpers.js';
@@ -54,7 +53,7 @@ test.describe('App load', () => {
     }
   });
 
-  test('step 1 (Your Biome) is open by default', async ({ page }) => {
+  test('step 1 (Your Location) is open by default', async ({ page }) => {
     await page.goto(BASE);
     await waitForAppReady(page);
     await expect(await isStepOpen(page, 1)).toBe(true);
@@ -107,27 +106,27 @@ test.describe('Accordion manual toggle', () => {
 });
 
 // ---------------------------------------------------------------------------
-// 3. Biome selection auto-advances to step 2
+// 3. Location selection auto-advances to step 2 (Farm Type)
 // ---------------------------------------------------------------------------
-test.describe('Biome selection', () => {
+test.describe('Location selection', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(BASE);
     await waitForAppReady(page);
   });
 
-  test('selecting a biome closes step 1 and opens step 2', async ({ page }) => {
+  test('selecting a location closes step 1 and opens step 2', async ({ page }) => {
     await selectBiome(page, 'Fife (Howe of Fife & Eden)');
     await expect(await isStepOpen(page, 1)).toBe(false);
     await expect(await isStepOpen(page, 2)).toBe(true);
   });
 
-  test('step summary updates with the selected biome name', async ({ page }) => {
+  test('step summary updates with the selected location name', async ({ page }) => {
     await selectBiome(page, 'Fife (West Fife Claylands)');
     const summary = page.locator('#step-biome-summary');
     await expect(summary).toContainText(/West Fife/i);
   });
 
-  test('biome context card is shown after selecting a biome', async ({ page }) => {
+  test('location context card is shown after selecting a location', async ({ page }) => {
     await openStep(page, 1);
     // The biome context card lives inside step-biome-body
     const card = page.locator('#biome-context-card');
@@ -135,7 +134,7 @@ test.describe('Biome selection', () => {
     await expect(card).toBeAttached();
   });
 
-  test('all six biome options are selectable', async ({ page }) => {
+  test('all six location options are selectable', async ({ page }) => {
     const biomes = [
       'Fife (East Neuk Coast)',
       'Fife (Forth Urban Coast)',
@@ -157,14 +156,14 @@ test.describe('Biome selection', () => {
 });
 
 // ---------------------------------------------------------------------------
-// 4. Problem chip selection auto-advances to step 3
+// 4. Problem chip selection auto-advances to step 4 (Variant)
 // ---------------------------------------------------------------------------
 test.describe('Problem chip selection', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(BASE);
     await waitForAppReady(page);
-    // Start from step 2 (skip biome selection auto-advance)
-    await openStep(page, 2);
+    // Biggest Problem is step 3 (after Location → Farm Type)
+    await openStep(page, 3);
   });
 
   test('problem chips are rendered', async ({ page }) => {
@@ -182,12 +181,12 @@ test.describe('Problem chip selection', () => {
     expect(count).toBe(0);
   });
 
-  test('clicking a problem chip closes step 2 and opens step 3', async ({ page }) => {
+  test('clicking a problem chip closes step 3 and opens step 4', async ({ page }) => {
     const firstChip = page.locator('.problem-chip').first();
     await firstChip.click();
     await page.waitForTimeout(500);
-    await expect(await isStepOpen(page, 2)).toBe(false);
-    await expect(await isStepOpen(page, 3)).toBe(true);
+    await expect(await isStepOpen(page, 3)).toBe(false);
+    await expect(await isStepOpen(page, 4)).toBe(true);
   });
 
   test('problem chip becomes aria-pressed=true after click', async ({ page }) => {
@@ -199,7 +198,7 @@ test.describe('Problem chip selection', () => {
     await expect(updated).toHaveAttribute('aria-pressed', 'true');
   });
 
-  test('step 2 summary updates after a chip is clicked', async ({ page }) => {
+  test('step 3 summary updates after a chip is clicked', async ({ page }) => {
     await page.locator('.problem-chip').first().click();
     await page.waitForTimeout(300);
     const summary = page.locator('#step-problem-summary');
@@ -209,13 +208,13 @@ test.describe('Problem chip selection', () => {
 });
 
 // ---------------------------------------------------------------------------
-// 5. Farm type selection auto-advances to step 4
+// 5. Farm type selection auto-advances to step 3 (Biggest Problem)
 // ---------------------------------------------------------------------------
 test.describe('Farm type selection', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(BASE);
     await waitForAppReady(page);
-    await openStep(page, 3);
+    await openStep(page, 2);
   });
 
   test('four farm type options are present', async ({ page }) => {
@@ -223,14 +222,14 @@ test.describe('Farm type selection', () => {
     await expect(radios).toHaveCount(4);
   });
 
-  test('selecting a farm type closes step 3 and opens step 4', async ({ page }) => {
+  test('selecting a farm type closes step 2 and opens step 3', async ({ page }) => {
     await page.locator('input[name="farm-type"]').first().click();
     await page.waitForTimeout(400);
-    await expect(await isStepOpen(page, 3)).toBe(false);
-    await expect(await isStepOpen(page, 4)).toBe(true);
+    await expect(await isStepOpen(page, 2)).toBe(false);
+    await expect(await isStepOpen(page, 3)).toBe(true);
   });
 
-  test('step 3 summary updates with the selected farm type', async ({ page }) => {
+  test('step 2 summary updates with the selected farm type', async ({ page }) => {
     const label = await page.locator('input[name="farm-type"]').first().getAttribute('value') ??
                   await page.locator('input[name="farm-type"]').first().inputValue();
     await page.locator('input[name="farm-type"]').first().click();
@@ -507,7 +506,7 @@ test.describe('Solution Summary panel', () => {
     // Load with a known problem code via chip interaction
     await page.goto(BASE);
     await waitForAppReady(page);
-    await openStep(page, 2);
+    await openStep(page, 3);
     // Click the first available problem chip
     await page.locator('.problem-chip').first().click();
     await page.waitForTimeout(600);

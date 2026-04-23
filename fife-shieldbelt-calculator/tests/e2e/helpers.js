@@ -60,7 +60,7 @@ export async function selectBiome(page, biomeValue) {
 
 /** Click a problem chip by problem code. */
 export async function clickProblemChip(page, problemCode) {
-  await openStep(page, 2);
+  await openStep(page, 3);
   await page.locator(`.problem-chip[data-code="${problemCode}"]`).click();
   await page.waitForTimeout(400);
 }

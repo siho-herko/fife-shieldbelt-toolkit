@@ -95,12 +95,12 @@
       </div>
       <div id="controls-form">
 
-        <!-- STEP 1 — Biome -->
+        <!-- STEP 1 — Location (Fife landscape area; state/URL still use biome keys) -->
         <div class="step-accordion" id="step-biome" data-step="1">
           <button class="step-accordion__trigger" aria-expanded="true"
             aria-controls="step-biome-body" id="step-biome-trigger">
             <span class="step-accordion__number" aria-hidden="true">1</span>
-            <span class="step-accordion__label">Your Biome</span>
+            <span class="step-accordion__label">Your Location</span>
             <span class="step-accordion__summary" id="step-biome-summary">🌊 East Neuk Coast</span>
             <svg class="step-accordion__chevron" width="16" height="16" viewBox="0 0 24 24"
               fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -110,10 +110,10 @@
           <div class="step-accordion__body" id="step-biome-body"
             role="region" aria-labelledby="step-biome-trigger">
             <p class="form-hint mb-3">
-              Select the primary landscape context. Each biome has 20 ShieldBelt variants.
+              Select the primary landscape context for your holding. Each location has 20 ShieldBelt variants.
             </p>
-            <fieldset class="biome-grid" aria-label="Micro-biome selector">
-              <legend class="sr-only">Choose your micro-biome</legend>
+            <fieldset class="biome-grid" aria-label="Location selector">
+              <legend class="sr-only">Choose your location</legend>
 
               <label class="biome-card" title="Coastal farmland and cliff-top edges">
                 <input type="radio" name="biome" value="Fife (East Neuk Coast)" checked />
@@ -161,36 +161,11 @@
           </div>
         </div>
 
-        <!-- STEP 2 — Biggest Problem -->
-        <div class="step-accordion" id="step-problem" data-step="2">
-          <button class="step-accordion__trigger" aria-expanded="false"
-            aria-controls="step-problem-body" id="step-problem-trigger">
-            <span class="step-accordion__number" aria-hidden="true">2</span>
-            <span class="step-accordion__label">Biggest Problem</span>
-            <span class="step-accordion__summary" id="step-problem-summary">Not selected</span>
-            <svg class="step-accordion__chevron" width="16" height="16" viewBox="0 0 24 24"
-              fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <polyline points="6 9 12 15 18 9"/>
-            </svg>
-          </button>
-          <div class="step-accordion__body" id="step-problem-body" hidden
-            role="region" aria-labelledby="step-problem-trigger">
-            <p class="form-hint mb-3">
-              Select the challenge that matters most on your holding.
-              The calculator will recommend the highest-scoring ShieldBelt variant.
-            </p>
-            <!-- Populated by populateProblemChips() in app.js -->
-            <div id="problem-chips" role="group" aria-label="Select your primary farming problem">
-              <p class="form-hint">Loading problem data…</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- STEP 3 — Farm Type -->
-        <div class="step-accordion" id="step-farmtype" data-step="3">
+        <!-- STEP 2 — Farm Type -->
+        <div class="step-accordion" id="step-farmtype" data-step="2">
           <button class="step-accordion__trigger" aria-expanded="false"
             aria-controls="step-farmtype-body" id="step-farmtype-trigger">
-            <span class="step-accordion__number" aria-hidden="true">3</span>
+            <span class="step-accordion__number" aria-hidden="true">2</span>
             <span class="step-accordion__label">Farm Type</span>
             <span class="step-accordion__summary" id="step-farmtype-summary">General Cropping</span>
             <svg class="step-accordion__chevron" width="16" height="16" viewBox="0 0 24 24"
@@ -238,6 +213,31 @@
           </div>
         </div>
 
+        <!-- STEP 3 — Biggest Problem -->
+        <div class="step-accordion" id="step-problem" data-step="3">
+          <button class="step-accordion__trigger" aria-expanded="false"
+            aria-controls="step-problem-body" id="step-problem-trigger">
+            <span class="step-accordion__number" aria-hidden="true">3</span>
+            <span class="step-accordion__label">Biggest Problem</span>
+            <span class="step-accordion__summary" id="step-problem-summary">Not selected</span>
+            <svg class="step-accordion__chevron" width="16" height="16" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+          <div class="step-accordion__body" id="step-problem-body" hidden
+            role="region" aria-labelledby="step-problem-trigger">
+            <p class="form-hint mb-3">
+              Select the challenge that matters most on your holding.
+              The calculator will recommend the highest-scoring ShieldBelt variant.
+            </p>
+            <!-- Populated by populateProblemChips() in app.js -->
+            <div id="problem-chips" role="group" aria-label="Select your primary farming problem">
+              <p class="form-hint">Loading problem data…</p>
+            </div>
+          </div>
+        </div>
+
         <!-- STEP 4 — Variant -->
         <div class="step-accordion" id="step-variant" data-step="4">
           <button class="step-accordion__trigger" aria-expanded="false"
@@ -259,7 +259,7 @@
                 <option value="">— Loading… —</option>
               </select>
               <span class="form-hint" id="variant-hint">
-                Variants are filtered by biome.
+                Variants are filtered by your selected location.
               </span>
             </div>
             <div id="variant-detail" class="card card--accent hidden" aria-live="polite">
@@ -404,7 +404,7 @@
           <div class="empty-state__icon">🌿</div>
           <h2 class="empty-state__title">ShieldBelt Outcomes</h2>
           <p class="empty-state__body">
-            Results appear here automatically as you choose a biome and variant.
+            Results appear here automatically as you choose a location and variant.
             Select a problem to get a personalised recommendation.
           </p>
           <a href="https://fife-shieldbelt.netlify.app"
@@ -418,11 +418,11 @@
       <!-- Results (populated by renderResults) -->
       <div id="results-content" class="hidden">
 
-        <!-- ─── BIOME & INTERVENTION BANNER ──────────────────────── -->
+        <!-- ─── LOCATION & INTERVENTION BANNER ──────────────────────── -->
         <!-- Shown above Output Summary on all layouts.                  -->
-        <!-- The biome card inside the accordion is hidden on desktop.   -->
+        <!-- The location context card inside the accordion is hidden on desktop.   -->
         <div class="biome-variant-banner">
-          <div class="biome-variant-banner__heading">Biome and Field Margin Intervention Type</div>
+          <div class="biome-variant-banner__heading">Location and Field Margin Intervention Type</div>
           <div id="biome-info-output" aria-live="polite"></div>
           <div class="results-header" id="results-header">
             <div>
@@ -638,7 +638,7 @@
     <span class="app-footer__dots">·</span>
     120 interventions
     <span class="app-footer__dots">·</span>
-    6 micro-biomes
+    6 Fife landscape areas
     <span class="app-footer__dots">·</span>
     <a href="https://natcert.earth" target="_blank" rel="noopener noreferrer">natcert.earth</a>
   </footer>

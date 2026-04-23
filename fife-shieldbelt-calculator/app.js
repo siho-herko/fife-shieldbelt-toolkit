@@ -25,7 +25,7 @@ const BIOME_DISPLAY = {
 };
 
 const BIOME_CONTEXT = {
-  'Fife (East Neuk Coast)':         { km: 330, value: '£820,000+', farmType: 'General Cropping / Soft Fruit', tagline: 'Highest-value biome. Pollination premium drives the economics.' },
+  'Fife (East Neuk Coast)':         { km: 330, value: '£820,000+', farmType: 'General Cropping / Soft Fruit', tagline: 'Highest-value location. Pollination premium drives the economics.' },
   'Fife (Forth Urban Coast)':       { km: 150, value: '£200,000+', farmType: 'Edge-of-Settlement',            tagline: 'Urban flood, air quality and community function.' },
   'Fife (Howe of Fife & Eden)':     { km: 280, value: '£450,000+', farmType: 'Arable / Potatoes',            tagline: 'NVZ compliance and flood buffering in the Eden catchment.' },
   'Fife (Lomond & Cleish Uplands)': { km: 550, value: '£350,000+', farmType: 'LFA Grazing',                  tagline: 'Largest capacity. Carbon at near-zero net cost.' },
@@ -275,7 +275,7 @@ async function handleProblemChipClick(code) {
   }
 
   await applyVariantAndRecalc();
-  closeStep(2); openStep(3);
+  closeStep(3); openStep(4);
 }
 
 async function handleClearProblem() {
@@ -317,7 +317,7 @@ function initFarmTypeSelector() {
         if (rec) { state.variantId = rec.id; syncVariantSelect(); }
       }
       await applyVariantAndRecalc();
-      closeStep(3); openStep(4);
+      closeStep(2); openStep(3);
     });
   });
 }
@@ -332,7 +332,7 @@ function populateVariantSelector() {
   sel.innerHTML = '';
   if (!state.biomeRecords.length) {
     sel.disabled = true;
-    sel.innerHTML = '<option value="">— No variants for this biome —</option>';
+    sel.innerHTML = '<option value="">— No variants for this location —</option>';
     return;
   }
   sel.disabled = false;
@@ -345,7 +345,7 @@ function populateVariantSelector() {
     sel.appendChild(opt);
   });
   sel.value = state.variantId || '';
-  setText('variant-hint', 'Select a variant for this biome.');
+  setText('variant-hint', 'Select a variant for this location.');
 }
 
 function syncVariantSelect() {
