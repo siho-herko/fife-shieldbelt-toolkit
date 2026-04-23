@@ -19,7 +19,7 @@ const PRECACHE = [
   '/manifest.json',
   '/icons/icon-192.svg',
   '/icons/icon-512.svg',
-  '/data/fife_interventions_db_v3.json',
+  '/data/fife_interventions_db_v4.json',
   '/data/problems.json',
 ];
 
