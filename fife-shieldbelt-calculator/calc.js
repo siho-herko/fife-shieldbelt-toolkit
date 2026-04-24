@@ -1,5 +1,5 @@
 /**
- * calc.js — Fife ShieldBelt Calculator
+ * calc.js — Fife Farm Resilience Calculator
  * Pure calculation engine — no DOM, no side effects.
  * All functions are deterministic given the same inputs and v2 record.
  *

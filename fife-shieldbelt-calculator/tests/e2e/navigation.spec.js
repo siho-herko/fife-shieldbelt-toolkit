@@ -1,7 +1,7 @@
 /**
  * navigation.spec.js
  *
- * End-to-end tests for the Fife ShieldBelt Calculator navigation flow.
+ * End-to-end tests for the Fife Farm Resilience Calculator navigation flow.
  * Covers the 6-step input accordion, auto-advance behaviour, Confirm Selection,
  * output section scroll anchors, the mobile drawer, and URL state encoding.
  *
@@ -27,7 +27,7 @@ const BASE = 'http://localhost:8080';
 test.describe('App load', () => {
   test('page title and loading screen', async ({ page }) => {
     await page.goto(BASE);
-    await expect(page).toHaveTitle(/ShieldBelt/i);
+    await expect(page).toHaveTitle(/Farm Resilience/i);
 
     // Loading screen must appear briefly then hide
     await waitForAppReady(page);

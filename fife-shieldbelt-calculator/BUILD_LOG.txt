@@ -58,7 +58,7 @@ INDEX.HTML SHELL
   - Full PWA <head>: charset, viewport, theme-color, description, OG tags,
     manifest link, apple-touch-icon, mobile-web-app meta tags
   - Sticky --c-forest header:
-      Left:  NFCA gold-lt badge + "Fife ShieldBelt Calculator" title
+      Left:  NFCA gold-lt badge + "Fife Farm Resilience Calculator" title
       Right: "← Summary Site" link → https://fife-shieldbelt.netlify.app
   - Left panel — 6 accordion steps (collapsed by default, aria-expanded):
       Step 1: Biome — 6 biome-card radio grid
@@ -95,7 +95,7 @@ INDEX.HTML SHELL
 
 PWA ASSETS
   manifest.json:
-    name: "Fife ShieldBelt Calculator"
+    name: "Fife Farm Resilience Calculator"
     short_name: "ShieldBelt"
     display: standalone
     theme_color / background_color: #1a3d2b
@@ -107,7 +107,7 @@ PWA ASSETS
 
   icons/icon-512.svg:
     Same motif, richer detail — horizon arc, foreground grass tufts,
-    "NFCA" large wordmark + "ShieldBelt Calculator" sub-label
+    "NFCA" large wordmark + "Farm Resilience Calculator" sub-label
 
 STUBS (app.js, calc.js, charts.js)
   All four JS files created with full JSDoc, named function stubs,

@@ -1,5 +1,5 @@
 /**
- * db.js — Fife ShieldBelt Calculator
+ * db.js — Fife Farm Resilience Calculator
  *
  * Data layer: fetches /data/fife_interventions_db_v8.json once per page load
  * and holds all 132 records in a plain JS array.  The service worker caches

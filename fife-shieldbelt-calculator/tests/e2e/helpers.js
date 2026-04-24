@@ -1,5 +1,5 @@
 /**
- * Shared helpers for the Fife ShieldBelt Calculator E2E tests.
+ * Shared helpers for the Fife Farm Resilience Calculator E2E tests.
  */
 
 /** Wait for the loading screen to disappear and the app to be interactive. */

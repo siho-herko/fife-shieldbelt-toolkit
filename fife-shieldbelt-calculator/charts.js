@@ -1,5 +1,5 @@
 /**
- * charts.js — Fife ShieldBelt Calculator
+ * charts.js — Fife Farm Resilience Calculator
  * Zero-dependency canvas chart engine. HTML5 Canvas API only.
  * All functions are idempotent — safe to call repeatedly on the same canvas.
  *

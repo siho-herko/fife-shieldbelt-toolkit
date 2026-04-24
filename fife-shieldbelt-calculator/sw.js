@@ -1,5 +1,5 @@
 /**
- * sw.js — Service Worker for Fife ShieldBelt Calculator
+ * sw.js — Service Worker for Fife Farm Resilience Calculator
  * Strategy: Cache-first for assets; network-first for data files.
  * Bump SHIELDBELT_CACHE_VERSION in version.js on every deploy.
  */

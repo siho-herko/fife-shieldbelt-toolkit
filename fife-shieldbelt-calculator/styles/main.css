@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Fife ShieldBelt Calculator — Design System
+   Fife Farm Resilience Calculator — Design System
    Nature Finance Certification Alliance (NFCA)
    ========================================================================== */
 
@@ -1565,7 +1565,7 @@ input, select, textarea {
     margin-bottom: 16px;
   }
   .print-header::before {
-    content: "Fife ShieldBelt Calculator — NFCA · natcert.earth · " attr(data-date);
+    content: "Fife Farm Resilience Calculator — NFCA · natcert.earth · " attr(data-date);
     font-size: 11pt;
   }
 

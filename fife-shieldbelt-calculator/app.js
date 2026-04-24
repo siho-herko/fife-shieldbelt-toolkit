@@ -1,5 +1,5 @@
 /**
- * app.js — Fife ShieldBelt Calculator
+ * app.js — Fife Farm Resilience Calculator
  * Full application wiring: DB → calc → charts → DOM.
  * Implements the Problem→Solution engine, URL state, comparison modal,
  * service worker registration, and all event handlers.
@@ -1351,7 +1351,7 @@ function showLoadingScreen() {
     el.innerHTML = `
       <div class="loading-screen__inner">
         <div class="loading-screen__logo">NFCA</div>
-        <div class="loading-screen__title">ShieldBelt Calculator</div>
+        <div class="loading-screen__title">Farm Resilience Calculator</div>
         <div class="loading-screen__spinner"></div>
         <div class="loading-screen__msg">Loading intervention data…</div>
       </div>
@@ -1388,7 +1388,7 @@ function showUpdateBannerOnce() {
   banner.setAttribute('role', 'status');
   const span = document.createElement('span');
   span.className = 'update-banner__text';
-  span.textContent = 'A new version of the ShieldBelt Calculator is available.';
+  span.textContent = 'A new version of the Farm Resilience Calculator is available.';
   const btn = document.createElement('button');
   btn.type = 'button';
   btn.className = 'update-banner__btn';

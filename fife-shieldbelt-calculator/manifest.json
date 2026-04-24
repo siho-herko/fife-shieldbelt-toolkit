@@ -1,5 +1,5 @@
 {
-  "name": "Fife ShieldBelt Calculator",
+  "name": "Fife Farm Resilience Calculator",
   "short_name": "ShieldBelt",
   "description": "Calculate agronomic, carbon and ecosystem outcomes of ShieldBelt interventions on Fife farmland. An NFCA interactive advisory tool.",
   "start_url": "./index.html",
