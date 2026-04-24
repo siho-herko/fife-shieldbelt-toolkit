@@ -14,7 +14,7 @@
   Cache-Control: no-store, no-cache, must-revalidate
 
 # Setting Content-Type explicitly triggers Netlify's automatic gzip compression.
-# Verified: fife_interventions_db_v4.json (gzip via compress-data.js), problems.json 46 KB → 11 KB (4.1×)
+# Verified: fife_interventions_db_v8.json / problems_v2.json (gzip via compress-data.js when run)
 /data/*.json
   Content-Type: application/json; charset=utf-8
   Cache-Control: public, max-age=86400

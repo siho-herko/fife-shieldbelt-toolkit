@@ -58,10 +58,10 @@
       Solution_Emerging_Tech_Landscaping:'🚀 Emerging',
     };
 
-    const res = await fetch('../data/problems.json');
+    const res = await fetch('../data/problems_v2.json');
     if (!res.ok) {
       document.getElementById('summary').textContent =
-        `ERROR: Could not load problems.json (${res.status}). Serve this file from localhost.`;
+        `ERROR: Could not load problems_v2.json (${res.status}). Serve this file from localhost.`;
       throw new Error('fetch failed');
     }
 

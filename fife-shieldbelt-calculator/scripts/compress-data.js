@@ -10,8 +10,8 @@ import { createGzip } from 'zlib';
 import { pipeline } from 'stream/promises';
 
 const files = [
-  'data/fife_interventions_db_v4.json',
-  'data/problems.json',
+  'data/fife_interventions_db_v8.json',
+  'data/problems_v2.json',
 ];
 
 console.log('\n=== Compressing data files ===\n');

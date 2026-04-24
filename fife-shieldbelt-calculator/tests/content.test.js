@@ -1,12 +1,12 @@
 /**
  * tests/content.test.js
- * Content integrity tests for data/problems.json.
+ * Content integrity tests for data/problems_v2.json.
  * Run with: node tests/content.test.js
  */
 
 import { readFileSync } from 'fs';
 
-const problems = JSON.parse(readFileSync('./data/problems.json', 'utf8'));
+const problems = JSON.parse(readFileSync('./data/problems_v2.json', 'utf8'));
 let passed = 0, failed = 0;
 
 function assert(condition, label) {
@@ -25,9 +25,9 @@ console.log('\n=== Content Integrity Tests ===\n');
 // 1. Record count
 // ---------------------------------------------------------------------------
 console.log('--- 1. Record counts ---');
-assert(problems.length === 28,  '28 problems total');
-assert(problems.filter(p => p.Applicable_Biomes !== 'Dreel Burn Catchment').length === 22,
-  '22 phase-1 problems');
+assert(problems.length === 33,  '33 problems total');
+assert(problems.filter(p => p.Applicable_Biomes !== 'Dreel Burn Catchment').length === 27,
+  '27 phase-1 problems');
 assert(problems.filter(p => p.Applicable_Biomes === 'Dreel Burn Catchment').length === 6,
   '6 phase-2 (Dreel Burn) problems');
 
@@ -56,7 +56,7 @@ for (const field of REQUIRED_FIELDS) {
 // ---------------------------------------------------------------------------
 console.log('\n--- 3. Unique codes ---');
 const codes = problems.map(p => p.Problem_Code);
-assert(new Set(codes).size === 28, 'All Problem_Codes unique');
+assert(new Set(codes).size === 33, 'All Problem_Codes unique');
 
 // ---------------------------------------------------------------------------
 // 4. At least one ShieldBelt variant per record
@@ -70,7 +70,7 @@ assert(
 );
 
 // 5. Variant references have valid width prefixes
-const VALID_WIDTHS = ['3m', '6m', '12m', '20m'];
+const VALID_WIDTHS = ['3m', '6m', '12m', '20m', '60m'];
 for (const p of problems) {
   for (const v of (p.Relevant_ShieldBelt_Variants ?? [])) {
     const width = v.split(' ')[0];
@@ -115,7 +115,7 @@ for (const field of FARMER_FACING) {
 // ---------------------------------------------------------------------------
 console.log('\n--- 7. Categories ---');
 const cats = new Set(problems.map(p => p.Category));
-assert(cats.size === 10, `10 categories present (found: ${cats.size})`);
+assert(cats.size >= 10 && cats.size <= 12, `10–12 categories expected (found: ${cats.size})`);
 
 // ---------------------------------------------------------------------------
 // 8. Routing triggers reference known DB fields

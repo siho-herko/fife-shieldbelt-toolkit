@@ -29,6 +29,7 @@
   --c-w6m:   #15803d;
   --c-w12m:  #a16207;
   --c-w20m:  #9d174d;
+  --c-w60m:  #0f4c3a;
 
   /* Typography */
   --font-display: 'Playfair Display', Georgia, serif;
@@ -658,6 +659,7 @@ input, select, textarea {
 .badge-width[data-width="6m"]  { background: var(--c-w6m); }
 .badge-width[data-width="12m"] { background: var(--c-w12m); }
 .badge-width[data-width="20m"] { background: var(--c-w20m); }
+.badge-width[data-width="60m"] { background: var(--c-w60m); color: #ecfdf5; }
 
 /* ==========================================================================
    10. Biome Tag

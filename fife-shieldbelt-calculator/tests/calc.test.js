@@ -37,7 +37,7 @@ import { readFileSync } from 'fs';
 // Test harness
 // ---------------------------------------------------------------------------
 
-const db   = JSON.parse(readFileSync('./data/fife_interventions_db_v4.json', 'utf8'));
+const db   = JSON.parse(readFileSync('./data/fife_interventions_db_v8.json', 'utf8'));
 const byId = Object.fromEntries(db.map(r => [r.id, r]));
 
 let passed = 0, failed = 0;
@@ -157,8 +157,8 @@ assert(near(windbreakValue(r1, 'EW', 1000), 410.00, 0.01),
 assert(near(avoidedCosts(r1, 'crossSlope', 1000), 2529.00, 0.01),
   'r1: avoidedCosts crossSlope ≈ £2529.00', 2529.00, avoidedCosts(r1, 'crossSlope', 1000));
 
-assert(sserUnits(r1, 1000) === 3.96,
-  'r1: sserUnits(1000) = 3.96', 3.96, sserUnits(r1, 1000));
+assert(sserUnits(r1, 1000) === 8.4,
+  'r1: sserUnits(1000) = 8.4', 8.4, sserUnits(r1, 1000));
 
 const r1_net = calculate(inputs(r1), r1).annualNetBenefit;
 assert(near(r1_net, 3319.27, 1.00),
@@ -188,8 +188,8 @@ assert(near(windbreakValue(r2, 'NS', 1000), 1016, 0.01),
 assert(near(avoidedCosts(r2, 'crossSlope', 1000), 1600, 0.01),
   'r2: avoidedCosts crossSlope ≈ £1600.00', 1600, avoidedCosts(r2, 'crossSlope', 1000));
 
-assert(sserUnits(r2, 1000) === 7.92,
-  'r2: sserUnits(1000) = 7.92', 7.92, sserUnits(r2, 1000));
+assert(sserUnits(r2, 1000) === 24,
+  'r2: sserUnits(1000) = 24', 24, sserUnits(r2, 1000));
 
 // v4 DB: includes windbreak + avoided-cost components for this variant at 1000m.
 const r2_net = calculate(inputs(r2), r2).annualNetBenefit;
@@ -205,8 +205,8 @@ console.log('\n--- E. Record 3: Coastal Erosion Wood — East Neuk Coast (20m) -
 assert(near(annualCarbonIncome(r3, 1000, 60), 672.00, 0.10),
   'r3: annualCarbonIncome ≈ £672.00', 672.00, annualCarbonIncome(r3, 1000, 60));
 
-assert(sserUnits(r3, 1000) === 39.60,
-  'r3: sserUnits(1000) = 39.60', 39.60, sserUnits(r3, 1000));
+assert(sserUnits(r3, 1000) === 280,
+  'r3: sserUnits(1000) = 280', 280, sserUnits(r3, 1000));
 
 assert(near(windbreakValue(r3, 'NS', 1000), 1344.00, 0.01),
   'r3: windbreakValue NS ≈ £1344.00', 1344.00, windbreakValue(r3, 'NS', 1000));
@@ -234,8 +234,8 @@ assert(near(annualCarbonIncome(r4, 1000, 60), 198.72, 0.01),
 assert(near(thermalRegulationValue(r4, 'Dairy', 1000), 250.00, 0.01),
   'r4: thermalRegulationValue Dairy ≈ £250.00', 250.00, thermalRegulationValue(r4, 'Dairy', 1000));
 
-assert(sserUnits(r4, 1000) === 15.84,
-  'r4: sserUnits(1000) = 15.84', 15.84, sserUnits(r4, 1000));
+assert(sserUnits(r4, 1000) === 138,
+  'r4: sserUnits(1000) = 138', 138, sserUnits(r4, 1000));
 
 // v4 DB: full calculate() ground truth for GC crossSlope NS at 1000m.
 const r4_net = calculate(inputs(r4), r4).annualNetBenefit;
@@ -257,8 +257,8 @@ assert(near(windbreakValue(r5, 'EW', 1000), 1141.00, 0.01),
 assert(windbreakValue(r5, 'NS', 1000) > windbreakValue(r5, 'EW', 1000),
   'r5: NS windbreak > EW windbreak');
 
-assert(sserUnits(r5, 1000) === 19.80,
-  'r5: sserUnits(1000) = 19.80', 19.80, sserUnits(r5, 1000));
+assert(sserUnits(r5, 1000) === 31.5,
+  'r5: sserUnits(1000) = 31.5', 31.5, sserUnits(r5, 1000));
 
 // Correct annualNetBenefit for GC:
 // carbIncome = (164.88/50)*(3/10000*1000)*60 = (164.88/50)*0.3*60 = 59.3568

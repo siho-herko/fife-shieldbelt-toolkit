@@ -81,6 +81,7 @@ const WIDTH_COLOR = {
   '6m':  '#15803d',
   '12m': '#a16207',
   '20m': '#9d174d',
+  '60m': '#0f4c3a',
 };
 
 // =============================================================================
@@ -114,11 +115,11 @@ let problemsByCode = {};
 
 async function loadProblems() {
   try {
-    const data = await fetch('data/problems.json').then(r => r.json());
+    const data = await fetch('data/problems_v2.json').then(r => r.json());
     problemsData   = Array.isArray(data) ? data : (data.problems ?? []);
     problemsByCode = Object.fromEntries(problemsData.map(p => [p.Problem_Code, p]));
   } catch (e) {
-    console.warn('problems.json not yet available — problem chips will not load.', e);
+    console.warn('problems_v2.json not yet available — problem chips will not load.', e);
   }
 }
 
@@ -202,7 +203,7 @@ function populateProblemChips() {
   container.innerHTML = '';
 
   if (problemsData.length === 0) {
-    container.innerHTML = '<p class="form-hint">Problem data not yet loaded — paste data/problems.json to enable.</p>';
+    container.innerHTML = '<p class="form-hint">Problem data not yet loaded — ensure data/problems_v2.json is available.</p>';
     return;
   }
 
@@ -561,28 +562,63 @@ function getNestedValue(record, path, farmType) {
   return cur;
 }
 
+/** Numeric value for routing triggers; nitrate falls back to deprecated nutrientRetention. */
+function getTriggerMetric(record, path, farmType) {
+  let v = getNestedValue(record, path, farmType);
+  if (v === undefined && path.endsWith('.nitrateRetention')) {
+    const legacy = path.replace(/\.nitrateRetention$/, '.nutrientRetention');
+    v = getNestedValue(record, legacy, farmType);
+  }
+  if (typeof v === 'number') return v;
+  const n = Number(v);
+  return Number.isFinite(n) ? n : NaN;
+}
+
+/**
+ * Evaluate one routing clause (no OR). Returns true if satisfied.
+ */
+function evalRoutingClause(clause, record, farmType) {
+  const c = clause.trim();
+  if (!c) return false;
+  if (c.includes(' >= ')) {
+    const i = c.indexOf(' >= ');
+    const path = c.slice(0, i).trim();
+    const thresh = parseFloat(c.slice(i + 4).trim());
+    const val = getTriggerMetric(record, path, farmType);
+    return Number.isFinite(val) && Number.isFinite(thresh) && val >= thresh;
+  }
+  if (c.includes(' <= ')) {
+    const i = c.indexOf(' <= ');
+    const path = c.slice(0, i).trim();
+    const thresh = parseFloat(c.slice(i + 4).trim());
+    const val = getTriggerMetric(record, path, farmType);
+    return Number.isFinite(val) && Number.isFinite(thresh) && val <= thresh;
+  }
+  if (c.includes(" contains '")) {
+    const parts  = c.split(" contains '");
+    const path   = parts[0].trim();
+    const target = parts[1].replace(/'/g, '').trim();
+    const val    = getNestedValue(record, path, farmType);
+    return typeof val === 'string' && val.toLowerCase().includes(target.toLowerCase());
+  }
+  return false;
+}
+
 /**
  * Evaluate a routing trigger string against a record. Returns 0–30 pts.
  */
 function evalRoutingTrigger(trigger, record, farmType) {
   if (!trigger) return 10;
   try {
-    if (trigger.includes(' >= ')) {
-      const [path, , thresh] = trigger.split(' ');
-      const val = getNestedValue(record, path, farmType);
-      return (typeof val === 'number' && val >= parseFloat(thresh)) ? 30 : 0;
+    if (/\s+OR\s+/i.test(trigger)) {
+      const clauses = trigger.split(/\s+OR\s+/i).map(s => s.trim()).filter(Boolean);
+      for (const cl of clauses) {
+        if (evalRoutingClause(cl, record, farmType)) return 30;
+      }
+      return 0;
     }
-    if (trigger.includes(' <= ')) {
-      const [path, , thresh] = trigger.split(' ');
-      const val = getNestedValue(record, path, farmType);
-      return (typeof val === 'number' && val <= parseFloat(thresh)) ? 30 : 0;
-    }
-    if (trigger.includes(" contains '")) {
-      const parts     = trigger.split(" contains '");
-      const path      = parts[0].trim();
-      const target    = parts[1].replace(/'/g, '').trim();
-      const val       = getNestedValue(record, path, farmType);
-      return (typeof val === 'string' && val.toLowerCase().includes(target.toLowerCase())) ? 30 : 0;
+    if (trigger.includes(' >= ') || trigger.includes(' <= ') || trigger.includes(" contains '")) {
+      return evalRoutingClause(trigger, record, farmType) ? 30 : 0;
     }
     return 10; // complex/unrecognised trigger → partial credit
   } catch {
@@ -630,11 +666,11 @@ function recommendVariant(problemCode, biomeRecords, farmType) {
 
     // 4. SSER bonus (0–10 pts)
     const sser = record.registry?.sserGrossUnitsPerKm || 0;
-    score += (sser / 39.6) * 10;
+    score += Math.min(sser / 100, 1) * 10;
 
     // 5. Carbon bonus for carbon problems (0–5 pts)
     if (['CARBON_INCOME', 'CARBON_BASELINE'].includes(problemCode)) {
-      score += Math.min(record.seq50yrTotal / 400, 1) * 5;
+      score += Math.min(record.seq50yrTotal / 900, 1) * 5;
     }
 
     return { record, score };
@@ -871,24 +907,48 @@ function renderResults(results) {
     `;
   }
 
-  // --- Section 2: Wider Ecosystem Services radar ---
-  setCanvasLabel('chart-water-radar', `Wider ecosystem services radar for ${r.variantName}`);
+  // --- Section 2: Wider Ecosystem Services radar (v8: nitrate vs phosphorus separate) ---
+  setCanvasLabel('chart-water-radar', `Water and catchment radar for ${r.variantName}`);
   radarChart(
     'chart-water-radar',
-    ['Flood Control', 'Sediment Trap', 'Nutrient\nRetention', 'Catchment\nHydro', 'Water\nQuality'],
+    ['Flood Control', 'Sediment Trap', 'Nitrate\nRetention', 'Phosphorus\nRetention', 'Catchment\nHydro', 'Water\nQuality'],
     [{
       label: r.variantName,
       color: '#2d6a4f',
       values: [
         r.sepaData.floodControl,
         r.sepaData.sedimentTrapping,
-        r.sepaData.nutrientRetention,
+        r.sepaData.nitrateRetention,
+        r.sepaData.phosphorusRetention,
         r.radarData.catchmentHydrology,
         r.radarData.waterQuality,
       ],
     }],
     null
   );
+
+  const waterExtras = document.getElementById('water-sepa-extras');
+  if (waterExtras) {
+    const drought = r.sepaData.droughtResilience ?? 0;
+    const dClamped = Math.min(100, Math.max(0, drought));
+    let html = '<div class="results-section__title" style="font-size:0.78rem;margin-bottom:0.35rem;">Drought resilience (variant)</div>';
+    html += `<div style="display:flex;align-items:center;gap:8px;margin-bottom:0.5rem;">`
+      + `<div role="meter" aria-valuenow="${dClamped}" aria-valuemin="0" aria-valuemax="100" title="Tier-3 drought resilience score"`
+      + ` style="flex:1;height:10px;background:var(--c-stone,#e8e4dc);border-radius:5px;overflow:hidden;">`
+      + `<div style="width:${dClamped}%;height:100%;background:var(--c-w60m,#0f4c3a);"></div></div>`
+      + `<span class="text-mono" style="min-width:2.5em;">${Math.round(drought)}</span><span class="text-xs text-muted">/ 100</span></div>`;
+    if (state.placement === 'riparian' && r.sepaData.phosphorusRemobilisationRisk) {
+      html += '<p class="text-xs" style="margin:0.35rem 0;color:#92400e;background:#fffbeb;padding:0.45rem 0.55rem;border-radius:6px;border-left:3px solid #f59e0b;">'
+        + '⚠ <strong>Phosphorus remobilisation risk:</strong> High-organic woodland soils may increase dissolved reactive phosphorus in some conditions. '
+        + 'A grass outer buffer (Zone 3) mitigates this risk.</p>';
+    }
+    if (state.biome === BIOMES.EAST_NEUK && drought < 50) {
+      html += '<p class="text-xs text-muted" style="margin-top:0.35rem;">In the East Neuk, drought and summer low-flow is the primary water risk. '
+        + 'Dense riparian woodland on small burns may increase evapotranspiration — upstream infiltration interventions (contour swales, alley cropping) '
+        + 'are preferred for burn-drying contexts.</p>';
+    }
+    waterExtras.innerHTML = html;
+  }
 
   // CREW sub-service chips + SSER + 50yr carbon
   const crewContainer = document.getElementById('crew-chips');
@@ -1641,7 +1701,9 @@ function flashStatBoxes() {
 function updateSSERWidthColor(width) {
   const el = document.getElementById('stat-sser-value')?.closest('.stat-box');
   if (!el) return;
-  const map = { '3m': 'var(--c-w3m)', '6m': 'var(--c-w6m)', '12m': 'var(--c-w12m)', '20m': 'var(--c-w20m)' };
+  const map = {
+    '3m': 'var(--c-w3m)', '6m': 'var(--c-w6m)', '12m': 'var(--c-w12m)', '20m': 'var(--c-w20m)', '60m': 'var(--c-w60m)',
+  };
   el.style.borderColor = map[width] || '';
 }
 

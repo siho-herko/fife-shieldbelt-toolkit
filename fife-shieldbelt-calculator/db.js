@@ -1,8 +1,8 @@
 /**
  * db.js — Fife ShieldBelt Calculator
  *
- * Data layer: fetches /data/fife_interventions_db_v4.json once per page load
- * and holds all 120 records in a plain JS array.  The service worker caches
+ * Data layer: fetches /data/fife_interventions_db_v8.json once per page load
+ * and holds all 132 records in a plain JS array.  The service worker caches
  * the JSON so subsequent loads are instant (no network request).
  *
  * This replaces the previous IndexedDB implementation.  IndexedDB added
@@ -28,9 +28,10 @@ export const BIOMES = {
 
 export const FARM_TYPES = ['Cereals', 'General Cropping', 'Dairy', 'LFA Grazing'];
 
-export const WIDTHS = ['3m', '6m', '12m', '20m'];
+export const WIDTHS = ['3m', '6m', '12m', '20m', '60m'];
 
-export const SSER_TIERS = [3.96, 5.28, 7.92, 10.56, 11.88, 15.84, 19.8, 23.76, 39.6];
+/** Allowed SSER gross units/km in v8 data (used by validateStore). */
+export const SSER_TIERS = [8.4, 16.8, 24, 31.5, 34.8, 39, 40.2, 46.8, 62.4, 78, 108, 138, 150, 280, 806.4];
 
 // ---------------------------------------------------------------------------
 // In-memory store
@@ -44,11 +45,11 @@ let _records = [];
 // ---------------------------------------------------------------------------
 
 /**
- * Resolves when all 120 records are loaded into memory.
+ * Resolves when all 132 records are loaded into memory.
  * The service worker caches this file so subsequent page loads are instant.
  * @type {Promise<void>}
  */
-export const dbReady = fetch('/data/fife_interventions_db_v4.json')
+export const dbReady = fetch('/data/fife_interventions_db_v8.json')
   .then(res => {
     if (!res.ok) throw new Error(`HTTP ${res.status} loading intervention data`);
     return res.json();
@@ -68,7 +69,7 @@ export const dbReady = fetch('/data/fife_interventions_db_v4.json')
 // ---------------------------------------------------------------------------
 
 /**
- * Return all 120 intervention records.
+ * Return all 132 intervention records.
  * @returns {Promise<Object[]>}
  */
 export async function getAll() {
@@ -77,7 +78,7 @@ export async function getAll() {
 }
 
 /**
- * Return all records for a given biome (should be 20).
+ * Return all records for a given biome (should be 22).
  * @param {string} biomeName — one of the BIOMES values
  * @returns {Promise<Object[]>}
  */
@@ -124,8 +125,8 @@ export async function validateStore() {
   const REQUIRED_FARMS = new Set(FARM_TYPES);
   const VALID_ID_RE    = /^[a-z0-9_]+$/;
 
-  if (_records.length !== 120) {
-    errors.push(`Record count: expected 120, got ${_records.length}`);
+  if (_records.length !== 132) {
+    errors.push(`Record count: expected 132, got ${_records.length}`);
   }
 
   const biomeCounts = {};
@@ -133,7 +134,7 @@ export async function validateStore() {
     biomeCounts[r.biome] = (biomeCounts[r.biome] ?? 0) + 1;
   }
   for (const [biome, count] of Object.entries(biomeCounts)) {
-    if (count !== 20) errors.push(`Biome "${biome}": expected 20, got ${count}`);
+    if (count !== 22) errors.push(`Biome "${biome}": expected 22, got ${count}`);
   }
 
   for (const r of _records) {
@@ -145,8 +146,11 @@ export async function validateStore() {
     if (!r.economicAssessment)                 errors.push(`${p} economicAssessment missing`);
     if (!r.advancedEcosystemServices)          errors.push(`${p} advancedEcosystemServices missing`);
     if (!r.registry)                           errors.push(`${p} registry missing`);
-    if (!VALID_SSER.has(r.registry?.sserGrossUnitsPerKm)) {
-      errors.push(`${p} sserGrossUnitsPerKm invalid: ${r.registry?.sserGrossUnitsPerKm}`);
+    const sser = r.registry?.sserGrossUnitsPerKm;
+    if (typeof sser !== 'number' || !Number.isFinite(sser) || sser < 0) {
+      errors.push(`${p} sserGrossUnitsPerKm invalid: ${sser}`);
+    } else if (!VALID_SSER.has(sser)) {
+      errors.push(`${p} sserGrossUnitsPerKm not in v8 tier list: ${sser}`);
     }
     for (const ft of REQUIRED_FARMS) {
       if (!r.farmImpacts?.[ft]) errors.push(`${p} farmImpacts missing "${ft}"`);
@@ -154,7 +158,7 @@ export async function validateStore() {
   }
 
   if (errors.length === 0) {
-    console.info('✅ FifeShieldBelt data validation passed — 120 records, all fields valid.');
+    console.info('✅ FifeShieldBelt data validation passed — 132 records, all fields valid.');
   } else {
     console.warn(`⚠️ FifeShieldBelt data validation: ${errors.length} error(s).`);
     console.table(errors.map((e, i) => ({ '#': i + 1, error: e })));

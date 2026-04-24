@@ -377,12 +377,19 @@ export function calculate(inputs, record) {
     waterQuality:           safeNum(placementRadar.waterQuality),
   };
 
-  // --- SEPA (placement-specific) ---
+  // --- SEPA (placement-specific + variant-level drought on sepaMetrics root) ---
   const sm = record.sepaMetrics?.[placement] ?? {};
+  const rootSepa = record.sepaMetrics ?? {};
+  const nitrateScore = sm.nitrateRetention != null ? safeNum(sm.nitrateRetention) : safeNum(sm.nutrientRetention);
+  const phosphorusScore = sm.phosphorusRetention != null ? safeNum(sm.phosphorusRetention) : 0;
   const sepaData = {
     floodControl:      safeNum(sm.floodControl),
     sedimentTrapping:  safeNum(sm.sedimentTrapping),
     nutrientRetention: safeNum(sm.nutrientRetention),
+    nitrateRetention:  nitrateScore,
+    phosphorusRetention: phosphorusScore,
+    phosphorusRemobilisationRisk: !!sm.phosphorusRemobilisationRisk,
+    droughtResilience: safeNum(rootSepa.droughtResilience),
   };
 
   // --- Display strings ---
