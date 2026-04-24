@@ -37,7 +37,7 @@ import { readFileSync } from 'fs';
 // Test harness
 // ---------------------------------------------------------------------------
 
-const db   = JSON.parse(readFileSync('./data/fife_interventions_db_v8.json', 'utf8'));
+const db   = JSON.parse(readFileSync('./data/fife_interventions_db_v9.json', 'utf8'));
 const byId = Object.fromEntries(db.map(r => [r.id, r]));
 
 let passed = 0, failed = 0;
@@ -151,8 +151,8 @@ assert(thermalRegulationValue(r1, 'Dairy', 1000) === 0,
 assert(near(windbreakValue(r1, 'NS', 1000), 484.00, 0.01),
   'r1: windbreakValue NS ≈ £484.00', 484.00, windbreakValue(r1, 'NS', 1000));
 
-assert(near(windbreakValue(r1, 'EW', 1000), 410.00, 0.01),
-  'r1: windbreakValue EW ≈ £410.00', 410.00, windbreakValue(r1, 'EW', 1000));
+assert(near(windbreakValue(r1, 'EW', 1000), 399.00, 0.01),
+  'r1: windbreakValue EW ≈ £399.00', 399.00, windbreakValue(r1, 'EW', 1000));
 
 assert(near(avoidedCosts(r1, 'crossSlope', 1000), 2529.00, 0.01),
   'r1: avoidedCosts crossSlope ≈ £2529.00', 2529.00, avoidedCosts(r1, 'crossSlope', 1000));
@@ -211,8 +211,8 @@ assert(sserUnits(r3, 1000) === 280,
 assert(near(windbreakValue(r3, 'NS', 1000), 1344.00, 0.01),
   'r3: windbreakValue NS ≈ £1344.00', 1344.00, windbreakValue(r3, 'NS', 1000));
 
-assert(near(windbreakValue(r3, 'EW', 1000), 1141.00, 0.01),
-  'r3: windbreakValue EW ≈ £1141.00', 1141.00, windbreakValue(r3, 'EW', 1000));
+assert(near(windbreakValue(r3, 'EW', 1000), 528.00, 0.01),
+  'r3: windbreakValue EW ≈ £528.00', 528.00, windbreakValue(r3, 'EW', 1000));
 
 assert(near(avoidedCosts(r3, 'crossSlope', 1000), 2529.00, 0.01),
   'r3: avoidedCosts crossSlope ≈ £2529.00', 2529.00, avoidedCosts(r3, 'crossSlope', 1000));
@@ -251,8 +251,8 @@ console.log('\n--- G. Record 5: Dense Wildlife Hedge — East Neuk Coast (3m) --
 assert(near(windbreakValue(r5, 'NS', 1000), 1344.00, 0.01),
   'r5: windbreakValue NS ≈ £1344.00', 1344.00, windbreakValue(r5, 'NS', 1000));
 
-assert(near(windbreakValue(r5, 'EW', 1000), 1141.00, 0.01),
-  'r5: windbreakValue EW ≈ £1141.00', 1141.00, windbreakValue(r5, 'EW', 1000));
+assert(near(windbreakValue(r5, 'EW', 1000), 528.00, 0.01),
+  'r5: windbreakValue EW ≈ £528.00', 528.00, windbreakValue(r5, 'EW', 1000));
 
 assert(windbreakValue(r5, 'NS', 1000) > windbreakValue(r5, 'EW', 1000),
   'r5: NS windbreak > EW windbreak');

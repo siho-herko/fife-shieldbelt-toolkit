@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fife ShieldBelt: Six Topic Areas — NFCA</title>
+<style>
+:root{--g1:#1a3d2b;--g2:#2d6a4f;--g3:#52b788;--g4:#d8f3dc;--gold:#b5830a;--gold2:#f4c542;--cream:#faf7f2;--text:#1c2b1e;--muted:#4a5e4d;--red:#9b2226;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Georgia,serif;background:var(--cream);color:var(--text);}
+h1,h2,h3{font-family:Georgia,serif;}
+p,td,th,span,a,button,li{font-family:-apple-system,BlinkMacSystemFont,sans-serif;}
+.w3{background:#dbeafe;color:#1e40af;}.w6{background:#dcfce7;color:#166534;}.w12{background:#fef3c7;color:#92400e;}.w20{background:#fce7f3;color:#9d174d;}.w60{background:#c6f6e8;color:#0f4c3a;}
+.wb{display:inline-block;font-size:.56rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.15rem .46rem;border-radius:4px;white-space:nowrap;}
+nav{background:var(--g1);position:sticky;top:0;z-index:50;border-bottom:3px solid var(--g3);}
+.ni{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:54px;padding:0 1.4rem;}
+.nb{background:var(--g3);color:var(--g1);font-size:.58rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.22rem .75rem;border-radius:999px;}
+.ns{color:rgba(255,255,255,.38);font-size:.62rem;font-weight:600;letter-spacing:.13em;text-transform:uppercase;margin-left:.8rem;}
+header{background:linear-gradient(150deg,var(--g1) 0%,#1d5738 55%,#2a7048 100%);padding:3.5rem 1.4rem 2.6rem;position:relative;overflow:hidden;}
+header::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 85% 10%,rgba(82,183,136,.15) 0%,transparent 50%);}
+header::after{content:"";position:absolute;bottom:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--g3),var(--gold2),var(--g3));}
+.hd{max-width:1200px;margin:0 auto;position:relative;z-index:1;}
+.ey{display:inline-flex;align-items:center;gap:.4rem;color:var(--gold2);font-size:.64rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;margin-bottom:.9rem;}
+.ey::before{content:"";width:16px;height:2px;background:var(--gold2);}
+header h1{font-size:clamp(1.6rem,3.8vw,2.9rem);font-weight:900;color:#fff;line-height:1.1;margin-bottom:.85rem;}
+header h1 span{color:var(--gold2);}
+header p{color:rgba(255,255,255,.67);font-size:.93rem;max-width:680px;line-height:1.8;margin-bottom:1.5rem;}
+.wl{display:flex;flex-wrap:wrap;gap:.42rem;align-items:center;}
+.wl .lb{color:rgba(255,255,255,.38);font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-right:.12rem;}
+.wli{display:inline-flex;align-items:center;gap:.28rem;padding:.26rem .72rem;border-radius:7px;font-size:.67rem;font-weight:700;}
+.wli .dot{width:8px;height:8px;border-radius:50%;}
+.tpnav{background:#fff;border-bottom:1px solid rgba(26,61,43,.1);padding:.52rem 1.4rem;position:sticky;top:54px;z-index:40;overflow-x:auto;white-space:nowrap;}
+.tpnav-i{max-width:1200px;margin:0 auto;display:flex;gap:.42rem;align-items:center;}
+.tpill{display:inline-flex;align-items:center;gap:.32rem;padding:.26rem .78rem;border-radius:999px;font-size:.65rem;font-weight:700;border:1.5px solid transparent;text-decoration:none;}
+.tlbl{color:var(--muted);font-size:.6rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-right:.22rem;flex-shrink:0;}
+main{max-width:1200px;margin:0 auto;padding:0 1.4rem 3rem;}
+.ts{padding:2.6rem 0 2.2rem;border-bottom:1px solid rgba(26,61,43,.09);}
+.ts:last-child{border-bottom:none;}
+.th{display:flex;align-items:flex-start;gap:1rem;margin-bottom:1.6rem;flex-wrap:wrap;}
+.tnum{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:1.3rem;font-weight:900;flex-shrink:0;color:#fff;}
+.tht h2{font-size:1.38rem;font-weight:700;margin-bottom:.14rem;line-height:1.2;}
+.bc{display:inline-flex;align-items:center;gap:.26rem;padding:.16rem .58rem;border-radius:999px;font-size:.6rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:.32rem;}
+.tht p{color:var(--muted);font-size:.84rem;line-height:1.7;max-width:660px;}
+.tc{display:grid;grid-template-columns:1fr 1fr;gap:1.1rem;align-items:start;}
+@media(max-width:820px){.tc{grid-template-columns:1fr;}}
+.cd{background:#fff;border-radius:12px;padding:1.2rem;box-shadow:0 2px 10px rgba(26,61,43,.06);border:1px solid rgba(26,61,43,.07);}
+.cd h3{font-size:.91rem;font-weight:700;color:var(--g1);margin-bottom:.16rem;}
+.cd .sub{color:var(--muted);font-size:.73rem;margin-bottom:.85rem;line-height:1.5;}
+.nt{margin-top:.75rem;padding:.62rem .85rem;border-radius:6px;font-size:.74rem;color:var(--muted);line-height:1.6;}
+.nt.gr{background:var(--g4);border-left:3px solid var(--g3);}
+.nt.go{background:#fdf8ec;border-left:3px solid var(--gold);}
+.nt.bl{background:#eef4ff;border-left:3px solid #3b6fd4;}
+.nt.rd{background:#fff1f1;border-left:3px solid var(--red);}
+.rl{width:34px;height:3px;border-radius:2px;margin:.28rem 0 .75rem;}
+canvas{display:block;width:100%!important;}
+
+/* ── Chart label HTML elements ─────────────────────────────── */
+.xl-wrap{display:flex;flex-wrap:wrap;justify-content:space-around;gap:4px 8px;margin:4px 0 10px;padding:0 8px;}
+.xl-item{display:flex;align-items:flex-start;gap:4px;font-size:.7rem;color:#4a5e4d;line-height:1.3;flex:1;min-width:60px;max-width:160px;}
+.xl-swatch{width:10px;height:10px;border-radius:2px;flex-shrink:0;margin-top:2px;}
+.xl-line-labels{display:flex;justify-content:space-between;padding:2px 10px 0 52px;margin-bottom:6px;}
+.xl-line-labels span{font-size:9px;color:#4a5e4d;text-align:center;flex:1;}
+.chart-leg{display:flex;flex-wrap:wrap;gap:4px 10px;margin:6px 0 4px;padding:0 4px;}
+.chart-leg .rleg-i{display:inline-flex;align-items:center;gap:5px;font-size:.68rem;color:#4a5e4d;line-height:1.4;}
+.chart-leg .rleg-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+/* rleg used by radar — same styles */
+.rleg{display:flex;flex-wrap:wrap;gap:4px 10px;margin-top:6px;}
+.rleg-i{display:inline-flex;align-items:center;gap:5px;font-size:.68rem;color:#4a5e4d;line-height:1.4;}
+.rleg-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+
+.vm{width:100%;border-collapse:collapse;font-size:.72rem;margin-top:.35rem;}
+.vm th{background:var(--g4);color:var(--g2);font-weight:700;font-size:.6rem;letter-spacing:.07em;text-transform:uppercase;padding:.38rem .55rem;text-align:left;border-bottom:2px solid rgba(45,106,79,.15);}
+.vm td{padding:.35rem .55rem;border-bottom:1px solid rgba(26,61,43,.05);vertical-align:middle;}
+.vm tr:last-child td{border-bottom:none;}
+.vm tr:hover td{background:rgba(82,183,136,.04);}
+.vm .vn{font-weight:600;color:var(--g1);}
+.sr{display:flex;align-items:center;gap:.28rem;}
+.bg2{flex:1;background:#e8f0eb;border-radius:3px;height:6px;overflow:hidden;min-width:36px;}
+.bf{height:100%;border-radius:3px;}
+.bv{font-size:.68rem;color:var(--muted);min-width:22px;text-align:right;}
+.rleg{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:.6rem;}
+.rleg-i{display:inline-flex;align-items:center;gap:.3rem;font-size:.68rem;color:var(--muted);}
+.rleg-dot{width:10px;height:10px;border-radius:50%;display:inline-block;flex-shrink:0;}
+footer{background:var(--g1);color:#fff;padding:2.6rem 1.4rem;border-top:4px solid var(--g3);}
+.fi{max-width:1200px;margin:0 auto;display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1.3rem;}
+footer h2{font-size:1.25rem;color:#fff;margin-bottom:.48rem;}
+footer p{color:rgba(255,255,255,.46);font-size:.8rem;line-height:1.7;max-width:460px;}
+.fc{display:inline-flex;align-items:center;gap:.38rem;background:var(--g3);color:var(--g1);padding:.56rem 1.3rem;border-radius:999px;font-weight:700;font-size:.8rem;cursor:pointer;border:none;margin-top:.7rem;}
+.fm{font-size:.59rem;color:rgba(255,255,255,.23);letter-spacing:.11em;text-transform:uppercase;margin-top:1.1rem;}
+
+/* ── Overview section ──────────────────────────────────────── */
+.t0-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.1rem;margin-top:1.4rem;}
+@media(max-width:820px){.t0-grid{grid-template-columns:1fr;}}
+.t0-stat{background:var(--g1);border-radius:12px;padding:1.1rem 1.3rem;display:flex;flex-direction:column;gap:.25rem;}
+.t0-stat .sv{font-family:Georgia,serif;font-size:1.9rem;font-weight:900;line-height:1;color:var(--gold2);}
+.t0-stat .sl{font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.55);}
+.t0-table-wrap{overflow-x:auto;margin-top:1.1rem;}
+.t0-tbl{width:100%;border-collapse:collapse;font-size:.75rem;min-width:560px;}
+.t0-tbl th{background:var(--g1);color:rgba(255,255,255,.8);font-size:.6rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.5rem .7rem;text-align:left;border-bottom:2px solid var(--g3);}
+.t0-tbl th.ra{text-align:right;}
+.t0-tbl td{padding:.45rem .7rem;border-bottom:1px solid rgba(26,61,43,.07);vertical-align:top;color:var(--text);line-height:1.45;}
+.t0-tbl tr:last-child td{border-bottom:none;background:#e8f0eb;font-weight:700;}
+.t0-tbl .bn{font-weight:700;color:var(--g1);}
+.t0-tbl .km{text-align:right;font-weight:800;color:var(--g2);font-size:.82rem;}
+.t0-tbl .val{text-align:right;font-weight:700;color:var(--gold);white-space:nowrap;}
+.t0-tbl .bft{color:var(--muted);font-size:.72rem;}
+.t0-bar-wrap{margin-top:1.1rem;}
+</style>
+</head>
+<body>
+<nav><div class="ni">
+<div style="display:flex;align-items:center;"><img src="https://storage.ghost.io/c/e3/6d/e36dd7fd-105a-4501-a800-2d845e782a59/content/images/2023/09/Color-logo---no-background.svg" alt="NFCA" style="height:28px;" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span style="display:none;color:#fff;font-size:.88rem;font-weight:700;">NFCA</span><span class="ns">Fife ShieldBelt</span></div>
+<span class="nb">6 Topics &middot; 1,930 km Network &middot; 37 Variants</span>
+</div></nav>
+<div class="tpnav"><div class="tpnav-i">
+<span class="tlbl">Jump to:</span>
+<a href="#t0" class="tpill" style="background:#e8f0eb;color:#1a3d2b;border-color:#b2c9b8;">&#127981; Overview</a>
+<a href="#t4" class="tpill" style="background:#fff7ed;color:#9a3412;border-color:#fed7aa;">&#127806; Farm Economics</a>
+<a href="#t3" class="tpill" style="background:#fdf4ff;color:#7e22ce;border-color:#e9d5ff;">&#129419; Pollination &amp; Yield</a>
+<a href="#t1" class="tpill" style="background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe;">&#128167; Flood &amp; NVZ</a>
+<a href="#t5" class="tpill" style="background:#fefce8;color:#854d0e;border-color:#fef08a;">&#128183; Soil Erosion</a>
+<a href="#t2" class="tpill" style="background:#f0fdf4;color:#166534;border-color:#bbf7d0;">&#127807; Carbon Markets</a>
+<a href="#t6" class="tpill" style="background:#ecfeff;color:#0e7490;border-color:#a5f3fc;">&#127961; Urban Friction</a>
+</div></div>
+<header><div class="hd">
+<div class="ey">NFCA Fife Research &middot; 120 Intervention Records &middot; 35 Variants</div>
+<h1>Fife ShieldBelt:<br><span>Yield Protection. Cost Reduction. Six Micro-Biomes.</span></h1>
+<p>Built specifically for Fife's soils, climate and farming systems &mdash; from the salt-spray-exposed East Neuk to the waterlogged West Claylands. Each section leads with the agronomic and financial metrics that directly affect your bottom line, with the environmental co-benefits following naturally.</p>
+<div class="wl"><span class="lb">Strip width:</span>
+<span class="wli w3"><span class="dot" style="background:#1d4ed8;"></span>3m</span>
+<span class="wli w6"><span class="dot" style="background:#15803d;"></span>6m</span>
+<span class="wli w12"><span class="dot" style="background:#a16207;"></span>12m</span>
+<span class="wli w20"><span class="dot" style="background:#9d174d;"></span>20m</span>
+<span class="wli w60"><span class="dot" style="background:#0f4c3a;"></span>60m</span>
+</div></div></header>
+<main>
+
+<!-- T0 OVERVIEW -->
+<div class="ts" id="t0" style="padding-top:2rem;">
+<div class="th"><div class="tnum" style="background:var(--g1);font-size:1.4rem;">&starf;</div><div class="tht">
+<span class="bc" style="background:#e8f0eb;color:var(--g1);">&#127981; Strategic Overview</span>
+<h2 style="color:var(--g1);">The Fife-Wide Opportunity: 1,120 km of Working Infrastructure</h2>
+<div class="rl" style="background:linear-gradient(90deg,var(--g3),var(--g1));"></div>
+<p>If we treat linear field margins not as lost land, but as engineered agricultural infrastructure, Fife has the capacity to deploy over 1,900&nbsp;km of targeted ShieldBelts. This is not about planting generic trees &mdash; it is about deploying the right biological tool to solve the primary operational pressure of each specific catchment. Together, these features generate an estimated <strong>&pound;2.5M+ per year</strong> in combined agronomic yield-bumps and avoided operational costs. The step-change is driven by the <strong>3m hedge backbone</strong>: because statutory cross-compliance already requires a 2-metre uncultivated headland, a 3m hedge costs a farmer just 1 metre of productive land &mdash; making it the highest-density, lowest-barrier carbon and biodiversity intervention in the portfolio.</p>
+</div></div>
+
+<div class="t0-grid">
+  <div class="cd">
+    <h3>Estimated Network Capacity by Micro-Biome (km)</h3>
+    <p class="sub">Calculated from farmable field margin lengths, topography, and matching primary farm type to the most beneficial intervention class.</p>
+    <canvas id="c0bar" height="220"></canvas>
+    <div class="rleg" id="r0leg"></div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:.8rem;">
+    <div class="t0-stat">
+      <span class="sv">1,930 km</span>
+      <span class="sl">Total deployable network across Fife</span>
+    </div>
+    <div class="t0-stat">
+      <span class="sv">&pound;2.5M+</span>
+      <span class="sl">Estimated annual agronomic &amp; operational value</span>
+    </div>
+    <div class="t0-stat">
+      <span class="sv">6</span>
+      <span class="sl">Distinct micro-biomes, each with bespoke variant menus</span>
+    </div>
+    <div class="cd" style="flex:1;border-left:4px solid var(--g3);">
+      <p style="font-size:.82rem;font-weight:700;color:var(--g1);margin-bottom:.4rem;">&#9650; The 2-Metre Statutory Rule</p>
+      <p style="font-size:.78rem;color:var(--muted);line-height:1.65;">Cross-compliance already requires a 2m uncultivated headland. A <strong>3m Dense Wildlife Hedge</strong> therefore costs a cereal farmer just 1 extra metre of land &mdash; dropping the net income forgone from ~&pound;50/km to just <strong>&pound;16/km</strong>. This is why the 3m hedge is the scalable carbon backbone of the entire Fife network: maximum km deployed, minimum farmer sacrifice.</p>
+    </div>
+  </div>
+</div>
+
+<div class="t0-table-wrap">
+<table class="t0-tbl">
+  <thead><tr>
+    <th style="width:18%;">Micro-Biome</th>
+    <th style="width:14%;">Farm System</th>
+    <th style="width:28%;">Targeted Variants</th>
+    <th class="ra" style="width:9%;">km</th>
+    <th class="ra" style="width:11%;">Est. Value/yr</th>
+    <th style="width:20%;">Primary Operational Benefit</th>
+  </tr></thead>
+  <tbody>
+    <tr>
+      <td class="bn">Lomond &amp; Cleish Uplands</td>
+      <td class="bft">LFA Grazing</td>
+      <td class="bft">Montane Snow-Fences, Dense Wildlife Hedges <span style="display:inline-block;background:#dbeafe;color:#1e40af;font-size:.56rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.12rem .38rem;border-radius:3px;margin-left:.3rem;">+3m Carbon Backbone</span></td>
+      <td class="km">550</td>
+      <td class="val">&pound;350,000+</td>
+      <td class="bft">Largest capacity in Fife. 3m hedges at LFA net cost of just &pound;5.50/km drive the carbon scaling story.</td>
+    </tr>
+    <tr>
+      <td class="bn">West Fife Claylands</td>
+      <td class="bft">Dairy / Mixed</td>
+      <td class="bft">Livestock Shade Trees, Clay-Tolerant Shrub Strips <span style="display:inline-block;background:#dbeafe;color:#1e40af;font-size:.56rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.12rem .38rem;border-radius:3px;margin-left:.3rem;">+3m Carbon Backbone</span></td>
+      <td class="km">400</td>
+      <td class="val">&pound;400,000+</td>
+      <td class="bft">Avoided compaction &amp; thermal heat-stress for dairy herds, backed by a scalable 3m carbon baseline.</td>
+    </tr>
+    <tr>
+      <td class="bn">East Neuk Coast</td>
+      <td class="bft">Soft Fruit / Veg</td>
+      <td class="bft">Distillery Foraging Strips, Coastal Salt-Spray Screens <span style="display:inline-block;background:#dbeafe;color:#1e40af;font-size:.56rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.12rem .38rem;border-radius:3px;margin-left:.3rem;">+3m Heritage Hedge</span></td>
+      <td class="km">330</td>
+      <td class="val">&pound;820,000+</td>
+      <td class="bft">Highest-value biome. 3m Heritage Hedges add £1,200/km pollination &amp; windbreak on top of specialist screens.</td>
+    </tr>
+    <tr>
+      <td class="bn">Howe of Fife &amp; Eden</td>
+      <td class="bft">Arable / Potatoes</td>
+      <td class="bft">Wetland Nitrate Filters, Grassed Waterways <span style="display:inline-block;background:#dbeafe;color:#1e40af;font-size:.56rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.12rem .38rem;border-radius:3px;margin-left:.3rem;">+3m Carbon Backbone</span></td>
+      <td class="km">280</td>
+      <td class="val">&pound;450,000+</td>
+      <td class="bft">NVZ compliance &amp; flood buffering, with 3m hedges providing low-footprint carbon integration on field headlands.</td>
+    </tr>
+    <tr>
+      <td class="bn">N. Fife Hills &amp; Tay</td>
+      <td class="bft">Cereals / Mixed</td>
+      <td class="bft">Steep Bank Stabilisation Wood, Cross-Slope Silt Buffers <span style="display:inline-block;background:#dbeafe;color:#1e40af;font-size:.56rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.12rem .38rem;border-radius:3px;margin-left:.3rem;">+3m Heritage Hedge</span></td>
+      <td class="km">220</td>
+      <td class="val">&pound;300,000+</td>
+      <td class="bft">Topsoil &amp; fertilizer retention on Tay-facing slopes, with 3m hedges generating scalable biodiversity credits.</td>
+    </tr>
+    <tr>
+      <td class="bn">Forth Urban Coast</td>
+      <td class="bft">Edge-of-Settlement</td>
+      <td class="bft">Urban Air-Quality Screens, Urban Flood Buffers <span style="display:inline-block;background:#dbeafe;color:#1e40af;font-size:.56rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.12rem .38rem;border-radius:3px;margin-left:.3rem;">+3m Carbon Backbone</span></td>
+      <td class="km">150</td>
+      <td class="val">&pound;200,000+</td>
+      <td class="bft">Flash-flood interception &amp; PM2.5 absorption, with 3m hedges providing low-cost trespass barriers.</td>
+    </tr>
+    <tr>
+      <td class="bn" colspan="3" style="color:var(--g1);">Total Regional Opportunity</td>
+      <td class="km" style="color:var(--g1);font-size:.86rem;">1,930</td>
+      <td class="val" style="color:var(--g1);">&pound;2.5M+</td>
+      <td class="bft" style="color:var(--g1);font-weight:600;">+72% uplift driven by 3m hedge backbone. Combined annual agronomic &amp; avoided operational value.</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+<!-- T4 AGRONOMICS -->
+<div class="ts" id="t4">
+<div class="th"><div class="tnum" style="background:#9a3412;">1</div><div class="tht">
+<span class="bc" style="background:#fff7ed;color:#9a3412;">&#127806; West Fife Claylands</span>
+<h2 style="color:#7c2d12;">Agronomic Value: What the Land Gives Back to Dairy</h2>
+<div class="rl" style="background:linear-gradient(90deg,#f97316,#c2410c);"></div>
+<p>West Fife's heavy clays are predominantly dairy country. Every intervention takes land out of production, but the best options return measurable agronomic value through windbreak shelter, thermal regulation, compaction relief, and pollination. The radar frames these returns against the net land cost.</p>
+</div></div>
+<div class="tc">
+<div class="cd">
+<h3>Agronomic Return Radar &mdash; 5 West Claylands Variants (Dairy Farm)</h3>
+<p class="sub">Six axes: Agronomic Yield Score, Windbreak Yield-bump (NS, scaled), Thermal Regulation (scaled), Pollination Value (scaled), Soil Carbon Health, Net Land Cost (inverted &mdash; lower cost = higher score).</p>
+<div class="nt go"><strong>Windbreak orientation matters.</strong>
+A hedge running <strong>north-south</strong> is the optimal orientation for Fife: it blocks
+both the prevailing westerlies <em>and</em> the spring easterlies (Haar), and casts
+its shadow along the hedge line rather than across the crop. All windbreak values
+shown are for N-S orientation. A hedge running east-west offers minimal wind
+protection in Fife conditions &mdash; it runs parallel to both damaging wind directions
+and provides only minor shelter from northerlies (~15% of the N-S value).
+<strong>Recommendation: always install windbreak ShieldBelts on north or east boundaries
+of fields, running north-south.</strong></div>
+<canvas id="c4r" height="300"></canvas>
+<div class="rleg" id="r4leg"></div>
+<div class="nt go"><strong>Heritage Species Hedge (3m, blue):</strong> Highest windbreak score (NS yield-bump &#163;640/km) at the lowest net land cost (&#163;16.9/km) &mdash; making it the best agronomic return per pound of opportunity cost. Livestock Shade Trees (12m) uniquely dominates Thermal Regulation (&#163;250/km) &mdash; critical for dairy productivity during summer heat stress on these exposed clay fields.</div>
+</div>
+<div class="cd">
+<h3>Private Value Streams Breakdown &mdash; West Claylands Variants incl. Thermal Belt (&#163;/km/yr)</h3>
+<p class="sub">Stacked bars: N-S windbreak yield-bump, Thermal regulation, Pollination, and net income forgone shown as a comparison. Colour = width.</p>
+<canvas id="c4b" height="260"></canvas>
+<div class="rleg" id="leg4b"></div>
+<div id="c4b-xlabels" class="xl-wrap"></div>
+<div id="c4b-leg" class="rleg chart-leg"></div>
+<p class="sub" style="margin-top:.35rem;font-size:.72rem;color:var(--g1);line-height:1.45;">† Thermal Microclimate Belt requires N-S installation to deliver its primary function (GDD uplift and Haar protection). An E-W orientation provides approximately 15% of the shelter value.</p>
+<div class="nt rd"><strong>Net income forgone vs returns:</strong> Heritage Hedge (3m) forgoes only &#163;16.9/km net while returning &#163;820 in measurable agronomic services. Livestock Shade Trees (12m) forgoes &#163;169/km but returns &#163;330+ in thermal and pollination value &mdash; before CREW water and carbon credits. Clay-Tolerant Shrub Strip (6m) scores equal to Shallow Root Shrubs but with better drainage tile protection on clay soils.</div>
+<p class="nt go" style="margin-top:.55rem;"><strong>Thermal Microclimate Belt</strong> delivers the highest windbreak yield-bump (&#163;1,100/km) of any 12m variant, reflecting its dense evergreen&ndash;broadleaf canopy optimised for year-round aerodynamic shelter. The Austrian / Scots Pine component maintains 30&ndash;40% wind speed reduction in winter when deciduous-only woodland provides minimal shelter.</p>
+</div>
+</div>
+</div>
+
+
+<!-- T3 BIODIVERSITY -->
+<div class="ts" id="t3">
+<div class="th"><div class="tnum" style="background:#7e22ce;">2</div><div class="tht">
+<span class="bc" style="background:#faf5ff;color:#7e22ce;">&#129419; East Neuk &amp; St Andrews Coast</span>
+<h2 style="color:#581c87;">Pollination &amp; Yield Protection: Your Standing Army Against Pests</h2>
+<div class="rl" style="background:linear-gradient(90deg,#a855f7,#7e22ce);"></div>
+<p>East Neuk soft fruit has a massive dependency on pollinators. A Distillery Foraging Strip placed next to a strawberry field acts as a concentrated standing army of ladybirds, hoverflies and wild bees &mdash; delivering a documented &#163;1,200/km pollination yield-bump while slashing the aphicide bill. The windbreak value for options with sufficient height directly improves marketable crop quality by lifting salt-spray off the plants.</p>
+</div></div>
+<div class="tc">
+<div class="cd">
+<h3>Biodiversity Scorecard Radar &mdash; 4 East Neuk Variants</h3>
+<p class="sub">Six axes: ESF Index, Habitat Distinctiveness, Soil Carbon, Agronomic Yield, Pollination Value (scaled &#247;12), Pest Regulation (scaled &#247;2). All normalised to 0&ndash;100.</p>
+<canvas id="c3r" height="300"></canvas>
+<div class="rleg" id="r3leg"></div>
+<div class="nt gr"><strong>Dense Wildlife Hedge (3m, blue):</strong> The narrowest option with meaningful ecological return &mdash; ESF=60, Habitat=80, and &#163;720/km pollination from its dense insect-supporting canopy. The Distillery Foraging Strip (6m) leads on Agronomic Yield (85) &mdash; its commercial shrub species deliver direct farm income alongside wildlife habitat.</div>
+</div>
+<div class="cd">
+<h3>Full Agronomic Value Stack (&#163;/km/yr) &mdash; East Neuk, General Cropping</h3>
+<p class="sub">All quantified agronomic benefit streams: Pollination, Pest Regulation, Windbreak Yield-bump (N-S), Water Retention Yield-bump, and Nutrient Pump. Distillery Foraging Strip has no windbreak value &mdash; its 6m shrub canopy lacks the height for aerodynamic shelter.</p>
+<canvas id="c3b" height="260"></canvas>
+<div class="rleg" id="leg3b"></div>
+<div id="c3b-xlabels" class="xl-wrap"></div>
+<div id="c3b-leg" class="rleg chart-leg"></div>
+<div class="nt bl"><strong>Windbreak yield-bump dominates</strong> for hedgerow variants (&#163;960/km N-S) &mdash; larger than pollination for the three options that have it. The Distillery Foraging Strip (6m) earns equal pollination (&#163;1,200) and pest regulation (&#163;150) but zero windbreak value, making its total agronomic stack &#163;1,350/km vs &#163;2,344/km for Heritage Species Hedge. The key differentiator between options is therefore whether they achieve sufficient height and density for aerodynamic shelter.</div>
+<p class="nt go"><strong>New in v8:</strong> <strong>21. Thermal Microclimate Belt (12m)</strong> adds the highest agronomic yield score (90/100) of any variant &mdash; designed for GDD accumulation and Haar protection. <strong>22. Zoned Riparian Woodland (60m)</strong> adds the highest pollination value (&#163;2,400/km) from its Zone 3 floral grass buffer and maximum woodland edge length.</p>
+</div>
+</div>
+<div class="cd" style="margin-top:1rem;">
+<h3>Drought Resilience Score <span class="wb w60">new in v8</span></h3>
+<p class="sub">The <code style="font-size:.7rem;">droughtResilience</code> score (0&ndash;100, Tier 3) captures each variant&apos;s ability to maintain soil moisture and support watercourse baseflow during summer drought &mdash; a primary climate risk on the East Neuk coast. It combines (A) soil moisture retention from root architecture and soil organic carbon, and (B) hydraulic redistribution by deep-taproot species (Oak, Walnut, mature Alder) lifting groundwater during dry periods.</p>
+<canvas id="cDR" height="260"></canvas>
+<p class="sub" style="margin-top:.35rem;">Top eight variants by drought resilience (database v9).</p>
+<p class="sub" style="margin-top:.25rem;font-size:.72rem;color:var(--g1);line-height:1.45;">† Thermal Microclimate Belt requires N-S installation to deliver its primary function (GDD uplift and Haar protection). An E-W orientation provides approximately 15% of the shelter value.</p>
+<div class="nt go">&#9888; <strong>Important caveat for East Neuk burns:</strong> Dense riparian woodland planted directly on small, drought-prone watercourses may increase evapotranspiration and worsen summer low-flows. For the Dreel Burn and similar small burns, upstream soil infiltration interventions (contour swales, alley cropping, organic matter improvement) and leaky woody dams are preferred over bank-edge canopy planting. Riparian woodland is most appropriate on larger watercourses where transpiration demand is proportionally small (SAC agronomist review, April 2026).</div>
+</div>
+</div>
+
+
+<!-- T1 WATER -->
+<div class="ts" id="t1">
+<div class="th"><div class="tnum" style="background:#1d4ed8;">3</div><div class="tht">
+<span class="bc" style="background:#dbeafe;color:#1e40af;">&#128167; Howe of Fife &amp; Eden Floodplain</span>
+<h2 style="color:#1e3a8a;">Flood Protection &amp; NVZ Compliance: Keeping the Eden Off Your Fields</h2>
+<div class="rl" style="background:linear-gradient(90deg,#3b82f6,#1d4ed8);"></div>
+<p>The Howe of Fife is a Nitrate Vulnerable Zone. A flooded field doesn't just destroy winter crops &mdash; it triggers regulatory scrutiny. The right intervention depends on whether your pressure is peak flooding, topsoil loss, or nitrate leaching. Placement on the landscape determines which financial value is unlocked.</p>
+</div></div>
+<div class="tc">
+<div class="cd">
+<h3>SEPA Water Performance Radar &mdash; 4 Howe of Fife Variants</h3>
+<p class="sub">Cross-slope and riparian scores (0&ndash;100): flood control, sediment trapping, <strong>nitrate</strong> and <strong>phosphorus</strong> retention (separate mechanisms), plus riparian flood and riparian nitrate. Nitrate reflects dissolved-N interception; phosphorus reflects particulate trapping.</p>
+<canvas id="c1r" height="300"></canvas>
+<div class="rleg" id="r1leg"></div>
+<table class="vm" style="margin-top:.5rem;font-size:.68rem;" aria-label="Nitrate versus phosphorus retention">
+  <thead><tr>
+    <th>Nitrate retention</th>
+    <th>Phosphorus retention</th>
+  </tr></thead>
+  <tbody>
+    <tr><td>Dissolved; moves through soil profile</td><td>Particulate; surface-bound</td></tr>
+    <tr><td>Intercepted by: deep roots, Alder N-fixation, denitrification</td><td>Intercepted by: grass swards, sediment trapping, bunds</td></tr>
+    <tr><td class="vn">Best variants:</td><td class="vn">Best variants:</td></tr>
+    <tr><td>Wetland Nitrate Filter (100), Biomass Fuel Coppice strip (95)</td><td>Grass Silt Buffer, Wide Silt Buffer (88), Planted Contour Swale (82)</td></tr>
+    <tr><td>&#9888; Woodland 20m: low N interception (e.g. 20)</td><td>&#9888; Woodland: P remobilisation risk in high-organic soils (35&ndash;50); Zone 3 grass buffers mitigate.</td></tr>
+  </tbody>
+</table>
+<p class="nt bl" style="margin-top:.55rem;">&#9888; <strong>Phosphorus remobilisation risk:</strong> Woodland variants (12m, 20m) marked &#9888; in SEPA scoring may increase dissolved phosphorus in high-organic woodland soils. Zone 3 grass buffers mitigate this risk.</p>
+<div class="nt bl"><strong>Wetland Nitrate Filter (6m, teal):</strong> Leads on <em>nitrate</em> retention in the riparian position (100) and strong cross-slope nitrate (95). Grassed Waterway and Planted Contour Swale lead on flood/sediment but trade lower nitrate scores on cross-slope paths. <strong>Willow Bank Buffer (20m)</strong> peaks on riparian flood (98) with low nitrate/phosphorus retention scores &mdash; it conveys and slows water rather than acting as a nitrate filter.</div>
+</div>
+<div class="cd">
+<h3>Water Purification Value &mdash; Riparian Placement (&#163;/km/yr)</h3>
+<p class="sub">CREW Water Purification value unlocked by riparian placement, plus Catchment Hydrology and Peak Flow efficiency. Width and species drive these values independently.</p>
+<canvas id="c1b" height="260"></canvas>
+<div class="rleg" id="leg1b"></div>
+<div id="c1b-xlabels" class="xl-wrap"></div>
+<div id="c1b-leg" class="rleg chart-leg"></div>
+<div class="nt gr"><strong>Gravity dictates value.</strong> <strong>Wetland Nitrate Filters &amp; Willow Bank Buffers</strong> unlock &#163;10,500/km in water purification <em>only</em> when placed in the Riparian zone &mdash; the last line of defence. Conversely, placed <em>Cross-Slope</em> higher up the hill, they intercept overland peak-flow to stop fields washing away. The exact same tree delivers a different financial return depending on where water hits it.</div>
+</div>
+</div>
+</div>
+
+
+<!-- T5 ECOSYSTEM VALUE -->
+<div class="ts" id="t5">
+<div class="th"><div class="tnum" style="background:#854d0e;">4</div><div class="tht">
+<span class="bc" style="background:#fefce8;color:#854d0e;">&#128183; North Fife Hills &amp; Tay Coast</span>
+<h2 style="color:#713f12;">Stopping Gravity: Topsoil Retention &amp; Erosion Control</h2>
+<div class="rl" style="background:linear-gradient(90deg,#eab308,#a16207);"></div>
+<p>On North Fife's steep Tay-facing slopes, every heavy rainfall strips expensive topsoil &mdash; and the fertilizer applied to it &mdash; straight downhill. This biome receives a <strong>1.4&times; multiplier</strong> for erosion control in our valuations because the topographical gradient amplifies the financial damage. The cheapest option (3m grass buffer) catches mud; the most robust (20m woody strip) physically locks the bank together.</p>
+</div></div>
+<div class="tc">
+<div class="cd">
+<h3>Cross-Slope Ecosystem Value &amp; Carbon Stack (&#163;/km) &mdash; N. Fife Hills</h3>
+<p class="sub">Stacked bars: CS Catchment Hydrology, Air Filtration, and 50-year carbon yield (scaled at &#163;2/tCO&#8322;e as a comparable monetary indicator). All values from cross-slope placement &mdash; no riparian premium assumed.</p>
+<canvas id="c5a" height="260"></canvas>
+<div class="rleg" id="leg5a"></div>
+<div id="c5a-xlabels" class="xl-wrap"></div>
+<div id="c5a-leg" class="rleg chart-leg"></div>
+<div class="nt go"><strong>Wide Biomass Coppice (12m)</strong> and <strong>Steep Bank Stabilisation Wood (20m)</strong> both combine strong CS Hydrology (&#163;867&ndash;&#163;1,880/km) with maximum 50-year carbon (510 tCO&#8322;e, worth &#163;1,020 scaled). Grassed Waterway (6m) leads on flood and sediment control but contributes minimal carbon (128 tCO&#8322;e) &mdash; the cross-slope case for woody options is much stronger once carbon is included alongside water services.</div>
+<p class="nt bl" style="margin-top:.55rem;"><strong>22. Zoned Riparian Woodland (60m)</strong> (Howe / Eden riparian context) reaches <strong>806.4 tCO&#8322;e/km</strong> over 50 years with very high CS catchment hydrology and air-filtration stacks; at &#163;2/tCO&#8322;e scaled indicator alone the carbon band would read <strong>&#163;1,613/km</strong>, which would visually dominate this four-variant chart &mdash; so it is called out here rather than drawn to scale alongside the cross-slope Tay cereals set above.</p>
+</div>
+<div class="cd">
+<h3>Cross-Slope Performance Radar &mdash; 4 N. Fife Hills Variants</h3>
+<p class="sub">Six axes: ESF Index, Habitat Distinctiveness, CS Flood Control, CS Sediment Trapping, Soil Carbon &amp; Health, and 50yr Sequestration (scaled). Cross-slope placement throughout &mdash; no riparian assumption.</p>
+<canvas id="c5r" height="300"></canvas>
+<div class="rleg" id="r5leg"></div>
+<div class="nt bl"><strong>Wide Biomass Coppice (12m)</strong> and <strong>Steep Bank Stabilisation Wood (20m)</strong> both score maximum on Soil Carbon and Sequestration while delivering strong CS flood scores (82&ndash;96). Grassed Waterway (6m) dominates on flood and sediment (95/95) but scores low on carbon and ecology &mdash; confirming it as a pure water management tool. The radar makes visible that no single variant excels across all six dimensions.</div>
+</div>
+</div>
+</div>
+
+
+<!-- T2 CARBON -->
+<div class="ts" id="t2">
+<div class="th"><div class="tnum" style="background:#166534;">5</div><div class="tht">
+<span class="bc" style="background:#dcfce7;color:#166534;">&#127807; Lomond &amp; Cleish Uplands</span>
+<h2 style="color:#14532d;">Carbon Markets &amp; Livestock Shelter: The Long-Term Play</h2>
+<div class="rl" style="background:linear-gradient(90deg,#22c55e,#166534);"></div>
+<p>At LFA grazing margins, a 3m Dense Wildlife Hedge costs just <strong>&#163;5.50/km net</strong> &mdash; the lowest land cost of any biome. This makes carbon income a genuinely transformative revenue stream here. But the Montane Snow-Fence isn't a carbon play: it's a winter shelter system that improves lamb survival rates and feed conversion efficiency by keeping ewes out of freezing wind-shear during lambing.</p>
+</div></div>
+<div class="tc">
+<div class="cd">
+<h3>50-Year Carbon Trajectories (tCO&#8322;e/ha per 5yr period)</h3>
+<p class="sub">Line colour = width (including new 60m riparian woodland). The curve shape matters as much as the total &mdash; a fast peak builds credits quickly; a slow build earns permanence premium under WCS rules.</p>
+<canvas id="c2a" height="240"></canvas>
+<div class="rleg" id="leg2a"></div>
+<div id="c2a-xlabels" class="xl-line-labels"></div>
+<div id="c2a-leg" class="rleg chart-leg"></div>
+<div class="nt go"><strong>Botanical Harvest Wood (12m, amber):</strong> Uniquely still accumulating at Year 40, peaking at 61.5 tCO&#8322;e/ha in Yr 26&ndash;30. Biomass Coppice (6m) reaches a steady 53.7/period from Year 6 but requires ongoing harvest. Planted Contour Swale saturates at just 127 tCO&#8322;e total and stops by Year 25. Montane Snow-Fence &mdash; its carbon value is secondary to its livestock protection function.</div>
+<p class="nt gr" style="margin-top:.55rem;"><strong>22. Zoned Riparian Woodland (60m)</strong> achieves <strong>806.4 tCO&#8322;e/km</strong> over 50 years &mdash; about 2.9&times; the 20m riparian woodland total. The 60m footprint accounts for this: at ~6 ha/km it is a significant but grant-supported land-use change.</p>
+</div>
+<div class="cd">
+<h3>Carbon vs Ecosystem Function &amp; Water Radar &mdash; 5 Lomond Variants</h3>
+<p class="sub">Five axes: Total 50yr Sequestration (scaled to 806.4 tCO&#8322;e/km = 100%), Ecosystem Health, Soil Carbon &amp; Health, Habitat Distinctiveness, and CS Catchment Hydrology &mdash; the key NFM water metric for upland source management.</p>
+<canvas id="c2r" height="290"></canvas>
+<div class="rleg" id="r2leg"></div>
+<div class="nt gr"><strong>Planted Contour Swale (12m, pink)</strong> leads on CS Catchment Hydrology (95) &mdash; its engineered cross-slope profile intercepts and slows upland runoff before it reaches the Howe below. <strong>Zoned Riparian Woodland (60m, deep teal)</strong> maxes sequestration, ecosystem health, habitat and hydrology on the v9-normalised chart. Biomass Coppice (6m) scores well on hydrology (76); Montane Snow-Fence scores 80 on hydrology but a low scaled sequestration score on the 806.4 tCO&#8322;e/km anchor &mdash; its primary role is livestock protection, not carbon or flood management.</div>
+</div>
+</div>
+</div>
+
+
+<!-- T6 URBAN -->
+<div class="ts" id="t6">
+<div class="th"><div class="tnum" style="background:#0e7490;">6</div><div class="tht">
+<span class="bc" style="background:#ecfeff;color:#0e7490;">&#127961; Forth Urban Coast</span>
+<h2 style="color:#164e63;">Urban &amp; Community: Four Purposes, Four Options</h2>
+<div class="rl" style="background:linear-gradient(90deg,#22d3ee,#0e7490);"></div>
+<p>Along the Forth&apos;s urban coast, edge-of-settlement interventions need to serve multiple audiences: flood risk manager, air quality planner, community forager, and farmer. These four variants each optimise for a different primary purpose &mdash; and the radar makes those differences visible at a glance.</p>
+</div></div>
+<div class="tc">
+<div class="cd">
+<h3>Cross-Slope Performance Radar &mdash; 4 Forth Urban Variants</h3>
+<p class="sub">Six axes: CS Flood Control, CS Nitrate Retention, Air Filtration (CS, urban multiplier), Pollination (&#247;12), Soil Carbon Health, and 50yr Sequestration (scaled). Cross-slope focus with carbon in frame.</p>
+<canvas id="c6r" height="300"></canvas>
+<div class="rleg" id="r6leg"></div>
+<div class="nt bl"><strong>Biomass Coppice Strip and Wide Biomass Coppice</strong> lead on Soil Carbon and Sequestration (both 510 tCO&#8322;e) with strong <em>cross-slope nitrate</em> retention (85) &mdash; the carbon case for coppice on the urban fringe is compelling. Urban Foraging Wood and Urban Flood Buffer trade lower nitrate scores (20) for maximum pollination (&#163;1,200/km) and stronger flood control (80&ndash;96). The radar reveals a genuine choice: carbon-and-nitrate-focused coppice vs community-facing broadleaf woodland.</div>
+</div>
+<div class="cd">
+<h3>Urban Value at a Glance</h3>
+<p class="sub">CS Catchment Hydrology, Pollination, and 50-year carbon yield scaled at &#163;2/tCO&#8322;e. Cross-slope placement throughout &mdash; no riparian premium assumed.</p>
+<canvas id="c6b" height="260"></canvas>
+<div class="rleg" id="leg6b"></div>
+<div id="c6b-xlabels" class="xl-wrap"></div>
+<div id="c6b-leg" class="rleg chart-leg"></div>
+<div class="nt gr"><strong>Urban Flood Buffer (20m)</strong> leads on CS Hydrology (&#163;1,880/km) and equals the woodland variants on pollination (&#163;1,200/km). Biomass Coppice and Wide Biomass Coppice lead on carbon (&#163;1,020 equivalent) but offer lower pollination (&#163;360/km). The bar shows the coppice options are not strictly inferior &mdash; their carbon value substantially offsets their lower community service profile, depending on whether carbon revenue or community function is the primary objective.</div>
+</div>
+</div>
+</div>
+
+
+</main>
+<footer><div class="fi">
+<div><h2>Built for Fife Farms, Not Just Carbon Markets</h2>
+<p>Every variant has been calibrated to Fife's specific soils, wind profiles, and farming systems. The Haar, the clay, the frost pockets, the NVZ &mdash; they're all in the data. The right choice starts with your biggest operational pressure.</p>
+<button class="fc">Open the Fife Calculator &rarr;</button>
+<div class="fm">Fife ShieldBelt &middot; NFCA Research &middot; 1,930 km network &middot; 6 micro-biomes &middot; &pound;2.5M+ annual value &middot; natcert.earth</div>
+</div>
+<img src="https://storage.ghost.io/c/e3/6d/e36dd7fd-105a-4501-a800-2d845e782a59/content/images/2023/09/Color-logo---no-background.svg" alt="NFCA" style="height:34px;opacity:.75;align-self:flex-start;" onerror="this.style.display='none'">
+</div></footer>
+
+<script>
+// ================================================================
+// MOBILE-FIRST CANVAS CHART ENGINE — zero external dependencies
+// All bar charts are HORIZONTAL so labels always have room.
+// Legends are HTML (not canvas), so they wrap naturally on small screens.
+// Canvas heights are calculated from data length, not fixed.
+// ================================================================
+var WC = {"3m":"#1d4ed8","6m":"#15803d","12m":"#a16207","20m":"#9d174d","60m":"#0f4c3a"};
+var ML = "#4a5e4d", GL = "#e5eae7";
+
+function rgba(h,a){
+  var r=parseInt(h.slice(1,3),16),g=parseInt(h.slice(3,5),16),b=parseInt(h.slice(5,7),16);
+  return "rgba("+r+","+g+","+b+","+a+")";
+}
+function wc(w,a){ return rgba(WC[w],a); }
+
+// Set up canvas at correct DPR, return {ctx, w, h}
+function gc(id, h){
+  var el = document.getElementById(id);
+  if (!el) return null;
+  var dpr = window.devicePixelRatio || 1;
+  var pw = el.parentElement.clientWidth || 340;
+  el.style.width = pw + "px";
+  el.style.height = h + "px";
+  el.width  = Math.round(pw * dpr);
+  el.height = Math.round(h  * dpr);
+  var ctx = el.getContext("2d");
+  ctx.scale(dpr, dpr);
+  return {ctx:ctx, w:pw, h:h};
+}
+
+function sf(ctx, sz, bold){
+  ctx.font = (bold ? "bold " : "") + sz + "px -apple-system,BlinkMacSystemFont,sans-serif";
+}
+
+// Truncate string to fit maxW pixels
+function fit(ctx, s, maxW){
+  if (ctx.measureText(s).width <= maxW) return s;
+  while (s.length > 1 && ctx.measureText(s + "…").width > maxW) s = s.slice(0,-1);
+  return s + "…";
+}
+
+// Rounded rect
+function rr(ctx, x, y, w, h, r, fill){
+  r = Math.min(r, Math.abs(w)/2, Math.abs(h)/2);
+  ctx.beginPath();
+  ctx.moveTo(x+r, y);
+  ctx.lineTo(x+w-r, y); ctx.arcTo(x+w,y,  x+w,y+r,  r);
+  ctx.lineTo(x+w, y+h-r); ctx.arcTo(x+w,y+h,x+w-r,y+h,r);
+  ctx.lineTo(x+r, y+h); ctx.arcTo(x,  y+h,x,  y+h-r,r);
+  ctx.lineTo(x,   y+r);  ctx.arcTo(x,  y,  x+r,y,    r);
+  ctx.closePath();
+  ctx.fillStyle = fill; ctx.fill();
+}
+
+// Build HTML legend below a canvas
+function htmlLeg(legId, datasets){
+  var el = document.getElementById(legId);
+  if (!el) return;
+  var html = "";
+  for (var i = 0; i < datasets.length; i++){
+    var col = Array.isArray(datasets[i].color) ? datasets[i].color[0] : datasets[i].color;
+    html += "<span class='rleg-i'><span class='rleg-dot' style='background:"+col+";display:inline-block;'></span>"+datasets[i].label+"</span> ";
+  }
+  el.innerHTML = html;
+}
+
+// ── HORIZONTAL BAR (single dataset, colours per bar) ──────────
+// Used for simple ranked comparisons
+function hBar(id, labels, values, colors, xmax, xfmt, legId){
+  var rowH = 28, pad = {t:10, b:28, l:0, r:50};
+  // measure label widths to set left padding
+  var tmpC = document.createElement("canvas").getContext("2d");
+  sf(tmpC, 10);
+  var maxLW = 0;
+  for (var i = 0; i < labels.length; i++){
+    var lw = tmpC.measureText(Array.isArray(labels[i]) ? labels[i].join(" ") : labels[i]).width;
+    if (lw > maxLW) maxLW = lw;
+  }
+  pad.l = Math.min(Math.max(maxLW + 10, 80), 160);
+  var h = labels.length * rowH + pad.t + pad.b;
+  var g = gc(id, h); if (!g) return;
+  var ctx = g.ctx, W = g.w;
+  var pw = W - pad.l - pad.r, ph = h - pad.t - pad.b;
+  if (!xmax) xmax = Math.ceil(Math.max.apply(null, values) * 1.06);
+
+  // grid lines
+  ctx.strokeStyle = GL; ctx.lineWidth = 1;
+  for (var gi = 0; gi <= 4; gi++){
+    var xp = pad.l + pw * gi/4;
+    ctx.beginPath(); ctx.moveTo(xp, pad.t); ctx.lineTo(xp, pad.t+ph); ctx.stroke();
+    sf(ctx, 9); ctx.fillStyle = ML; ctx.textAlign = "center";
+    ctx.fillText(xfmt ? xfmt(xmax*gi/4) : Math.round(xmax*gi/4), xp, h-pad.b+13);
+  }
+
+  for (var i = 0; i < labels.length; i++){
+    var cy = pad.t + i*rowH + rowH/2;
+    var bw = values[i]/xmax * pw;
+    var bh = Math.min(16, rowH-6);
+    var col = Array.isArray(colors) ? colors[i] : colors;
+    rr(ctx, pad.l, cy-bh/2, bw, bh, 3, col);
+    // label left
+    var lbl = Array.isArray(labels[i]) ? labels[i].join(" ") : labels[i];
+    sf(ctx, 10); ctx.fillStyle = ML; ctx.textAlign = "right";
+    ctx.fillText(fit(ctx, lbl, pad.l-6), pad.l-5, cy+3.5);
+    // value right
+    sf(ctx, 9); ctx.textAlign = "left"; ctx.fillStyle = ML;
+    ctx.fillText(xfmt ? xfmt(values[i]) : values[i], pad.l+bw+4, cy+3.5);
+  }
+}
+
+// ── HORIZONTAL STACKED BAR ────────────────────────────────────
+function hStackedBar(id, labels, datasets, xmax, xfmt, legId){
+  var rowH = 30, pad = {t:10, b:14, l:0, r:8};
+  var tmpC = document.createElement("canvas").getContext("2d");
+  sf(tmpC, 10);
+  var maxLW = 0;
+  for (var i = 0; i < labels.length; i++){
+    var lbl = Array.isArray(labels[i]) ? labels[i].join(" ") : labels[i];
+    var lw = tmpC.measureText(lbl).width;
+    if (lw > maxLW) maxLW = lw;
+  }
+  pad.l = Math.min(Math.max(maxLW + 10, 80), 160);
+
+  // compute totals for xmax
+  if (!xmax){
+    var tots = [];
+    for (var i = 0; i < labels.length; i++){
+      var s = 0;
+      for (var d = 0; d < datasets.length; d++) s += datasets[d].data[i];
+      tots.push(s);
+    }
+    xmax = Math.ceil(Math.max.apply(null, tots) * 1.06);
+  }
+
+  var h = labels.length * rowH + pad.t + pad.b + 28; // extra for x-axis labels
+  var g = gc(id, h); if (!g) return;
+  var ctx = g.ctx, W = g.w;
+  var pw = W - pad.l - pad.r;
+  var bh = Math.min(18, rowH-8);
+
+  // x grid
+  ctx.strokeStyle = GL; ctx.lineWidth = 1;
+  for (var gi = 0; gi <= 4; gi++){
+    var xp = pad.l + pw*gi/4;
+    ctx.beginPath(); ctx.moveTo(xp,pad.t); ctx.lineTo(xp,pad.t+labels.length*rowH); ctx.stroke();
+    sf(ctx,9); ctx.fillStyle=ML; ctx.textAlign="center";
+    ctx.fillText(xfmt?xfmt(xmax*gi/4):Math.round(xmax*gi/4), xp, pad.t+labels.length*rowH+13);
+  }
+
+  for (var i = 0; i < labels.length; i++){
+    var cy = pad.t + i*rowH + rowH/2;
+    var xbase = pad.l;
+    for (var d = 0; d < datasets.length; d++){
+      var v = datasets[d].data[i];
+      var bw = v/xmax * pw;
+      var col = Array.isArray(datasets[d].color) ? datasets[d].color[i] : datasets[d].color;
+      if (bw > 0) rr(ctx, xbase, cy-bh/2, bw, bh, 2, col);
+      xbase += bw;
+    }
+    var lbl = Array.isArray(labels[i]) ? labels[i].join(" ") : labels[i];
+    sf(ctx,10); ctx.fillStyle=ML; ctx.textAlign="right";
+    ctx.fillText(fit(ctx, lbl, pad.l-6), pad.l-5, cy+3.5);
+  }
+
+  if (legId) htmlLeg(legId, datasets);
+}
+
+// ── GROUPED HORIZONTAL BAR ────────────────────────────────────
+function hGroupedBar(id, labels, datasets, xmax, xfmt, legId){
+  var nd = datasets.length;
+  var rowH = nd * 12 + 8, pad = {t:10, b:28, l:0, r:8};
+  var tmpC = document.createElement("canvas").getContext("2d");
+  sf(tmpC, 10);
+  var maxLW = 0;
+  for (var i = 0; i < labels.length; i++){
+    var lbl = Array.isArray(labels[i]) ? labels[i].join(" ") : labels[i];
+    var lw = tmpC.measureText(lbl).width;
+    if (lw > maxLW) maxLW = lw;
+  }
+  pad.l = Math.min(Math.max(maxLW + 10, 90), 160);
+
+  if (!xmax){
+    var allV = [];
+    for (var d = 0; d < datasets.length; d++)
+      for (var i = 0; i < datasets[d].data.length; i++) allV.push(datasets[d].data[i]);
+    xmax = Math.ceil(Math.max.apply(null, allV) * 1.08);
+  }
+
+  var h = labels.length * rowH + pad.t + pad.b;
+  var g = gc(id, h); if (!g) return;
+  var ctx = g.ctx, W = g.w;
+  var pw = W - pad.l - pad.r;
+  var bh = Math.max(6, Math.floor((rowH - 8) / nd));
+
+  ctx.strokeStyle = GL; ctx.lineWidth = 1;
+  for (var gi = 0; gi <= 4; gi++){
+    var xp = pad.l + pw*gi/4;
+    ctx.beginPath(); ctx.moveTo(xp,pad.t); ctx.lineTo(xp,pad.t+labels.length*rowH); ctx.stroke();
+    sf(ctx,9); ctx.fillStyle=ML; ctx.textAlign="center";
+    ctx.fillText(xfmt?xfmt(xmax*gi/4):Math.round(xmax*gi/4), xp, h-pad.b+13);
+  }
+
+  for (var i = 0; i < labels.length; i++){
+    var cy = pad.t + i*rowH + rowH/2;
+    for (var d = 0; d < nd; d++){
+      var v = datasets[d].data[i];
+      var bw = v/xmax * pw;
+      var by = cy - (nd*bh+(nd-1)*2)/2 + d*(bh+2);
+      var col = Array.isArray(datasets[d].color) ? datasets[d].color[i] : datasets[d].color;
+      if (bw > 0) rr(ctx, pad.l, by, bw, bh, 2, col);
+    }
+    var lbl = Array.isArray(labels[i]) ? labels[i].join(" ") : labels[i];
+    sf(ctx,10); ctx.fillStyle=ML; ctx.textAlign="right";
+    ctx.fillText(fit(ctx, lbl, pad.l-6), pad.l-5, cy+3.5);
+  }
+  if (legId) htmlLeg(legId, datasets);
+}
+
+// ── LINE CHART ────────────────────────────────────────────────
+function lineChart(id, xlabels, datasets, legId){
+  var h = 240;
+  var g = gc(id, h); if (!g) return;
+  var ctx = g.ctx, W = g.w;
+  var pl = 36, pr = 12, pt = 10, pb = 30;
+  var pw = W-pl-pr, ph = h-pt-pb;
+  var ymax = 0;
+  for (var d = 0; d < datasets.length; d++)
+    for (var i = 0; i < datasets[d].data.length; i++)
+      if (datasets[d].data[i] > ymax) ymax = datasets[d].data[i];
+  ymax = Math.ceil(ymax * 1.1 / 10) * 10;
+
+  // y grid
+  ctx.strokeStyle=GL; ctx.lineWidth=1;
+  for (var gi=0; gi<=4; gi++){
+    var yp = pt + ph*(1-gi/4);
+    ctx.beginPath(); ctx.moveTo(pl,yp); ctx.lineTo(pl+pw,yp); ctx.stroke();
+    sf(ctx,9); ctx.fillStyle=ML; ctx.textAlign="right";
+    ctx.fillText(Math.round(ymax*gi/4), pl-3, yp+3.5);
+  }
+
+  // x labels — skip some on narrow screens
+  var step = W < 380 ? 2 : 1;
+  sf(ctx,8.5); ctx.fillStyle=ML; ctx.textAlign="center";
+  for (var i = 0; i < xlabels.length; i += step)
+    ctx.fillText(xlabels[i], pl+i*pw/(xlabels.length-1), pt+ph+13);
+
+  // lines
+  for (var d = 0; d < datasets.length; d++){
+    var ds = datasets[d];
+    ctx.strokeStyle=ds.color; ctx.lineWidth=2; ctx.lineJoin="round";
+    ctx.beginPath();
+    for (var i=0; i<ds.data.length; i++){
+      var x=pl+i*pw/(ds.data.length-1), y=pt+ph*(1-ds.data[i]/ymax);
+      if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    }
+    ctx.stroke();
+    for (var i=0; i<ds.data.length; i++){
+      var x=pl+i*pw/(ds.data.length-1), y=pt+ph*(1-ds.data[i]/ymax);
+      ctx.beginPath(); ctx.arc(x,y,2.5,0,Math.PI*2); ctx.fillStyle=ds.color; ctx.fill();
+    }
+  }
+  if (legId) htmlLeg(legId, datasets);
+}
+
+// ── RADAR CHART ───────────────────────────────────────────────
+function radarChart(id, axes, datasets, legId){
+  var W_el = document.getElementById(id);
+  var pw = W_el ? W_el.parentElement.clientWidth || 340 : 340;
+  // taller on narrow screens to give labels room
+  var h = pw < 360 ? 300 : 280;
+  var g = gc(id, h); if (!g) return;
+  var ctx = g.ctx, W = g.w;
+  var n = axes.length;
+  // Shrink radar on narrow screens, keep room for labels
+  var labelPad = pw < 360 ? 46 : 52;
+  var R = Math.min(W, h) / 2 - labelPad;
+  var cx = W/2, cy = h/2 - 4;
+
+  // rings
+  for (var ring=1; ring<=5; ring++){
+    ctx.strokeStyle = GL; ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (var i=0; i<=n; i++){
+      var ang = -Math.PI/2 + i*2*Math.PI/n;
+      var rv = R*ring/5;
+      if(i===0) ctx.moveTo(cx+Math.cos(ang)*rv, cy+Math.sin(ang)*rv);
+      else ctx.lineTo(cx+Math.cos(ang)*rv, cy+Math.sin(ang)*rv);
+    }
+    ctx.closePath(); ctx.stroke();
+  }
+
+  // spokes + axis labels
+  var axisFontSize = pw < 360 ? 8.5 : 9.5;
+  for (var i=0; i<n; i++){
+    var ang = -Math.PI/2 + i*2*Math.PI/n;
+    ctx.strokeStyle=GL; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(cx+Math.cos(ang)*R,cy+Math.sin(ang)*R); ctx.stroke();
+
+    // label position
+    var lx = cx + Math.cos(ang)*(R+16);
+    var ly = cy + Math.sin(ang)*(R+14);
+    var parts = axes[i].split("|");
+    sf(ctx, axisFontSize); ctx.fillStyle=ML; ctx.textAlign="center";
+    var lineH = axisFontSize + 2;
+    var startY = ly - ((parts.length-1)*lineH)/2;
+    for (var li=0; li<parts.length; li++)
+      ctx.fillText(parts[li], lx, startY + li*lineH);
+  }
+
+  // data fills + strokes
+  for (var d=0; d<datasets.length; d++){
+    var ds = datasets[d];
+    var fillCol = ds.color.indexOf("rgba")>=0 ? ds.color : rgba(ds.color, 0.12);
+    ctx.strokeStyle = ds.color; ctx.lineWidth = 1.8;
+    ctx.fillStyle = fillCol;
+    ctx.beginPath();
+    for (var i=0; i<n; i++){
+      var ang = -Math.PI/2 + i*2*Math.PI/n;
+      var rv = R * Math.min(1, Math.max(0, ds.data[i]/100));
+      if(i===0) ctx.moveTo(cx+Math.cos(ang)*rv, cy+Math.sin(ang)*rv);
+      else ctx.lineTo(cx+Math.cos(ang)*rv, cy+Math.sin(ang)*rv);
+    }
+    ctx.closePath(); ctx.fill(); ctx.stroke();
+    // dots
+    for (var i=0; i<n; i++){
+      var ang = -Math.PI/2 + i*2*Math.PI/n;
+      var rv = R * Math.min(1, Math.max(0, ds.data[i]/100));
+      ctx.beginPath(); ctx.arc(cx+Math.cos(ang)*rv, cy+Math.sin(ang)*rv, 2.5,0,Math.PI*2);
+      ctx.fillStyle=ds.color; ctx.fill();
+    }
+  }
+  if (legId) htmlLeg(legId, datasets);
+}
+
+// ================================================================
+// CHART DATA — sourced from fife_interventions_db_v9.json
+// windbreakNS values shown throughout (N-S hedge orientation — optimal for Fife:
+// blocks westerlies AND spring easterlies/Haar. windbreakEW ≈15% of NS — minimal
+// northerly shelter only. See Session 3 Revised v2 for full methodology correction.)
+// ================================================================
+window.addEventListener("load", function(){
+
+// ── T1: SEPA radar ───────────────────────────────────────────
+radarChart("c1r",
+  ["CS Flood|Control","CS Sediment|Trap","CS Nitrate|Retention","CS Phosphorus|Retention","Riparian|Flood","Rip. Nitrate|Retention"],
+  [
+    {label:"Grassed Waterway 6m",         color:WC["6m"],   data:[95,92,20,92,90,25]},
+    {label:"Wetland Nitrate Filter 6m",   color:"#0d9488",  data:[55,72,95,55,45,100]},
+    {label:"Planted Contour Swale 12m",   color:WC["12m"],  data:[95,95,50,90,90,55]},
+    {label:"Willow Bank Buffer 20m",      color:WC["20m"],  data:[96,75,20,32,98,20]}
+  ],"r1leg");
+
+// ── T1: Water value stacked horizontal bar ───────────────────
+hStackedBar("c1b",
+  ["Grassed Waterway 6m","Wetland Nitrate Filter 6m","Planted Contour Swale 12m","Willow Bank Buffer 20m"],
+  [
+    {label:"Water Purification £/km", data:[3150,10500,3150,10500],
+     color:[wc("6m",.9),"rgba(13,148,136,.9)",wc("12m",.9),wc("20m",.9)]},
+    {label:"Catchment Hydrology £/km",data:[441,325,882,1880],
+     color:[wc("6m",.5),"rgba(13,148,136,.5)",wc("12m",.5),wc("20m",.5)]}
+  ],13500,function(v){return"£"+Math.round(v/1000)+"k";}, "leg1b");
+
+// ── T2: Carbon trajectory line ───────────────────────────────
+lineChart("c2a",
+  ["1-5","6-10","11-15","16-20","21-25","26-30","31-35","36-40","41-45","46-50"],
+  [
+    {label:"Biomass Coppice 6m",        color:WC["6m"],  data:[26.8,53.7,53.7,53.7,53.7,53.7,53.7,53.7,53.7,53.7]},
+    {label:"Botanical Harvest Wood 12m",color:WC["12m"], data:[6.8,13.7,27.3,41.0,54.6,61.5,54.6,47.8,41.0,34.1]},
+    {label:"Montane Snow-Fence 12m",    color:"#c084fc", data:[3.0,6.1,12.1,18.2,24.3,27.3,24.3,21.2,18.2,15.2]},
+    {label:"Planted Contour Swale 12m", color:WC["20m"], data:[21.2,42.5,42.5,10.6,10.6,0,0,0,0,0]},
+    {label:"Zoned Riparian Woodland 60m", color:WC["60m"], data:[27.34,54.67,81.99,109.33,122.97,109.33,95.67,81.99,68.34,54.67]}
+  ],"leg2a");
+
+// ── T2: Carbon vs ecosystem + water radar ────────────────────
+// 50yr Seq scaled: anchor 806.4 tCO₂e/km = 100% (v9)
+radarChart("c2r",
+  ["50yr Seq|(scaled)","Ecosystem|Health","Soil Carbon|& Health","Habitat|Distinct.","CS Catchment|Hydrology"],
+  [
+    {label:"Biomass Coppice Strip 6m",   color:WC["6m"],  data:[5,50,100,50,76]},
+    {label:"Botanical Harvest Wood 12m", color:WC["12m"], data:[17,100,80,100,80]},
+    {label:"Montane Snow-Fence 12m",     color:"#c084fc", data:[19,20,100,100,80]},
+    {label:"Planted Contour Swale 12m",  color:WC["20m"], data:[8,20,30,40,95]},
+    {label:"Zoned Riparian Woodland 60m", color:WC["60m"], data:[100,100,85,100,100]}
+  ],"r2leg");
+
+// ── T3: Biodiversity radar ────────────────────────────────────
+radarChart("c3r",
+  ["ESF|Index","Habitat|Distinct.","Soil|Carbon","Agronomic|Yield","Pollination|(÷12)","Pest Reg.|(÷2)"],
+  [
+    {label:"Dense Wildlife Hedge 3m",     color:WC["3m"],  data:[60,80,50,35,60,45]},
+    {label:"Heritage Species Hedge 3m",   color:"#0d9488", data:[70,80,50,65,100,75]},
+    {label:"Distillery Foraging Strip 6m",color:WC["6m"],  data:[70,65,60,85,100,75]},
+    {label:"Coastal Erosion Wood 20m",    color:WC["20m"], data:[100,100,80,80,100,75]}
+  ],"r3leg");
+
+// ── T3: Full agronomic £ values horizontal stacked bar ───────
+// Pollination, Pest Regulation, Windbreak (NS), Water Retention (NS), Nutrient Pump (NS)
+// Distillery Foraging Strip has no windbreak/water/nutrient (no woody canopy height for shelter)
+hStackedBar("c3b",
+  ["Dense Wildlife Hedge 3m","Heritage Species Hedge 3m","Distillery Foraging Strip 6m","Coastal Erosion Wood 20m"],
+  [
+    {label:"Pollination £/km",       data:[720,1200,1200,1200],
+     color:[wc("3m",.9),"rgba(13,148,136,.9)",wc("6m",.9),wc("20m",.9)]},
+    {label:"Pest Regulation £/km",   data:[90,150,150,150],
+     color:[wc("3m",.6),"rgba(13,148,136,.6)",wc("6m",.6),wc("20m",.6)]},
+    {label:"N-S Windbreak Yield-bump £/km",  data:[960,960,0,960],
+     color:[wc("3m",.38),"rgba(13,148,136,.38)",wc("6m",.38),wc("20m",.38)]},
+    {label:"Water Retention £/km",   data:[256,256,0,256],
+     color:[wc("3m",.22),"rgba(13,148,136,.22)",wc("6m",.22),wc("20m",.22)]},
+    {label:"Nutrient Pump £/km",     data:[128,128,0,128],
+     color:[wc("3m",.12),"rgba(13,148,136,.12)",wc("6m",.12),wc("20m",.12)]}
+  ],2800,null,"leg3b");
+
+
+// ── T0: Capacity bar chart ────────────────────────────────────
+(function(){
+  var labels = ["Lomond &\nCleish","West Fife\nClaylands","East Neuk\nCoast","Howe of\nFife & Eden","N. Fife\nHills & Tay","Forth Urban\nCoast"];
+  var values = [550, 400, 330, 280, 220, 150];
+  var colors = ["#c084fc", WC["20m"], WC["3m"], WC["6m"], WC["12m"], "#0e7490"];
+  var vals_label = ["\u00a3350k+","\u00a3400k+","\u00a3820k+","\u00a3450k+","\u00a3300k+","\u00a3200k+"];
+
+  var el = document.getElementById("c0bar");
+  if (!el) return;
+  var dpr = window.devicePixelRatio || 1;
+  var pw = el.parentElement.clientWidth || 420;
+  var h = 220;
+  el.style.width = pw + "px"; el.style.height = h + "px";
+  el.width = Math.round(pw*dpr); el.height = Math.round(h*dpr);
+  var ctx = el.getContext("2d"); ctx.scale(dpr, dpr);
+
+  var pl = 10, pr = 52, pt = 10, pb = 42;
+  var pw2 = pw - pl - pr, ph = h - pt - pb;
+  var xmax = 580;
+  var rowH = ph / labels.length;
+  var bh = Math.min(20, rowH - 8);
+
+  // grid
+  ctx.strokeStyle = GL; ctx.lineWidth = 1;
+  for (var i = 0; i <= 4; i++) {
+    var xp = pl + pw2 * i/4;
+    ctx.beginPath(); ctx.moveTo(xp, pt); ctx.lineTo(xp, pt+ph); ctx.stroke();
+    sf(ctx, 9); ctx.fillStyle = ML; ctx.textAlign = "center";
+    ctx.fillText(Math.round(xmax*i/4) + "km", xp, pt+ph+13);
+  }
+
+  for (var i = 0; i < labels.length; i++) {
+    var cy = pt + i*rowH + rowH/2;
+    var bw = values[i]/xmax * pw2;
+    rr(ctx, pl, cy-bh/2, bw, bh, 3, colors[i]);
+    // value label right of bar
+    sf(ctx, 9); ctx.fillStyle = colors[i]; ctx.textAlign = "left";
+    ctx.fillText(values[i] + "km  " + vals_label[i], pl+bw+5, cy+3.5);
+    // biome label left inside bar or before
+    sf(ctx, 9.5, true); ctx.fillStyle = "#fff"; ctx.textAlign = "left";
+    var lparts = labels[i].split("\n");
+    if (bw > 80) {
+      for (var li = 0; li < lparts.length; li++)
+        ctx.fillText(lparts[li], pl+6, cy - (lparts.length-1)*5.5 + li*11);
+    } else {
+      // label outside if bar too short
+      sf(ctx, 9, false); ctx.fillStyle = ML;
+      for (var li = 0; li < lparts.length; li++)
+        ctx.fillText(lparts[li], pl+bw+5, cy - (lparts.length-1)*5.5 + li*11 - 12);
+    }
+  }
+})();
+
+// ── T4: Agronomic radar ───────────────────────────────────────
+radarChart("c4r",
+  ["Agronomic|Yield","N-S Windbreak|(÷7)","Thermal|(÷3)","Pollination|(÷1)","Soil|Carbon","Low Land|Cost"],
+  [
+    {label:"Heritage Hedge 3m",          color:WC["3m"],  data:[65,91,33,80,50,96]},
+    {label:"Shallow Root Shrubs 6m",     color:WC["6m"],  data:[85,14,33,80,60,82]},
+    {label:"Livestock Shade Trees 12m",  color:WC["12m"], data:[80,0,83,80,80,59]},
+    {label:"Clay-Tolerant Strip 6m",     color:"#c084fc", data:[85,0,33,80,60,82]},
+    {label:"Thermal Microclimate Belt 12m†", color:"#0f4c3a", data:[90,100,83,60,75,59]}
+  ],"r4leg");
+
+// ── T4: Private value streams horizontal grouped bar ─────────
+hGroupedBar("c4b",
+  ["Heritage Hedge 3m","Shallow Root Shrubs 6m","Livestock Shade Trees 12m","Clay-Tolerant Strip 6m","Thermal Microclimate Belt 12m†"],
+  [
+    {label:"N-S Windbreak £/km",    data:[640,100,0,0,1100],
+     color:[wc("3m",.9),wc("6m",.9),wc("12m",.9),"rgba(192,132,252,.9)","rgba(15,76,58,.9)"]},
+    {label:"Thermal Reg. £/km", data:[100,100,250,100,250],
+     color:[wc("3m",.55),wc("6m",.55),wc("12m",.55),"rgba(192,132,252,.55)","rgba(15,76,58,.55)"]},
+    {label:"Pollination £/km",  data:[80,80,80,80,60],
+     color:[wc("3m",.3),wc("6m",.3),wc("12m",.3),"rgba(192,132,252,.3)","rgba(15,76,58,.3)"]}
+  ],1200,null,"leg4b");
+
+// ── T5: Cross-slope CREW + carbon stacked bar (no riparian) ──
+// Variants: Grass Silt Buffer 3m, Grassed Waterway 6m, Wide Biomass Coppice 12m, Steep Bank Stab Wood 20m
+// CS CREW = water_pur.cs + hydro.cs | seq_total shown as separate layer scaled to £ equiv (×20/tCO2e)
+hStackedBar("c5a",
+  ["Grass Silt Buffer 3m","Grassed Waterway 6m","Wide Biomass Coppice 12m","Steep Bank Stab. Wood 20m"],
+  [
+    {label:"CS Water Purification £/km", data:[0,0,0,0],
+     color:[wc("3m",.9),wc("6m",.9),wc("12m",.9),wc("20m",.9)]},
+    {label:"CS Catchment Hydrology £/km",data:[80,464,867,1880],
+     color:[wc("3m",.55),wc("6m",.55),wc("12m",.55),wc("20m",.55)]},
+    {label:"Air Filtration £/km",        data:[0,0,20,30],
+     color:[wc("3m",.28),wc("6m",.28),wc("12m",.28),wc("20m",.28)]},
+    {label:"50yr Carbon (×£2/tCO2e)",    data:[256,256,1020,764],
+     color:["#fcd34d","#fcd34d","#fcd34d","#fcd34d"]}
+  ],3000,function(v){return"£"+Math.round(v/100)*100;}, "leg5a");
+
+// ── T5: Cross-slope ecosystem function radar ──────────────────
+// Swapped to cross-slope placement metrics; carbon included
+radarChart("c5r",
+  ["ESF|Index","Habitat|Distinct.","CS Flood|Control","CS Sediment|Trapping","Soil|Carbon","50yr Seq|(scaled)"],
+  [
+    {label:"Grass Silt Buffer 3m",        color:WC["3m"],  data:[20,40,46,88,30,25]},
+    {label:"Grassed Waterway 6m",         color:WC["6m"],  data:[20,40,95,95,30,25]},
+    {label:"Wide Biomass Coppice 12m",    color:WC["12m"], data:[50,50,82,65,100,100]},
+    {label:"Steep Bank Stab. Wood 20m",   color:WC["20m"], data:[100,100,96,75,80,75]}
+  ],"r5leg");
+
+// ── T6: Urban radar — cross-slope variants with carbon ────────
+// Variants: Biomass Coppice 6m, Wide Biomass Coppice 12m, Urban Foraging Wood 12m, Urban Flood Buffer 20m
+// CS metrics + carbon replaces riparian-biased ESF/flood mix
+radarChart("c6r",
+  ["CS Flood|Control","CS Nitrate|Retention","Air Filtration|(CS)","Pollination|(÷12)","Soil|Carbon","50yr Seq|(scaled)"],
+  [
+    {label:"Biomass Coppice Strip 6m",    color:WC["6m"],  data:[76,85,16,30,100,100]},
+    {label:"Wide Biomass Coppice 12m",    color:WC["12m"], data:[82,85,32,30,100,100]},
+    {label:"Urban Foraging Wood 12m",     color:"#c084fc", data:[80,20,54,100,80,75]},
+    {label:"Urban Flood Buffer 20m",      color:WC["20m"], data:[96,20,90,100,80,75]}
+  ],"r6leg");
+
+// ── T6: Urban cross-slope £ values + carbon ───────────────────
+// CS Catchment Hydrology, Pollination, Air Filtration (CS urban 3x), carbon scaled
+hGroupedBar("c6b",
+  ["Biomass Coppice Strip 6m","Wide Biomass Coppice 12m","Urban Foraging Wood 12m","Urban Flood Buffer 20m"],
+  [
+    {label:"CS Hydrology £/km",       data:[434,867,1107,1880],
+     color:[wc("6m",.9),wc("12m",.9),"rgba(192,132,252,.9)",wc("20m",.9)]},
+    {label:"Pollination £/km",        data:[360,360,1200,1200],
+     color:[wc("6m",.55),wc("12m",.55),"rgba(192,132,252,.55)",wc("20m",.55)]},
+    {label:"50yr Carbon (×£2/tCO2e)", data:[1020,1020,764,764],
+     color:[wc("6m",.28),wc("12m",.28),"rgba(192,132,252,.28)",wc("20m",.28)]}
+  ],4000,null,"leg6b");
+
+// ── T3 (East Neuk): Drought resilience ranked bar (v9) ─────────
+hBar("cDR",
+  ["Alley Cropping Trees 12m","Livestock Shade Trees 12m",
+   "Zoned Riparian Woodland 60m","Riparian Flood Wood 20m",
+   "Planted Contour Swale 12m","Biomass Fuel Coppice 6m",
+   "Wetland Nitrate Filter 6m","Thermal Microclimate Belt 12m†"],
+  [85, 80, 85, 75, 55, 40, 60, 65],
+  [WC["12m"],WC["12m"],WC["60m"],WC["20m"],WC["12m"],WC["6m"],WC["6m"],WC["12m"]],
+  100, null, null);
+
+}); // end load
+</script></body></html>

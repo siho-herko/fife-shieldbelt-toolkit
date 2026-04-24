@@ -10,7 +10,7 @@ import { createGzip } from 'zlib';
 import { pipeline } from 'stream/promises';
 
 const files = [
-  'data/fife_interventions_db_v8.json',
+  'data/fife_interventions_db_v9.json',
   'data/problems_v2.json',
 ];
 

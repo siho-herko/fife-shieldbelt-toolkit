@@ -1,7 +1,7 @@
 /**
  * db.js — Fife Farm Resilience Calculator
  *
- * Data layer: fetches /data/fife_interventions_db_v8.json once per page load
+ * Data layer: fetches /data/fife_interventions_db_v9.json once per page load
  * and holds all 132 records in a plain JS array.  The service worker caches
  * the JSON so subsequent loads are instant (no network request).
  *
@@ -30,7 +30,7 @@ export const FARM_TYPES = ['Cereals', 'General Cropping', 'Dairy', 'LFA Grazing'
 
 export const WIDTHS = ['3m', '6m', '12m', '20m', '60m'];
 
-/** Allowed SSER gross units/km in v8 data (used by validateStore). */
+/** Allowed SSER gross units/km in v9 data (used by validateStore). */
 export const SSER_TIERS = [8.4, 16.8, 24, 31.5, 34.8, 39, 40.2, 46.8, 62.4, 78, 108, 138, 150, 280, 806.4];
 
 // ---------------------------------------------------------------------------
@@ -49,7 +49,7 @@ let _records = [];
  * The service worker caches this file so subsequent page loads are instant.
  * @type {Promise<void>}
  */
-export const dbReady = fetch('/data/fife_interventions_db_v8.json')
+export const dbReady = fetch('/data/fife_interventions_db_v9.json')
   .then(res => {
     if (!res.ok) throw new Error(`HTTP ${res.status} loading intervention data`);
     return res.json();
@@ -150,7 +150,7 @@ export async function validateStore() {
     if (typeof sser !== 'number' || !Number.isFinite(sser) || sser < 0) {
       errors.push(`${p} sserGrossUnitsPerKm invalid: ${sser}`);
     } else if (!VALID_SSER.has(sser)) {
-      errors.push(`${p} sserGrossUnitsPerKm not in v8 tier list: ${sser}`);
+      errors.push(`${p} sserGrossUnitsPerKm not in v9 tier list: ${sser}`);
     }
     for (const ft of REQUIRED_FARMS) {
       if (!r.farmImpacts?.[ft]) errors.push(`${p} farmImpacts missing "${ft}"`);
