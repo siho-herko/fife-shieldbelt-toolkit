@@ -65,6 +65,20 @@ const LINE_H     = 260;  // px, logical height for line charts
 // ---------------------------------------------------------------------------
 
 /**
+ * Usable width inside an element (clientWidth minus horizontal padding).
+ * Avoids chart bitmaps slightly wider than the content box when the parent has padding.
+ * @param {Element|null|undefined} el
+ * @returns {number}
+ */
+function contentBoxInnerWidth(el) {
+  if (!el || el.nodeType !== 1) return 0;
+  const st = window.getComputedStyle(el);
+  const pl = parseFloat(st.paddingLeft) || 0;
+  const pr = parseFloat(st.paddingRight) || 0;
+  return Math.max(0, (el.clientWidth || 0) - pl - pr);
+}
+
+/**
  * Prepare a canvas for DPR-aware rendering.
  * Clears any previous drawing. Sets canvas bitmap size = logical × dpr.
  * Returns { canvas, ctx, w, h } where w/h are logical pixel dimensions.
@@ -95,10 +109,10 @@ export function setupCanvas(canvasId, heightPx, sizing = 0) {
 
   const dpr = window.devicePixelRatio || 1;
   const container = canvas.parentElement;
-  let w = (container && container.clientWidth) || canvas.clientWidth || canvas.offsetWidth;
+  let w = (container && contentBoxInnerWidth(container)) || canvas.clientWidth || canvas.offsetWidth;
   let pwParent = 0;
   if (container) {
-    pwParent = container.clientWidth || Math.floor(container.getBoundingClientRect().width) || 0;
+    pwParent = contentBoxInnerWidth(container) || 0;
     if (!w || w < 8) w = pwParent;
   }
   if (!w || w < 8) {
@@ -660,7 +674,7 @@ export function radarChart(canvasId, axes, datasets, legendId) {
   if (!canvas) return;
 
   const container = canvas.parentElement;
-  let rawW = (container && container.clientWidth) || canvas.clientWidth || 0;
+  let rawW = (container && contentBoxInnerWidth(container)) || canvas.clientWidth || 0;
   if (rawW < 8) {
     const r = canvas.getBoundingClientRect();
     rawW = Math.floor(r.width) || 300;

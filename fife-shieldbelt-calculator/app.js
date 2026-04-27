@@ -774,28 +774,38 @@ function renderProblemPanel(problem, record, otherVariants = []) {
     <div class="solution-map">
       <div class="solution-map__row">
         <span class="solution-map__icon">🌱</span>
-        <span class="solution-map__label">Agronomic</span>
-        <span class="solution-map__text">${problem.Solution_Agronomic}</span>
+        <div class="solution-map__content">
+          <span class="solution-map__label">Agronomic</span>
+          <span class="solution-map__text">${problem.Solution_Agronomic}</span>
+        </div>
       </div>
       <div class="solution-map__row">
         <span class="solution-map__icon">🏗</span>
-        <span class="solution-map__label">Infrastructure</span>
-        <span class="solution-map__text">${problem.Solution_Infrastructure}</span>
+        <div class="solution-map__content">
+          <span class="solution-map__label">Infrastructure</span>
+          <span class="solution-map__text">${problem.Solution_Infrastructure}</span>
+        </div>
       </div>
       <div class="solution-map__row">
         <span class="solution-map__icon">📡</span>
-        <span class="solution-map__label">Precision Tech</span>
-        <span class="solution-map__text">${problem.Solution_Precision_Tech}</span>
+        <div class="solution-map__content">
+          <span class="solution-map__label">Precision Tech</span>
+          <span class="solution-map__text">${problem.Solution_Precision_Tech}</span>
+        </div>
       </div>
       <div class="solution-map__row">
         <span class="solution-map__icon">🤝</span>
-        <span class="solution-map__label">Community</span>
-        <span class="solution-map__text" ${communityStyle}>${problem.Solution_Community}</span>
+        <div class="solution-map__content">
+          <span class="solution-map__label">Community</span>
+          <span class="solution-map__text" ${communityStyle}>${problem.Solution_Community}</span>
+        </div>
       </div>
       <div class="solution-map__row">
         <span class="solution-map__icon">🚀</span>
-        <span class="solution-map__label">Emerging Tech</span>
-        <span class="solution-map__text">${problem.Solution_Emerging_Tech_Landscaping}</span>
+        <div class="solution-map__content">
+          <span class="solution-map__label">Emerging Tech</span>
+          <span class="solution-map__text">${problem.Solution_Emerging_Tech_Landscaping}</span>
+        </div>
       </div>
     </div>
 
@@ -1575,6 +1585,12 @@ function initMobileDrawer() {
       btn.setAttribute('aria-expanded', 'true');
       btn.innerHTML = '&#8594; Go to Outputs';
     }
+    // Re-measure after overlay layout (charts can pick up correct width once view stabilises)
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        if (state.results) renderResults(state.results);
+      });
+    });
   };
 
   const closeDrawer = () => {
@@ -1593,6 +1609,11 @@ function initMobileDrawer() {
     const results = document.getElementById('results-content') ||
                     document.getElementById('results-empty');
     if (results) results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        if (state.results) renderResults(state.results);
+      });
+    });
   };
 
   // Floating bottom button: open drawer when closed, go to outputs when open
@@ -1926,10 +1947,16 @@ async function init() {
       const resultsContainer = document.getElementById('results-panel');
       let resizeTimer;
       if (resultsContainer) {
+        let lastKnownWidth = resultsContainer.clientWidth;
         const ro = new ResizeObserver(() => {
           clearTimeout(resizeTimer);
           resizeTimer = setTimeout(() => {
-            if (state.results) renderResults(state.results);
+            // Only re-render if width actually changed (keyboard show/hide often only changes height on iOS)
+            const newWidth = resultsContainer.clientWidth;
+            if (newWidth !== lastKnownWidth && state.results) {
+              lastKnownWidth = newWidth;
+              renderResults(state.results);
+            }
           }, 150);
         });
         ro.observe(resultsContainer);
