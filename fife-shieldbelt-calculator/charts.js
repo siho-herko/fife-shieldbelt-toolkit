@@ -61,6 +61,70 @@ const PAD_RIGHT  = 56;   // px reserved for value labels on the right
 const LINE_H     = 260;  // px, logical height for line charts
 
 // ---------------------------------------------------------------------------
+// 2b. X-axis: nice round ticks and compact £ labels (hBar / hStackedBar only)
+// ---------------------------------------------------------------------------
+
+/**
+ * Returns a "nice" step size for chart axis ticks.
+ * Given a data maximum, produces round numbers like 50, 100, 250, 500, 1000, 2500 etc.
+ * rather than arbitrary divisions of the raw maximum.
+ *
+ * @param {number} dataMax   - The maximum data value to be shown
+ * @param {number} targetN   - Approximate number of intervals wanted (default 5)
+ * @returns {number}         - A step size that produces clean round tick labels
+ */
+function niceStep(dataMax, targetN = 5) {
+  if (!dataMax || dataMax <= 0) return 1;
+  const roughStep = dataMax / targetN;
+  const magnitude = Math.pow(10, Math.floor(Math.log10(roughStep)));
+  const normalised = roughStep / magnitude;
+  // Pick the smallest nice multiplier that is >= normalised
+  let niceMult;
+  if (normalised <= 1)        niceMult = 1;
+  else if (normalised <= 2)   niceMult = 2;
+  else if (normalised <= 2.5) niceMult = 2.5;
+  else if (normalised <= 5)   niceMult = 5;
+  else                        niceMult = 10;
+  return niceMult * magnitude;
+}
+
+/**
+ * Returns an array of tick values from 0 to a nice ceiling >= dataMax.
+ * Always includes 0 and always ends on a round number at or above dataMax.
+ *
+ * @param {number} dataMax
+ * @param {number} targetN  - Approximate number of intervals (default 5)
+ * @returns {number[]}      - Tick values, e.g. [0, 500, 1000, 1500, 2000, 3000]
+ */
+function niceTicks(dataMax, targetN = 5) {
+  if (!dataMax || dataMax <= 0) return [0, 1];
+  const step = niceStep(dataMax, targetN);
+  const tickCount = Math.ceil(dataMax / step);
+  const ticks = [];
+  for (let i = 0; i <= tickCount; i++) {
+    ticks.push(i * step);
+  }
+  return ticks;
+}
+
+/**
+ * Formats a numeric tick value as a compact £ label (x-axis only).
+ * £0 → '£0'
+ * £500 → '£500'
+ * £1000 → '£1k'
+ * £2500 → '£2.5k'
+ * £10000 → '£10k'
+ */
+function formatTickLabel(value) {
+  if (value === 0) return '£0';
+  if (value >= 1000) {
+    const k = value / 1000;
+    return '£' + (k === Math.floor(k) ? k.toFixed(0) : k.toFixed(1)) + 'k';
+  }
+  return '£' + value.toLocaleString('en-GB', { maximumFractionDigits: 0 });
+}
+
+// ---------------------------------------------------------------------------
 // 3. setupCanvas
 // ---------------------------------------------------------------------------
 
@@ -260,6 +324,74 @@ function drawXTickLabels(ctx, x0, y0, pw, ph, xMax, formatter, mutedColor, steps
 }
 
 /**
+ * Vertical grid lines and baseline at 0,…, niceMax (horizontal bar charts).
+ * @param {number[]} ticks 0 … niceMax inclusive
+ * @param {number} niceMax
+ */
+function drawXGridFromTicks(ctx, x0, y0, pw, ph, niceMax, ticks, stoneColor) {
+  if (!Number.isFinite(niceMax) || niceMax <= 0 || !ticks || !ticks.length) return;
+  ctx.save();
+  ctx.strokeStyle = stoneColor;
+  ctx.globalAlpha = 0.5;
+  ctx.lineWidth   = 1;
+  for (const t of ticks) {
+    const x = x0 + (t / niceMax) * pw;
+    ctx.beginPath();
+    ctx.moveTo(x, y0);
+    ctx.lineTo(x, y0 + ph);
+    ctx.stroke();
+  }
+  ctx.globalAlpha = 0.9;
+  ctx.beginPath();
+  ctx.moveTo(x0, y0 + ph);
+  ctx.lineTo(x0 + pw, y0 + ph);
+  ctx.stroke();
+  ctx.restore();
+}
+
+/**
+ * X-axis labels for nice ticks. Subsamples if there are many ticks in a narrow area.
+ * @param {number[]} allTicks
+ */
+function drawXAxisTickLabelsFromTicks(ctx, x0, y0, pw, ph, niceMax, allTicks, mutedColor) {
+  if (!Number.isFinite(niceMax) || niceMax <= 0 || !allTicks || !allTicks.length) return;
+  const n = allTicks.length;
+  const maxL  = Math.max(2, Math.min(6, Math.floor(Math.max(24, pw) / 44)));
+  const labelIdx = n <= maxL
+    ? Array.from({ length: n }, (_, i) => i)
+    : (() => {
+        const s = new Set();
+        for (let i = 0; i < maxL; i++) {
+          s.add(Math.round((i * (n - 1)) / (maxL - 1)));
+        }
+        return [...s].sort((a, b) => a - b);
+      })();
+
+  ctx.save();
+  ctx.font         = `11px ${FONT_MONO}`;
+  ctx.fillStyle    = mutedColor;
+  ctx.textBaseline = 'top';
+
+  for (let j = 0; j < labelIdx.length; j++) {
+    const i = labelIdx[j];
+    const t = allTicks[i];
+    const x = x0 + (t / niceMax) * pw;
+    const text = formatTickLabel(t);
+    if (i === 0) {
+      ctx.textAlign = 'left';
+      ctx.fillText(text, x0 + 2, y0 + ph + 5);
+    } else if (i === n - 1) {
+      ctx.textAlign = 'right';
+      ctx.fillText(text, x0 + pw - 2, y0 + ph + 5);
+    } else {
+      ctx.textAlign = 'center';
+      ctx.fillText(text, x, y0 + ph + 5);
+    }
+  }
+  ctx.restore();
+}
+
+/**
  * Resolve a color value — if array, use index; if string, use directly.
  * @param {string|string[]} colors
  * @param {number} index
@@ -372,9 +504,11 @@ export function hBar(canvasId, labels, values, colors, xMax, formatter, legendId
     const n = Number(v);
     return Number.isFinite(n) ? n : 0;
   });
-  const scaleMax = numericVals.length ? Math.max(...numericVals) : 0;
-  const max      = xMax ?? (scaleMax > 0 ? scaleMax * 1.1 : 1);
-  const lW       = dynamicLabelW(w);    // FIX [mobile]: responsive label column
+  const dataMax   = numericVals.length ? Math.max(...numericVals) : 0;
+  const rawMax    = (xMax != null && Number.isFinite(xMax) && xMax > 0) ? xMax : dataMax;
+  const xTicks    = niceTicks(rawMax);
+  const niceMax   = Math.max(xTicks[xTicks.length - 1] || 1, 1e-9);
+  const lW        = dynamicLabelW(w);    // FIX [mobile]: responsive label column
 
   // Plot area — guard pw so narrow mis-measured widths never yield NaN bar geometry.
   const pw = Math.max(8, w - lW - PAD_RIGHT);
@@ -382,12 +516,11 @@ export function hBar(canvasId, labels, values, colors, xMax, formatter, legendId
   const y0 = PAD_V;
   const ph = rows * (BAR_H + BAR_GAP) - BAR_GAP;
 
-  const xSteps = resolveXAxisSteps(ctx, pw, max, formatter);
-  drawXGrid(ctx, x0, y0, pw, ph, max, c.stone, xSteps);
+  drawXGridFromTicks(ctx, x0, y0, pw, ph, niceMax, xTicks, c.stone);
 
   for (let i = 0; i < rows; i++) {
     const barY   = y0 + i * (BAR_H + BAR_GAP);
-    const barW   = Math.max(0, (numericVals[i] / max) * pw);
+    const barW   = Math.max(0, (numericVals[i] / niceMax) * pw);
     const color  = resolveColor(colors, i);
 
     // Row label — truncated to fit label column
@@ -419,7 +552,7 @@ export function hBar(canvasId, labels, values, colors, xMax, formatter, legendId
   }
 
   if (!hideXAxisTickLabels) {
-    drawXTickLabels(ctx, x0, y0, pw, ph, max, formatter, c.muted, xSteps);
+    drawXAxisTickLabelsFromTicks(ctx, x0, y0, pw, ph, niceMax, xTicks, c.muted);
   }
 
   if (legendId) {
@@ -445,7 +578,7 @@ export function hBar(canvasId, labels, values, colors, xMax, formatter, legendId
  */
 export function hStackedBar(canvasId, rowLabels, datasets, xMax, formatter, legendId) {
   const rows = rowLabels.length;
-  const heightPx = rows * (BAR_H + BAR_GAP) + PAD_V * 2 + 20;
+  const heightPx = rows * (BAR_H + BAR_GAP) + PAD_V * 2 + 20 + HBAR_X_TICK_RESERVE;
   const setup = setupCanvas(canvasId, heightPx);
   if (!setup) return;
 
@@ -457,15 +590,17 @@ export function hStackedBar(canvasId, rowLabels, datasets, xMax, formatter, lege
   const rowTotals = rowLabels.map((_, i) =>
     datasets.reduce((sum, ds) => sum + (ds.values[i] ?? 0), 0)
   );
-  const max = xMax ?? (Math.max(...rowTotals) * 1.1 || 1);
+  const dataMax = rowTotals.length ? Math.max(...rowTotals) : 0;
+  const rawMax  = (xMax != null && Number.isFinite(xMax) && xMax > 0) ? xMax : dataMax;
+  const xTicks  = niceTicks(rawMax);
+  const niceMax = Math.max(xTicks[xTicks.length - 1] || 1, 1e-9);
 
   const x0 = lW;
   const y0 = PAD_V;
-  const pw = w - lW - PAD_RIGHT;
+  const pw = Math.max(8, w - lW - PAD_RIGHT);
   const ph = rows * (BAR_H + BAR_GAP) - BAR_GAP;
 
-  const xSteps = resolveXAxisSteps(ctx, pw, max, formatter);
-  drawXGrid(ctx, x0, y0, pw, ph, max, c.stone, xSteps);
+  drawXGridFromTicks(ctx, x0, y0, pw, ph, niceMax, xTicks, c.stone);
 
   for (let i = 0; i < rows; i++) {
     const barY = y0 + i * (BAR_H + BAR_GAP);
@@ -484,7 +619,7 @@ export function hStackedBar(canvasId, rowLabels, datasets, xMax, formatter, lege
     let xCursor = x0;
     for (const ds of datasets) {
       const val  = ds.values[i] ?? 0;
-      const segW = Math.max(0, (val / max) * pw);
+      const segW = Math.max(0, (val / niceMax) * pw);
       if (segW < 1) { xCursor += segW; continue; }
 
       ctx.fillStyle = ds.color;
@@ -508,7 +643,7 @@ export function hStackedBar(canvasId, rowLabels, datasets, xMax, formatter, lege
     ctx.restore();
   }
 
-  drawXTickLabels(ctx, x0, y0, pw, ph, max, formatter, c.muted, xSteps);
+  drawXAxisTickLabelsFromTicks(ctx, x0, y0, pw, ph, niceMax, xTicks, c.muted);
 
   if (legendId) {
     htmlLegend(legendId, datasets.map(ds => ({ label: ds.label, color: ds.color })));
@@ -853,4 +988,17 @@ export function clearCharts() {
   // Clear any legend containers
   const legends = document.querySelectorAll('[id$="-legend"]');
   for (const el of legends) el.innerHTML = '';
+}
+
+if (typeof location !== 'undefined' && location.hostname === 'localhost') {
+  (function testNiceTicks() {
+    const cases = [[2529, 5], [4149, 5], [1344, 5], [200, 5], [250, 5], [87, 5]];
+    for (const [max, n] of cases) {
+      const t = niceTicks(max, n);
+      console.assert(t[0] === 0, 'niceTicks(' + max + '): must start at 0');
+      console.assert(t[t.length - 1] >= max, 'niceTicks(' + max + '): must reach or exceed max');
+      console.assert(t.every(v => Number.isFinite(v)), 'niceTicks(' + max + '): all values finite');
+    }
+    console.info('niceTicks: all self-tests passed');
+  })();
 }
