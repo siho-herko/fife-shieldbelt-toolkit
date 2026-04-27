@@ -389,7 +389,7 @@
     <!-- ---------------------------------------------------------------
          RIGHT PANEL — Results
          --------------------------------------------------------------- -->
-    <section class="panel-right" aria-label="Results" aria-live="polite">
+    <section class="panel-right" id="results-panel" aria-label="Results" aria-live="polite">
 
       <!-- Mobile: Adjust Inputs button at top of results -->
       <div class="mobile-results-nav mobile-results-nav--top">
@@ -486,7 +486,7 @@
               aria-label="Agronomic services radar chart" role="img">
               <p>Agronomic services radar chart (canvas not supported)</p>
             </canvas>
-            <div style="flex:1;min-width:180px;">
+            <div style="flex:1;min-width:0;max-width:100%;">
               <div class="results-section__title">Pest, Thermal &amp; Pollination</div>
               <div id="pest-thermal-chips" class="crew-chips-grid"></div>
             </div>
@@ -509,7 +509,7 @@
               aria-label="Water ecosystem radar chart" role="img">
               <p>Water radar chart (canvas not supported)</p>
             </canvas>
-            <div style="flex:1;min-width:180px;">
+            <div style="flex:1;min-width:0;max-width:100%;">
               <div class="results-section__title">CREW Service Breakdown</div>
               <div id="crew-chips" class="crew-chips-grid"></div>
               <div class="crew-chips-grid mt-3" id="wider-eco-extra"></div>

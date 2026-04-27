@@ -1922,6 +1922,20 @@ async function init() {
     // Run initial calculation
     await applyVariantAndRecalc();
 
+    if (window.ResizeObserver) {
+      const resultsContainer = document.getElementById('results-panel');
+      let resizeTimer;
+      if (resultsContainer) {
+        const ro = new ResizeObserver(() => {
+          clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(() => {
+            if (state.results) renderResults(state.results);
+          }, 150);
+        });
+        ro.observe(resultsContainer);
+      }
+    }
+
     // Open step 1 by default
     openStep(1);
 

@@ -94,23 +94,21 @@ export function setupCanvas(canvasId, heightPx, sizing = 0) {
   }
 
   const dpr = window.devicePixelRatio || 1;
-  let w = canvas.offsetWidth || canvas.clientWidth;
+  const container = canvas.parentElement;
+  let w = (container && container.clientWidth) || canvas.clientWidth || canvas.offsetWidth;
   let pwParent = 0;
-  if (canvas.parentElement) {
-    const p = canvas.parentElement;
-    pwParent = p.clientWidth || Math.floor(p.getBoundingClientRect().width) || 0;
+  if (container) {
+    pwParent = container.clientWidth || Math.floor(container.getBoundingClientRect().width) || 0;
     if (!w || w < 8) w = pwParent;
   }
   if (!w || w < 8) {
     const r = canvas.getBoundingClientRect();
     w = Math.floor(r.width) || 0;
   }
-  // Widen to the chart card when the canvas is still intrinsic (~300px) or a stale narrow inline width.
   if (pwParent > (w || 0) + 2) w = pwParent;
   if (!w || w < 8) {
-    w = minFallbackWidth > 8 ? minFallbackWidth : 600;
+    w = minFallbackWidth > 8 ? minFallbackWidth : 300;
   }
-  // Caller-measured target (compare modal / narrow layouts) must not sit below the real box width.
   if (minFallbackWidth > 8) {
     w = Math.max(w, minFallbackWidth);
   }
@@ -118,10 +116,6 @@ export function setupCanvas(canvasId, heightPx, sizing = 0) {
     w = Math.min(w, maxCanvasWidth);
   }
   const h   = heightPx;
-
-  // iOS/WebKit: max-width:100% on a zero-width flex ancestor can clamp used width to 0
-  // even when we set style.width in px — clear it so layout matches the bitmap.
-  canvas.style.maxWidth = 'none';
 
   // Set the bitmap size
   canvas.width  = Math.round(w * dpr);
@@ -662,43 +656,43 @@ function fillRadarAxisLabel(ctx, text, x, y, textAlign) {
  */
 export function radarChart(canvasId, axes, datasets, legendId) {
   const sides = axes.length;
-  const size  = 340;  // logical px — extra margin so axis labels are not clipped
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+
+  const container = canvas.parentElement;
+  let rawW = (container && container.clientWidth) || canvas.clientWidth || 0;
+  if (rawW < 8) {
+    const r = canvas.getBoundingClientRect();
+    rawW = Math.floor(r.width) || 300;
+  }
+  const size = Math.max(180, Math.min(Math.floor(rawW) || 300, 520));
+
   const setup = setupCanvas(canvasId, size);
   if (!setup) return;
 
-  // Force a square bitmap regardless of the element's CSS width
   const dpr = window.devicePixelRatio || 1;
-  setup.canvas.width  = Math.round(size * dpr);
-  setup.canvas.height = Math.round(size * dpr);
-  setup.canvas.style.width  = size + 'px';
-  setup.canvas.style.height = size + 'px';
-  setup.ctx.setTransform(1, 0, 0, 1, 0, 0);
-  setup.ctx.scale(dpr, dpr);
+  const S = Math.min(setup.w, setup.h);
+  if (S < 8) return;
+  const canvasEl = setup.canvas;
+  const ctx = canvasEl.getContext('2d');
+  canvasEl.width  = Math.round(S * dpr);
+  canvasEl.height = Math.round(S * dpr);
+  canvasEl.style.width  = S + 'px';
+  canvasEl.style.height = S + 'px';
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
+  ctx.scale(dpr, dpr);
 
-  // Use the forced square dimensions
-  const { ctx } = setup;
-  const w = size;
-  const h = size;
+  const w = S;
+  const h = S;
   const c    = C();
   const cx   = w / 2;
   const cy   = h / 2;
 
-  // Room for axis labels — inset from canvas edge based on longest line (incl. \n splits)
-  const radarFontSize = w < 320 ? 10 : 11;
-  ctx.save();
-  ctx.font = `${radarFontSize}px ${FONT_BODY}`;
-  let maxHalfLabel = 0;
-  for (const ax of axes) {
-    for (const line of String(ax).split(/\n/)) {
-      const t = line.trim();
-      if (!t) continue;
-      maxHalfLabel = Math.max(maxHalfLabel, ctx.measureText(t).width / 2);
-    }
-  }
-  ctx.restore();
-  const labelRadialGap = 14;
-  const inset = Math.ceil(maxHalfLabel + labelRadialGap + 18);
-  const rMax = Math.max(44, Math.min(w, h) / 2 - Math.max(52, inset));
+  const isNarrow = w < 280;
+  const rMax = isNarrow ? w * 0.32 : Math.min(w, h) * 0.35;
+  const labelDist = isNarrow ? rMax + 14 : rMax + 20;
+  const radarFontSize = isNarrow ? 9 : 11;
 
   // Helper: polar → cartesian, angle 0 at top (−π/2), clockwise
   const vertex = (i, r) => {
@@ -757,7 +751,7 @@ export function radarChart(canvasId, axes, datasets, legendId) {
   ctx.font      = `${radarFontSize}px ${FONT_BODY}`;
   ctx.fillStyle = c.forest;
   for (let i = 0; i < sides; i++) {
-    const v     = vertex(i, rMax + labelRadialGap);
+    const v     = vertex(i, labelDist);
     const angle = (2 * Math.PI * i) / sides - Math.PI / 2;
     const cos   = Math.cos(angle);
 

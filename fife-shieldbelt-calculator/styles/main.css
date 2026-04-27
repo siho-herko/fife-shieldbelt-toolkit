@@ -1,3 +1,14 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
 /* ==========================================================================
    Fife Farm Resilience Calculator — Design System
    Nature Finance Certification Alliance (NFCA)
@@ -77,7 +88,6 @@
    ========================================================================== */
 
 *, *::before, *::after {
-  box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
@@ -187,6 +197,10 @@ input, select, textarea {
 .panel-right {
   flex: 1;
   min-width: 0;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
   gap: var(--space-5);
@@ -305,8 +319,10 @@ input, select, textarea {
 
 .card__header {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
+  gap: var(--space-2) var(--space-3);
   margin-bottom: var(--space-4);
   padding-bottom: var(--space-3);
   border-bottom: 1px solid var(--c-stone);
@@ -777,12 +793,13 @@ input, select, textarea {
 
 .stat-boxes-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: var(--space-3);
+  width: 100%;
 }
 
 .stat-boxes-grid--3col {
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
 }
 
 .results-section__heading-major {
@@ -955,11 +972,14 @@ input, select, textarea {
 
 .results-header {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
+  gap: var(--space-2) var(--space-4);
   padding-bottom: var(--space-3);
   border-bottom: 2px solid var(--c-stone);
   margin-bottom: var(--space-4);
+  min-width: 0;
 }
 
 .results-header__title {
@@ -971,6 +991,8 @@ input, select, textarea {
 .results-header__meta {
   font-size: 0.8125rem;
   color: var(--c-muted);
+  min-width: 0;
+  max-width: 100%;
 }
 
 .results-section {
@@ -1154,18 +1176,24 @@ input, select, textarea {
 }
 
 /* ==========================================================================
-   21. Responsive — Mobile ≤ 768px
+   21. Responsive — Tablet / narrow ≤ 900px (stacked layout)
    ========================================================================== */
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .app-main {
+    display: flex;
     flex-direction: column;
-    padding: var(--space-4) var(--space-4);
+    padding: var(--space-4) var(--space-3);
     gap: var(--space-4);
   }
 
-  .panel-left {
+  .panel-left,
+  .panel-right {
     width: 100%;
+    max-width: 100%;
+  }
+
+  .panel-left {
     position: static;
     max-height: none;
     overflow-y: visible;
@@ -1174,7 +1202,21 @@ input, select, textarea {
     padding-left: 0;
     padding-top: var(--space-4);
   }
+}
 
+/* Headline stat boxes: single column on narrow phones */
+@media (max-width: 600px) {
+  .stat-boxes-grid,
+  .stat-boxes-grid--3col {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ==========================================================================
+   21b. Responsive — Mobile ≤ 768px
+   ========================================================================== */
+
+@media (max-width: 768px) {
   .app-header__title span {
     display: none;
   }
@@ -1182,13 +1224,6 @@ input, select, textarea {
   .app-header__link {
     font-size: 0.75rem;
     padding: 4px 10px;
-  }
-
-  .stat-boxes-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-  .stat-boxes-grid--3col {
-    grid-template-columns: repeat(3, 1fr);
   }
 
   .biome-grid {
@@ -1199,13 +1234,6 @@ input, select, textarea {
 @media (max-width: 480px) {
   .biome-grid {
     grid-template-columns: 1fr 1fr;
-  }
-
-  .stat-boxes-grid {
-    grid-template-columns: 1fr;
-  }
-  .stat-boxes-grid--3col {
-    grid-template-columns: 1fr;
   }
 
   .app-header__logo {
@@ -1356,7 +1384,7 @@ input, select, textarea {
 
 .solution-map__row {
   display: grid;
-  grid-template-columns: 24px 110px 1fr;
+  grid-template-columns: 24px minmax(0, 110px) minmax(0, 1fr);
   gap: var(--space-2);
   align-items: baseline;
   padding: var(--space-2) var(--space-3);
@@ -1511,14 +1539,20 @@ input, select, textarea {
   flex-wrap: wrap;
   align-items: flex-start;
   margin-top: var(--space-3);
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
-/* Radar canvases — match logical chart size in charts.js (340px) */
+/* Radar canvases — width follows container; charts.js sizes bitmap to match */
 #chart-water-radar,
 #chart-eco-radar {
-  flex-shrink: 0;
-  max-width: 360px;
+  display: block;
+  flex: 1 1 100%;
+  min-width: 0;
+  max-width: 100%;
   width: 100%;
+  height: auto;
 }
 
 /* Finance and avoided-cost charts need full width */
@@ -1528,6 +1562,12 @@ input, select, textarea {
 #chart-carbon,
 #chart-modal-compare {
   width: 100%;
+  max-width: 100%;
+  display: block;
+}
+
+canvas {
+  max-width: 100%;
   display: block;
 }
 
@@ -2193,9 +2233,3 @@ input[type="range"]::-moz-range-thumb {
   white-space: nowrap;
 }
 
-/* FIX [mobile/2a]: prevent horizontal scroll at any viewport */
-@media (max-width: 767px) {
-  body, .app-wrapper {
-    overflow-x: hidden;
-  }
-}
