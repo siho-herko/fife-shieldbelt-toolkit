@@ -35,14 +35,12 @@ test.describe('App load', () => {
     await expect(loadingScreen).toBeHidden();
   });
 
-  test('empty state is shown before any interaction', async ({ page }) => {
+  test('empty state is shown before problem or browse path', async ({ page }) => {
     await page.goto(BASE);
     await waitForAppReady(page);
-    // The app auto-loads results using the default biome/variant on fresh load (by design).
-    // Verify that either results or empty-state is rendered (not still loading).
-    const hasResults  = await page.locator('#results-content').isVisible();
-    const hasEmpty    = await page.locator('#results-empty').isVisible();
-    expect(hasResults || hasEmpty).toBe(true);
+    // P0 gating: full outcomes stay hidden until problem selected or browse path
+    await expect(page.locator('#results-empty')).toBeVisible();
+    await expect(page.locator('#results-content')).toHaveClass(/hidden/);
   });
 
   test('all 6 accordion steps are present', async ({ page }) => {
@@ -53,10 +51,11 @@ test.describe('App load', () => {
     }
   });
 
-  test('step 1 (Your Location) is open by default', async ({ page }) => {
+  test('step 1 (Biggest Problem) is open by default', async ({ page }) => {
     await page.goto(BASE);
     await waitForAppReady(page);
     await expect(await isStepOpen(page, 1)).toBe(true);
+    await expect(page.locator('#step-problem .step-accordion__label')).toContainText(/Biggest Problem/i);
   });
 
   test('steps 2–6 are collapsed by default', async ({ page }) => {
@@ -65,6 +64,12 @@ test.describe('App load', () => {
     for (let i = 2; i <= 6; i++) {
       await expect(await isStepOpen(page, i)).toBe(false);
     }
+  });
+
+  test('header scope line mentions marginal land / ShieldBelt', async ({ page }) => {
+    await page.goto(BASE);
+    await waitForAppReady(page);
+    await expect(page.locator('.app-header__title')).toContainText(/marginal land/i);
   });
 });
 
@@ -106,7 +111,7 @@ test.describe('Accordion manual toggle', () => {
 });
 
 // ---------------------------------------------------------------------------
-// 3. Location selection auto-advances to step 2 (Farm Type)
+// 3. Location selection auto-advances to step 3 (Farm Type)
 // ---------------------------------------------------------------------------
 test.describe('Location selection', () => {
   test.beforeEach(async ({ page }) => {
@@ -114,10 +119,10 @@ test.describe('Location selection', () => {
     await waitForAppReady(page);
   });
 
-  test('selecting a location closes step 1 and opens step 2', async ({ page }) => {
+  test('selecting a location closes step 2 and opens step 3', async ({ page }) => {
     await selectBiome(page, 'Fife (Howe of Fife & Eden)');
-    await expect(await isStepOpen(page, 1)).toBe(false);
-    await expect(await isStepOpen(page, 2)).toBe(true);
+    await expect(await isStepOpen(page, 2)).toBe(false);
+    await expect(await isStepOpen(page, 3)).toBe(true);
   });
 
   test('step summary updates with the selected location name', async ({ page }) => {
@@ -127,10 +132,10 @@ test.describe('Location selection', () => {
   });
 
   test('location context card is shown after selecting a location', async ({ page }) => {
-    await openStep(page, 1);
+    await openStep(page, 2);
     // The biome context card lives inside step-biome-body
     const card = page.locator('#biome-context-card');
-    // After page load a default biome is pre-selected; the card should be visible
+    // After page load a default biome is pre-selected; the card should be attached
     await expect(card).toBeAttached();
   });
 
@@ -144,8 +149,8 @@ test.describe('Location selection', () => {
       'Fife (West Fife Claylands)',
     ];
     for (const b of biomes) {
-      // Re-open step 1 between iterations
-      await openStep(page, 1);
+      // Re-open step 2 (Location) between iterations
+      await openStep(page, 2);
       // Radio inputs are visually hidden — verify the card label exists instead
       const label = page.locator(`.biome-card:has(input[name="biome"][value="${b}"])`);
       await expect(label).toBeAttached();
@@ -156,14 +161,14 @@ test.describe('Location selection', () => {
 });
 
 // ---------------------------------------------------------------------------
-// 4. Problem chip selection auto-advances to step 4 (Variant)
+// 4. Problem chip selection (step 1) unlocks outcomes and advances to Location
 // ---------------------------------------------------------------------------
 test.describe('Problem chip selection', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(BASE);
     await waitForAppReady(page);
-    // Biggest Problem is step 3 (after Location → Farm Type)
-    await openStep(page, 3);
+    // Biggest Problem is step 1 (problem-first)
+    await openStep(page, 1);
   });
 
   test('problem chips are rendered', async ({ page }) => {
@@ -181,12 +186,18 @@ test.describe('Problem chip selection', () => {
     expect(count).toBe(0);
   });
 
-  test('clicking a problem chip closes step 3 and opens step 4', async ({ page }) => {
+  test('clicking a problem chip closes step 1 and opens step 2', async ({ page }) => {
     const firstChip = page.locator('.problem-chip').first();
     await firstChip.click();
     await page.waitForTimeout(500);
-    await expect(await isStepOpen(page, 3)).toBe(false);
-    await expect(await isStepOpen(page, 4)).toBe(true);
+    await expect(await isStepOpen(page, 1)).toBe(false);
+    await expect(await isStepOpen(page, 2)).toBe(true);
+  });
+
+  test('problem chip unlocks full outcomes', async ({ page }) => {
+    await page.locator('.problem-chip').first().click();
+    await page.waitForTimeout(600);
+    await expect(page.locator('#results-content')).not.toHaveClass(/hidden/);
   });
 
   test('problem chip becomes aria-pressed=true after click', async ({ page }) => {
@@ -198,23 +209,30 @@ test.describe('Problem chip selection', () => {
     await expect(updated).toHaveAttribute('aria-pressed', 'true');
   });
 
-  test('step 3 summary updates after a chip is clicked', async ({ page }) => {
+  test('step 1 summary updates after a chip is clicked', async ({ page }) => {
     await page.locator('.problem-chip').first().click();
     await page.waitForTimeout(300);
     const summary = page.locator('#step-problem-summary');
     // Summary should no longer say "Not selected"
     await expect(summary).not.toHaveText('Not selected');
   });
+
+  test('escape hatch opens intervention browse path', async ({ page }) => {
+    await page.locator('#btn-browse-intervention').click();
+    await page.waitForTimeout(500);
+    await expect(await isStepOpen(page, 4)).toBe(true);
+    await expect(page.locator('#results-content')).not.toHaveClass(/hidden/);
+  });
 });
 
 // ---------------------------------------------------------------------------
-// 5. Farm type selection auto-advances to step 3 (Biggest Problem)
+// 5. Farm type selection auto-advances to step 4 (Variant)
 // ---------------------------------------------------------------------------
 test.describe('Farm type selection', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(BASE);
     await waitForAppReady(page);
-    await openStep(page, 2);
+    await openStep(page, 3);
   });
 
   test('four farm type options are present', async ({ page }) => {
@@ -222,16 +240,14 @@ test.describe('Farm type selection', () => {
     await expect(radios).toHaveCount(4);
   });
 
-  test('selecting a farm type closes step 2 and opens step 3', async ({ page }) => {
+  test('selecting a farm type closes step 3 and opens step 4', async ({ page }) => {
     await page.locator('input[name="farm-type"]').first().click();
     await page.waitForTimeout(400);
-    await expect(await isStepOpen(page, 2)).toBe(false);
-    await expect(await isStepOpen(page, 3)).toBe(true);
+    await expect(await isStepOpen(page, 3)).toBe(false);
+    await expect(await isStepOpen(page, 4)).toBe(true);
   });
 
-  test('step 2 summary updates with the selected farm type', async ({ page }) => {
-    const label = await page.locator('input[name="farm-type"]').first().getAttribute('value') ??
-                  await page.locator('input[name="farm-type"]').first().inputValue();
+  test('step 3 summary updates with the selected farm type', async ({ page }) => {
     await page.locator('input[name="farm-type"]').first().click();
     await page.waitForTimeout(300);
     const summary = page.locator('#step-farmtype-summary');
@@ -271,11 +287,18 @@ test.describe('Variant selection', () => {
     await expect(await isStepOpen(page, 5)).toBe(false);
   });
 
-  test('pressing Confirm Selection closes step 4 and opens steps 5 and 6', async ({ page }) => {
+  test('pressing Confirm Selection closes step 4 and opens step 5 only', async ({ page }) => {
     await confirmVariant(page);
     await expect(await isStepOpen(page, 4)).toBe(false);
     await expect(await isStepOpen(page, 5)).toBe(true);
-    await expect(await isStepOpen(page, 6)).toBe(true);
+    // Assumptions (step 6) stays collapsed — demoted from first-run path
+    await expect(await isStepOpen(page, 6)).toBe(false);
+  });
+
+  test('Confirm Selection unlocks outcomes without a problem', async ({ page }) => {
+    await confirmVariant(page);
+    await page.waitForTimeout(400);
+    await expect(page.locator('#results-content')).not.toHaveClass(/hidden/);
   });
 });
 
@@ -321,13 +344,17 @@ test.describe('Strip length', () => {
 });
 
 // ---------------------------------------------------------------------------
-// 8. Carbon credit price slider
+// 8. Assumptions step (demoted carbon credit price)
 // ---------------------------------------------------------------------------
-test.describe('Carbon credit price', () => {
+test.describe('Assumptions (carbon credit price)', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(BASE);
     await waitForAppReady(page);
     await openStep(page, 6);
+  });
+
+  test('step 6 is labelled Assumptions', async ({ page }) => {
+    await expect(page.locator('#step-price .step-accordion__label')).toContainText(/Assumptions/i);
   });
 
   test('slider is present with correct range', async ({ page }) => {
@@ -459,12 +486,13 @@ test.describe('Stat box scroll anchors', () => {
 // 11. URL state: encoding and restoring
 // ---------------------------------------------------------------------------
 test.describe('URL state', () => {
-  test('URL params are written after selecting a variant', async ({ page }) => {
+  test('URL params are written after unlocking outcomes', async ({ page }) => {
     await page.goto(BASE);
     await waitForAppReady(page);
-    // The app encodes state to URL on init (encodeStateToURL is called by renderResults)
+    await page.locator('#btn-browse-intervention').click();
+    await page.waitForTimeout(500);
+    // encodeStateToURL runs once outcomes are shown
     const url = page.url();
-    // Should contain biome slug (e.g. biome=east_neuk) and variant
     expect(url).toMatch(/biome=/);
   });
 
@@ -506,7 +534,7 @@ test.describe('Solution Summary panel', () => {
     // Load with a known problem code via chip interaction
     await page.goto(BASE);
     await waitForAppReady(page);
-    await openStep(page, 3);
+    await openStep(page, 1);
     // Click the first available problem chip
     await page.locator('.problem-chip').first().click();
     await page.waitForTimeout(600);
@@ -528,6 +556,30 @@ test.describe('Solution Summary panel', () => {
   test('panel shows "Recommended" for auto-selected variant', async ({ page }) => {
     // After clicking a chip the variant is auto-recommended
     await expect(page.locator('#problem-panel')).toContainText('Recommended');
+  });
+
+  test('solution map is reframed as other responses (not directory)', async ({ page }) => {
+    await expect(page.locator('#problem-panel')).toContainText(/Other responses often considered/i);
+    await expect(page.locator('#problem-panel')).toContainText(/only sizes ShieldBelt/i);
+    await expect(page.locator('#problem-panel')).not.toContainText(/Solutions Directory/i);
+    await expect(page.locator('#problem-panel')).not.toContainText(/coming soon/i);
+  });
+
+  test('Also consider chips are clickable buttons', async ({ page }) => {
+    const alts = page.locator('#problem-panel button.solution-pill--action');
+    const count = await alts.count();
+    if (count > 0) {
+      await alts.first().click();
+      await page.waitForTimeout(500);
+      await expect(page.locator('#results-content')).not.toHaveClass(/hidden/);
+    }
+  });
+
+  test('advisor handoff and print brief are present', async ({ page }) => {
+    await expect(page.locator('#advisor-handoff')).toBeVisible();
+    await expect(page.locator('#btn-print-brief')).toBeVisible();
+    await expect(page.locator('#btn-share-advisor')).toBeVisible();
+    await expect(page.locator('#advisor-handoff')).toContainText(/advisor/i);
   });
 });
 
