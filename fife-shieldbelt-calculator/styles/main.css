@@ -1534,6 +1534,56 @@ input, select, textarea {
   word-break: break-word;
   box-sizing: border-box;
   position: relative;
+  border: none;
+  font-family: inherit;
+  text-align: left;
+  text-decoration: none;
+}
+
+.solution-pill--action {
+  cursor: pointer;
+  border: 1px solid var(--c-forest);
+  background: #fff;
+}
+
+.solution-pill--action:hover,
+.solution-pill--action:focus-visible {
+  background: var(--c-cream);
+  outline: 2px solid var(--c-gold);
+  outline-offset: 1px;
+}
+
+.solution-pill--link {
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.solution-map__note {
+  margin: 0 0 var(--space-2);
+  line-height: 1.55;
+}
+
+.advisor-hint {
+  margin: 0;
+  line-height: 1.55;
+  color: var(--c-ink);
+}
+
+.advisor-handoff {
+  border-left: 3px solid var(--c-forest);
+}
+
+.advisor-checklist {
+  margin: 0;
+  padding-left: 1.25rem;
+  line-height: 1.55;
+  color: var(--c-ink);
+}
+
+.escape-hatch-btn {
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 /* ==========================================================================
@@ -1695,6 +1745,19 @@ canvas {
 
 .print-header { display: none; }
 
+.print-header__title {
+  font-family: var(--font-display);
+  font-size: 14pt;
+  font-weight: 700;
+  color: var(--c-forest);
+}
+
+.print-header__sub {
+  font-size: 9pt;
+  color: var(--c-muted);
+  margin-top: 2px;
+}
+
 @media print {
   .app-header,
   .panel-left,
@@ -1705,10 +1768,16 @@ canvas {
   .seg-toggle,
   #btn-mobile-drawer,
   .drawer-backdrop,
+  .mobile-results-nav,
+  #btn-print-brief,
+  #btn-share-advisor,
   dialog { display: none !important; }
 
   .app-main  { display: block; padding: 0; }
   .panel-right { width: 100% !important; margin: 0 !important; }
+
+  #results-empty { display: none !important; }
+  #results-content { display: block !important; }
 
   .print-header {
     display: block !important;
@@ -1718,9 +1787,17 @@ canvas {
     padding-bottom: 8px;
     margin-bottom: 16px;
   }
-  .print-header::before {
+  .print-header::after {
     content: "Fife Farm Resilience Calculator — NFCA · natcert.earth · " attr(data-date);
-    font-size: 11pt;
+    display: block;
+    font-size: 9pt;
+    margin-top: 4px;
+    color: var(--c-muted);
+  }
+
+  .advisor-handoff {
+    break-inside: avoid;
+    page-break-inside: avoid;
   }
 
   .card,

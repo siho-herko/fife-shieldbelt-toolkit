@@ -1,5 +1,8 @@
 /**
  * Shared helpers for the Fife Farm Resilience Calculator E2E tests.
+ *
+ * Problem-first step map (P0):
+ *   1 Biggest Problem · 2 Location · 3 Farm Type · 4 Variant · 5 Length · 6 Assumptions
  */
 
 /** Wait for the loading screen to disappear and the app to be interactive. */
@@ -47,9 +50,9 @@ export async function isStepOpen(page, stepNumber) {
   return body.isVisible();
 }
 
-/** Select a biome by its radio value and wait for variants to load. */
+/** Select a biome by its radio value and wait for variants to load. Location is step 2. */
 export async function selectBiome(page, biomeValue) {
-  await openStep(page, 1);
+  await openStep(page, 2);
   // The radio input itself is visually hidden (custom styled card) — click the wrapping label
   const label = page.locator(`.biome-card:has(input[name="biome"][value="${biomeValue}"])`);
   await label.waitFor({ state: 'visible', timeout: 5_000 });
@@ -58,9 +61,9 @@ export async function selectBiome(page, biomeValue) {
   await page.waitForTimeout(1200);
 }
 
-/** Click a problem chip by problem code. */
+/** Click a problem chip by problem code. Biggest Problem is step 1. */
 export async function clickProblemChip(page, problemCode) {
-  await openStep(page, 3);
+  await openStep(page, 1);
   await page.locator(`.problem-chip[data-code="${problemCode}"]`).click();
   await page.waitForTimeout(400);
 }

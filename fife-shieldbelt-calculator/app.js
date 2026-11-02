@@ -98,6 +98,9 @@ const state = {
   creditPrice:          60,
   problemCode:          null,
   windbreakOrient:      'NS',
+  // Journey gating: full outcomes only after problem OR explicit browse path
+  browseMode:           false,
+  outcomesUnlocked:     false,
   // Derived (never set directly by user)
   biomeRecords:    [],
   currentRecord:   null,
@@ -105,6 +108,40 @@ const state = {
   lastResults:     null,
   activeProblem:   null,
 };
+
+/** Category → advisor role hint for handoff MVP */
+const ADVISOR_ROLE_BY_CATEGORY = {
+  Water:        'a flood / catchment or land-drainage advisor',
+  Soil:         'an agronomist or soils advisor',
+  Climate:      'an agronomist or climate-adaptation advisor',
+  Biology:      'an agronomist or integrated pest management advisor',
+  Compliance:   'an NVZ / compliance or farm-environment advisor',
+  Social:       'a community or land-agent advisor',
+  Economic:     'a farm-business or nature-finance advisor',
+  Livestock:    'a livestock / grazing advisor',
+  Biodiversity: 'a nature / ecology advisor',
+  Carbon:       'a nature-finance or carbon-scheme advisor',
+};
+
+function unlockOutcomes({ browse = false } = {}) {
+  state.outcomesUnlocked = true;
+  if (browse) state.browseMode = true;
+}
+
+function lockOutcomesUnlessBrowse() {
+  if (!state.problemCode && !state.browseMode) {
+    state.outcomesUnlocked = false;
+  }
+}
+
+function shouldShowOutcomes() {
+  return state.outcomesUnlocked || !!state.problemCode || state.browseMode;
+}
+
+function showEmptyOutcomes() {
+  document.getElementById('results-empty')?.classList.remove('hidden');
+  document.getElementById('results-content')?.classList.add('hidden');
+}
 
 // =============================================================================
 // A. Problems data
@@ -188,7 +225,7 @@ function initBiomeSelector() {
         if (rec) { state.variantId = rec.id; syncVariantSelect(); }
       }
       await applyVariantAndRecalc();
-      closeStep(1); openStep(2);
+      closeStep(2); openStep(3); // Location → Farm Type
     });
   });
 }
@@ -264,6 +301,7 @@ function renderProblemClearBtn() {
 async function handleProblemChipClick(code) {
   state.problemCode   = code;
   state.activeProblem = problemsByCode[code];
+  unlockOutcomes();
   updateProblemChipUI(code);
   renderProblemClearBtn();
   setText('step-problem-summary', state.activeProblem?.Stated_Symptom?.slice(0, 30) + '…' || code);
@@ -276,7 +314,7 @@ async function handleProblemChipClick(code) {
   }
 
   await applyVariantAndRecalc();
-  closeStep(3); openStep(4);
+  closeStep(1); openStep(2); // Problem → Location
 }
 
 async function handleClearProblem() {
@@ -287,7 +325,18 @@ async function handleClearProblem() {
   updateProblemChipUI(null);
   const panel = document.getElementById('problem-panel');
   if (panel) panel.hidden = true;
-  if (state.results) renderResults(state.results);
+  lockOutcomesUnlessBrowse();
+  if (shouldShowOutcomes() && state.results) renderResults(state.results);
+  else showEmptyOutcomes();
+}
+
+/** Escape hatch: power users skip problem and browse ShieldBelt variants. */
+function handleBrowseIntervention() {
+  unlockOutcomes({ browse: true });
+  closeStep(1);
+  openStep(2);
+  openStep(4);
+  applyVariantAndRecalc();
 }
 
 function updateProblemChipUI(activeCode) {
@@ -318,7 +367,7 @@ function initFarmTypeSelector() {
         if (rec) { state.variantId = rec.id; syncVariantSelect(); }
       }
       await applyVariantAndRecalc();
-      closeStep(2); openStep(3);
+      closeStep(3); openStep(4); // Farm Type → Variant
     });
   });
 }
@@ -374,9 +423,10 @@ function initVariantSelector() {
 
 function initConfirmVariant() {
   document.getElementById('btn-confirm-variant')?.addEventListener('click', () => {
+    unlockOutcomes({ browse: !state.problemCode });
     closeStep(4);
-    openStep(5);
-    openStep(6);
+    openStep(5); // Length; Assumptions (step 6) stays collapsed
+    applyVariantAndRecalc();
   });
 }
 
@@ -499,7 +549,7 @@ function initCreditPriceSlider() {
     state.creditPrice = parseInt(slider.value, 10);
     if (display) display.textContent = '£' + state.creditPrice;
     slider.setAttribute('aria-valuenow', state.creditPrice);
-    setText('step-price-summary', `£${state.creditPrice} / tCO₂e`);
+    setText('step-price-summary', `Credit £${state.creditPrice} / tCO₂e`);
     await recalc();
   };
 
@@ -728,20 +778,24 @@ function renderProblemPanel(problem, record, otherVariants = []) {
        <strong>${record.variant}</strong>`
     : '<em class="text-muted">No variant matched</em>';
 
-  // Linked solution pills
+  // Related topics — no Solutions Directory promise
   const linkedKeys = Array.isArray(problem.Linked_Solution_Directory_Keys)
     ? problem.Linked_Solution_Directory_Keys
     : [];
   const pillsHTML = linkedKeys.map(k =>
-    `<span class="solution-pill" title="Solutions Directory — coming soon">${k}</span>`
+    `<a class="solution-pill solution-pill--link" href="fife-shieldbelt-topics.html" title="Related topic (not sized in this calculator)">${k}</a>`
   ).join('');
 
-  // "Also consider" variant chips
+  // "Also consider" — clickable ShieldBelt variant chips
   const alsoConsiderHTML = otherVariants.length
     ? `<div class="problem-panel__section-label">Also Consider</div>
-       <div class="solution-pills">
+       <div class="solution-pills" role="group" aria-label="Alternate ShieldBelt variants">
          ${otherVariants.map(v =>
-           `<span class="solution-pill"><span class="badge-width" data-width="${v.width}" style="font-size:0.7em">${v.width}</span> ${v.variant}</span>`
+           `<button type="button" class="solution-pill solution-pill--action"
+              data-variant-id="${v.id}"
+              title="Size this ShieldBelt variant">
+              <span class="badge-width" data-width="${v.width}" style="font-size:0.7em">${v.width}</span> ${v.variant}
+            </button>`
          ).join('')}
        </div>`
     : '';
@@ -749,6 +803,9 @@ function renderProblemPanel(problem, record, otherVariants = []) {
   const communityStyle = problem.Solution_Community === 'None directly applicable.'
     ? 'style="color:var(--c-muted);font-style:italic;"'
     : '';
+
+  const advisorRole = ADVISOR_ROLE_BY_CATEGORY[problem.Category]
+    || 'an agronomist or nature-finance advisor';
 
   panel.innerHTML = `
     <div class="problem-panel__section-label" style="font-size:1rem;font-weight:700;color:var(--c-forest);margin-bottom:0.5rem;">Solution Summary</div>
@@ -770,7 +827,11 @@ function renderProblemPanel(problem, record, otherVariants = []) {
 
     ${alsoConsiderHTML}
 
-    <div class="problem-panel__section-label">5-Point Solution Map</div>
+    <div class="problem-panel__section-label">Other responses often considered</div>
+    <p class="solution-map__note text-sm text-muted">
+      Advisors often weigh several response types. This app only sizes ShieldBelt linear margins
+      (nature-based options on marginal land)—not the alternatives below.
+    </p>
     <div class="solution-map">
       <div class="solution-map__row">
         <span class="solution-map__icon">🌱</span>
@@ -810,10 +871,42 @@ function renderProblemPanel(problem, record, otherVariants = []) {
     </div>
 
     ${pillsHTML ? `
-    <div class="problem-panel__section-label">Linked Solutions</div>
+    <div class="problem-panel__section-label">Related topics (not sized here)</div>
     <div class="solution-pills">${pillsHTML}</div>
     ` : ''}
+
+    <div class="problem-panel__section-label">Discuss with an advisor</div>
+    <p class="advisor-hint text-sm">
+      Bring this diagnosis and the sized ShieldBelt option to ${advisorRole}.
+      Print a planning brief or share the scenario link below.
+    </p>
   `;
+
+  // Wire clickable "Also consider" chips
+  panel.querySelectorAll('[data-variant-id]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const id = btn.getAttribute('data-variant-id');
+      if (!id) return;
+      state.variantId = id;
+      syncVariantSelect();
+      unlockOutcomes();
+      await applyVariantAndRecalc();
+    });
+  });
+
+  updateAdvisorHandoffCopy(problem);
+}
+
+function updateAdvisorHandoffCopy(problem) {
+  const el = document.getElementById('advisor-handoff-copy');
+  if (!el) return;
+  if (!problem) {
+    el.textContent = 'Use this as a starting point for planning a ShieldBelt margin with an appropriate advisor.';
+    return;
+  }
+  const role = ADVISOR_ROLE_BY_CATEGORY[problem.Category]
+    || 'an agronomist or nature-finance advisor';
+  el.textContent = `This is a planning start—not a prescription. Discuss the sized margin option with ${role}.`;
 }
 
 // =============================================================================
@@ -823,11 +916,24 @@ function renderProblemPanel(problem, record, otherVariants = []) {
 function renderResults(results) {
   if (!results) return;
 
+  if (!shouldShowOutcomes()) {
+    showEmptyOutcomes();
+    return;
+  }
+
   document.getElementById('results-empty')?.classList.add('hidden');
   document.getElementById('results-content')?.classList.remove('hidden');
 
   const r = results;
   const c = state.currentRecord;
+
+  // Print header date for planning brief
+  const printHeader = document.querySelector('.print-header');
+  if (printHeader) {
+    printHeader.setAttribute('data-date', new Date().toLocaleDateString('en-GB'));
+  }
+
+  if (!state.activeProblem) updateAdvisorHandoffCopy(null);
 
   flashStatBoxes();
   updateSSERWidthColor(r.width);
@@ -1733,7 +1839,8 @@ function handleReset() {
     biome: BIOMES.EAST_NEUK, variantId: null, farmType: 'General Cropping',
     placement: 'crossSlope', lengthM: 1000, creditPrice: 60,
     problemCode: null, windbreakOrient: 'NS',
-    biomeRecords: [], currentRecord: null, results: null, activeProblem: null,
+    browseMode: false, outcomesUnlocked: false,
+    biomeRecords: [], currentRecord: null, results: null, lastResults: null, activeProblem: null,
   });
 
   // Reset form controls
@@ -1743,16 +1850,22 @@ function handleReset() {
   if (slider) { slider.value = 60; }
   const display = document.getElementById('credit-price-display');
   if (display) display.textContent = '£60';
+  setText('step-price-summary', 'Credit £60 / tCO₂e');
+  setText('step-problem-summary', 'Not selected');
 
   document.querySelectorAll('input[name="biome"]').forEach(r => { r.checked = r.value === BIOMES.EAST_NEUK; });
   document.querySelectorAll('input[name="farm-type"]').forEach(r => { r.checked = r.value === 'General Cropping'; });
 
   clearCharts();
-  document.getElementById('results-empty')?.classList.remove('hidden');
-  document.getElementById('results-content')?.classList.add('hidden');
+  showEmptyOutcomes();
   document.getElementById('problem-panel') && (document.getElementById('problem-panel').hidden = true);
   document.getElementById('btn-clear-problem')?.remove();
   updateProblemChipUI(null);
+  updateAdvisorHandoffCopy(null);
+
+  // Return to problem-first entry
+  closeStep(2); closeStep(3); closeStep(4); closeStep(5); closeStep(6);
+  openStep(1);
 
   window.history.replaceState({}, '', window.location.pathname);
 }
@@ -1775,7 +1888,7 @@ async function applyVariantAndRecalc() {
   renderVariantDetail(state.currentRecord);
   updateLengthDerived();
   await recalc();
-  scrollToResults();
+  if (shouldShowOutcomes()) scrollToResults();
 }
 
 async function recalc() {
@@ -1796,8 +1909,32 @@ async function recalc() {
 
   state.results     = calculate(inputs, state.currentRecord);
   state.lastResults = state.results;
-  renderResults(state.results);
+  if (shouldShowOutcomes()) {
+    renderResults(state.results);
+    encodeStateToURL();
+  } else {
+    showEmptyOutcomes();
+  }
+}
+
+function copyShareLink() {
+  navigator.clipboard.writeText(window.location.href)
+    .then(() => showToast('Link copied — share with your advisor'))
+    .catch(() => showToast('Copy failed'));
+}
+
+function printPlanningBrief() {
+  if (!shouldShowOutcomes()) {
+    showToast('Select a problem or confirm a variant first');
+    return;
+  }
+  // Ensure URL encodes current scenario before print/share
   encodeStateToURL();
+  const printHeader = document.querySelector('.print-header');
+  if (printHeader) {
+    printHeader.setAttribute('data-date', new Date().toLocaleDateString('en-GB'));
+  }
+  window.print();
 }
 
 // =============================================================================
@@ -1888,13 +2025,17 @@ async function init() {
       delete state._urlVariantNum;
     }
 
-    // Resolve problem→variant recommendation
+    // Resolve problem→variant recommendation; unlock if URL carried a journey entry
     if (state.problemCode) {
       state.activeProblem = problemsByCode[state.problemCode] || null;
       const rec = recommendVariant(state.problemCode, state.biomeRecords, state.farmType);
       if (rec && !state.variantId) state.variantId = rec.id;
       updateProblemChipUI(state.problemCode);
       if (state.activeProblem) renderProblemClearBtn();
+      unlockOutcomes();
+    } else if (state._urlVariantNum || state.variantId) {
+      // Shared / bookmarked variant link = explicit browse path
+      unlockOutcomes({ browse: true });
     }
 
     // Initialise all controls and event handlers
@@ -1909,14 +2050,17 @@ async function init() {
     initWindbreakToggle();
     initModal();
 
-    document.getElementById('btn-calculate')?.addEventListener('click', applyVariantAndRecalc);
+    document.getElementById('btn-browse-intervention')?.addEventListener('click', handleBrowseIntervention);
+
+    document.getElementById('btn-calculate')?.addEventListener('click', async () => {
+      unlockOutcomes({ browse: !state.problemCode });
+      await applyVariantAndRecalc();
+    });
     document.getElementById('btn-reset')?.addEventListener('click', handleReset);
 
-    document.getElementById('btn-copy-link')?.addEventListener('click', () => {
-      navigator.clipboard.writeText(window.location.href)
-        .then(() => showToast('Copied!'))
-        .catch(() => showToast('Copy failed'));
-    });
+    document.getElementById('btn-copy-link')?.addEventListener('click', copyShareLink);
+    document.getElementById('btn-share-advisor')?.addEventListener('click', copyShareLink);
+    document.getElementById('btn-print-brief')?.addEventListener('click', printPlanningBrief);
 
     document.getElementById('btn-save-scenario')?.addEventListener('click', () => {
       if (state.lastResults) saveScenario(null, state, state.lastResults);
@@ -1929,7 +2073,7 @@ async function init() {
     // FIX [print/canvas]: re-render charts synchronously before printing so
     // canvas bitmaps are committed — some browsers clear canvas before print.
     window.addEventListener('beforeprint', () => {
-      if (state.results) renderResults(state.results);
+      if (state.results && shouldShowOutcomes()) renderResults(state.results);
     });
 
     // FIX [iOS PWA]: IndexedDB on iOS PWA may be evicted after 7 days inactivity
@@ -1940,7 +2084,7 @@ async function init() {
       document.querySelector('.app-header__inner')?.appendChild(banner);
     }
 
-    // Run initial calculation
+    // Prepare variant/calc data; only show full outcomes when journey is unlocked
     await applyVariantAndRecalc();
 
     if (window.ResizeObserver) {
@@ -1953,7 +2097,7 @@ async function init() {
           resizeTimer = setTimeout(() => {
             // Only re-render if width actually changed (keyboard show/hide often only changes height on iOS)
             const newWidth = resultsContainer.clientWidth;
-            if (newWidth !== lastKnownWidth && state.results) {
+            if (newWidth !== lastKnownWidth && state.results && shouldShowOutcomes()) {
               lastKnownWidth = newWidth;
               renderResults(state.results);
             }
@@ -1963,7 +2107,7 @@ async function init() {
       }
     }
 
-    // Open step 1 by default
+    // Problem-first: open Biggest Problem by default
     openStep(1);
 
   } catch (err) {
