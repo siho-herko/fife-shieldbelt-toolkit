@@ -737,6 +737,7 @@ input, select, textarea {
 .problem-chip {
   display: inline-flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 6px;
   padding: 6px 14px;
   border: 1.5px solid var(--c-stone);
@@ -748,7 +749,8 @@ input, select, textarea {
   cursor: pointer;
   transition: all var(--transition-fast);
   user-select: none;
-  white-space: nowrap;
+  white-space: normal;
+  max-width: 100%;
 }
 
 .problem-chip:hover {
@@ -767,6 +769,143 @@ input, select, textarea {
 .problem-chip__icon {
   font-size: 0.9375rem;
   line-height: 1;
+}
+
+.problem-chip__label {
+  text-align: left;
+}
+
+.problem-chip__badges {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-left: 2px;
+}
+
+.problem-chip__badge {
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(26, 61, 43, 0.08);
+  color: var(--c-muted);
+  white-space: nowrap;
+}
+
+.problem-chip__badge--fit {
+  background: rgba(82, 183, 136, 0.18);
+  color: var(--c-forest);
+}
+
+.problem-chip__badge--dreel {
+  background: rgba(29, 78, 216, 0.12);
+  color: #1d4ed8;
+}
+
+.problem-chip--muted {
+  opacity: 0.55;
+}
+
+.problem-chip--fit {
+  border-color: rgba(82, 183, 136, 0.65);
+}
+
+.problem-chip--selected .problem-chip__badge,
+.problem-chip[aria-pressed="true"] .problem-chip__badge {
+  background: rgba(255, 255, 255, 0.18);
+  color: var(--c-cream);
+}
+
+.problem-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+  margin-bottom: 0.75rem;
+  padding: 0.65rem 0.75rem;
+  background: rgba(26, 61, 43, 0.04);
+  border: 1px solid var(--c-stone);
+  border-radius: var(--radius-md, 8px);
+}
+
+.problem-filter-bar__opt {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8125rem;
+  color: var(--c-ink);
+  cursor: pointer;
+  user-select: none;
+}
+
+.why-recommended,
+.planning-notes {
+  margin: 0.75rem 0 1rem;
+}
+
+.why-recommended__list,
+.planning-notes__list {
+  margin: 0.35rem 0 0;
+  padding-left: 1.15rem;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: var(--c-ink);
+}
+
+.why-recommended__list li + li,
+.planning-notes__list li + li {
+  margin-top: 0.25rem;
+}
+
+.print-brief-snapshot {
+  display: none;
+}
+
+.print-brief__heading {
+  font-family: var(--font-display);
+  font-size: 12pt;
+  margin: 0 0 8px;
+  color: var(--c-forest);
+}
+
+.print-brief__meta {
+  display: grid;
+  gap: 4px;
+  margin: 0 0 10px;
+  font-size: 9pt;
+}
+
+.print-brief__meta div {
+  display: grid;
+  grid-template-columns: 7rem 1fr;
+  gap: 6px;
+}
+
+.print-brief__meta dt {
+  font-weight: 700;
+  color: var(--c-muted);
+}
+
+.print-brief__meta dd {
+  margin: 0;
+}
+
+.print-brief__diagnosis,
+.print-brief__note {
+  font-size: 9pt;
+  line-height: 1.45;
+  margin: 0 0 8px;
+}
+
+.print-brief__block {
+  font-size: 9pt;
+  margin: 0 0 8px;
+}
+
+.print-brief__block ul {
+  margin: 4px 0 0;
+  padding-left: 1.1rem;
 }
 
 /* ==========================================================================
@@ -1771,6 +1910,7 @@ canvas {
   .mobile-results-nav,
   #btn-print-brief,
   #btn-share-advisor,
+  #share-link-hint,
   dialog { display: none !important; }
 
   .app-main  { display: block; padding: 0; }
@@ -1785,7 +1925,7 @@ canvas {
     color: var(--c-forest);
     border-bottom: 2px solid var(--c-forest);
     padding-bottom: 8px;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
   }
   .print-header::after {
     content: "Fife Farm Resilience Calculator — NFCA · natcert.earth · " attr(data-date);
@@ -1795,7 +1935,23 @@ canvas {
     color: var(--c-muted);
   }
 
+  .print-brief-snapshot:not([hidden]) {
+    display: block !important;
+    border: 1px solid var(--c-stone);
+    padding: 10px 12px;
+    margin-bottom: 14px;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
   .advisor-handoff {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .why-recommended,
+  .planning-notes,
+  .problem-panel {
     break-inside: avoid;
     page-break-inside: avoid;
   }

@@ -158,10 +158,11 @@
     "Solution_Community": "Engage with FCCT regarding rerouting eroded footpaths.",
     "Solution_Emerging_Tech_Landscaping": "Engineered salt-marsh restoration to absorb wave energy.",
     "Relevant_ShieldBelt_Variants": [
-      "20m Riparian Flood Wood",
-      "12m Native Shelterbelt",
+      "20m Coastal Erosion Wood",
+      "12m Coastal Salt-Spray Screen",
       "6m Shallow Root Shrubs",
-      "20m Coastal Erosion Wood"
+      "20m Riparian Flood Wood",
+      "3m Dense Wildlife Hedge"
     ],
     "Linked_Solution_Directory_Keys": []
   },
@@ -310,9 +311,7 @@
       "6m Botanical Shrub Strip",
       "12m Botanical Harvest Wood",
       "3m Dense Wildlife Hedge",
-      "6m Distillery Foraging Strip",
-      "6m Upland Foraging Strip",
-      "6m Urban Foraging Strip"
+      "6m Distillery Foraging Strip"
     ],
     "Linked_Solution_Directory_Keys": [
       "Companion Cropping / Intercropping",
@@ -336,14 +335,11 @@
     "Solution_Community": "Communicate spraying intentions with local beekeepers.",
     "Solution_Emerging_Tech_Landscaping": "Acoustic & Laser Pest Deterrents (Netherlands) to protect fruit from birds.",
     "Relevant_ShieldBelt_Variants": [
-      "6m Botanical Shrub Strip",
       "3m Heritage Species Hedge",
-      "12m Botanical Harvest Wood",
-      "6m Biomass Fuel Coppice",
-      "12m Distillery Harvest Wood",
       "6m Distillery Foraging Strip",
-      "6m Upland Foraging Strip",
-      "6m Urban Foraging Strip"
+      "12m Distillery Harvest Wood",
+      "6m Biomass Fuel Coppice",
+      "3m Dense Wildlife Hedge"
     ],
     "Linked_Solution_Directory_Keys": [
       "Undersow with flowering clovers"
@@ -493,13 +489,12 @@
     "Solution_Community": "Engage with the local council regarding road-sweeping.",
     "Solution_Emerging_Tech_Landscaping": "Plasma Slurry treatment (Norway) to completely eliminate manure smell near towns.",
     "Relevant_ShieldBelt_Variants": [
-      "12m Native Shelterbelt",
-      "6m Botanical Shrub Strip",
-      "3m Dense Wildlife Hedge",
       "12m Urban Air-Quality Screen",
+      "3m Dense Wildlife Hedge",
       "12m Urban Foraging Wood",
       "20m Urban Flood Buffer",
-      "6m Urban Foraging Strip"
+      "6m Urban Foraging Strip",
+      "12m Thermal Microclimate Belt"
     ],
     "Linked_Solution_Directory_Keys": [
       "Plasma Slurry treatment (Norway)"
@@ -768,13 +763,13 @@
     "Solution_Emerging_Tech_Landscaping": "Use AI weather prediction to adjust harvest schedules proactively.",
     "Relevant_ShieldBelt_Variants": [
       "12m Native Shelterbelt",
-      "12m Native Shelterbelt"
+      "12m Coastal Salt-Spray Screen",
+      "12m Thermal Microclimate Belt",
+      "3m Dense Wildlife Hedge"
     ],
     "Linked_Solution_Directory_Keys": [
       "Silicon Biostimulants",
-      "Variable-Rate Plant Growth Regulators (PGRs)",
-      "12m Native Shelterbelt",
-      "12m Thermal Microclimate Belt"
+      "Variable-Rate Plant Growth Regulators (PGRs)"
     ]
   },
   {
@@ -839,12 +834,14 @@
     "Solution_Community": "Share local weather data and maturity mapping with neighboring farms.",
     "Solution_Emerging_Tech_Landscaping": "Hyper-local weather stations feeding into AI crop maturation predictors.",
     "Relevant_ShieldBelt_Variants": [
+      "12m Thermal Microclimate Belt",
       "12m Native Shelterbelt",
-      "12m Native Shelterbelt"
+      "12m Montane Snow-Fence",
+      "3m Dense Wildlife Hedge"
     ],
     "Linked_Solution_Directory_Keys": [
-      "12m Thermal Microclimate Belt",
-      "Desiccation Timing Models"
+      "Desiccation Timing Models",
+      "Early-maturing crop varieties"
     ]
   },
   {

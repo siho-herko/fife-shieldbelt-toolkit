@@ -581,6 +581,54 @@ test.describe('Solution Summary panel', () => {
     await expect(page.locator('#btn-share-advisor')).toBeVisible();
     await expect(page.locator('#advisor-handoff')).toContainText(/advisor/i);
   });
+
+  test('why recommended and planning questions appear', async ({ page }) => {
+    await expect(page.locator('#why-recommended')).toBeVisible();
+    await expect(page.locator('#why-recommended')).toContainText(/Why this option/i);
+    await expect(page.locator('#planning-notes')).toBeVisible();
+    await expect(page.locator('#planning-notes')).toContainText(/Planning questions/i);
+  });
+
+  test('print brief snapshot is populated for print', async ({ page }) => {
+    const snap = page.locator('#print-brief-snapshot');
+    await expect(snap).toBeAttached();
+    await expect(snap).toContainText(/Planning brief snapshot/i);
+    await expect(snap).toContainText(/Diagnosis/i);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// 12b. Problem chip relevance badges / filters (P1)
+// ---------------------------------------------------------------------------
+test.describe('Problem chip relevance', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto(BASE);
+    await waitForAppReady(page);
+    await openStep(page, 1);
+  });
+
+  test('filter bar is present', async ({ page }) => {
+    await expect(page.locator('#problem-filter-bar')).toBeVisible();
+    await expect(page.locator('#filter-prioritise-fits')).toBeChecked();
+    await expect(page.locator('#filter-dreel-burn')).not.toBeChecked();
+  });
+
+  test('fit badges appear on relevant chips', async ({ page }) => {
+    const fitBadges = page.locator('.problem-chip__badge--fit');
+    await expect(fitBadges.first()).toBeVisible();
+  });
+
+  test('Dreel Burn chips stay hidden until lens is enabled', async ({ page }) => {
+    await expect(page.locator('.problem-chip[data-lens="dreel"]')).toHaveCount(0);
+    await page.locator('#filter-dreel-burn').check();
+    await page.waitForTimeout(200);
+    await expect(page.locator('.problem-chip[data-lens="dreel"]').first()).toBeVisible();
+    await expect(page.locator('.problem-chip__badge--dreel').first()).toBeVisible();
+  });
+
+  test('no locked data-phase=2 chips', async ({ page }) => {
+    await expect(page.locator('.problem-chip[data-phase="2"]')).toHaveCount(0);
+  });
 });
 
 // ---------------------------------------------------------------------------

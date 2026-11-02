@@ -81,6 +81,16 @@ for (const p of problems) {
   }
 }
 
+// No duplicate variant strings within a problem
+console.log('\n--- 4b. No duplicate variant mappings ---');
+for (const p of problems) {
+  const vs = p.Relevant_ShieldBelt_Variants ?? [];
+  assert(
+    new Set(vs).size === vs.length,
+    `${p.Problem_Code}: no duplicate Relevant_ShieldBelt_Variants`
+  );
+}
+
 // ---------------------------------------------------------------------------
 // 5. Diagnosis copy is substantive (not a placeholder)
 // ---------------------------------------------------------------------------
