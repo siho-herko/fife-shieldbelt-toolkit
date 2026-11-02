@@ -47,6 +47,7 @@
   <div class="print-header__sub">Nature-based options on marginal land · NFCA</div>
 </div>
 <div id="print-brief-snapshot" class="print-brief-snapshot" hidden aria-hidden="true"></div>
+<div id="print-brief-footer" class="print-brief-footer" aria-hidden="true"></div>
 
 <!-- ========================================================================
      MOBILE DRAWER BACKDROP
@@ -604,7 +605,7 @@
             <li>Open questions from the diagnosis and planning notes above</li>
           </ul>
           <p class="text-sm text-muted" id="share-link-hint" style="margin:0.75rem 0 0;line-height:1.5;">
-            The share link restores problem, location, farm type, variant, and strip length so an advisor can reopen this scenario.
+            The share link restores problem, a short diagnosis &amp; other-responses snapshot, location, farm type, variant, and strip length so an advisor can reopen this scenario.
           </p>
           <div class="flex gap-3 flex-wrap mt-3">
             <button class="btn btn-primary" id="btn-print-brief" type="button">
@@ -694,6 +695,8 @@
     6 Fife landscape areas
     <span class="app-footer__dots">·</span>
     <a href="https://natcert.earth" target="_blank" rel="noopener noreferrer">natcert.earth</a>
+    <!-- Populated only when RESILIENCE_WIDE_TOOL_URL is set in app.js -->
+    <div id="resilience-wide-bridge" class="resilience-wide-bridge" hidden></div>
   </footer>
 
 </div><!-- /app-wrapper -->

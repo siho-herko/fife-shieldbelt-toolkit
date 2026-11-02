@@ -15,6 +15,7 @@ const PRECACHE = [
   '/db.js',
   '/calc.js',
   '/charts.js',
+  '/url-snapshot.js',
   '/styles/main.css',
   '/manifest.json',
   '/icons/icon-192.svg',

@@ -524,6 +524,23 @@ test.describe('URL state', () => {
     await waitForAppReady(page);
     await expect(page.locator('#loading-screen')).toBeHidden();
   });
+
+  test('snap param restores diagnosis context in print brief', async ({ page }) => {
+    // Minimal snap payload: {"code":"X","cat":"Water","s":"Wet margins","d":"Diagnosis text","m":{"a":"Agro","i":"Infra","p":"Prec","c":"Comm","e":"Emerg"}}
+    // Precomputed base64url for stable fixture
+    const payload = Buffer.from(JSON.stringify({
+      code: 'TEST_SNAP',
+      cat: 'Water',
+      s: 'Wet margins after rain',
+      d: 'Shared diagnosis for advisor reopen',
+      m: { a: 'Agro note', i: 'Infra note', p: 'Prec note', c: 'Comm note', e: 'Emerg note' },
+    }), 'utf8').toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
+
+    await page.goto(`${BASE}/?biome=east_neuk&farm=general_cropping&length=1000&price=60&orient=NS&placement=crossSlope&variant=1&snap=${payload}`);
+    await waitForAppReady(page);
+    const snap = page.locator('#print-brief-snapshot');
+    await expect(snap).toContainText(/Shared diagnosis for advisor reopen|Wet margins after rain|Other responses/i);
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -592,8 +609,24 @@ test.describe('Solution Summary panel', () => {
   test('print brief snapshot is populated for print', async ({ page }) => {
     const snap = page.locator('#print-brief-snapshot');
     await expect(snap).toBeAttached();
-    await expect(snap).toContainText(/Planning brief snapshot/i);
+    await expect(snap).toContainText(/ShieldBelt planning brief/i);
     await expect(snap).toContainText(/Diagnosis/i);
+    await expect(snap).toContainText(/Other responses often considered/i);
+    await expect(snap).toContainText(/Bring to the meeting/i);
+    await expect(snap).toContainText(/Sized outcomes/i);
+  });
+
+  test('share URL encodes problem snap payload', async ({ page }) => {
+    await page.waitForTimeout(400);
+    const url = page.url();
+    expect(url).toMatch(/problem=/);
+    expect(url).toMatch(/snap=/);
+  });
+
+  test('resilience-wide bridge stays hidden until product URL exists', async ({ page }) => {
+    const bridge = page.locator('#resilience-wide-bridge');
+    await expect(bridge).toBeAttached();
+    await expect(bridge).toBeHidden();
   });
 });
 
