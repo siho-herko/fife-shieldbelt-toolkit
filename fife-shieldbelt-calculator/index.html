@@ -332,7 +332,7 @@
             aria-controls="step-price-body" id="step-price-trigger">
             <span class="step-accordion__number" aria-hidden="true">6</span>
             <span class="step-accordion__label">Carbon Credit Price</span>
-            <span class="step-accordion__summary" id="step-price-summary">£60 / tCO₂e</span>
+            <span class="step-accordion__summary" id="step-price-summary">£70 / tCO₂e</span>
             <svg class="step-accordion__chevron" width="16" height="16" viewBox="0 0 24 24"
               fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
               <polyline points="6 9 12 15 18 9"/>
@@ -344,17 +344,19 @@
               <label class="form-label" for="credit-price">Market price per tCO₂e</label>
               <div class="slider-row">
                 <input type="range" class="form-slider" id="credit-price"
-                  name="credit-price" min="20" max="200" step="5" value="60"
-                  aria-valuenow="60" aria-valuemin="20" aria-valuemax="200"
+                  name="credit-price" min="20" max="150" step="5" value="70"
+                  aria-valuenow="70" aria-valuemin="20" aria-valuemax="150"
                   aria-label="Carbon credit price per tonne CO₂e" />
-                <span class="slider-value" id="credit-price-display">£60</span>
+                <span class="slider-value" id="credit-price-display">£70</span>
               </div>
               <div class="flex justify-between text-xs text-muted mt-2">
-                <span>£20</span><span>£200 / tCO₂e</span>
+                <span>£20</span><span>£150 / tCO₂e</span>
               </div>
               <span class="form-hint mt-2">
-                Woodland Carbon Code credits typically £25–£120.
-                BNG units and agri-env payments stack on top.
+                Default £70 sits in the £60–£80 range indicated by ONCRA (October 2026); £150 is an upside case.
+                For comparison, the Woodland Carbon Code Pending Issuance Unit average was about £28 (published March 2025).
+                Revenue uses net tonnes (gross × 0.64 after ONCRA deductions and buffer).
+                ONCRA Potential Units support contribution claims only.
               </span>
             </div>
           </div>
@@ -455,7 +457,7 @@
               title="Go to Carbon Sequestration Trajectory">
               <div class="stat-box__value stat-box__value--leaf" id="stat-25yr-carbon">—</div>
               <div class="stat-box__label">25-Year Carbon Revenue</div>
-              <div class="stat-box__sublabel">25yr sequestration × credit price</div>
+              <div class="stat-box__sublabel">25yr net sequestration × price (contribution claims only)</div>
               <div class="stat-box__arrow">↓</div>
             </div>
 

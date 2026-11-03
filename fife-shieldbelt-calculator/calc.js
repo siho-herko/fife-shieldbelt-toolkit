@@ -98,19 +98,29 @@ export function cumulativeSeqTrajectory(carbonSequestration) {
 }
 
 /**
- * Annual carbon income £/yr.
- * Formula: (seq50yrTotal / 50) × (widthM × lengthM / 10000) × creditPrice
+ * ONCRA net factor: 20% default GHG deduction, then 20% buffer
+ * (15% holding + 5% pool) → 0.8 × 0.8 = 0.64 of gross sequestration.
+ * VERIFIED — ONCRA LSC Protocol v2 §2.1.6; ONCRA Guidelines (Mar 2026) §5.6.
+ */
+export const ONCRA_NET_FACTOR = 0.64;
+
+/**
+ * Annual carbon income £/yr, on net (creditable) tonnes.
+ * seq50yrTotal is gross tCO₂e per km over 50 years.
+ * Formula: (seq50yrTotal / 50) × (lengthM / 1000) × netFactor × creditPrice
+ *
+ * (Fixed 3 Nov 2026: previously multiplied by strip area in ha, treating a
+ *  per-km figure as per-ha.)
  *
  * @param {Object} record
  * @param {number} lengthM
  * @param {number} creditPrice  £/tCO₂e
+ * @param {number} [netFactor=ONCRA_NET_FACTOR]
  * @returns {number} £/yr
  */
-export function annualCarbonIncome(record, lengthM, creditPrice) {
-  const widthM  = parseWidth(record.width);
-  const areaHa  = (widthM * lengthM) / 10_000;
+export function annualCarbonIncome(record, lengthM, creditPrice, netFactor = ONCRA_NET_FACTOR) {
   const annRate = safeNum(record.seq50yrTotal) / 50;
-  return annRate * areaHa * safeNum(creditPrice);
+  return annRate * (safeNum(lengthM) / 1000) * safeNum(netFactor) * safeNum(creditPrice);
 }
 
 // ---------------------------------------------------------------------------
@@ -362,7 +372,7 @@ export function calculate(inputs, record) {
 
   // Derived summary metrics
   const netAgronomicBenefit = acVal + wbVal + poll + pest + thermal - nif;
-  const seq25yrRevenue      = (seqTraj[4] ?? 0) * (lengthM / 1000) * creditPrice;
+  const seq25yrRevenue      = (seqTraj[4] ?? 0) * (lengthM / 1000) * ONCRA_NET_FACTOR * creditPrice;
   const widerEcoValue       = crewTotal; // air filtration + catchment hydrology + water purification
 
   // --- Radar (placement-specific) ---
@@ -407,6 +417,7 @@ export function calculate(inputs, record) {
 
     // Carbon
     seq50yrTotal:       seq50,
+    seq50yrNet:         seq50 * ONCRA_NET_FACTOR,
     seqTrajectory:      seqTraj,
     annualCarbonIncome: carbIncome,
 

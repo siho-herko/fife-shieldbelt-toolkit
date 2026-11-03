@@ -10,6 +10,7 @@
  *   The Prompt 9 spec expected values for records 2–5 appear to include
  *   Dairy thermal regulation even when "GC" (General Cropping) is the
  *   specified farm type.  The correct values below are computed from the
+ *   (3 Nov 2026) carbIncome is per km on ONCRA net tonnes (×0.64); expected values updated.
  *   actual formula:  carbIncome + poll + crew + pest + thermal + wb + ac − nif
  *   where all terms use the GC farm type.  A companion assertion verifies
  *   the Dairy-variant value matches the spec's stated figure.
@@ -130,8 +131,8 @@ assert(totalSeq50yr(r1) === 8.4,
   'r1: totalSeq50yr = 8.4', 8.4, totalSeq50yr(r1));
 
 const r1_carbIncome = annualCarbonIncome(r1, 1000, 60);
-assert(near(r1_carbIncome, 3.024, 0.01),
-  'r1: annualCarbonIncome ≈ £3.02', 3.024, r1_carbIncome);
+assert(near(r1_carbIncome, 6.4512, 0.01),
+  'r1: annualCarbonIncome (per km, net ×0.64) ≈ £6.45', 6.4512, r1_carbIncome);
 
 assert(pollinationValue(r1, 'General Cropping', 1000) === 0,
   'r1: pollinationValue GC = £0.00');
@@ -161,8 +162,8 @@ assert(sserUnits(r1, 1000) === 8.4,
   'r1: sserUnits(1000) = 8.4', 8.4, sserUnits(r1, 1000));
 
 const r1_net = calculate(inputs(r1), r1).annualNetBenefit;
-assert(near(r1_net, 3319.27, 1.00),
-  'r1: annualNetBenefit GC crossSlope NS ≈ £3319.27', 3319.27, r1_net.toFixed(2));
+assert(near(r1_net, 3322.70, 1.00),
+  'r1: annualNetBenefit GC crossSlope NS ≈ £3322.70', 3322.70, r1_net.toFixed(2));
 
 // ---------------------------------------------------------------------------
 // Section D — Record 2: Distillery Foraging Strip (6m)
@@ -170,8 +171,8 @@ assert(near(r1_net, 3319.27, 1.00),
 
 console.log('\n--- D. Record 2: Distillery Foraging Strip — East Neuk Coast (6m) ---');
 
-assert(near(annualCarbonIncome(r2, 1000, 60), 17.28, 0.01),
-  'r2: annualCarbonIncome ≈ £17.28', 17.28, annualCarbonIncome(r2, 1000, 60));
+assert(near(annualCarbonIncome(r2, 1000, 60), 18.432, 0.01),
+  'r2: annualCarbonIncome (per km, net ×0.64) ≈ £18.43', 18.432, annualCarbonIncome(r2, 1000, 60));
 
 assert(near(pollinationValue(r2, 'General Cropping', 1000), 1200.00, 0.01),
   'r2: pollinationValue GC ≈ £1200.00', 1200.00, pollinationValue(r2, 'General Cropping', 1000));
@@ -193,8 +194,8 @@ assert(sserUnits(r2, 1000) === 24,
 
 // v4 DB: includes windbreak + avoided-cost components for this variant at 1000m.
 const r2_net = calculate(inputs(r2), r2).annualNetBenefit;
-assert(near(r2_net, 4565.38, 1.00),
-  'r2: annualNetBenefit GC crossSlope NS ≈ £4565.38', 4565.38, r2_net.toFixed(2));
+assert(near(r2_net, 4566.53, 1.00),
+  'r2: annualNetBenefit GC crossSlope NS ≈ £4566.53', 4566.53, r2_net.toFixed(2));
 
 // ---------------------------------------------------------------------------
 // Section E — Record 3: Coastal Erosion Wood (20m)
@@ -202,8 +203,8 @@ assert(near(r2_net, 4565.38, 1.00),
 
 console.log('\n--- E. Record 3: Coastal Erosion Wood — East Neuk Coast (20m) ---');
 
-assert(near(annualCarbonIncome(r3, 1000, 60), 672.00, 0.10),
-  'r3: annualCarbonIncome ≈ £672.00', 672.00, annualCarbonIncome(r3, 1000, 60));
+assert(near(annualCarbonIncome(r3, 1000, 60), 215.04, 0.10),
+  'r3: annualCarbonIncome (per km, net ×0.64) ≈ £215.04', 215.04, annualCarbonIncome(r3, 1000, 60));
 
 assert(sserUnits(r3, 1000) === 280,
   'r3: sserUnits(1000) = 280', 280, sserUnits(r3, 1000));
@@ -219,8 +220,8 @@ assert(near(avoidedCosts(r3, 'crossSlope', 1000), 2529.00, 0.01),
 
 // v4 DB: ground truth from calculate() for GC crossSlope NS at 1000m.
 const r3_net = calculate(inputs(r3), r3).annualNetBenefit;
-assert(near(r3_net, 8089.40, 1.00),
-  'r3: annualNetBenefit GC crossSlope NS ≈ £8089.40', 8089.40, r3_net.toFixed(2));
+assert(near(r3_net, 7632.44, 1.00),
+  'r3: annualNetBenefit GC crossSlope NS ≈ £7632.44', 7632.44, r3_net.toFixed(2));
 
 // ---------------------------------------------------------------------------
 // Section F — Record 4: Livestock Shade Trees (12m, West Fife Claylands)
@@ -228,8 +229,8 @@ assert(near(r3_net, 8089.40, 1.00),
 
 console.log('\n--- F. Record 4: Livestock Shade Trees — West Fife Claylands (12m) ---');
 
-assert(near(annualCarbonIncome(r4, 1000, 60), 198.72, 0.01),
-  'r4: annualCarbonIncome ≈ £198.72', 198.72, annualCarbonIncome(r4, 1000, 60));
+assert(near(annualCarbonIncome(r4, 1000, 60), 105.984, 0.01),
+  'r4: annualCarbonIncome (per km, net ×0.64) ≈ £105.98', 105.984, annualCarbonIncome(r4, 1000, 60));
 
 assert(near(thermalRegulationValue(r4, 'Dairy', 1000), 250.00, 0.01),
   'r4: thermalRegulationValue Dairy ≈ £250.00', 250.00, thermalRegulationValue(r4, 'Dairy', 1000));
@@ -239,8 +240,8 @@ assert(sserUnits(r4, 1000) === 138,
 
 // v4 DB: full calculate() ground truth for GC crossSlope NS at 1000m.
 const r4_net = calculate(inputs(r4), r4).annualNetBenefit;
-assert(near(r4_net, 6030.72, 1.00),
-  'r4: annualNetBenefit GC crossSlope NS ≈ £6030.72', 6030.72, r4_net.toFixed(2));
+assert(near(r4_net, 5937.98, 1.00),
+  'r4: annualNetBenefit GC crossSlope NS ≈ £5937.98', 5937.98, r4_net.toFixed(2));
 
 // ---------------------------------------------------------------------------
 // Section G — Record 5: Dense Wildlife Hedge (3m) — windbreak NS vs EW
@@ -260,12 +261,11 @@ assert(windbreakValue(r5, 'NS', 1000) > windbreakValue(r5, 'EW', 1000),
 assert(sserUnits(r5, 1000) === 31.5,
   'r5: sserUnits(1000) = 31.5', 31.5, sserUnits(r5, 1000));
 
-// Correct annualNetBenefit for GC:
-// carbIncome = (164.88/50)*(3/10000*1000)*60 = (164.88/50)*0.3*60 = 59.3568
-// 59.3568 + 720 + 319.95 + 90 + 0 + 1344 + 2529 − 16.7 = 5045.61
+// annualNetBenefit for GC (3 Nov 2026: carbon income per km on net tonnes):
+// carbIncome = (31.5/50) × 1 km × 0.64 × £60 = 24.192
 const r5_net = calculate(inputs(r5), r5).annualNetBenefit;
-assert(near(r5_net, 4997.59, 1.00),
-  'r5: annualNetBenefit GC crossSlope NS ≈ £4997.59', 4997.59, r5_net.toFixed(2));
+assert(near(r5_net, 5010.44, 1.00),
+  'r5: annualNetBenefit GC crossSlope NS ≈ £5010.44', 5010.44, r5_net.toFixed(2));
 
 // ---------------------------------------------------------------------------
 // Section H — No NaN anywhere for a record at downSlope placement

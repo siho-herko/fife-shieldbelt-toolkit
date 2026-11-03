@@ -95,7 +95,7 @@ const state = {
   farmType:             'General Cropping',
   placement:            'crossSlope',
   lengthM:              1000,
-  creditPrice:          60,
+  creditPrice:          70,
   problemCode:          null,
   windbreakOrient:      'NS',
   // Derived (never set directly by user)
@@ -1337,7 +1337,7 @@ function restoreStateFromURL() {
   if (p.has('length') && isFinite(rawLength) && rawLength > 0) state.lengthM = rawLength;
 
   const rawPrice = parseInt(p.get('price'), 10);
-  if (p.has('price') && isFinite(rawPrice) && rawPrice >= 0) state.creditPrice = rawPrice;
+  if (p.has('price') && isFinite(rawPrice) && rawPrice >= 0) state.creditPrice = Math.min(150, Math.max(20, rawPrice));
 
   if (p.has('orient'))   state.windbreakOrient = p.get('orient') === 'EW' ? 'EW' : 'NS';
   if (p.has('placement'))state.placement       = ['riparian','crossSlope','downSlope'].includes(p.get('placement')) ? p.get('placement') : 'crossSlope';
@@ -1731,7 +1731,7 @@ function updateSSERWidthColor(width) {
 function handleReset() {
   Object.assign(state, {
     biome: BIOMES.EAST_NEUK, variantId: null, farmType: 'General Cropping',
-    placement: 'crossSlope', lengthM: 1000, creditPrice: 60,
+    placement: 'crossSlope', lengthM: 1000, creditPrice: 70,
     problemCode: null, windbreakOrient: 'NS',
     biomeRecords: [], currentRecord: null, results: null, activeProblem: null,
   });

@@ -333,9 +333,9 @@ test.describe('Carbon credit price', () => {
   test('slider is present with correct range', async ({ page }) => {
     const slider = page.locator('#credit-price');
     await expect(slider).toBeVisible();
-    // The slider uses min=20, max=200 as defined in index.html
+    // The slider uses min=20, max=150 as defined in index.html (Si, 3 Nov 2026)
     await expect(slider).toHaveAttribute('min', '20');
-    await expect(slider).toHaveAttribute('max', '200');
+    await expect(slider).toHaveAttribute('max', '150');
   });
 
   test('moving the slider updates the displayed price', async ({ page }) => {
@@ -348,10 +348,10 @@ test.describe('Carbon credit price', () => {
 
   test('step 6 summary updates when the slider moves', async ({ page }) => {
     const slider = page.locator('#credit-price');
-    await slider.fill('200');
+    await slider.fill('150');
     await slider.dispatchEvent('input');
     await page.waitForTimeout(300);
-    await expect(page.locator('#step-price-summary')).toContainText('£200');
+    await expect(page.locator('#step-price-summary')).toContainText('£150');
   });
 });
 
