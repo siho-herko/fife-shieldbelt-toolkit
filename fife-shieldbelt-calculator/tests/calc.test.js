@@ -142,8 +142,9 @@ assert(pollinationValue(r1, 'General Cropping', 1000) === 0,
 assert(near(netIncomeForegone(r1, 'General Cropping', 1000), 210, 0.01),
   'r1: netIncomeForegone GC ≈ £210', 210, netIncomeForegone(r1, 'General Cropping', 1000));
 
-assert(near(crewValue(r1, 'crossSlope', 1000), 319.95, 0.01),
-  'r1: crewValue crossSlope ≈ £319.95', 319.95, crewValue(r1, 'crossSlope', 1000));
+// v10 (3 Nov 2026): water values rebuilt from CREW unit values (see build_v10.py)
+assert(near(crewValue(r1, 'crossSlope', 1000), 310, 0.01),
+  'r1: crewValue crossSlope ≈ £310', 310, crewValue(r1, 'crossSlope', 1000));
 
 assert(pestRegulationValue(r1, 'General Cropping', 1000) === 0,
   'r1: pestRegulationValue GC = £0.00');
@@ -164,8 +165,8 @@ assert(near(sserUnits(r1, 1000), 5.38, 0.01),
   'r1: sserUnits(1000) = seq50 × 0.64 = 5.38', 5.38, sserUnits(r1, 1000));
 
 const r1_net = calculate(inputs(r1), r1).annualNetBenefit;
-assert(near(r1_net, 3129.40, 1.00),
-  'r1: annualNetBenefit GC crossSlope NS ≈ £3129.40', 3129.40, r1_net.toFixed(2));
+assert(near(r1_net, 3119.45, 1.00),
+  'r1: annualNetBenefit GC crossSlope NS ≈ £3119.45', 3119.45, r1_net.toFixed(2));
 
 // ---------------------------------------------------------------------------
 // Section D — Record 2: Distillery Foraging Strip (6m)
@@ -196,8 +197,8 @@ assert(near(sserUnits(r2, 1000), 15.36, 0.01),
 
 // v4 DB: includes windbreak + avoided-cost components for this variant at 1000m.
 const r2_net = calculate(inputs(r2), r2).annualNetBenefit;
-assert(near(r2_net, 4213.33, 1.00),
-  'r2: annualNetBenefit GC crossSlope NS ≈ £4213.33', 4213.33, r2_net.toFixed(2));
+assert(near(r2_net, 4021.63, 1.00),
+  'r2: annualNetBenefit GC crossSlope NS ≈ £4021.63', 4021.63, r2_net.toFixed(2));
 
 // ---------------------------------------------------------------------------
 // Section E — Record 3: Coastal Erosion Wood (20m)
@@ -222,8 +223,8 @@ assert(near(avoidedCosts(r3, 'crossSlope', 1000), 2529.00, 0.01),
 
 // v4 DB: ground truth from calculate() for GC crossSlope NS at 1000m.
 const r3_net = calculate(inputs(r3), r3).annualNetBenefit;
-assert(near(r3_net, 6553.04, 1.00),
-  'r3: annualNetBenefit GC crossSlope NS ≈ £6553.04', 6553.04, r3_net.toFixed(2));
+assert(near(r3_net, 4808.04, 1.00),
+  'r3: annualNetBenefit GC crossSlope NS ≈ £4808.04', 4808.04, r3_net.toFixed(2));
 
 // ---------------------------------------------------------------------------
 // Section F — Record 4: Livestock Shade Trees (12m, West Fife Claylands)
@@ -242,8 +243,8 @@ assert(near(sserUnits(r4, 1000), 88.32, 0.01),
 
 // v4 DB: full calculate() ground truth for GC crossSlope NS at 1000m.
 const r4_net = calculate(inputs(r4), r4).annualNetBenefit;
-assert(near(r4_net, 5274.98, 1.00),
-  'r4: annualNetBenefit GC crossSlope NS ≈ £5274.98', 5274.98, r4_net.toFixed(2));
+assert(near(r4_net, 4380.58, 1.00),
+  'r4: annualNetBenefit GC crossSlope NS ≈ £4380.58', 4380.58, r4_net.toFixed(2));
 
 // ---------------------------------------------------------------------------
 // Section G — Record 5: Dense Wildlife Hedge (3m) — windbreak NS vs EW
@@ -266,8 +267,8 @@ assert(near(sserUnits(r5, 1000), 34.18, 0.01),
 // annualNetBenefit for GC (v10): carbon income per km on net tonnes, set 3 hedge profile:
 // carbIncome = (53.4/50) × 1 km × 0.64 × £60 = 41.01; NIF GC 3 m = £210
 const r5_net = calculate(inputs(r5), r5).annualNetBenefit;
-assert(near(r5_net, 4833.96, 1.00),
-  'r5: annualNetBenefit GC crossSlope NS ≈ £4833.96', 4833.96, r5_net.toFixed(2));
+assert(near(r5_net, 4847.61, 1.00),
+  'r5: annualNetBenefit GC crossSlope NS ≈ £4847.61', 4847.61, r5_net.toFixed(2));
 
 // ---------------------------------------------------------------------------
 // Section H — No NaN anywhere for a record at downSlope placement

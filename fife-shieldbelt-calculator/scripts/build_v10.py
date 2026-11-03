@@ -14,7 +14,16 @@ Changes v9 -> v10 (Si's decisions, 3 Nov 2026; see figures register):
   3. registry.sserGrossUnitsPerKm is redefined as estimated ONCRA net units per km
      over 50 years = seq50yrTotal x 0.64 ("SSER" is not an ONCRA unit).
   4. Legacy carbon-standard wording (WCS baseline, HCC baseline, 15% buffer) replaced.
-  5. Top-level metadata block; records under "interventions".
+  5. Water values rebuilt (Si, 3 Nov 2026): the v9 riparian "water purification"
+     used SEPA's river-restoration value (GBP 10.5k/km of restored river, a
+     recreation/non-use value for a whole water body changing status) per km of
+     buffer, a category error. Rebuilt from CREW CRW2024/04 unit values:
+       water purification = intercepted load x retention x GBP/kg (N 1.37, P 46.61,
+       sediment 0.55; ENCA, 2024 prices);
+       catchment hydrology = strip area x GBP/ha/yr (woody features only: riparian
+       280, other placements 52; ENCA from Broadmeadow et al. 2023, annualised);
+       air filtration kept from v9 (within CREW range GBP 0.20-97/ha/yr).
+  6. Top-level metadata block; records under "interventions".
 """
 import json, pathlib, datetime
 
@@ -61,7 +70,7 @@ BANDS = ["yr_1_5", "yr_6_10", "yr_11_15", "yr_16_20", "yr_21_25",
 HEDGE_CARBON_TEXT = (
     "Carbon profile: hedge model (set 3/4, Mar-Apr 2026) for triennial trimming with layering at year 15; "
     "biomass plus soil carbon, gross, per-hectare rate applied to the 3 m strip (0.3 ha/km). "
-    "Cross-checked against Drexler et al. (2021) and Axe et al. (2017); sources still to be documented. "
+    "Soil component cross-checked against UK measurements (Biffi et al. 2025, about 40 t C/ha more soil carbon under mature hedges than grassland, 0-50 cm); biomass against Axe et al. (2017) and Drexler et al. (2021). Model sources still to be documented. "
     "Indicative, not validated by ONCRA; ONCRA deductions (20% GHG default, 20% buffer) are applied in the calculator."
 )
 
@@ -75,6 +84,39 @@ TEXT_SUBS = [
     ("uses WCS SOC accumulation at", "uses an indicative soil carbon accumulation rate of"),
     ("Hedgerow Carbon Code baseline.", ""),
 ]
+
+# ---- water values (CREW CRW2024/04 unit values; loads and efficiencies = JUDGEMENT) ----
+GBP_PER_KG = {"N": 1.37, "P": 46.61, "sed": 0.55}          # CREW 2024 prices (ENCA)
+CONTRIB_HA_PER_KM = 10.0      # 100 m of upslope field drains to each km of strip (JUDGEMENT)
+LOAD_KG_PER_HA = {"N": 25.0, "P": 0.7, "sed": 200.0}      # arable edge-of-field (JUDGEMENT; see metadata)
+RETENTION = {  # by strip width: share of intercepted load retained (JUDGEMENT, Acreman et al. 2025; Riverwoods 2022)
+    "3m": {"N": 0.05, "P": 0.15, "sed": 0.50},
+    "6m": {"N": 0.15, "P": 0.25, "sed": 0.65},
+    "12m": {"N": 0.30, "P": 0.40, "sed": 0.75},
+    "20m": {"N": 0.40, "P": 0.50, "sed": 0.85},
+    "60m": {"N": 0.70, "P": 0.70, "sed": 0.90},
+}
+DELIVERY = {"riparian": 1.0, "crossSlope": 0.5, "downSlope": 0.1}  # share that would otherwise reach water (JUDGEMENT)
+HYDRO_GBP_PER_HA = {"riparian": 280.0, "crossSlope": 52.0, "downSlope": 52.0}  # Broadmeadow et al. 2023 via CREW
+NON_WOODY = ("Grass Silt Buffer", "Grassed Waterway", "Wide Silt Buffer", "Two-Stage Ditch", "Planted Contour Swale")
+
+def rebuild_water(r):
+    cv = r["crewValuations"]
+    ha_per_km = width_m(r["width"]) / 10.0
+    eff = RETENTION[r["width"]]
+    woody = not any(r["variant"].endswith(n) for n in NON_WOODY)
+    totals = {}
+    for pl in ("riparian", "crossSlope", "downSlope"):
+        wp = sum(CONTRIB_HA_PER_KM * LOAD_KG_PER_HA[k] * eff[k] * GBP_PER_KG[k] for k in ("N", "P", "sed")) * DELIVERY[pl]
+        hy = ha_per_km * HYDRO_GBP_PER_HA[pl] if woody else 0.0
+        if pl == "downSlope":
+            hy *= 0.5
+        cv["waterPurification"][pl] = r10(wp)
+        cv["catchmentHydrology"][pl] = r10(hy)
+        totals[pl] = cv["waterPurification"][pl] + cv["catchmentHydrology"][pl] + float(cv["airFiltration"].get(pl, 0) or 0)
+    cv["riparianTotal"], cv["crossSlopeTotal"], cv["downSlopeTotal"] = (round(totals[k], 2) for k in ("riparian", "crossSlope", "downSlope"))
+    cv["waterPurification"]["basis"] = "CREW CRW2024/04 GBP/kg x intercepted load x retention (indicative; site estimate needed)"
+    cv["catchmentHydrology"]["basis"] = "CREW CRW2024/04 (Broadmeadow et al. 2023) GBP/ha/yr x strip area; woody features only"
 
 def hedge_key(variant):
     for k in HEDGE_PROFILES:
@@ -113,6 +155,8 @@ def main():
             r["carbonSource"] = "v9-indicative"
         reg["carbonAgronomicAssumptions"] = " ".join(text.split())
         reg["sserGrossUnitsPerKm"] = round(r["seq50yrTotal"] * ONCRA_NET_FACTOR, 2)
+        # --- water values ---
+        rebuild_water(r)
         # --- income forgone ---
         for ft, v in r["farmImpacts"].items():
             gm = GM[ft]
@@ -129,9 +173,10 @@ def main():
                 "farmImpacts.*IncomeForegone": "GBP per km per year",
             },
             "sources": {
-                "carbon.hedges": "Hedge model set 3/4 (HedgeCarbon.xlsx, Hedgerow Carbon Sequestration.xlsx, Mar-Apr 2026), per-ha x 0.3 ha/km; cross-checked with Drexler, Gensior & Don (2021) Reg Environ Change 21:74 and Axe, Grange & Conway (2017) Agric Ecosyst Environ doi:10.1016/j.agee.2017.08.008",
+                "carbon.hedges": "Hedge model set 3/4 (HedgeCarbon.xlsx, Hedgerow Carbon Sequestration.xlsx, Mar-Apr 2026), per-ha x 0.3 ha/km; cross-checked with Biffi et al. (2025) Agric Ecosyst Environ 382:109471 (soil), Drexler, Gensior & Don (2021) Reg Environ Change 21:74 and Axe, Grange & Conway (2017) Agric Ecosyst Environ doi:10.1016/j.agee.2017.08.008",
                 "carbon.other": "v9 indicative profiles (Apr 2026); not validated by ONCRA",
                 "incomeForegone": "SAC Consulting / FAS, The Farm Management Handbook, Feb 2026 updates (arable, dairy, beef, sheep); x0.7 edge factor (judgement)",
+                "waterValues": "Rebuilt 3 Nov 2026 from CREW CRW2024/04 unit values: N GBP1.37/kg, P GBP46.61/kg, sediment GBP0.55/kg (ENCA, 2024 prices); flood/hydrology GBP52-280/ha/yr (Broadmeadow et al. 2023 via ENCA). Loads (25 kg N, 0.7 kg P, 200 kg sediment per ha/yr from 10 ha of upslope arable per km), retention by width and delivery factors are JUDGEMENT, anchored on Acreman et al. (2025, WWF-UK review) and Riverwoods for Scotland (2022). Replaces v9 values that used SEPA river-restoration values (GBP10.5k per km of restored river) per km of buffer.",
                 "carbonNetFactor": "ONCRA LSC Protocol v2 s2.1.6; Guidelines (Mar 2026) s5.6: 0.8 x 0.8 = 0.64 (applied in calc.js)",
             },
             "notes": [
