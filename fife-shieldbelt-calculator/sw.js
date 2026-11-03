@@ -2,6 +2,7 @@
  * sw.js — Service Worker for Fife Farm Resilience Calculator
  * Strategy: Cache-first for assets; network-first for data files.
  * Bump SHIELDBELT_CACHE_VERSION in version.js on every deploy.
+ * Release marker (keep in sync with version.js so SW byte-diff always fires): 1.7.2
  */
 
 importScripts('version.js');
