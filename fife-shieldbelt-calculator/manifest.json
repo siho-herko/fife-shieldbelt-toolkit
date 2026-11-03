@@ -1,7 +1,7 @@
 {
-  "name": "Fife Farm Resilience Calculator",
-  "short_name": "ShieldBelt",
-  "description": "Nature-based solutions on marginal land (ShieldBelt): size Fife field-margin interventions from real farm challenges. An NFCA planning-start tool.",
+  "name": "Fife Landscape Resilience Calculator",
+  "short_name": "Resilience Calc",
+  "description": "Nature-based solutions on marginal land (ShieldBelt): size Fife field-margin interventions from real farm challenges. A planning-start tool.",
   "start_url": "./index.html",
   "display": "standalone",
   "orientation": "any",

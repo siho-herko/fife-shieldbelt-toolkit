@@ -1,10 +1,8 @@
 /**
- * app.js — Fife Farm Resilience Calculator
+ * app.js — Fife Landscape Resilience Calculator
  * Full application wiring: DB → calc → charts → DOM.
  * Implements the Problem→Solution engine, URL state, comparison modal,
  * service worker registration, and all event handlers.
- *
- * Author: NFCA / Fife ShieldBelt project
  */
 
 import { dbReady, getByBiome, getById, getAll, BIOMES, FARM_TYPES } from './db.js';
@@ -1330,7 +1328,7 @@ function updatePrintBriefSnapshot(problem, record, whyReasons = [], planningQs =
   if (footerEl) {
     footerEl.textContent = shareUrl
       ? `Scenario link: ${shareUrl}`
-      : 'Fife Farm Resilience Calculator · NFCA';
+      : 'Fife Landscape Resilience Calculator';
   }
 }
 
@@ -1455,7 +1453,7 @@ function renderResults(results) {
     `;
   }
 
-  // --- Section 2: Wider Ecosystem Services radar (v8: nitrate vs phosphorus separate) ---
+  // --- Section 2: Wider Ecosystem Service Value radar (v8: nitrate vs phosphorus separate) ---
   setCanvasLabel('chart-water-radar', `Water and catchment radar for ${r.variantName}`);
   radarChart(
     'chart-water-radar',
@@ -1924,8 +1922,7 @@ function showLoadingScreen() {
     el.id = 'loading-screen';
     el.innerHTML = `
       <div class="loading-screen__inner">
-        <div class="loading-screen__logo">NFCA</div>
-        <div class="loading-screen__title">Farm Resilience Calculator</div>
+        <div class="loading-screen__title">Fife Landscape Resilience Calculator</div>
         <div class="loading-screen__spinner"></div>
         <div class="loading-screen__msg">Loading intervention data…</div>
       </div>
@@ -1962,7 +1959,7 @@ function showUpdateBannerOnce() {
   banner.setAttribute('role', 'status');
   const span = document.createElement('span');
   span.className = 'update-banner__text';
-  span.textContent = 'A new version of the Farm Resilience Calculator is available.';
+  span.textContent = 'A new version of the Fife Landscape Resilience Calculator is available.';
   const btn = document.createElement('button');
   btn.type = 'button';
   btn.className = 'update-banner__btn';
@@ -2411,9 +2408,9 @@ function emailScenarioLink() {
   encodeStateToURL();
   const href = window.location.href;
   const symptom = state.activeProblem?.Stated_Symptom?.slice(0, 80) || 'ShieldBelt margin scenario';
-  const subject = encodeURIComponent(`Fife ShieldBelt planning scenario — ${symptom}`);
+  const subject = encodeURIComponent(`Fife Landscape Resilience planning scenario — ${symptom}`);
   const body = encodeURIComponent(
-    `Here is a ShieldBelt (NbS on marginal land) scenario from the Fife Farm Resilience Calculator.\n\n` +
+    `Here is a ShieldBelt (NbS on marginal land) scenario from the Fife Landscape Resilience Calculator.\n\n` +
     `Open this link to restore the problem, diagnosis snapshot, location, farm type, variant, and strip length:\n\n` +
     `${href}\n\n` +
     `This is a planning start for discussion — not a grant or implementation quote.`
