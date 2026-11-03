@@ -354,8 +354,8 @@
               </div>
               <span class="form-hint mt-2">
                 Default £70 sits in the £60–£80 range indicated by ONCRA (October 2026); £150 is an upside case.
-                For comparison, the Woodland Carbon Code Pending Issuance Unit average was about £28 (published March 2025).
-                Revenue uses net tonnes (gross × 0.64 after ONCRA deductions and buffer).
+                For comparison, the Woodland Carbon Code 2025 average Pending Issuance Unit price was £28.32 (voluntary disclosure, 3 respondents).
+                Values use illustrative net tonnes (gross × 0.64, ONCRA default deductions; 0.52 if rated medium risk) and apply to hedges only.
                 ONCRA Potential Units support contribution claims only.
               </span>
             </div>
@@ -444,29 +444,29 @@
           <div class="stat-boxes-grid stat-boxes-grid--3col">
 
             <div class="stat-box stat-box--clickable" id="stat-agro-box" role="button" tabindex="0"
-              aria-label="Net Agronomic Benefit — click to see breakdown"
+              aria-label="Farm cost: income forgone — click to see breakdown"
               title="Go to Avoided Costs and Productivity Benefits">
               <div class="stat-box__value stat-box__value--gold" id="stat-agro-benefit">—</div>
-              <div class="stat-box__label">Net Agronomic Benefit</div>
-              <div class="stat-box__sublabel">Productivity + avoided costs − income foregone</div>
+              <div class="stat-box__label">Farm Cost: Income Forgone</div>
+              <div class="stat-box__sublabel">Gross margin × strip area × 0.7 (SAC FMH, Feb 2026). Productivity and avoided-cost values below are unvalidated scenarios, not counted</div>
               <div class="stat-box__arrow">↓</div>
             </div>
 
             <div class="stat-box stat-box--clickable" id="stat-carbon-box" role="button" tabindex="0"
-              aria-label="25-Year Carbon Revenue — click to see trajectory"
+              aria-label="25-year carbon value, illustrative — click to see trajectory"
               title="Go to Carbon Sequestration Trajectory">
               <div class="stat-box__value stat-box__value--leaf" id="stat-25yr-carbon">—</div>
-              <div class="stat-box__label">25-Year Carbon Revenue</div>
-              <div class="stat-box__sublabel">25yr net sequestration × price (contribution claims only)</div>
+              <div class="stat-box__label">25-Year Carbon Value (illustrative)</div>
+              <div class="stat-box__sublabel">Hedges only: 25-yr gross removal × 0.64 × price. Not a payment schedule; ONCRA Potential Units carry contribution claims only</div>
               <div class="stat-box__arrow">↓</div>
             </div>
 
             <div class="stat-box stat-box--clickable" id="stat-eco-box" role="button" tabindex="0"
-              aria-label="Wider Ecosystem Service Value — click to see breakdown"
+              aria-label="Water quality value, indicative — click to see breakdown"
               title="Go to Wider Ecosystem Services">
               <div class="stat-box__value stat-box__value--leaf" id="stat-wider-eco">—</div>
-              <div class="stat-box__label">Wider Ecosystem Service Value</div>
-              <div class="stat-box__sublabel">Air + catchment + water purification / yr (indicative, CREW unit values)</div>
+              <div class="stat-box__label">Water Quality Value (indicative)</div>
+              <div class="stat-box__sublabel">Avoided pollution damage / yr, low–high sediment value; not cash. Flood storage and air quality not valued</div>
               <div class="stat-box__arrow">↓</div>
             </div>
 
@@ -491,7 +491,7 @@
             </canvas>
             </div>
             <div style="flex:1;min-width:0;max-width:100%;">
-              <div class="results-section__title">Pest, Thermal &amp; Pollination</div>
+              <div class="results-section__title">Pest, Thermal &amp; Pollination (unvalidated scenarios)</div>
               <div id="pest-thermal-chips" class="crew-chips-grid"></div>
             </div>
           </div>
@@ -535,7 +535,7 @@
             </div>
           </div>
 
-          <div class="results-section__title mt-3">Avoided Costs</div>
+          <div class="results-section__title mt-3">Avoided Costs (unvalidated scenario, not counted)</div>
           <div class="results-chart-wrap">
           <canvas id="chart-avoided-costs"
             aria-label="Avoided costs bar chart" role="img">
@@ -543,7 +543,7 @@
           </canvas>
           </div>
 
-          <div class="results-section__title mt-4">Productivity Benefits</div>
+          <div class="results-section__title mt-4">Productivity Benefits (unvalidated scenario, not counted; field studies show yield loss near hedges and small gains further out)</div>
           <div class="results-chart-wrap">
           <canvas id="chart-windbreak"
             aria-label="Productivity benefits bar chart" role="img">

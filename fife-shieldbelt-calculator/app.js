@@ -25,12 +25,12 @@ const BIOME_DISPLAY = {
 };
 
 const BIOME_CONTEXT = {
-  'Fife (East Neuk Coast)':         { km: 330, value: '£820,000+', farmType: 'General Cropping / Soft Fruit', tagline: 'Highest-value location. Pollination premium drives the economics.' },
-  'Fife (Forth Urban Coast)':       { km: 150, value: '£200,000+', farmType: 'Edge-of-Settlement',            tagline: 'Urban flood, air quality and community function.' },
-  'Fife (Howe of Fife & Eden)':     { km: 280, value: '£450,000+', farmType: 'Arable / Potatoes',            tagline: 'NVZ compliance and flood buffering in the Eden catchment.' },
-  'Fife (Lomond & Cleish Uplands)': { km: 550, value: '£350,000+', farmType: 'LFA Grazing',                  tagline: 'Largest capacity. Carbon at near-zero net cost.' },
-  'Fife (North Fife Hills & Tay)':  { km: 220, value: '£300,000+', farmType: 'Cereals / Mixed',              tagline: 'Topsoil retention on Tay-facing slopes.' },
-  'Fife (West Fife Claylands)':     { km: 400, value: '£400,000+', farmType: 'Dairy / Mixed',                tagline: 'Thermal regulation and compaction relief for dairy.' },
+  'Fife (East Neuk Coast)':         { km: 330, farmType: 'General Cropping / Soft Fruit', tagline: 'Coastal shelter, soft fruit and burn water quality.' },
+  'Fife (Forth Urban Coast)':       { km: 150, farmType: 'Edge-of-Settlement',            tagline: 'Urban flood, air quality and community function.' },
+  'Fife (Howe of Fife & Eden)':     { km: 280, farmType: 'Arable / Potatoes',            tagline: 'NVZ compliance and flood buffering in the Eden catchment.' },
+  'Fife (Lomond & Cleish Uplands)': { km: 550, farmType: 'LFA Grazing',                  tagline: 'Largest capacity. Check peat depth before any woody planting.' },
+  'Fife (North Fife Hills & Tay)':  { km: 220, farmType: 'Cereals / Mixed',              tagline: 'Topsoil retention on Tay-facing slopes.' },
+  'Fife (West Fife Claylands)':     { km: 400, farmType: 'Dairy / Mixed',                tagline: 'Thermal regulation and compaction relief for dairy.' },
 };
 
 // URL slug ↔ BIOMES key
@@ -404,7 +404,9 @@ function renderVariantDetail(record) {
 
     const sser = document.createElement('span');
     sser.className = 'biome-tag';
-    sser.textContent = `≈${record.registry?.sserGrossUnitsPerKm ?? '—'} t net/km`;
+    sser.textContent = record.carbonSource?.status === 'unsubstantiated-scenario'
+      ? 'carbon not estimated'
+      : `≈${record.registry?.sserGrossUnitsPerKm ?? '—'} t net/km (illustrative)`;
     tags.appendChild(sser);
   }
 }
@@ -856,15 +858,15 @@ function renderResults(results) {
 
   // --- Stat boxes (3 key outcomes) ---
   setStatBox('stat-agro-benefit',
-    fmtGBP(r.netAgronomicBenefit) + '/yr');
+    '−' + fmtGBP(r.netIncomeForegone) + '/yr');
   const agroBox = document.getElementById('stat-agro-benefit')?.closest('.stat-box');
   if (agroBox) agroBox.classList.toggle('stat-box--negative', r.netAgronomicBenefit < 0);
 
   setStatBox('stat-25yr-carbon',
-    fmtGBP(r.seq25yrRevenue));
+    r.carbonSubstantiated ? fmtGBP(r.seq25yrRevenue) : 'Not estimated');
 
   setStatBox('stat-wider-eco',
-    fmtGBP(r.widerEcoValue) + '/yr');
+    fmtGBP(r.widerEcoValue) + '–' + fmtGBP(r.widerEcoValueHigh) + '/yr');
 
   // Click-to-scroll for each stat box
   setupStatBoxScroll('stat-agro-box',   'section-avoided-costs');
@@ -904,15 +906,15 @@ function renderResults(results) {
     ptChips.innerHTML = `
       <div class="crew-chip">
         <div class="crew-chip__value">${fmtGBP(r.pestRegulationValue)}</div>
-        <div class="crew-chip__label">Pest regulation / yr</div>
+        <div class="crew-chip__label">Pest regulation / yr (scenario, not counted)</div>
       </div>
       <div class="crew-chip">
         <div class="crew-chip__value">${fmtGBP(r.thermalRegulationValue)}</div>
-        <div class="crew-chip__label">Thermal regulation / yr</div>
+        <div class="crew-chip__label">Thermal regulation / yr (scenario, not counted)</div>
       </div>
       <div class="crew-chip">
         <div class="crew-chip__value">${fmtGBP(r.pollinationValue)}</div>
-        <div class="crew-chip__label">Pollination value / yr</div>
+        <div class="crew-chip__label">Pollination / yr (scenario, not counted: no feature-level evidence)</div>
       </div>
     `;
   }
@@ -965,16 +967,16 @@ function renderResults(results) {
   if (crewContainer) {
     crewContainer.innerHTML = `
       <div class="crew-chip">
-        <div class="crew-chip__value">${fmtGBP(r.crewBreakdown.airFiltration)}</div>
-        <div class="crew-chip__label">Air filtration / yr</div>
+        <div class="crew-chip__value">Not valued</div>
+        <div class="crew-chip__label">Air filtration (needs exposure modelling)</div>
       </div>
       <div class="crew-chip">
-        <div class="crew-chip__value">${fmtGBP(r.crewBreakdown.catchmentHydrology)}</div>
-        <div class="crew-chip__label">Catchment hydrology / yr</div>
+        <div class="crew-chip__value">Not valued</div>
+        <div class="crew-chip__label">Flood storage (needs site storage and receptor)</div>
       </div>
       <div class="crew-chip">
-        <div class="crew-chip__value">${fmtGBP(r.crewBreakdown.waterPurification)}</div>
-        <div class="crew-chip__label">Water purification / yr</div>
+        <div class="crew-chip__value">${fmtGBP(r.widerEcoValue)}–${fmtGBP(r.widerEcoValueHigh)}</div>
+        <div class="crew-chip__label">Water purification / yr (indicative avoided damage; low–high sediment value)</div>
       </div>
     `;
   }
@@ -982,12 +984,12 @@ function renderResults(results) {
   if (widerEcoExtra) {
     widerEcoExtra.innerHTML = `
       <div class="crew-chip">
-        <div class="crew-chip__value stat-box__value--leaf">${fmtSSER(r.sserUnitsTotal)}</div>
-        <div class="crew-chip__label">50yr net carbon, ONCRA basis ×0.64 (${fmt(r.sserPerKm, 1)} tCO₂e/km)</div>
+        <div class="crew-chip__value stat-box__value--leaf">${r.carbonSubstantiated ? fmtSSER(r.sserUnitsTotal) : 'Not estimated'}</div>
+        <div class="crew-chip__label">${r.carbonSubstantiated ? `50yr net carbon for this length, illustrative ONCRA default ×0.64 (${fmt(r.sserPerKm, 1)} tCO₂e/km)` : 'Net carbon: not estimated (carbon for this option is an unsubstantiated scenario)'}</div>
       </div>
       <div class="crew-chip">
         <div class="crew-chip__value stat-box__value--leaf">${fmtCarbon(r.seq50yrTotal)}</div>
-        <div class="crew-chip__label">50yr gross carbon (tCO₂e/km)</div>
+        <div class="crew-chip__label">50yr gross carbon per km${r.carbonSubstantiated ? ' (provisional hedge model)' : ' (unsubstantiated scenario)'}</div>
       </div>
     `;
   }
@@ -1038,7 +1040,7 @@ function renderResults(results) {
     [{ label: `${r.width} ${r.variantName}`, color: WIDTH_COLOR[r.width] || '#2d6a4f', values: r.seqTrajectory }],
     'chart-carbon-legend'
   );
-  setText('chart-carbon-total', `50yr total: ${fmtCarbon(r.seq50yrTotal)}`);
+  setText('chart-carbon-total', r.carbonSubstantiated ? `50yr gross per km: ${fmtCarbon(r.seq50yrTotal)} (provisional)` : `50yr per km: ${fmtCarbon(r.seq50yrTotal)} (unsubstantiated scenario)`);
 
   // --- Agronomic notes ---
   const agro = document.getElementById('agronomic-notes');
@@ -1681,8 +1683,7 @@ function buildBiomeCardHTML(biome, ctx) {
       <div class="biome-context-card__name">${biome}</div>
       <div class="biome-context-card__tagline">${ctx.tagline}</div>
       <div class="biome-context-card__stats">
-        <span><strong>${ctx.km}</strong> km capacity</span>
-        <span><strong>${ctx.value}</strong>/yr potential</span>
+        <span><strong>${ctx.km}</strong> km indicative capacity</span>
         <span><em>${ctx.farmType}</em></span>
       </div>
     </div>
@@ -1740,9 +1741,9 @@ function handleReset() {
   const lenInput = document.getElementById('strip-length');
   if (lenInput) lenInput.value = 1000;
   const slider = document.getElementById('credit-price');
-  if (slider) { slider.value = 60; }
+  if (slider) { slider.value = 70; }
   const display = document.getElementById('credit-price-display');
-  if (display) display.textContent = '£60';
+  if (display) display.textContent = '£70';
 
   document.querySelectorAll('input[name="biome"]').forEach(r => { r.checked = r.value === BIOMES.EAST_NEUK; });
   document.querySelectorAll('input[name="farm-type"]').forEach(r => { r.checked = r.value === 'General Cropping'; });

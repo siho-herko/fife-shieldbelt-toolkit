@@ -98,11 +98,23 @@ export function cumulativeSeqTrajectory(carbonSequestration) {
 }
 
 /**
- * ONCRA net factor: 20% default GHG deduction, then 20% buffer
- * (15% holding + 5% pool) → 0.8 × 0.8 = 0.64 of gross sequestration.
- * VERIFIED — ONCRA LSC Protocol v2 §2.1.6; ONCRA Guidelines (Mar 2026) §5.6.
+ * ONCRA net factor: ILLUSTRATIVE default scenario, not a validated or guaranteed factor.
+ * 20% default GHG deduction (no project LCA), then 20% default buffer (15% holding + 5% collective)
+ * → 0.8 × 0.8 = 0.64 of gross removal. A Category 3 risk rating raises the buffer to 35% (→ 0.52).
+ * Rules VERIFIED — ONCRA LSC Protocol v2 §2.1.6; Guidelines (27 Mar 2026) §5.6, §8.3.1.8.
  */
 export const ONCRA_NET_FACTOR = 0.64;
+
+/**
+ * True unless the record's carbon is flagged as an unsubstantiated scenario (v11 data).
+ * Only hedge variants carry a documented (provisional, literature lower-end) carbon model.
+ * @param {Object} record
+ * @returns {boolean}
+ */
+export function carbonSubstantiated(record) {
+  const st = record?.carbonSource?.status;
+  return !st || st === 'provisional-literature';
+}
 
 /**
  * Annual carbon income £/yr, on net (creditable) tonnes.
@@ -119,6 +131,8 @@ export const ONCRA_NET_FACTOR = 0.64;
  * @returns {number} £/yr
  */
 export function annualCarbonIncome(record, lengthM, creditPrice, netFactor = ONCRA_NET_FACTOR) {
+  // Illustrative 50-year average value, not a payment schedule. Zero where carbon is unsubstantiated.
+  if (!carbonSubstantiated(record)) return 0;
   const annRate = safeNum(record.seq50yrTotal) / 50;
   return annRate * (safeNum(lengthM) / 1000) * safeNum(netFactor) * safeNum(creditPrice);
 }
@@ -366,14 +380,23 @@ export function calculate(inputs, record) {
   const sserTotal = sserUnits(record, lengthM);
   const sserPerKm = safeNum(record.registry?.sserGrossUnitsPerKm);
 
-  // --- Full value stack ---
-  // 7 benefit streams: carbon + pollination + CREW + pest + thermal + windbreak + avoidedCosts
-  const annualNetBenefit = carbIncome + poll + crewTotal + pest + thermal + wbVal + acVal - nif;
+  // --- Value summary (v11, 3 Nov 2026 audit corrections) ---
+  // Counted: illustrative carbon value (documented hedge model only), indicative water-quality value
+  // (low case), less income forgone. NOT counted: pollination, pest regulation, thermal, windbreak and
+  // avoided-cost values, which are unvalidated scenarios (no field-scale evidence for Fife), shown separately.
+  // This is an illustrative combined value, not cash income: it excludes establishment, maintenance,
+  // MRV, registry fees and discounting.
+  const carbonOk = carbonSubstantiated(record);
+  const unvalidatedScenarioValue = poll + pest + thermal + wbVal + acVal;
+  const annualNetBenefit = carbIncome + crewTotal - nif;      // kept name for compatibility
+  const illustrativeCombinedValue = annualNetBenefit;
 
   // Derived summary metrics
-  const netAgronomicBenefit = acVal + wbVal + poll + pest + thermal - nif;
-  const seq25yrRevenue      = (seqTraj[4] ?? 0) * (lengthM / 1000) * ONCRA_NET_FACTOR * creditPrice;
-  const widerEcoValue       = crewTotal; // air filtration + catchment hydrology + water purification
+  const netAgronomicBenefit = -nif;                           // sourced farm cost only
+  const seq25yrRevenue      = carbonOk ? (seqTraj[4] ?? 0) * (lengthM / 1000) * ONCRA_NET_FACTOR * creditPrice : 0;
+  const widerEcoValue       = crewTotal; // water purification, low case (flood storage and air not valued in v11)
+  const hiKey = { riparian: 'riparianTotalHigh', crossSlope: 'crossSlopeTotalHigh', downSlope: 'downSlopeTotalHigh' }[placement];
+  const widerEcoValueHigh   = scaleToLength(safeNum(record.crewValuations?.[hiKey] ?? record.crewValuations?.[{ riparian: 'riparianTotal', crossSlope: 'crossSlopeTotal', downSlope: 'downSlopeTotal' }[placement]]), lengthM);
 
   // --- Radar (placement-specific) ---
   const rm = record.radarMetrics ?? {};
@@ -416,8 +439,14 @@ export function calculate(inputs, record) {
     areaMHa,
 
     // Carbon
-    seq50yrTotal:       seq50,
-    seq50yrNet:         seq50 * ONCRA_NET_FACTOR,
+    // Per-km quantities (documented contract) and installed-length quantities (explicit)
+    carbonSubstantiated: carbonOk,
+    carbonStatus:       record.carbonSource?.status ?? 'unspecified',
+    seq50yrTotal:       seq50,                                   // tCO2e per km, gross
+    seq50yrNet:         carbonOk ? seq50 * ONCRA_NET_FACTOR : 0, // tCO2e per km, illustrative net
+    seq50yrTotalPerKm:  seq50,
+    seq50yrTotalInstalled: seq50 * (lengthM / 1000),
+    seq50yrNetInstalled:   carbonOk ? seq50 * (lengthM / 1000) * ONCRA_NET_FACTOR : 0,
     seqTrajectory:      seqTraj,
     annualCarbonIncome: carbIncome,
 
@@ -451,9 +480,12 @@ export function calculate(inputs, record) {
 
     // Full value stack
     annualNetBenefit,
+    illustrativeCombinedValue,
+    unvalidatedScenarioValue,
     netAgronomicBenefit,
     seq25yrRevenue,
     widerEcoValue,
+    widerEcoValueHigh,
 
     // Radar & SEPA
     radarData,

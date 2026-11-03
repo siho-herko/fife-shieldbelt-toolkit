@@ -1,0 +1,104 @@
+{
+  "Dense Wildlife Hedge": {
+    "bands_tCO2e_per_km": [
+      15.04,
+      13.34,
+      9.17,
+      6.06,
+      2.32,
+      2.32,
+      2.32,
+      1.86,
+      0.0,
+      0.0
+    ],
+    "gross_50yr_tCO2e_per_km": 52.5,
+    "pools_50yr_tCO2e_per_km": {
+      "AGB": 24.5,
+      "BGB": 12.0,
+      "SOC": 15.9
+    },
+    "feedstock_scenario_50yr_tCO2e_per_km": 28.0,
+    "net_illustrative_x0.64": 33.6,
+    "net_illustrative_x0.52_cat3": 27.3,
+    "geometry": {
+      "crown_m": 2.0,
+      "soc_m": 1.5,
+      "footprint_m": 4.0,
+      "note": "2 m crown as in the source workbook (row 20); close to Biffi's mature hedges (1.9-1.95 m)."
+    }
+  },
+  "Heritage Species Hedge": {
+    "bands_tCO2e_per_km": [
+      20.52,
+      17.98,
+      11.73,
+      7.23,
+      3.49,
+      3.49,
+      3.49,
+      2.79,
+      0.0,
+      0.0
+    ],
+    "gross_50yr_tCO2e_per_km": 70.7,
+    "pools_50yr_tCO2e_per_km": {
+      "AGB": 36.8,
+      "BGB": 18.0,
+      "SOC": 15.9
+    },
+    "feedstock_scenario_50yr_tCO2e_per_km": 34.0,
+    "net_illustrative_x0.64": 45.3,
+    "net_illustrative_x0.52_cat3": 36.8,
+    "geometry": {
+      "crown_m": 3.0,
+      "soc_m": 1.5,
+      "footprint_m": 4.0,
+      "note": "Workbook profile was 3.6 m; capped at the 3 m strip width. DECISION for Si: 3.6 m needs a >=4 m strip."
+    }
+  },
+  "Productive Hedge (4.2 m, scenario)": {
+    "bands_tCO2e_per_km": [
+      27.1,
+      23.55,
+      14.79,
+      8.62,
+      4.88,
+      4.88,
+      4.88,
+      3.91,
+      0.0,
+      0.0
+    ],
+    "gross_50yr_tCO2e_per_km": 92.6,
+    "pools_50yr_tCO2e_per_km": {
+      "AGB": 51.5,
+      "BGB": 25.2,
+      "SOC": 15.9
+    },
+    "feedstock_scenario_50yr_tCO2e_per_km": 41.2,
+    "net_illustrative_x0.64": 59.3,
+    "net_illustrative_x0.52_cat3": 48.2,
+    "geometry": {
+      "crown_m": 4.2,
+      "soc_m": 1.5,
+      "footprint_m": 6.0,
+      "note": "Kettle/Orkie productive-hedge scenario; not a public calculator variant."
+    }
+  },
+  "_sensitivity_dense_50yr_gross_tCO2e_per_km": {
+    "base": 52.5,
+    "AGB at 95% CI lower (19.31 t C/ha)": 37.0,
+    "root:shoot 0.28 (less intensively managed)": 47.3,
+    "root:shoot ~1.0 (Axe 2017)": 65.0,
+    "SOC plateau 40.5 (Biffi 2025 central)": 58.8,
+    "SOC width 2.0 m (= crown)": 57.8,
+    "crown 1.5 m (Biffi per-km convention)": 43.3
+  },
+  "_meta": {
+    "model": "hedge_carbon_model.py v2",
+    "date": "2026-11-03",
+    "units": "tCO2e per km of hedge; gross = change in stock vs pre-planting baseline (baseline SOC change assumed zero)",
+    "status": "Provisional lower-end literature estimate; not validated; specialist review and site SOC measurement pending"
+  }
+}

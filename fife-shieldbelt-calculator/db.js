@@ -1,7 +1,7 @@
 /**
  * db.js — Fife Farm Resilience Calculator
  *
- * Data layer: fetches /data/fife_interventions_db_v10.json once per page load
+ * Data layer: fetches /data/fife_interventions_db_v11.json once per page load
  * and holds all 132 records in a plain JS array.  The service worker caches
  * the JSON so subsequent loads are instant (no network request).
  *
@@ -30,7 +30,7 @@ export const FARM_TYPES = ['Cereals', 'General Cropping', 'Dairy', 'LFA Grazing'
 
 export const WIDTHS = ['3m', '6m', '12m', '20m', '60m'];
 
-/** ONCRA net factor (20% GHG default × 20% buffer): registry.sserGrossUnitsPerKm = seq50yrTotal × 0.64 in v10. */
+/** ONCRA net factor (20% GHG default × 20% buffer): registry.sserGrossUnitsPerKm = seq50yrTotal × 0.64 for hedges in v11 (0 where carbon is an unsubstantiated scenario). */
 export const ONCRA_NET_FACTOR = 0.64;
 
 // ---------------------------------------------------------------------------
@@ -49,7 +49,7 @@ let _records = [];
  * The service worker caches this file so subsequent page loads are instant.
  * @type {Promise<void>}
  */
-export const dbReady = fetch('/data/fife_interventions_db_v10.json')
+export const dbReady = fetch('/data/fife_interventions_db_v11.json')
   .then(res => {
     if (!res.ok) throw new Error(`HTTP ${res.status} loading intervention data`);
     return res.json();
@@ -148,8 +148,9 @@ export async function validateStore() {
     const sser = r.registry?.sserGrossUnitsPerKm;
     if (typeof sser !== 'number' || !Number.isFinite(sser) || sser < 0) {
       errors.push(`${p} sserGrossUnitsPerKm invalid: ${sser}`);
-    } else if (Math.abs(sser - r.seq50yrTotal * ONCRA_NET_FACTOR) > 0.01) {
-      errors.push(`${p} sserGrossUnitsPerKm ≠ seq50yrTotal × 0.64: ${sser}`);
+    } else {
+      const expected = r.carbonSource?.status === 'unsubstantiated-scenario' ? 0 : r.seq50yrTotal * ONCRA_NET_FACTOR;
+      if (Math.abs(sser - expected) > 0.01) errors.push(`${p} sserGrossUnitsPerKm ≠ expected ${expected}: ${sser}`);
     }
     for (const ft of REQUIRED_FARMS) {
       if (!r.farmImpacts?.[ft]) errors.push(`${p} farmImpacts missing "${ft}"`);
