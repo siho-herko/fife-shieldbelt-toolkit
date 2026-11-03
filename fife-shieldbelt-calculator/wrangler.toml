@@ -1,8 +1,0 @@
-name = "fife-shieldbelt-calculator"
-compatibility_date = "2024-01-01"
-
-# Workers Static Assets (replaces deprecated Workers Sites `[site]` bucket).
-# Cloudflare Pages production still uses the dashboard root
-# `fife-shieldbelt-calculator/`; this file is for local/wrangler asset deploys.
-[assets]
-directory = "./"

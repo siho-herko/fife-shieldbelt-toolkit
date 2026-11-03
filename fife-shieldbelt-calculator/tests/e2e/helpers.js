@@ -1,5 +1,5 @@
 /**
- * Shared helpers for the Fife Farm Resilience Calculator E2E tests.
+ * Shared helpers for the Fife Landscape Resilience Calculator E2E tests.
  *
  * Problem-first step map (P0):
  *   1 Biggest Problem · 2 Location · 3 Farm Type · 4 Variant · 5 Length · 6 Assumptions

@@ -10,8 +10,7 @@ html, body {
 }
 
 /* ==========================================================================
-   Fife Farm Resilience Calculator — Design System
-   Nature Finance Certification Alliance (NFCA)
+   Fife Landscape Resilience Calculator — Design System
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
@@ -23,7 +22,7 @@ html, body {
    ========================================================================== */
 
 :root {
-  /* NFCA Brand Colours */
+  /* Brand colours */
   --c-forest:   #1a3d2b;
   --c-negative: #9b2226;   /* costs / income foregone */
   --c-mid:      #2d6a4f;
@@ -266,20 +265,6 @@ input, select, textarea {
   display: flex;
   align-items: center;
   gap: var(--space-3);
-}
-
-.app-header__logo {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.125rem;
-  color: var(--c-gold-lt);
-  letter-spacing: 0.08em;
-  background: rgba(244,197,66,0.12);
-  border: 1.5px solid var(--c-gold-lt);
-  border-radius: var(--radius-sm);
-  padding: 2px 8px;
-  line-height: 1.4;
-  flex-shrink: 0;
 }
 
 .app-header__title {
@@ -1335,9 +1320,17 @@ input, select, textarea {
   background: var(--c-forest);
   color: rgba(232,245,238,0.7);
   text-align: center;
-  padding: var(--space-5) var(--space-5);
+  padding: var(--space-6) var(--space-5);
   font-size: 0.8125rem;
   line-height: 1.6;
+}
+
+.app-footer__title {
+  margin: 0 0 var(--space-2);
+}
+
+.app-footer__meta {
+  margin: 0 0 var(--space-5);
 }
 
 .app-footer strong {
@@ -1356,6 +1349,72 @@ input, select, textarea {
 .app-footer__dots {
   margin: 0 6px;
   opacity: 0.45;
+}
+
+.app-footer__funders {
+  max-width: 52rem;
+  margin: 0 auto var(--space-5);
+}
+
+.app-footer__funder-text,
+.app-footer__funder-thanks {
+  margin: 0 0 var(--space-3);
+  color: rgba(232,245,238,0.85);
+}
+
+.app-footer__funder-thanks {
+  margin-bottom: var(--space-4);
+}
+
+/* Light panel so black funder logos stay visible on the dark footer */
+.app-footer__logo-panel {
+  background: #F4EFE3;
+  border-radius: var(--radius-md, 8px);
+  padding: 32px;
+  display: flex;
+  justify-content: center;
+}
+
+.app-footer__logos {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+}
+
+.app-footer__logo {
+  display: block;
+  height: auto;
+  /* Never recolour, invert, crop or stretch funder marks */
+  filter: none;
+  mix-blend-mode: normal;
+}
+
+.app-footer__logo--heritage {
+  width: 240px;
+  height: 240px;
+  flex-shrink: 0;
+}
+
+.app-footer__logo--lockup {
+  width: min(401px, 100%);
+  height: auto;
+  max-height: 96px;
+  object-fit: contain;
+}
+
+@media (min-width: 768px) {
+  .app-footer__logos {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 48px;
+  }
+}
+
+.app-footer__credit {
+  margin: 0;
+  font-size: 0.75rem;
 }
 
 /* ==========================================================================
@@ -1473,10 +1532,6 @@ input, select, textarea {
 @media (max-width: 480px) {
   .biome-grid {
     grid-template-columns: 1fr 1fr;
-  }
-
-  .app-header__logo {
-    display: none;
   }
 
   .card__header {
@@ -2008,7 +2063,7 @@ canvas {
     margin-bottom: 12px;
   }
   .print-header::after {
-    content: "Fife Farm Resilience Calculator — NFCA · natcert.earth · " attr(data-date);
+    content: "Fife Landscape Resilience Calculator · " attr(data-date);
     display: block;
     font-size: 9pt;
     margin-top: 4px;
@@ -2193,7 +2248,7 @@ canvas {
     background: var(--c-bg);
   }
 
-  /* "Adjust Inputs" nav buttons embedded in results panel */
+  /* "Adjust inputs" nav buttons embedded in results panel */
   .mobile-results-nav {
     display: flex;
     justify-content: center;

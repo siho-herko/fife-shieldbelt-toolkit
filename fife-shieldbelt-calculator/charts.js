@@ -1,5 +1,5 @@
 /**
- * charts.js — Fife Farm Resilience Calculator
+ * charts.js — Fife Landscape Resilience Calculator
  * Zero-dependency canvas chart engine. HTML5 Canvas API only.
  * All functions are idempotent — safe to call repeatedly on the same canvas.
  *
@@ -11,8 +11,6 @@
  *   radarChart      — Radar / spider chart
  *   htmlLegend      — HTML colour-square legend
  *   clearCharts     — Clear all registered canvases
- *
- * Author: NFCA / Fife ShieldBelt project
  */
 
 // ---------------------------------------------------------------------------

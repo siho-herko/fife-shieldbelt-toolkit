@@ -1,5 +1,5 @@
 /**
- * calc.js — Fife Farm Resilience Calculator
+ * calc.js — Fife Landscape Resilience Calculator
  * Pure calculation engine — no DOM, no side effects.
  * All functions are deterministic given the same inputs and v2 record.
  *
@@ -7,8 +7,6 @@
  *   avoided costs, windbreak yield, pest regulation,
  *   thermal regulation, SSER biodiversity units,
  *   disaggregated CREW (air filtration / catchment hydrology / water purification)
- *
- * Author: NFCA / Fife ShieldBelt project
  */
 
 // ---------------------------------------------------------------------------

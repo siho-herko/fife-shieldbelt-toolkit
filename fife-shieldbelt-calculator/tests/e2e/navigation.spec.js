@@ -1,7 +1,7 @@
 /**
  * navigation.spec.js
  *
- * End-to-end tests for the Fife Farm Resilience Calculator navigation flow.
+ * End-to-end tests for the Fife Landscape Resilience Calculator navigation flow.
  * Covers the 6-step input accordion, auto-advance behaviour, Confirm Selection,
  * output section scroll anchors, the mobile drawer, and URL state encoding.
  *
@@ -27,7 +27,7 @@ const BASE = 'http://localhost:8080';
 test.describe('App load', () => {
   test('page title and loading screen', async ({ page }) => {
     await page.goto(BASE);
-    await expect(page).toHaveTitle(/Farm Resilience/i);
+    await expect(page).toHaveTitle(/Fife Landscape Resilience Calculator/i);
 
     // Loading screen must appear briefly then hide
     await waitForAppReady(page);
@@ -66,10 +66,51 @@ test.describe('App load', () => {
     }
   });
 
-  test('header scope line mentions marginal land / ShieldBelt', async ({ page }) => {
+  test('header shows Landscape Resilience title without NFCA', async ({ page }) => {
     await page.goto(BASE);
     await waitForAppReady(page);
+    await expect(page.locator('.app-header__title')).toContainText(/Fife Landscape Resilience Calculator/i);
     await expect(page.locator('.app-header__title')).toContainText(/marginal land/i);
+    await expect(page.locator('.app-header')).not.toContainText(/NFCA/i);
+    await expect(page.locator('.app-header')).not.toContainText(/ShieldBelt/i);
+  });
+
+  test('summary and guide links target resilience-* hosts', async ({ page }) => {
+    await page.goto(BASE);
+    await waitForAppReady(page);
+    const summary = page.locator('.app-header__link');
+    await expect(summary).toHaveAttribute('href', 'https://resilience-fife.trigrammatic.com');
+    await expect(summary).toContainText(/Fife Landscape Resilience Summary/i);
+    const guide = page.locator('#results-empty a[href*="resilience-dreel-burn"]');
+    await expect(guide).toHaveAttribute('href', 'https://resilience-dreel-burn.trigrammatic.com');
+    await expect(guide).toContainText(/Dreel Burn Landscape Resilience Guide/i);
+  });
+
+  test('footer has FIRNS acknowledgement, funder logos, and Trigrammatic credit', async ({ page }) => {
+    await page.goto(BASE);
+    await waitForAppReady(page);
+    const footer = page.locator('.app-footer');
+    await expect(footer).toContainText(/Fife Landscape Resilience Calculator/i);
+    await expect(footer).toContainText(/Facility for Investment Ready Nature in Scotland/i);
+    await expect(footer).toContainText(/Thanks to National Lottery players/i);
+    await expect(footer).toContainText(/Built by Trigrammatic/i);
+    await expect(footer).not.toContainText(/NFCA/i);
+    await expect(footer).not.toContainText(/natcert/i);
+    await expect(page.locator('.app-footer__logo--heritage')).toBeVisible();
+    await expect(page.locator('.app-footer__logo--lockup')).toBeVisible();
+    await expect(page.locator('.app-footer__credit a')).toHaveAttribute(
+      'href',
+      'https://trigrammatic.com/en/work/nature-finance'
+    );
+  });
+
+  test('html lang is en-GB and canonical points at resilience-calculator', async ({ page }) => {
+    await page.goto(BASE);
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en-GB');
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+      'href',
+      'https://resilience-calculator.trigrammatic.com/'
+    );
   });
 });
 
@@ -439,8 +480,9 @@ test.describe('Results rendering', () => {
     await expect(page.locator('#section-agronomic')).toBeVisible();
   });
 
-  test('Wider Ecosystem Services section is present', async ({ page }) => {
+  test('Wider Ecosystem Service Value section is present', async ({ page }) => {
     await expect(page.locator('#section-wider-eco')).toBeVisible();
+    await expect(page.locator('#section-wider-eco .card__title')).toHaveText(/Wider Ecosystem Service Value/i);
   });
 
   test('Avoided Costs and Productivity Benefits section is present', async ({ page }) => {
@@ -826,6 +868,10 @@ test.describe('Copy link and save scenario', () => {
 
   test('Save scenario button is present', async ({ page }) => {
     await expect(page.locator('#btn-save-scenario')).toBeVisible();
+  });
+
+  test('Save scenario notes browser-only storage', async ({ page }) => {
+    await expect(page.locator('.save-browser-note')).toContainText(/Saved in this browser only/i);
   });
 });
 

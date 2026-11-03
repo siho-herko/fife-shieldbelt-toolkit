@@ -1,0 +1,17 @@
+{
+  // Fife Landscape Resilience Calculator — static assets Worker.
+  // Custom domain is provisional until DNS cutover (P2).
+  "name": "resilience-calculator",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./"
+  },
+  "routes": [
+    {
+      "pattern": "resilience-calculator.trigrammatic.com",
+      "custom_domain": true
+    }
+  ],
+  "workers_dev": true,
+  "preview_urls": true
+}
