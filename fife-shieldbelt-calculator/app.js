@@ -115,7 +115,6 @@ const state = {
   outcomesUnlocked:     false,
   // P1 relevance filters for problem chips
   prioritiseFits:       true,
-  includeDreelBurn:     false,
   recommendationMeta:   null, // { reasons, score } for active recommendation
   // Share-URL snapshot of problem + solution-map (advisor context)
   urlSnapshot:          null,
@@ -136,8 +135,6 @@ const BIOME_SHORT = {
   [BIOMES.NORTH_FIFE]:  'North Fife Hills & Tay',
   [BIOMES.WEST_CLAY]:   'West Fife Claylands',
 };
-
-const DREEL_BURN_LABEL = 'Dreel Burn Catchment';
 
 /** Category → thin planning questions for advisor handoff */
 const PLANNING_QUESTIONS_BY_CATEGORY = {
@@ -345,14 +342,9 @@ function initBiomeSelector() {
 // Problem chips — relevance helpers (P1)
 // =============================================================================
 
-function isDreelBurnProblem(problem) {
-  return String(problem?.Applicable_Biomes || '').includes(DREEL_BURN_LABEL);
-}
-
 function problemFitsBiome(problem, biome) {
   const raw = String(problem?.Applicable_Biomes || '').trim();
   if (!raw || /^all$/i.test(raw)) return true;
-  if (isDreelBurnProblem(problem)) return false; // catchment lens, not a calculator biome
   const short = BIOME_SHORT[biome] || '';
   if (!short) return true;
   // Honour explicit NOT-primary notes (e.g. FLOOD_RIP vs East Neuk)
@@ -375,15 +367,13 @@ function problemFitsFarmType(problem, farmType) {
 }
 
 function problemRelevance(problem) {
-  const dreel = isDreelBurnProblem(problem);
   const biomeOk = problemFitsBiome(problem, state.biome);
   const farmOk  = problemFitsFarmType(problem, state.farmType);
   let rank = 0;
-  if (dreel) rank = state.includeDreelBurn ? 1 : -1;
-  else if (biomeOk && farmOk) rank = 3;
+  if (biomeOk && farmOk) rank = 3;
   else if (biomeOk || farmOk) rank = 2;
   else rank = 0;
-  return { dreel, biomeOk, farmOk, rank, isFit: rank >= 3 || (dreel && state.includeDreelBurn) };
+  return { biomeOk, farmOk, rank, isFit: rank >= 3 };
 }
 
 function fitContextLabel() {
@@ -409,17 +399,9 @@ function renderProblemFilterBar(container) {
       <input type="checkbox" id="filter-prioritise-fits" ${state.prioritiseFits ? 'checked' : ''} />
       Prioritise fits for location &amp; farm type
     </label>
-    <label class="problem-filter-bar__opt">
-      <input type="checkbox" id="filter-dreel-burn" ${state.includeDreelBurn ? 'checked' : ''} />
-      Include Dreel Burn catchment
-    </label>
   `;
   bar.querySelector('#filter-prioritise-fits')?.addEventListener('change', (e) => {
     state.prioritiseFits = e.target.checked;
-    populateProblemChips();
-  });
-  bar.querySelector('#filter-dreel-burn')?.addEventListener('change', (e) => {
-    state.includeDreelBurn = e.target.checked;
     populateProblemChips();
   });
 }
@@ -440,10 +422,7 @@ function populateProblemChips() {
   const grouped = {};
   for (const p of problemsData) {
     const rel = problemRelevance(p);
-    if (state.prioritiseFits && rel.dreel && !state.includeDreelBurn) continue;
-    if (state.prioritiseFits && !rel.dreel && rel.rank === 0) {
-      // Keep poor fits visible but muted — do not hide entirely
-    }
+    // Keep poor fits visible but muted — do not hide entirely
     (grouped[p.Category] = grouped[p.Category] || []).push({ problem: p, rel });
   }
 
@@ -463,22 +442,17 @@ function populateProblemChips() {
       btn.type      = 'button';
       btn.className = 'problem-chip';
       btn.dataset.code = p.Problem_Code;
-      if (rel.dreel) btn.dataset.lens = 'dreel';
       if (state.prioritiseFits && !rel.isFit) btn.classList.add('problem-chip--muted');
-      if (rel.biomeOk && rel.farmOk && !rel.dreel) btn.classList.add('problem-chip--fit');
+      if (rel.biomeOk && rel.farmOk) btn.classList.add('problem-chip--fit');
 
       const symptom = p.Stated_Symptom.length > 40
         ? p.Stated_Symptom.slice(0, 40) + '…'
         : p.Stated_Symptom;
 
       const badges = [];
-      if (rel.dreel) {
-        badges.push('<span class="problem-chip__badge problem-chip__badge--dreel">Dreel Burn</span>');
-      } else {
-        if (!rel.biomeOk) badges.push('<span class="problem-chip__badge">Other location</span>');
-        if (!rel.farmOk)  badges.push('<span class="problem-chip__badge">Other farm type</span>');
-        if (rel.biomeOk && rel.farmOk) badges.push('<span class="problem-chip__badge problem-chip__badge--fit">Fit</span>');
-      }
+      if (!rel.biomeOk) badges.push('<span class="problem-chip__badge">Other location</span>');
+      if (!rel.farmOk)  badges.push('<span class="problem-chip__badge">Other farm type</span>');
+      if (rel.biomeOk && rel.farmOk) badges.push('<span class="problem-chip__badge problem-chip__badge--fit">Fit</span>');
 
       btn.setAttribute('aria-pressed', String(p.Problem_Code === state.problemCode));
       btn.title = [
@@ -1898,7 +1872,6 @@ function encodeStateToURL() {
   if (state.recommendedVariantId && state.variantId === state.recommendedVariantId) {
     p.set('rec', '1');
   }
-  if (state.includeDreelBurn) p.set('dreel', '1');
 
   const url = `${window.location.pathname}?${p.toString()}`;
   window.history.replaceState({}, '', url);
@@ -1938,7 +1911,6 @@ function restoreStateFromURL() {
 
   if (p.has('variant'))  state._urlVariantNum  = p.get('variant'); // resolved after records load
   if (p.get('browse') === '1') state.browseMode = true;
-  if (p.get('dreel') === '1') state.includeDreelBurn = true;
 }
 
 // =============================================================================
