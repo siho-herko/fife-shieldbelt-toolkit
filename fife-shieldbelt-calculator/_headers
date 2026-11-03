@@ -2,8 +2,12 @@
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
-  Cache-Control: public, max-age=3600
   Content-Security-Policy: default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self'; img-src 'self' data:; connect-src 'self'; manifest-src 'self'; worker-src 'self';
+
+# HTML: short browser cache. Do not put Cache-Control on /* — Pages concatenates
+# matching rules, which previously mixed max-age=3600 onto /sw.js and /version.js.
+/
+  Cache-Control: public, max-age=3600
 
 # Service worker must never be cached — browser must always re-fetch it to
 # detect updates (stale sw.js = stale cached assets served indefinitely).
