@@ -173,6 +173,30 @@ const phase2Codes = problems
 assert(new Set(phase2Codes).size === phase2Codes.length, 'Phase-2 codes all unique');
 
 // ---------------------------------------------------------------------------
+// 11. Relevant_ShieldBelt_Variants resolve against interventions DB
+// ---------------------------------------------------------------------------
+console.log('\n--- 11. Variant mappings resolve in interventions DB ---');
+const interventions = JSON.parse(readFileSync('./data/fife_interventions_db_v9.json', 'utf8'));
+const records = Array.isArray(interventions) ? interventions : (interventions.interventions ?? []);
+const catalog = new Set();
+for (const r of records) {
+  const bare = String(r.variant || '').replace(/^\d+\.\s*/, '');
+  if (r.width && bare) catalog.add(`${r.width} ${bare}`);
+  if (r.width && r.variant) catalog.add(`${r.width} ${r.variant}`);
+}
+const unresolved = [];
+for (const p of problems) {
+  for (const v of (p.Relevant_ShieldBelt_Variants ?? [])) {
+    if (!catalog.has(v)) unresolved.push(`${p.Problem_Code}: ${v}`);
+  }
+}
+assert(
+  unresolved.length === 0,
+  'All Relevant_ShieldBelt_Variants match a DB width+name' +
+    (unresolved.length ? ` (unresolved: ${unresolved.slice(0, 8).join('; ')})` : '')
+);
+
+// ---------------------------------------------------------------------------
 // Result
 // ---------------------------------------------------------------------------
 

@@ -213,18 +213,40 @@ function unlockOutcomes({ browse = false } = {}) {
 }
 
 function lockOutcomesUnlessBrowse() {
-  if (!state.problemCode && !state.browseMode) {
-    state.outcomesUnlocked = false;
-  }
+  // Keep charts after clearing a problem only if the browse path was already confirmed.
+  if (state.problemCode) return;
+  if (state.browseMode && state.outcomesUnlocked) return;
+  state.outcomesUnlocked = false;
 }
 
 function shouldShowOutcomes() {
-  return state.outcomesUnlocked || !!state.problemCode || state.browseMode;
+  // browseMode marks the escape-hatch path / URL flag; charts wait for outcomesUnlocked
+  // (Confirm, Calculate, shared URL restore, or a selected problem).
+  return state.outcomesUnlocked || !!state.problemCode;
 }
 
 function showEmptyOutcomes() {
   document.getElementById('results-empty')?.classList.remove('hidden');
   document.getElementById('results-content')?.classList.add('hidden');
+  updateEmptyStateCopy();
+}
+
+/** Empty-state copy differs once the user is on the browse path but has not Confirmed yet. */
+function updateEmptyStateCopy() {
+  const body = document.getElementById('results-empty-body');
+  if (!body) return;
+  if (state.browseMode && !state.problemCode && !state.outcomesUnlocked) {
+    body.innerHTML =
+      'Browse path selected. Pick a location and ShieldBelt variant, then press ' +
+      '<strong>Confirm selection</strong> (or <strong>Calculate Outcomes</strong>) to size the margin and show results. ' +
+      'No variant is auto-sized until you confirm.';
+    return;
+  }
+  body.innerHTML =
+    'This calculator explores <strong>nature-based solutions on marginal land</strong> ' +
+    '(ShieldBelt linear field margins)—not every farm fix. ' +
+    'Select your biggest problem to see a recommended margin option and outcomes, ' +
+    'or choose <em>I already know the intervention</em> to browse variants, then Confirm.';
 }
 
 // =============================================================================
@@ -364,6 +386,11 @@ function problemRelevance(problem) {
   return { dreel, biomeOk, farmOk, rank, isFit: rank >= 3 || (dreel && state.includeDreelBurn) };
 }
 
+function fitContextLabel() {
+  const biome = (BIOME_DISPLAY[state.biome] || state.biome || '').replace(/^[^\w]*\s*/, '');
+  return `${biome} · ${state.farmType}`;
+}
+
 function renderProblemFilterBar(container) {
   let bar = document.getElementById('problem-filter-bar');
   if (!bar) {
@@ -373,6 +400,11 @@ function renderProblemFilterBar(container) {
     container.appendChild(bar);
   }
   bar.innerHTML = `
+    <p class="problem-filter-bar__context" id="problem-fit-context">
+      Fit badges use your <strong>current</strong> location &amp; farm type:
+      <span class="problem-filter-bar__context-values">${fitContextLabel()}</span>
+      <span class="problem-filter-bar__context-note">(defaults until you change steps 2–3)</span>
+    </p>
     <label class="problem-filter-bar__opt">
       <input type="checkbox" id="filter-prioritise-fits" ${state.prioritiseFits ? 'checked' : ''} />
       Prioritise fits for location &amp; farm type
@@ -527,11 +559,19 @@ async function handleClearProblem() {
 
 /** Escape hatch: power users skip problem and browse ShieldBelt variants. */
 function handleBrowseIntervention() {
-  unlockOutcomes({ browse: true });
+  // Mark browse intent only — do not unlock charts or auto-size the first variant.
+  // Confirm selection / Calculate Outcomes unlocks and sizes.
+  state.browseMode = true;
+  state.outcomesUnlocked = false;
+  state.variantId = null;
+  state.currentRecord = null;
+  state.results = null;
+  syncVariantSelect();
+  renderVariantDetail(null);
   closeStep(1);
   openStep(2);
   openStep(4);
-  applyVariantAndRecalc();
+  showEmptyOutcomes();
 }
 
 function updateProblemChipUI(activeCode) {
@@ -2323,11 +2363,18 @@ function handleReset() {
 // =============================================================================
 
 async function applyVariantAndRecalc() {
-  if (!state.variantId && state.biomeRecords.length) {
+  // Auto-pick the first location variant only once outcomes are unlocked (problem path,
+  // Confirm / Calculate, or shared URL). Browse-before-Confirm keeps the placeholder.
+  if (!state.variantId && state.biomeRecords.length && shouldShowOutcomes()) {
     state.variantId = state.biomeRecords[0]?.id || null;
     syncVariantSelect();
   }
-  if (!state.variantId) return;
+  if (!state.variantId) {
+    renderBiomeContextCard(state.biome);
+    renderVariantDetail(null);
+    if (!shouldShowOutcomes()) showEmptyOutcomes();
+    return;
+  }
 
   state.currentRecord = await getById(state.variantId);
   if (!state.currentRecord) return;
@@ -2381,6 +2428,25 @@ function copyShareLink() {
   navigator.clipboard.writeText(href)
     .then(() => showToast('Advisor link copied — includes problem, diagnosis & margin scenario'))
     .catch(() => showToast('Copy failed — copy the address bar URL instead'));
+}
+
+/** Quick mailto handoff — no partner destination; opens the user's email client with the scenario URL. */
+function emailScenarioLink() {
+  if (!shouldShowOutcomes()) {
+    showToast('Select a problem or confirm a variant first');
+    return;
+  }
+  encodeStateToURL();
+  const href = window.location.href;
+  const symptom = state.activeProblem?.Stated_Symptom?.slice(0, 80) || 'ShieldBelt margin scenario';
+  const subject = encodeURIComponent(`Fife ShieldBelt planning scenario — ${symptom}`);
+  const body = encodeURIComponent(
+    `Here is a ShieldBelt (NbS on marginal land) scenario from the Fife Farm Resilience Calculator.\n\n` +
+    `Open this link to restore the problem, diagnosis snapshot, location, farm type, variant, and strip length:\n\n` +
+    `${href}\n\n` +
+    `This is a planning start for discussion — not a grant or implementation quote.`
+  );
+  window.location.href = `mailto:?subject=${subject}&body=${body}`;
 }
 
 function printPlanningBrief() {
@@ -2547,8 +2613,8 @@ async function init() {
     });
     document.getElementById('btn-reset')?.addEventListener('click', handleReset);
 
-    document.getElementById('btn-copy-link')?.addEventListener('click', copyShareLink);
     document.getElementById('btn-share-advisor')?.addEventListener('click', copyShareLink);
+    document.getElementById('btn-email-scenario')?.addEventListener('click', emailScenarioLink);
     document.getElementById('btn-print-brief')?.addEventListener('click', printPlanningBrief);
 
     document.getElementById('btn-save-scenario')?.addEventListener('click', () => {
@@ -2579,6 +2645,7 @@ async function init() {
 
     // Prepare variant/calc data; only show full outcomes when journey is unlocked
     await applyVariantAndRecalc();
+    updateEmptyStateCopy();
 
     if (window.ResizeObserver) {
       const resultsContainer = document.getElementById('results-panel');

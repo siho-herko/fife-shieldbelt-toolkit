@@ -217,10 +217,27 @@ test.describe('Problem chip selection', () => {
     await expect(summary).not.toHaveText('Not selected');
   });
 
-  test('escape hatch opens intervention browse path', async ({ page }) => {
+  test('escape hatch opens intervention browse path without auto-sizing', async ({ page }) => {
     await page.locator('#btn-browse-intervention').click();
     await page.waitForTimeout(500);
     await expect(await isStepOpen(page, 4)).toBe(true);
+    // Charts stay gated until Confirm / Calculate — no implicit first-variant sizing
+    await expect(page.locator('#results-empty')).toBeVisible();
+    await expect(page.locator('#results-content')).toHaveClass(/hidden/);
+    await expect(page.locator('#results-empty-body')).toContainText('Confirm selection');
+  });
+
+  test('browse path shows outcomes after Confirm selection', async ({ page }) => {
+    await page.locator('#btn-browse-intervention').click();
+    await page.waitForTimeout(300);
+    const sel = page.locator('#variant-select');
+    const count = await sel.locator('option').count();
+    if (count > 1) {
+      await sel.selectOption({ index: 1 });
+      await page.waitForTimeout(200);
+    }
+    await confirmVariant(page);
+    await page.waitForTimeout(400);
     await expect(page.locator('#results-content')).not.toHaveClass(/hidden/);
   });
 });
@@ -490,8 +507,10 @@ test.describe('URL state', () => {
     await page.goto(BASE);
     await waitForAppReady(page);
     await page.locator('#btn-browse-intervention').click();
+    await page.waitForTimeout(300);
+    // Browse alone no longer encodes — Confirm unlocks outcomes and writes URL state
+    await confirmVariant(page);
     await page.waitForTimeout(500);
-    // encodeStateToURL runs once outcomes are shown
     const url = page.url();
     expect(url).toMatch(/biome=/);
   });
@@ -646,6 +665,13 @@ test.describe('Problem chip relevance', () => {
     await expect(page.locator('#filter-dreel-burn')).not.toBeChecked();
   });
 
+  test('fit context names current location and farm type', async ({ page }) => {
+    const ctx = page.locator('#problem-fit-context');
+    await expect(ctx).toBeVisible();
+    await expect(ctx).toContainText('current');
+    await expect(ctx).toContainText('General Cropping');
+  });
+
   test('fit badges appear on relevant chips', async ({ page }) => {
     const fitBadges = page.locator('.problem-chip__badge--fit');
     await expect(fitBadges.first()).toBeVisible();
@@ -786,7 +812,7 @@ test.describe('Compare Scenarios modal', () => {
 });
 
 // ---------------------------------------------------------------------------
-// 15. Copy link and save scenario buttons
+// 15. Advisor share / email and save scenario buttons
 // ---------------------------------------------------------------------------
 test.describe('Copy link and save scenario', () => {
   test.beforeEach(async ({ page }) => {
@@ -794,8 +820,10 @@ test.describe('Copy link and save scenario', () => {
     await waitForAppReady(page);
   });
 
-  test('Copy link button is present', async ({ page }) => {
-    await expect(page.locator('#btn-copy-link')).toBeVisible();
+  test('Advisor share and email buttons are present (no duplicate export copy link)', async ({ page }) => {
+    await expect(page.locator('#btn-share-advisor')).toBeVisible();
+    await expect(page.locator('#btn-email-scenario')).toBeVisible();
+    await expect(page.locator('#btn-copy-link')).toHaveCount(0);
   });
 
   test('Save scenario button is present', async ({ page }) => {
