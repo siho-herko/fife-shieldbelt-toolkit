@@ -118,7 +118,8 @@
               Start with the challenge that matters most on your holding.
               We’ll recommend a nature-based margin option (ShieldBelt) for that challenge;
               other farm responses are noted for context, not sized here.
-              Chips show Fit / Other location / Dreel Burn badges from your location and farm type.
+              Fit / Other location / farm-type badges use your <strong>current</strong> location and farm type
+              (defaults until you change those steps).
             </p>
             <!-- Populated by populateProblemChips() in app.js -->
             <div id="problem-chips" role="group" aria-label="Select your primary farming problem">
@@ -410,16 +411,16 @@
         </button>
       </div>
 
-      <!-- Empty state — gated until problem or explicit browse path -->
+      <!-- Empty state — gated until problem or Confirm on browse path -->
       <div id="results-empty" class="card" style="min-height:420px;">
         <div class="empty-state">
           <div class="empty-state__icon">🌿</div>
           <h2 class="empty-state__title">Nature-based margins, sized for your challenge</h2>
-          <p class="empty-state__body">
+          <p class="empty-state__body" id="results-empty-body">
             This calculator explores <strong>nature-based solutions on marginal land</strong>
             (ShieldBelt linear field margins)—not every farm fix.
             Select your biggest problem to see a recommended margin option and outcomes,
-            or choose <em>I already know the intervention</em> to browse variants directly.
+            or choose <em>I already know the intervention</em> to browse variants, then Confirm.
           </p>
           <a href="https://fife-shieldbelt.netlify.app"
             class="btn btn-ghost btn-sm mt-3"
@@ -614,14 +615,14 @@
             <button class="btn btn-ghost" id="btn-share-advisor" type="button">
               Copy link for your advisor
             </button>
+            <button class="btn btn-ghost" id="btn-email-scenario" type="button">
+              Email scenario link
+            </button>
           </div>
         </div>
 
-        <!-- ─── Share / Save / Compare ──────────────────────────────── -->
+        <!-- ─── Save / Compare ─────────────────────────────────────── -->
         <div class="results-section export-panel flex gap-3 flex-wrap">
-          <button class="btn btn-ghost" id="btn-copy-link" type="button">
-            &#8682; Copy link for your advisor
-          </button>
           <button class="btn btn-ghost" id="btn-save-scenario" type="button">
             &#128190; Save scenario
           </button>

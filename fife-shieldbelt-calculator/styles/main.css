@@ -219,6 +219,18 @@ input, select, textarea {
   min-width: 0;
   overflow: hidden;
   box-sizing: border-box;
+  /* Keep chart plane readable on narrow phones without forcing a tall empty card */
+  min-height: 140px;
+}
+
+@media (max-width: 480px) {
+  .results-chart-wrap {
+    min-height: 120px;
+  }
+
+  .results-chart-wrap canvas {
+    max-height: 220px;
+  }
 }
 
 .results-section-body .results-chart-wrap {
@@ -827,6 +839,25 @@ input, select, textarea {
   background: rgba(26, 61, 43, 0.04);
   border: 1px solid var(--c-stone);
   border-radius: var(--radius-md, 8px);
+}
+
+.problem-filter-bar__context {
+  flex: 1 1 100%;
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--c-ink);
+}
+
+.problem-filter-bar__context-values {
+  font-weight: 600;
+}
+
+.problem-filter-bar__context-note {
+  display: inline;
+  margin-left: 0.25rem;
+  color: var(--c-muted);
+  font-size: 0.75rem;
 }
 
 .problem-filter-bar__opt {
@@ -1951,6 +1982,7 @@ canvas {
   .mobile-results-nav,
   #btn-print-brief,
   #btn-share-advisor,
+  #btn-email-scenario,
   #share-link-hint,
   #advisor-checklist,
   .advisor-handoff .flex,
