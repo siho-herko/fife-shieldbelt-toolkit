@@ -404,7 +404,7 @@ function renderVariantDetail(record) {
 
     const sser = document.createElement('span');
     sser.className = 'biome-tag';
-    sser.textContent = `SSER ${record.registry?.sserGrossUnitsPerKm ?? '—'}/km`;
+    sser.textContent = `≈${record.registry?.sserGrossUnitsPerKm ?? '—'} t net/km`;
     tags.appendChild(sser);
   }
 }
@@ -983,11 +983,11 @@ function renderResults(results) {
     widerEcoExtra.innerHTML = `
       <div class="crew-chip">
         <div class="crew-chip__value stat-box__value--leaf">${fmtSSER(r.sserUnitsTotal)}</div>
-        <div class="crew-chip__label">Biodiversity Units (${fmt(r.sserPerKm, 2)}/km)</div>
+        <div class="crew-chip__label">50yr net carbon, ONCRA basis ×0.64 (${fmt(r.sserPerKm, 1)} tCO₂e/km)</div>
       </div>
       <div class="crew-chip">
         <div class="crew-chip__value stat-box__value--leaf">${fmtCarbon(r.seq50yrTotal)}</div>
-        <div class="crew-chip__label">50yr carbon total (tCO₂e/km)</div>
+        <div class="crew-chip__label">50yr gross carbon (tCO₂e/km)</div>
       </div>
     `;
   }
@@ -1540,7 +1540,7 @@ function renderSavedScenarios() {
 
     const metaEl = document.createElement('div');
     metaEl.className   = 'saved-scenario__meta';
-    metaEl.textContent = `${fmtGBP(s.netBenefit)}/yr · ${fmt(s.sserUnits, 2)} SSER`;
+    metaEl.textContent = `${fmtGBP(s.netBenefit)}/yr · ${fmt(s.sserUnits, 1)} tCO₂e net`;
 
     const loadA = document.createElement('a');
     loadA.className   = 'saved-scenario__load btn btn-ghost btn-sm';

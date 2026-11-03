@@ -38,8 +38,9 @@ import { readFileSync } from 'fs';
 // Test harness
 // ---------------------------------------------------------------------------
 
-const db   = JSON.parse(readFileSync('./data/fife_interventions_db_v9.json', 'utf8'));
-const byId = Object.fromEntries(db.map(r => [r.id, r]));
+const db   = JSON.parse(readFileSync('./data/fife_interventions_db_v10.json', 'utf8'));
+const records = Array.isArray(db) ? db : db.interventions;
+const byId = Object.fromEntries(records.map(r => [r.id, r]));
 
 let passed = 0, failed = 0;
 
@@ -137,8 +138,9 @@ assert(near(r1_carbIncome, 6.4512, 0.01),
 assert(pollinationValue(r1, 'General Cropping', 1000) === 0,
   'r1: pollinationValue GC = £0.00');
 
-assert(near(netIncomeForegone(r1, 'General Cropping', 1000), 16.70, 0.01),
-  'r1: netIncomeForegone GC ≈ £16.70', 16.70, netIncomeForegone(r1, 'General Cropping', 1000));
+// v10: 0.3 ha/km × GM £988.50/ha (SAC FMH Feb 2026) × 0.7 edge factor = £207.6 → £210
+assert(near(netIncomeForegone(r1, 'General Cropping', 1000), 210, 0.01),
+  'r1: netIncomeForegone GC ≈ £210', 210, netIncomeForegone(r1, 'General Cropping', 1000));
 
 assert(near(crewValue(r1, 'crossSlope', 1000), 319.95, 0.01),
   'r1: crewValue crossSlope ≈ £319.95', 319.95, crewValue(r1, 'crossSlope', 1000));
@@ -158,12 +160,12 @@ assert(near(windbreakValue(r1, 'EW', 1000), 399.00, 0.01),
 assert(near(avoidedCosts(r1, 'crossSlope', 1000), 2529.00, 0.01),
   'r1: avoidedCosts crossSlope ≈ £2529.00', 2529.00, avoidedCosts(r1, 'crossSlope', 1000));
 
-assert(sserUnits(r1, 1000) === 8.4,
-  'r1: sserUnits(1000) = 8.4', 8.4, sserUnits(r1, 1000));
+assert(near(sserUnits(r1, 1000), 5.38, 0.01),
+  'r1: sserUnits(1000) = seq50 × 0.64 = 5.38', 5.38, sserUnits(r1, 1000));
 
 const r1_net = calculate(inputs(r1), r1).annualNetBenefit;
-assert(near(r1_net, 3322.70, 1.00),
-  'r1: annualNetBenefit GC crossSlope NS ≈ £3322.70', 3322.70, r1_net.toFixed(2));
+assert(near(r1_net, 3129.40, 1.00),
+  'r1: annualNetBenefit GC crossSlope NS ≈ £3129.40', 3129.40, r1_net.toFixed(2));
 
 // ---------------------------------------------------------------------------
 // Section D — Record 2: Distillery Foraging Strip (6m)
@@ -189,13 +191,13 @@ assert(near(windbreakValue(r2, 'NS', 1000), 1016, 0.01),
 assert(near(avoidedCosts(r2, 'crossSlope', 1000), 1600, 0.01),
   'r2: avoidedCosts crossSlope ≈ £1600.00', 1600, avoidedCosts(r2, 'crossSlope', 1000));
 
-assert(sserUnits(r2, 1000) === 24,
-  'r2: sserUnits(1000) = 24', 24, sserUnits(r2, 1000));
+assert(near(sserUnits(r2, 1000), 15.36, 0.01),
+  'r2: sserUnits(1000) = seq50 × 0.64 = 15.36', 15.36, sserUnits(r2, 1000));
 
 // v4 DB: includes windbreak + avoided-cost components for this variant at 1000m.
 const r2_net = calculate(inputs(r2), r2).annualNetBenefit;
-assert(near(r2_net, 4566.53, 1.00),
-  'r2: annualNetBenefit GC crossSlope NS ≈ £4566.53', 4566.53, r2_net.toFixed(2));
+assert(near(r2_net, 4213.33, 1.00),
+  'r2: annualNetBenefit GC crossSlope NS ≈ £4213.33', 4213.33, r2_net.toFixed(2));
 
 // ---------------------------------------------------------------------------
 // Section E — Record 3: Coastal Erosion Wood (20m)
@@ -206,8 +208,8 @@ console.log('\n--- E. Record 3: Coastal Erosion Wood — East Neuk Coast (20m) -
 assert(near(annualCarbonIncome(r3, 1000, 60), 215.04, 0.10),
   'r3: annualCarbonIncome (per km, net ×0.64) ≈ £215.04', 215.04, annualCarbonIncome(r3, 1000, 60));
 
-assert(sserUnits(r3, 1000) === 280,
-  'r3: sserUnits(1000) = 280', 280, sserUnits(r3, 1000));
+assert(near(sserUnits(r3, 1000), 179.2, 0.01),
+  'r3: sserUnits(1000) = seq50 × 0.64 = 179.2', 179.2, sserUnits(r3, 1000));
 
 assert(near(windbreakValue(r3, 'NS', 1000), 1344.00, 0.01),
   'r3: windbreakValue NS ≈ £1344.00', 1344.00, windbreakValue(r3, 'NS', 1000));
@@ -220,8 +222,8 @@ assert(near(avoidedCosts(r3, 'crossSlope', 1000), 2529.00, 0.01),
 
 // v4 DB: ground truth from calculate() for GC crossSlope NS at 1000m.
 const r3_net = calculate(inputs(r3), r3).annualNetBenefit;
-assert(near(r3_net, 7632.44, 1.00),
-  'r3: annualNetBenefit GC crossSlope NS ≈ £7632.44', 7632.44, r3_net.toFixed(2));
+assert(near(r3_net, 6553.04, 1.00),
+  'r3: annualNetBenefit GC crossSlope NS ≈ £6553.04', 6553.04, r3_net.toFixed(2));
 
 // ---------------------------------------------------------------------------
 // Section F — Record 4: Livestock Shade Trees (12m, West Fife Claylands)
@@ -235,13 +237,13 @@ assert(near(annualCarbonIncome(r4, 1000, 60), 105.984, 0.01),
 assert(near(thermalRegulationValue(r4, 'Dairy', 1000), 250.00, 0.01),
   'r4: thermalRegulationValue Dairy ≈ £250.00', 250.00, thermalRegulationValue(r4, 'Dairy', 1000));
 
-assert(sserUnits(r4, 1000) === 138,
-  'r4: sserUnits(1000) = 138', 138, sserUnits(r4, 1000));
+assert(near(sserUnits(r4, 1000), 88.32, 0.01),
+  'r4: sserUnits(1000) = seq50 × 0.64 = 88.32', 88.32, sserUnits(r4, 1000));
 
 // v4 DB: full calculate() ground truth for GC crossSlope NS at 1000m.
 const r4_net = calculate(inputs(r4), r4).annualNetBenefit;
-assert(near(r4_net, 5937.98, 1.00),
-  'r4: annualNetBenefit GC crossSlope NS ≈ £5937.98', 5937.98, r4_net.toFixed(2));
+assert(near(r4_net, 5274.98, 1.00),
+  'r4: annualNetBenefit GC crossSlope NS ≈ £5274.98', 5274.98, r4_net.toFixed(2));
 
 // ---------------------------------------------------------------------------
 // Section G — Record 5: Dense Wildlife Hedge (3m) — windbreak NS vs EW
@@ -258,14 +260,14 @@ assert(near(windbreakValue(r5, 'EW', 1000), 528.00, 0.01),
 assert(windbreakValue(r5, 'NS', 1000) > windbreakValue(r5, 'EW', 1000),
   'r5: NS windbreak > EW windbreak');
 
-assert(sserUnits(r5, 1000) === 31.5,
-  'r5: sserUnits(1000) = 31.5', 31.5, sserUnits(r5, 1000));
+assert(near(sserUnits(r5, 1000), 34.18, 0.01),
+  'r5: sserUnits(1000) = seq50 × 0.64 = 34.18', 34.18, sserUnits(r5, 1000));
 
-// annualNetBenefit for GC (3 Nov 2026: carbon income per km on net tonnes):
-// carbIncome = (31.5/50) × 1 km × 0.64 × £60 = 24.192
+// annualNetBenefit for GC (v10): carbon income per km on net tonnes, set 3 hedge profile:
+// carbIncome = (53.4/50) × 1 km × 0.64 × £60 = 41.01; NIF GC 3 m = £210
 const r5_net = calculate(inputs(r5), r5).annualNetBenefit;
-assert(near(r5_net, 5010.44, 1.00),
-  'r5: annualNetBenefit GC crossSlope NS ≈ £5010.44', 5010.44, r5_net.toFixed(2));
+assert(near(r5_net, 4833.96, 1.00),
+  'r5: annualNetBenefit GC crossSlope NS ≈ £4833.96', 4833.96, r5_net.toFixed(2));
 
 // ---------------------------------------------------------------------------
 // Section H — No NaN anywhere for a record at downSlope placement

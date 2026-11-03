@@ -1,7 +1,7 @@
 /**
  * db.js — Fife Farm Resilience Calculator
  *
- * Data layer: fetches /data/fife_interventions_db_v9.json once per page load
+ * Data layer: fetches /data/fife_interventions_db_v10.json once per page load
  * and holds all 132 records in a plain JS array.  The service worker caches
  * the JSON so subsequent loads are instant (no network request).
  *
@@ -30,8 +30,8 @@ export const FARM_TYPES = ['Cereals', 'General Cropping', 'Dairy', 'LFA Grazing'
 
 export const WIDTHS = ['3m', '6m', '12m', '20m', '60m'];
 
-/** Allowed SSER gross units/km in v9 data (used by validateStore). */
-export const SSER_TIERS = [8.4, 16.8, 24, 31.5, 34.8, 39, 40.2, 46.8, 62.4, 78, 108, 138, 150, 280, 806.4];
+/** ONCRA net factor (20% GHG default × 20% buffer): registry.sserGrossUnitsPerKm = seq50yrTotal × 0.64 in v10. */
+export const ONCRA_NET_FACTOR = 0.64;
 
 // ---------------------------------------------------------------------------
 // In-memory store
@@ -49,7 +49,7 @@ let _records = [];
  * The service worker caches this file so subsequent page loads are instant.
  * @type {Promise<void>}
  */
-export const dbReady = fetch('/data/fife_interventions_db_v9.json')
+export const dbReady = fetch('/data/fife_interventions_db_v10.json')
   .then(res => {
     if (!res.ok) throw new Error(`HTTP ${res.status} loading intervention data`);
     return res.json();
@@ -121,7 +121,6 @@ export async function validateStore() {
   const errors = [];
 
   const VALID_WIDTHS   = new Set(WIDTHS);
-  const VALID_SSER     = new Set(SSER_TIERS);
   const REQUIRED_FARMS = new Set(FARM_TYPES);
   const VALID_ID_RE    = /^[a-z0-9_]+$/;
 
@@ -149,8 +148,8 @@ export async function validateStore() {
     const sser = r.registry?.sserGrossUnitsPerKm;
     if (typeof sser !== 'number' || !Number.isFinite(sser) || sser < 0) {
       errors.push(`${p} sserGrossUnitsPerKm invalid: ${sser}`);
-    } else if (!VALID_SSER.has(sser)) {
-      errors.push(`${p} sserGrossUnitsPerKm not in v9 tier list: ${sser}`);
+    } else if (Math.abs(sser - r.seq50yrTotal * ONCRA_NET_FACTOR) > 0.01) {
+      errors.push(`${p} sserGrossUnitsPerKm ≠ seq50yrTotal × 0.64: ${sser}`);
     }
     for (const ft of REQUIRED_FARMS) {
       if (!r.farmImpacts?.[ft]) errors.push(`${p} farmImpacts missing "${ft}"`);

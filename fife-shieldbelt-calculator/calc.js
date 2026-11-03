@@ -502,10 +502,11 @@ export function fmtCarbon(n) {
 }
 
 /**
- * Format SSER units to 2 d.p.
+ * Format estimated ONCRA net units (tCO₂e) to 1 d.p.
+ * (Field name sser* kept for compatibility; "SSER" is not an ONCRA unit.)
  * @param {number} n
  * @returns {string}
  */
 export function fmtSSER(n) {
-  return fmt(n, 2) + ' units';
+  return fmt(n, 1) + ' tCO₂e net';
 }
