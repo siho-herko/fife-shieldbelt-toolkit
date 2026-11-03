@@ -26,10 +26,16 @@ console.log('\n=== Content Integrity Tests ===\n');
 // ---------------------------------------------------------------------------
 console.log('--- 1. Record counts ---');
 assert(problems.length === 33,  '33 problems total');
-assert(problems.filter(p => p.Applicable_Biomes !== 'Dreel Burn Catchment').length === 27,
-  '27 phase-1 problems');
-assert(problems.filter(p => p.Applicable_Biomes === 'Dreel Burn Catchment').length === 6,
-  '6 phase-2 (Dreel Burn) problems');
+assert(problems.filter(p => p.Applicable_Biomes === 'Dreel Burn Catchment').length === 0,
+  'no Dreel Burn Catchment biome values');
+assert(
+  ['SOILORGAN_LOW', 'DROUGHT_BURN', 'HEDGEROW_SPARSE', 'LIVESTOCK_RIPARIAN', 'CARBON_BASELINE', 'ASH_DIEBACK']
+    .every(code => {
+      const p = problems.find(x => x.Problem_Code === code);
+      return p && p.Applicable_Biomes === 'All';
+    }),
+  'former Dreel problems mapped to All biomes'
+);
 
 // ---------------------------------------------------------------------------
 // 2. All required fields present and non-empty
@@ -159,18 +165,11 @@ assert(
 );
 
 // ---------------------------------------------------------------------------
-// 10. No duplicate Problem_Codes within the same phase
+// 10. No duplicate Problem_Codes
 // ---------------------------------------------------------------------------
-console.log('\n--- 10. Phase uniqueness ---');
-const phase1Codes = problems
-  .filter(p => p.Applicable_Biomes !== 'Dreel Burn Catchment')
-  .map(p => p.Problem_Code);
-assert(new Set(phase1Codes).size === phase1Codes.length, 'Phase-1 codes all unique');
-
-const phase2Codes = problems
-  .filter(p => p.Applicable_Biomes === 'Dreel Burn Catchment')
-  .map(p => p.Problem_Code);
-assert(new Set(phase2Codes).size === phase2Codes.length, 'Phase-2 codes all unique');
+console.log('\n--- 10. Code uniqueness ---');
+const allCodes = problems.map(p => p.Problem_Code);
+assert(new Set(allCodes).size === allCodes.length, 'All Problem_Codes unique');
 
 // ---------------------------------------------------------------------------
 // 11. Relevant_ShieldBelt_Variants resolve against interventions DB

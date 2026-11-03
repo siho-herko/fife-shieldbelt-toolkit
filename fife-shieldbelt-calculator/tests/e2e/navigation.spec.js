@@ -662,7 +662,7 @@ test.describe('Problem chip relevance', () => {
   test('filter bar is present', async ({ page }) => {
     await expect(page.locator('#problem-filter-bar')).toBeVisible();
     await expect(page.locator('#filter-prioritise-fits')).toBeChecked();
-    await expect(page.locator('#filter-dreel-burn')).not.toBeChecked();
+    await expect(page.locator('#filter-dreel-burn')).toHaveCount(0);
   });
 
   test('fit context names current location and farm type', async ({ page }) => {
@@ -677,12 +677,10 @@ test.describe('Problem chip relevance', () => {
     await expect(fitBadges.first()).toBeVisible();
   });
 
-  test('Dreel Burn chips stay hidden until lens is enabled', async ({ page }) => {
+  test('Dreel Burn lens is removed', async ({ page }) => {
+    await expect(page.locator('#filter-dreel-burn')).toHaveCount(0);
     await expect(page.locator('.problem-chip[data-lens="dreel"]')).toHaveCount(0);
-    await page.locator('#filter-dreel-burn').check();
-    await page.waitForTimeout(200);
-    await expect(page.locator('.problem-chip[data-lens="dreel"]').first()).toBeVisible();
-    await expect(page.locator('.problem-chip__badge--dreel').first()).toBeVisible();
+    await expect(page.locator('.problem-chip__badge--dreel')).toHaveCount(0);
   });
 
   test('no locked data-phase=2 chips', async ({ page }) => {
