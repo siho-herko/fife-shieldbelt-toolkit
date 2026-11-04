@@ -5,31 +5,39 @@
   Cache-Control: public, max-age=3600
   Content-Security-Policy: default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self'; img-src 'self' data:; connect-src 'self'; manifest-src 'self'; worker-src 'self';
 
-# Service worker must never be cached — browser must always re-fetch it to
-# detect updates (stale sw.js = stale cached assets served indefinitely).
-/sw.js
-  Cache-Control: no-store, no-cache, must-revalidate
-
-/version.js
-  Cache-Control: no-store, no-cache, must-revalidate
-
-# Setting Content-Type explicitly triggers Netlify's automatic gzip compression.
-# Verified: fife_interventions_db_v11.json / problems_v2.json (gzip via compress-data.js when run)
+# Data files (Cloudflare Workers Static Assets compresses JSON automatically).
+# Live files: fife_interventions_db_v12.json, problems_v2.json (older datasets are excluded in .assetsignore)
 /data/*.json
+  ! Cache-Control
   Content-Type: application/json; charset=utf-8
   Cache-Control: public, max-age=86400
 
-# Pre-compressed .gz files available in /data/ as Netlify fallback (see scripts/compress-data.js)
+# Pre-compressed .gz files (only if scripts/compress-data.js is run)
 /data/*.json.gz
+  ! Cache-Control
   Content-Encoding: gzip
   Content-Type: application/json; charset=utf-8
   Cache-Control: public, max-age=86400
 
 /styles/*
+  ! Cache-Control
   Cache-Control: public, max-age=86400
 
 /*.js
+  ! Cache-Control
   Cache-Control: no-cache
 
 /icons/*
+  ! Cache-Control
   Cache-Control: public, max-age=604800
+
+# Kept last so these override the /*.js rule above.
+# Service worker must never be cached — browser must always re-fetch it to
+# detect updates (stale sw.js = stale cached assets served indefinitely).
+/sw.js
+  ! Cache-Control
+  Cache-Control: no-store, no-cache, must-revalidate
+
+/version.js
+  ! Cache-Control
+  Cache-Control: no-store, no-cache, must-revalidate

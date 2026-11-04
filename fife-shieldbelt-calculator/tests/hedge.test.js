@@ -107,7 +107,12 @@ assert(resC.annualCarbonIncome === 0 && near(res.annualCarbonIncome, 52.5 / 50 *
 console.log('\n--- 8. Funding stack and additionality test ---');
 const st = res.fundingStack;
 assert(st && st.years === 30 && st.discountRate === 0.035, '30-year view at 3.5%');
-assert(near(st.pv.establishment, 10.95 * 2000, 0.5), 'HV2 establishment £10.95/m (6 plants/m build-up) × 2 km', 21900, st.pv.establishment);
+assert(near(st.pv.establishment, 16 * 2000, 0.5), 'HV2 establishment: central £16/m (double row) × 2 km', 32000, st.pv.establishment);
+const lowHv2 = calculate({ ...base, scenario: { establishmentBasis: 'low' } }, hv2).fundingStack, highHv2 = calculate({ ...base, scenario: { establishmentBasis: 'high' } }, hv2).fundingStack;
+assert(near(lowHv2.pv.establishment, 22000, 0.5) && near(highHv2.pv.establishment, 46000, 0.5), 'cost range: double row £11 / £16 / £23 per m');
+const custom12 = calculate({ ...base, scenario: { establishmentBasis: 'custom', plantingCostPerM: 12.5, fenceCostPerMSide: 6.34 } }, hv2).fundingStack;
+assert(near(custom12.pv.establishment, 25000, 0.5) && custom12.plantingPerM === 12.5, 'custom planting cost per metre is used');
+assert(hv2.hedgeOutputs.funding.establishmentRangePerM.central === 16 && hv2.hedgeOutputs.funding.establishmentBuildUpLowPerM === 10.95, 'data carries the range and the low build-up');
 assert(near(st.pv.aecsCapital, 5400 * 2, 0.5), 'AECS planting capital £5.40/m');
 const ann5 = [1, 2, 3, 4, 5].reduce((t, y) => t + 1 / Math.pow(1.035, y), 0);
 assert(near(st.pv.aecsAnnual, 1349 * 2 * ann5, 0.5), 'AECS annual payments for the 5-year agreement only');
@@ -115,9 +120,9 @@ assert(near(st.pv.gapWithoutCarbon, st.pv.costs - st.pv.grants, 0.01) && st.test
 assert(st.sensitivity.length === 5 && resNo.fundingStack.tests.aecsAvailable === true, '±20% sensitivity reported; AECS availability flagged even with grants off (§4.2.1 "opportunity")');
 assert(st.tests.grantClause === 'ruling-needed' && resNo.fundingStack.tests.grantClause === 'ruling-needed', 'grant opportunity remains unresolved with grants switched off');
 const dairy = calculate({ ...base, farmType: 'Dairy' }, hv2).fundingStack;
-assert(dairy.fenceSides === 1 && near(dairy.pv.establishment, (10.95 + 9.15) * 2000, 0.5) && near(dairy.pv.aecsCapital, (5400 + 5500) * 2, 0.5), 'livestock: stock fence on one side of a boundary hedge, with the AECS fencing item');
+assert(dairy.fenceSides === 1 && near(dairy.pv.establishment, (16 + 9.15) * 2000, 0.5) && near(dairy.pv.aecsCapital, (5400 + 5500) * 2, 0.5), 'livestock: stock fence on one side of a boundary hedge, with the AECS fencing item');
 const hv8s = calculate(base, recs.find(r => r.id === 'fife_east_neuk_coast__hv8_productive_hedge')).fundingStack;
-assert(hv8s.pv.grants === 0 && near(hv8s.pv.establishment, 14.52 * 2000, 0.5), 'HV8: £14.52/m offer cost, no AECS');
+assert(hv8s.pv.grants === 0 && near(hv8s.pv.establishment, 22.4 * 2000, 0.5), 'HV8: central £20/m triple row + £2.40/m standards, no AECS');
 const native = buildHedgeRecord(db.metadata.hedgeTemplates['Fife (East Neuk Coast)'], cfg({ species: 'native' }));
 const ns = calculate(base, native).fundingStack;
 assert(near(ns.pv.aecsCapital, 5400 * 2, 0.5) && near(ns.annual.aecs, 1349 * 2, 0.5), 'native mix (three native flowering species) meets the AECS minimum, so AECS applies (VERIFIED 4 Nov 2026)');

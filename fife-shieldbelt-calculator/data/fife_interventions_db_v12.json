@@ -2291,7 +2291,13 @@
         "carbonClaim50": 52.5,
         "speciesTradeoff": null,
         "funding": {
-          "establishmentCostPerM": 10.95,
+          "establishmentCostPerM": 16,
+          "establishmentRangePerM": {
+            "low": 11,
+            "central": 16,
+            "high": 23
+          },
+          "establishmentBuildUpLowPerM": 10.95,
           "aecs": {
             "hedgeEligible": true,
             "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
@@ -2579,7 +2585,13 @@
         "carbonClaim50": 52.5,
         "speciesTradeoff": null,
         "funding": {
-          "establishmentCostPerM": 10.95,
+          "establishmentCostPerM": 16,
+          "establishmentRangePerM": {
+            "low": 11,
+            "central": 16,
+            "high": 23
+          },
+          "establishmentBuildUpLowPerM": 10.95,
           "aecs": {
             "hedgeEligible": true,
             "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
@@ -2866,7 +2878,13 @@
         "carbonClaim50": 70.7,
         "speciesTradeoff": null,
         "funding": {
-          "establishmentCostPerM": 14.27,
+          "establishmentCostPerM": 20,
+          "establishmentRangePerM": {
+            "low": 14,
+            "central": 20,
+            "high": 30
+          },
+          "establishmentBuildUpLowPerM": 14.27,
           "aecs": {
             "hedgeEligible": true,
             "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
@@ -3153,7 +3171,13 @@
         "carbonClaim50": 52.5,
         "speciesTradeoff": null,
         "funding": {
-          "establishmentCostPerM": 11.2,
+          "establishmentCostPerM": 18.4,
+          "establishmentRangePerM": {
+            "low": 11.25,
+            "central": 18.4,
+            "high": 26.2
+          },
+          "establishmentBuildUpLowPerM": 11.2,
           "aecs": {
             "hedgeEligible": true,
             "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
@@ -3440,7 +3464,13 @@
         "carbonClaim50": 52.5,
         "speciesTradeoff": null,
         "funding": {
-          "establishmentCostPerM": 10.95,
+          "establishmentCostPerM": 16,
+          "establishmentRangePerM": {
+            "low": 11,
+            "central": 16,
+            "high": 23
+          },
+          "establishmentBuildUpLowPerM": 10.95,
           "aecs": {
             "hedgeEligible": true,
             "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
@@ -3727,7 +3757,13 @@
         "carbonClaim50": 70.7,
         "speciesTradeoff": null,
         "funding": {
-          "establishmentCostPerM": 14.27,
+          "establishmentCostPerM": 20,
+          "establishmentRangePerM": {
+            "low": 14,
+            "central": 20,
+            "high": 30
+          },
+          "establishmentBuildUpLowPerM": 14.27,
           "aecs": {
             "hedgeEligible": true,
             "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
@@ -4014,7 +4050,13 @@
         "carbonClaim50": 52.5,
         "speciesTradeoff": null,
         "funding": {
-          "establishmentCostPerM": 10.95,
+          "establishmentCostPerM": 16,
+          "establishmentRangePerM": {
+            "low": 11,
+            "central": 16,
+            "high": 23
+          },
+          "establishmentBuildUpLowPerM": 10.95,
           "aecs": {
             "hedgeEligible": true,
             "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
@@ -4301,7 +4343,13 @@
         "carbonClaim50": 41.2,
         "speciesTradeoff": null,
         "funding": {
-          "establishmentCostPerM": 14.52,
+          "establishmentCostPerM": 22.4,
+          "establishmentRangePerM": {
+            "low": 14.25,
+            "central": 22.4,
+            "high": 33.2
+          },
+          "establishmentBuildUpLowPerM": 14.52,
           "aecs": {
             "hedgeEligible": false,
             "hedgeReason": "Not used: the productive hedge offer is programme-funded and does not rely on AECS (October 2026).",
@@ -8588,7 +8636,13 @@
         "carbonClaim50": 52.5,
         "speciesTradeoff": null,
         "funding": {
-          "establishmentCostPerM": 10.95,
+          "establishmentCostPerM": 16,
+          "establishmentRangePerM": {
+            "low": 11,
+            "central": 16,
+            "high": 23
+          },
+          "establishmentBuildUpLowPerM": 10.95,
           "aecs": {
             "hedgeEligible": true,
             "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
@@ -8876,7 +8930,13 @@
         "carbonClaim50": 52.5,
         "speciesTradeoff": null,
         "funding": {
-          "establishmentCostPerM": 10.95,
+          "establishmentCostPerM": 16,
+          "establishmentRangePerM": {
+            "low": 11,
+            "central": 16,
+            "high": 23
+          },
+          "establishmentBuildUpLowPerM": 10.95,
           "aecs": {
             "hedgeEligible": true,
             "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
@@ -9163,7 +9223,13 @@
         "carbonClaim50": 70.7,
         "speciesTradeoff": null,
         "funding": {
-          "establishmentCostPerM": 14.27,
+          "establishmentCostPerM": 20,
+          "establishmentRangePerM": {
+            "low": 14,
+            "central": 20,
+            "high": 30
+          },
+          "establishmentBuildUpLowPerM": 14.27,
           "aecs": {
             "hedgeEligible": true,
             "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
@@ -9450,7 +9516,13 @@
         "carbonClaim50": 52.5,
         "speciesTradeoff": null,
         "funding": {
-          "establishmentCostPerM": 11.2,
+          "establishmentCostPerM": 18.4,
+          "establishmentRangePerM": {
+            "low": 11.25,
+            "central": 18.4,
+            "high": 26.2
+          },
+          "establishmentBuildUpLowPerM": 11.2,
           "aecs": {
             "hedgeEligible": true,
             "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
@@ -9737,7 +9809,13 @@
         "carbonClaim50": 52.5,
         "speciesTradeoff": null,
         "funding": {
-          "establishmentCostPerM": 10.95,
+          "establishmentCostPerM": 16,
+          "establishmentRangePerM": {
+            "low": 11,
+            "central": 16,
+            "high": 23
+          },
+          "establishmentBuildUpLowPerM": 10.95,
           "aecs": {
             "hedgeEligible": true,
             "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
@@ -10024,7 +10102,13 @@
         "carbonClaim50": 70.7,
         "speciesTradeoff": null,
         "funding": {
-          "establishmentCostPerM": 14.27,
+          "establishmentCostPerM": 20,
+          "establishmentRangePerM": {
+            "low": 14,
+            "central": 20,
+            "high": 30
+          },
+          "establishmentBuildUpLowPerM": 14.27,
           "aecs": {
             "hedgeEligible": true,
             "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
@@ -10311,7 +10395,13 @@
         "carbonClaim50": 52.5,
         "speciesTradeoff": null,
         "funding": {
-          "establishmentCostPerM": 10.95,
+          "establishmentCostPerM": 16,
+          "establishmentRangePerM": {
+            "low": 11,
+            "central": 16,
+            "high": 23
+          },
+          "establishmentBuildUpLowPerM": 10.95,
           "aecs": {
             "hedgeEligible": true,
             "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
@@ -10598,7 +10688,13 @@
         "carbonClaim50": 41.2,
         "speciesTradeoff": null,
         "funding": {
-          "establishmentCostPerM": 14.52,
+          "establishmentCostPerM": 22.4,
+          "establishmentRangePerM": {
+            "low": 14.25,
+            "central": 22.4,
+            "high": 33.2
+          },
+          "establishmentBuildUpLowPerM": 14.52,
           "aecs": {
             "hedgeEligible": false,
             "hedgeReason": "Not used: the productive hedge offer is programme-funded and does not rely on AECS (October 2026).",
@@ -14885,7 +14981,13 @@
         "carbonClaim50": 52.5,
         "speciesTradeoff": null,
         "funding": {
-          "establishmentCostPerM": 10.95,
+          "establishmentCostPerM": 16,
+          "establishmentRangePerM": {
+            "low": 11,
+            "central": 16,
+            "high": 23
+          },
+          "establishmentBuildUpLowPerM": 10.95,
           "aecs": {
             "hedgeEligible": true,
             "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
@@ -15173,7 +15275,13 @@
         "carbonClaim50": 52.5,
         "speciesTradeoff": null,
         "funding": {
-          "establishmentCostPerM": 10.95,
+          "establishmentCostPerM": 16,
+          "establishmentRangePerM": {
+            "low": 11,
+            "central": 16,
+            "high": 23
+          },
+          "establishmentBuildUpLowPerM": 10.95,
           "aecs": {
             "hedgeEligible": true,
             "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
@@ -15460,7 +15568,13 @@
         "carbonClaim50": 70.7,
         "speciesTradeoff": null,
         "funding": {
-          "establishmentCostPerM": 14.27,
+          "establishmentCostPerM": 20,
+          "establishmentRangePerM": {
+            "low": 14,
+            "central": 20,
+            "high": 30
+          },
+          "establishmentBuildUpLowPerM": 14.27,
           "aecs": {
             "hedgeEligible": true,
             "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
@@ -15747,7 +15861,13 @@
         "carbonClaim50": 52.5,
         "speciesTradeoff": null,
         "funding": {
-          "establishmentCostPerM": 11.2,
+          "establishmentCostPerM": 18.4,
+          "establishmentRangePerM": {
+            "low": 11.25,
+            "central": 18.4,
+            "high": 26.2
+          },
+          "establishmentBuildUpLowPerM": 11.2,
           "aecs": {
             "hedgeEligible": true,
             "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
@@ -16034,7 +16154,13 @@
         "carbonClaim50": 52.5,
         "speciesTradeoff": null,
         "funding": {
-          "establishmentCostPerM": 10.95,
+          "establishmentCostPerM": 16,
+          "establishmentRangePerM": {
+            "low": 11,
+            "central": 16,
+            "high": 23
+          },
+          "establishmentBuildUpLowPerM": 10.95,
           "aecs": {
             "hedgeEligible": true,
             "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
@@ -16321,7 +16447,13 @@
         "carbonClaim50": 70.7,
         "speciesTradeoff": null,
         "funding": {
-          "establishmentCostPerM": 14.27,
+          "establishmentCostPerM": 20,
+          "establishmentRangePerM": {
+            "low": 14,
+            "central": 20,
+            "high": 30
+          },
+          "establishmentBuildUpLowPerM": 14.27,
           "aecs": {
             "hedgeEligible": true,
             "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
@@ -16608,7 +16740,13 @@
         "carbonClaim50": 52.5,
         "speciesTradeoff": null,
         "funding": {
-          "establishmentCostPerM": 10.95,
+          "establishmentCostPerM": 16,
+          "establishmentRangePerM": {
+            "low": 11,
+            "central": 16,
+            "high": 23
+          },
+          "establishmentBuildUpLowPerM": 10.95,
           "aecs": {
             "hedgeEligible": true,
             "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
@@ -16895,7 +17033,13 @@
         "carbonClaim50": 41.2,
         "speciesTradeoff": null,
         "funding": {
-          "establishmentCostPerM": 14.52,
+          "establishmentCostPerM": 22.4,
+          "establishmentRangePerM": {
+            "low": 14.25,
+            "central": 22.4,
+            "high": 33.2
+          },
+          "establishmentBuildUpLowPerM": 14.52,
           "aecs": {
             "hedgeEligible": false,
             "hedgeReason": "Not used: the productive hedge offer is programme-funded and does not rely on AECS (October 2026).",
@@ -21182,7 +21326,13 @@
         "carbonClaim50": 52.5,
         "speciesTradeoff": null,
         "funding": {
-          "establishmentCostPerM": 10.95,
+          "establishmentCostPerM": 16,
+          "establishmentRangePerM": {
+            "low": 11,
+            "central": 16,
+            "high": 23
+          },
+          "establishmentBuildUpLowPerM": 10.95,
           "aecs": {
             "hedgeEligible": true,
             "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
@@ -21470,7 +21620,13 @@
         "carbonClaim50": 52.5,
         "speciesTradeoff": null,
         "funding": {
-          "establishmentCostPerM": 10.95,
+          "establishmentCostPerM": 16,
+          "establishmentRangePerM": {
+            "low": 11,
+            "central": 16,
+            "high": 23
+          },
+          "establishmentBuildUpLowPerM": 10.95,
           "aecs": {
             "hedgeEligible": true,
             "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
@@ -21757,7 +21913,13 @@
         "carbonClaim50": 70.7,
         "speciesTradeoff": null,
         "funding": {
-          "establishmentCostPerM": 14.27,
+          "establishmentCostPerM": 20,
+          "establishmentRangePerM": {
+            "low": 14,
+            "central": 20,
+            "high": 30
+          },
+          "establishmentBuildUpLowPerM": 14.27,
           "aecs": {
             "hedgeEligible": true,
             "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
@@ -22044,7 +22206,13 @@
         "carbonClaim50": 52.5,
         "speciesTradeoff": null,
         "funding": {
-          "establishmentCostPerM": 11.2,
+          "establishmentCostPerM": 18.4,
+          "establishmentRangePerM": {
+            "low": 11.25,
+            "central": 18.4,
+            "high": 26.2
+          },
+          "establishmentBuildUpLowPerM": 11.2,
           "aecs": {
             "hedgeEligible": true,
             "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
@@ -22331,7 +22499,13 @@
         "carbonClaim50": 52.5,
         "speciesTradeoff": null,
         "funding": {
-          "establishmentCostPerM": 10.95,
+          "establishmentCostPerM": 16,
+          "establishmentRangePerM": {
+            "low": 11,
+            "central": 16,
+            "high": 23
+          },
+          "establishmentBuildUpLowPerM": 10.95,
           "aecs": {
             "hedgeEligible": true,
             "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
@@ -22618,7 +22792,13 @@
         "carbonClaim50": 70.7,
         "speciesTradeoff": null,
         "funding": {
-          "establishmentCostPerM": 14.27,
+          "establishmentCostPerM": 20,
+          "establishmentRangePerM": {
+            "low": 14,
+            "central": 20,
+            "high": 30
+          },
+          "establishmentBuildUpLowPerM": 14.27,
           "aecs": {
             "hedgeEligible": true,
             "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
@@ -22905,7 +23085,13 @@
         "carbonClaim50": 52.5,
         "speciesTradeoff": null,
         "funding": {
-          "establishmentCostPerM": 10.95,
+          "establishmentCostPerM": 16,
+          "establishmentRangePerM": {
+            "low": 11,
+            "central": 16,
+            "high": 23
+          },
+          "establishmentBuildUpLowPerM": 10.95,
           "aecs": {
             "hedgeEligible": true,
             "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
@@ -23192,7 +23378,13 @@
         "carbonClaim50": 41.2,
         "speciesTradeoff": null,
         "funding": {
-          "establishmentCostPerM": 14.52,
+          "establishmentCostPerM": 22.4,
+          "establishmentRangePerM": {
+            "low": 14.25,
+            "central": 22.4,
+            "high": 33.2
+          },
+          "establishmentBuildUpLowPerM": 14.52,
           "aecs": {
             "hedgeEligible": false,
             "hedgeReason": "Not used: the productive hedge offer is programme-funded and does not rely on AECS (October 2026).",
@@ -27479,7 +27671,13 @@
         "carbonClaim50": 52.5,
         "speciesTradeoff": null,
         "funding": {
-          "establishmentCostPerM": 10.95,
+          "establishmentCostPerM": 16,
+          "establishmentRangePerM": {
+            "low": 11,
+            "central": 16,
+            "high": 23
+          },
+          "establishmentBuildUpLowPerM": 10.95,
           "aecs": {
             "hedgeEligible": true,
             "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
@@ -27767,7 +27965,13 @@
         "carbonClaim50": 52.5,
         "speciesTradeoff": null,
         "funding": {
-          "establishmentCostPerM": 10.95,
+          "establishmentCostPerM": 16,
+          "establishmentRangePerM": {
+            "low": 11,
+            "central": 16,
+            "high": 23
+          },
+          "establishmentBuildUpLowPerM": 10.95,
           "aecs": {
             "hedgeEligible": true,
             "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
@@ -28054,7 +28258,13 @@
         "carbonClaim50": 70.7,
         "speciesTradeoff": null,
         "funding": {
-          "establishmentCostPerM": 14.27,
+          "establishmentCostPerM": 20,
+          "establishmentRangePerM": {
+            "low": 14,
+            "central": 20,
+            "high": 30
+          },
+          "establishmentBuildUpLowPerM": 14.27,
           "aecs": {
             "hedgeEligible": true,
             "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
@@ -28341,7 +28551,13 @@
         "carbonClaim50": 52.5,
         "speciesTradeoff": null,
         "funding": {
-          "establishmentCostPerM": 11.2,
+          "establishmentCostPerM": 18.4,
+          "establishmentRangePerM": {
+            "low": 11.25,
+            "central": 18.4,
+            "high": 26.2
+          },
+          "establishmentBuildUpLowPerM": 11.2,
           "aecs": {
             "hedgeEligible": true,
             "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
@@ -28628,7 +28844,13 @@
         "carbonClaim50": 52.5,
         "speciesTradeoff": null,
         "funding": {
-          "establishmentCostPerM": 10.95,
+          "establishmentCostPerM": 16,
+          "establishmentRangePerM": {
+            "low": 11,
+            "central": 16,
+            "high": 23
+          },
+          "establishmentBuildUpLowPerM": 10.95,
           "aecs": {
             "hedgeEligible": true,
             "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
@@ -28915,7 +29137,13 @@
         "carbonClaim50": 70.7,
         "speciesTradeoff": null,
         "funding": {
-          "establishmentCostPerM": 14.27,
+          "establishmentCostPerM": 20,
+          "establishmentRangePerM": {
+            "low": 14,
+            "central": 20,
+            "high": 30
+          },
+          "establishmentBuildUpLowPerM": 14.27,
           "aecs": {
             "hedgeEligible": true,
             "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
@@ -29202,7 +29430,13 @@
         "carbonClaim50": 52.5,
         "speciesTradeoff": null,
         "funding": {
-          "establishmentCostPerM": 10.95,
+          "establishmentCostPerM": 16,
+          "establishmentRangePerM": {
+            "low": 11,
+            "central": 16,
+            "high": 23
+          },
+          "establishmentBuildUpLowPerM": 10.95,
           "aecs": {
             "hedgeEligible": true,
             "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
@@ -29489,7 +29723,13 @@
         "carbonClaim50": 41.2,
         "speciesTradeoff": null,
         "funding": {
-          "establishmentCostPerM": 14.52,
+          "establishmentCostPerM": 22.4,
+          "establishmentRangePerM": {
+            "low": 14.25,
+            "central": 22.4,
+            "high": 33.2
+          },
+          "establishmentBuildUpLowPerM": 14.52,
           "aecs": {
             "hedgeEligible": false,
             "hedgeReason": "Not used: the productive hedge offer is programme-funded and does not rely on AECS (October 2026).",
@@ -33776,7 +34016,13 @@
         "carbonClaim50": 52.5,
         "speciesTradeoff": null,
         "funding": {
-          "establishmentCostPerM": 10.95,
+          "establishmentCostPerM": 16,
+          "establishmentRangePerM": {
+            "low": 11,
+            "central": 16,
+            "high": 23
+          },
+          "establishmentBuildUpLowPerM": 10.95,
           "aecs": {
             "hedgeEligible": true,
             "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
@@ -34064,7 +34310,13 @@
         "carbonClaim50": 52.5,
         "speciesTradeoff": null,
         "funding": {
-          "establishmentCostPerM": 10.95,
+          "establishmentCostPerM": 16,
+          "establishmentRangePerM": {
+            "low": 11,
+            "central": 16,
+            "high": 23
+          },
+          "establishmentBuildUpLowPerM": 10.95,
           "aecs": {
             "hedgeEligible": true,
             "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
@@ -34351,7 +34603,13 @@
         "carbonClaim50": 70.7,
         "speciesTradeoff": null,
         "funding": {
-          "establishmentCostPerM": 14.27,
+          "establishmentCostPerM": 20,
+          "establishmentRangePerM": {
+            "low": 14,
+            "central": 20,
+            "high": 30
+          },
+          "establishmentBuildUpLowPerM": 14.27,
           "aecs": {
             "hedgeEligible": true,
             "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
@@ -34638,7 +34896,13 @@
         "carbonClaim50": 52.5,
         "speciesTradeoff": null,
         "funding": {
-          "establishmentCostPerM": 11.2,
+          "establishmentCostPerM": 18.4,
+          "establishmentRangePerM": {
+            "low": 11.25,
+            "central": 18.4,
+            "high": 26.2
+          },
+          "establishmentBuildUpLowPerM": 11.2,
           "aecs": {
             "hedgeEligible": true,
             "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
@@ -34925,7 +35189,13 @@
         "carbonClaim50": 52.5,
         "speciesTradeoff": null,
         "funding": {
-          "establishmentCostPerM": 10.95,
+          "establishmentCostPerM": 16,
+          "establishmentRangePerM": {
+            "low": 11,
+            "central": 16,
+            "high": 23
+          },
+          "establishmentBuildUpLowPerM": 10.95,
           "aecs": {
             "hedgeEligible": true,
             "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
@@ -35212,7 +35482,13 @@
         "carbonClaim50": 70.7,
         "speciesTradeoff": null,
         "funding": {
-          "establishmentCostPerM": 14.27,
+          "establishmentCostPerM": 20,
+          "establishmentRangePerM": {
+            "low": 14,
+            "central": 20,
+            "high": 30
+          },
+          "establishmentBuildUpLowPerM": 14.27,
           "aecs": {
             "hedgeEligible": true,
             "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
@@ -35499,7 +35775,13 @@
         "carbonClaim50": 52.5,
         "speciesTradeoff": null,
         "funding": {
-          "establishmentCostPerM": 10.95,
+          "establishmentCostPerM": 16,
+          "establishmentRangePerM": {
+            "low": 11,
+            "central": 16,
+            "high": 23
+          },
+          "establishmentBuildUpLowPerM": 10.95,
           "aecs": {
             "hedgeEligible": true,
             "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
@@ -35786,7 +36068,13 @@
         "carbonClaim50": 41.2,
         "speciesTradeoff": null,
         "funding": {
-          "establishmentCostPerM": 14.52,
+          "establishmentCostPerM": 22.4,
+          "establishmentRangePerM": {
+            "low": 14.25,
+            "central": 22.4,
+            "high": 33.2
+          },
+          "establishmentBuildUpLowPerM": 14.52,
           "aecs": {
             "hedgeEligible": false,
             "hedgeReason": "Not used: the productive hedge offer is programme-funded and does not rely on AECS (October 2026).",

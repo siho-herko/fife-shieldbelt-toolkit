@@ -315,6 +315,38 @@ export function establishmentCostPerM(cfg) {
   return r2(f.plantsPerM * perPlant + COST.mulchPerM + trees);
 }
 
+/**
+ * Establishment cost RANGE, £ per metre of hedge, excluding fencing (cost sweep, 4 Nov 2026). The point estimates above
+ * are the LOW (programme bulk-buy) case only; nothing here is a contractor quote.
+ *  low:     programme build-up at 55% of retail plant prices (claude/productive-hedge-farmer-cost.md, 21 Oct 2026):
+ *           double row 6/m £10.95, triple row 8/m £14.27. JUDGEMENT on CITED prices.
+ *  central: the same build-up's central case (75% of retail plants, £0.50 guard + cane, £0.55/plant labour, £1.50/m mulch,
+ *           £2/m aftercare): £20.32/m at 8 plants/m, scaled to £16.10/m at 6/m. Cross-checks (CITED): North York Moors
+ *           Traditional Boundary Fund 2026/27 standard cost £13.46/m (6/m); Ashridge (Jul 2026) BN11 plant pack under £7/m
+ *           plus up to £7/m guards/canes/fabric, before labour.
+ *  high:    England Capital Grants BN11 'Planting new hedges' payment rate £22.97/m (double staggered row, 6/m; gov.uk,
+ *           updated 2026), used as a full-cost proxy; triple row scaled by plant count (×8/6) and rounded to £30.
+ * Standard trees: low £0.25/m (whip-size standard, build-up); central £2.40/m and high £3.20/m from CS TE1 'Planting
+ * standard hedgerow tree' £19.06/tree at one per 8 m / 6 m. All rounded: the spread, not the decimals, is the point.
+ * AECS pays £5.40/m capital in Scotland (a contribution, not a cost estimate).
+ */
+export const ESTABLISHMENT_RANGE = {
+  double: { low: 11, central: 16, high: 23 },
+  triple: { low: 14, central: 20, high: 30 },
+  productive: { low: 14, central: 20, high: 30 },
+};
+export const STANDARDS_RANGE = { low: 0.25, central: 2.4, high: 3.2 };
+/** Stock fence, £ per metre per side: default NYM 2026/27 standard cost £9.15 (CITED); England FG1 pays £6.34 (CITED). */
+export const FENCE_COST_PER_M_SIDE = 9.15;
+
+export function establishmentRangePerM(cfg) {
+  const base = ESTABLISHMENT_RANGE[cfg.form] ?? ESTABLISHMENT_RANGE.double;
+  const trees = TREES[cfg.trees]?.withTrees || cfg.form === 'productive';
+  const out = {};
+  for (const k of ['low', 'central', 'high']) out[k] = r2(base[k] + (trees ? STANDARDS_RANGE[k] : 0));
+  return out;
+}
+
 /** Stock-fence sides assumed for livestock farm types (JUDGEMENT): one on a boundary (the other side is the existing boundary), two elsewhere. */
 export function fenceSides(cfg, livestock) {
   if (!livestock) return 0;
@@ -493,7 +525,7 @@ export function buildHedgeRecord(template, input) {
       carbonGross50: carbon.gross50,
       carbonClaim50: seq,
       speciesTradeoff: sp.tradeoff ?? null,
-      funding: { establishmentCostPerM: establishmentCostPerM(cfg), aecs: aecsPayments(cfg), gbrStripM: cfg.position === 'watercourse' ? 2 : 0 },
+      funding: { establishmentCostPerM: establishmentRangePerM(cfg).central, establishmentRangePerM: establishmentRangePerM(cfg), establishmentBuildUpLowPerM: establishmentCostPerM(cfg), aecs: aecsPayments(cfg), gbrStripM: cfg.position === 'watercourse' ? 2 : 0 },
     },
     carbonSequestration: Object.fromEntries(BAND_KEYS.map((k, i) => [k, bands[i]])),
     sepaMetrics: JSON.parse(JSON.stringify(scen.sepaMetrics)),

@@ -1,0 +1,24 @@
+# Files that must never be published with the calculator (Workers Static Assets).
+# Keep this list in step with the app: only index.html, *.js app modules, styles/,
+# icons/, manifest.json, _headers and the live data files are served.
+.*
+node_modules
+tests
+test-results
+playwright-report
+scripts
+BUILD_LOG.txt
+server.tmp.cjs
+package.json
+package-lock.json
+playwright.config.js
+wrangler.toml
+wrangler.jsonc
+*.md
+*.tgz
+# Orphaned page carrying superseded v9-era figures (deleted on the refresh branch; still on origin/main)
+fife-shieldbelt-topics.html
+# Superseded datasets: v9-v11 contain figures and claims withdrawn after the Nov 2026 audit
+data/fife_interventions_db_v9.json
+data/fife_interventions_db_v10.json
+data/fife_interventions_db_v11.json

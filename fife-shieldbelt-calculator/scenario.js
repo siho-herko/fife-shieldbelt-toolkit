@@ -10,6 +10,7 @@ export const SCENARIO_DEFAULTS = Object.freeze({
   tripleFunding: 'assumed', efa: 'unknown', efaAdjustedAnnualPerKm: -1,
   grantInterpretation: 'unresolved', capitalPaymentYear: 0,
   creditSaleMode: 'annual', issuanceDelayYears: 0,
+  establishmentBasis: 'central', plantingCostPerM: 0, fenceCostPerMSide: 9.15,
 });
 const choices = {
   baselineHabitat: ['unknown','cereal','existing-grassland'], fenceSides: ['auto','0','1','2'],
@@ -18,12 +19,14 @@ const choices = {
   hedgeConditions: ['unknown','yes','no'], waterbody: ['unknown','small','wide','still'],
   tripleFunding: ['assumed','exclude'], efa: ['unknown','no','yes'],
   grantInterpretation: ['unresolved','separate-outcomes','excluded'], creditSaleMode: ['annual','forward12'],
+  establishmentBasis: ['low','central','high','custom'],
 };
 const bounds = {
   soldPercent:[0,100], sponsorshipPerKm:[0,100000], discountPercent:[0,30], financeYears:[10,50],
   existingUncroppedM:[0,60], edgeFactor:[0,2], maintenancePerKm:[0,100000], mrvAnnual:[0,1000000],
   setupCost:[0,10000000], salesFeePercent:[0,100], privateBenefitPerKm:[0,100000],
   additionalFunding:[0,10000000], efaAdjustedAnnualPerKm:[-1,100000], capitalPaymentYear:[0,1], issuanceDelayYears:[0,10],
+  plantingCostPerM:[0,500], fenceCostPerMSide:[0,100],
 };
 export function normaliseScenario(raw = {}) {
   if (!raw || typeof raw !== 'object' || Array.isArray(raw)) raw = {};
@@ -109,7 +112,10 @@ export function scenarioFunding(record, inputs) {
   const oncra=inputs.carbonRoute!=='contribution';
   const allowed=!oncra || s.grantInterpretation!=='excluded';
   const price=Math.max(0,Number(inputs.creditPrice)||0), sales=s.soldPercent/100*(1-s.salesFeePercent/100);
-  const establishment=(f.establishmentCostPerM*1000+a.sides*9.15*1000)*km;
+  // Planting cost per metre (excl. fencing): low / central / high range or a user-entered figure (cost sweep, 4 Nov 2026)
+  const range=f.establishmentRangePerM || {low:f.establishmentCostPerM,central:f.establishmentCostPerM,high:f.establishmentCostPerM};
+  const plantingPerM=s.establishmentBasis==='custom'&&s.plantingCostPerM>0?s.plantingCostPerM:(range[s.establishmentBasis]??range.central);
+  const establishment=(plantingPerM*1000+a.sides*s.fenceCostPerMSide*1000)*km;
   const income=incrementalIncome(record,{...inputs,lengthM:km*1000});
   const annualCost=s.maintenancePerKm*km+s.mrvAnnual;
   const benefit=s.privateBenefitPerKm*km;
@@ -148,7 +154,7 @@ export function scenarioFunding(record, inputs) {
   const drivers={establishment:pv.establishment,incomeForgone:pv.incomeForgone,lifecycle:pv.lifecycle,privateBenefits:-pv.privateBenefits};
   const sensitivity=Object.entries(drivers).map(([driver,value])=>({driver,minus20:pv.gapWithoutCarbon-.2*value,plus20:pv.gapWithoutCarbon+.2*value}));
   sensitivity.push({driver:'combined',minus20:pv.gapWithoutCarbon-.2*(pv.costs+pv.privateBenefits),plus20:pv.gapWithoutCarbon+.2*(pv.costs+pv.privateBenefits)});
-  return {years,discountRate:rate,km,grantsIncluded:inputs.grants!=='none',carbonRoute:oncra?'oncra':'contribution',fenceSides:a.sides,scenario:s,
+  return {years,discountRate:rate,km,plantingPerM,establishmentRange:range,fenceCostPerMSide:s.fenceCostPerMSide,grantsIncluded:inputs.grants!=='none',carbonRoute:oncra?'oncra':'contribution',fenceSides:a.sides,scenario:s,
     annual:{aecs:a.annual,incomeForgone:income,ongoingCosts:annualCost,privateBenefits:benefit},pv,schedule,sensitivity,
     irr:irrAnalysis(schedule.map(r=>r.withoutCarbon)), grantNotes:a.notes,forwardTonnes,
     carbonTonnes30:oncra?Array.from({length:years},(_,i)=>carbonForYear(i+1)).reduce((x,y)=>x+y,0):null,

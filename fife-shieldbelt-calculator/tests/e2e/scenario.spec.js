@@ -37,3 +37,15 @@ test('IRR "none" explains whether the cash flows never pay back (default HV2)', 
   await page.goto('/?variant=HV2'); await waitForAppReady(page);
   await expect(page.locator('#stack-tests')).toContainText('lose money at every discount rate');
 });
+
+test('planting cost basis and custom cost change the establishment row', async ({ page }) => {
+  await page.goto('/?variant=HV2'); await waitForAppReady(page); await inputs(page);
+  await expect(page.locator('#stack-table')).toContainText('planting £16.00/m');
+  await page.getByText('Planting costs', { exact: true }).click();
+  await page.locator('#scenario-establishmentBasis').selectOption('high');
+  await expect(page.locator('#stack-table')).toContainText('planting £23.00/m');
+  await page.locator('#scenario-establishmentBasis').selectOption('custom');
+  await page.locator('#scenario-plantingCostPerM').fill('12.5'); await page.locator('#scenario-plantingCostPerM').press('Tab');
+  await expect(page.locator('#stack-table')).toContainText('planting £12.50/m');
+  await expect(page.locator('#scenario-cost-hint')).toContainText('low £11.00, central £16.00, high £23.00');
+});

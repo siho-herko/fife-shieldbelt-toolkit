@@ -1864,7 +1864,7 @@ function renderFundingStack(r) {
   setText('stack-intro', `Hypothetical ${sponsor?'sponsorship':'ONCRA'} financing for ${fmt(s.km,2)} km, ${state.farmType}. ${s.years}-year present value at ${fmt(s.discountRate*100,1)}%, a selected financial assumption, not an evidenced cost of capital or the Treasury social rate. ${o.soldPercent}% assumed ${sponsor?'funded':'sold'}. No buyer demand confirmed; contracted carbon receipts £0.`);
   const table=document.getElementById('stack-table');
   if(table)table.innerHTML='<thead><tr><th>Selected scenario</th><th class="num">Present value</th></tr></thead><tbody>'
-    +row('Establishment, including selected fencing (unquoted estimate)',-p.establishment)
+    +row(`Establishment: planting £${fmt(s.plantingPerM,2)}/m${s.fenceSides?` + fencing £${fmt(s.fenceCostPerMSide,2)}/m × ${s.fenceSides} side${s.fenceSides>1?'s':''}`:''} (unquoted estimate)`,-p.establishment)
     +row('Incremental income forgone',-p.incomeForgone)
     +row('Entered setup, maintenance, monitoring and fees',-p.lifecycle)
     +row('AECS capital (conditional)',p.aecsCapital)+row('AECS annual payments (5 years; conditional)',p.aecsAnnual)
@@ -1874,6 +1874,8 @@ function renderFundingStack(r) {
     +row('Remaining balance (negative = funding still needed)',-p.gapAfterCarbon)
     +row('Public water-quality value — separate, not cash or included above',p.water)+'</tbody>';
   const undiscounted=s.schedule.reduce((t,x)=>t+x.withoutCarbon,0);
+  const er=s.establishmentRange;
+  if(er)setText('scenario-cost-hint',`Planting cost per metre of hedge, excluding fencing, for this hedge: low £${fmt(er.low,2)}, central £${fmt(er.central,2)}, high £${fmt(er.high,2)}; using £${fmt(s.plantingPerM,2)}. No contractor quotes yet: the range spans a bulk-buy programme build-up to England's full-cost BN11 rate. Enter a quote with Custom.`);
   const irr=s.irr.status==='none'?(undiscounted<0
       ?'No IRR exists: without carbon or sponsorship these cash flows lose money at every discount rate (they never recover the outlay), which is the situation ONCRA’s “zero or negative IRR” wording describes. This alone is not an ONCRA decision.'
       :'No IRR exists: without carbon or sponsorship these cash flows are positive at every discount rate, so carbon is not needed for the investment to pay. This alone is not an ONCRA decision.'):s.irr.status==='unique'?`IRR without carbon: ${fmt(s.irr.rates[0]*100,2)}%. This alone is not an ONCRA decision.`:s.irr.status==='multiple'?`Multiple IRRs (${s.irr.rates.map(x=>fmt(x*100,2)+'%').join(', ')}); a single hurdle comparison is ambiguous.`:'IRR is indeterminate or numerically unresolved; use the cash flows and seek an agreed appraisal method.';
