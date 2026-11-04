@@ -1866,14 +1866,18 @@ function renderFundingStack(r) {
     + '</tbody>';
 
   const tag = (kind, text) => `<span class="tag tag--${kind}">${text}</span>`;
-  const fin = s.tests.financial === 'grants-cover'
-    ? `${tag('no', 'Weak')}<strong>Financial additionality:</strong> grants cover the costs without carbon, so it would be hard to show carbon is needed for the hedge to be planted.`
-    : s.tests.financial === 'carbon-closes-gap'
-      ? `${tag('ok', 'Stronger')}<strong>Financial additionality:</strong> without carbon there is a gap of ${fmtGBP(p.gapWithoutCarbon)}; carbon closes it, so carbon is decisive (subject to evidence).`
-      : `${tag('warn', 'Partial')}<strong>Financial additionality:</strong> without carbon there is a gap of ${fmtGBP(p.gapWithoutCarbon)}. Carbon covers ${pct(s.carbonShareOfGap)} of it (${pct(s.carbonShareOfCost)} of total cost), so other finance (a buyer premium or the Nature Pot) must make up the rest; the case rests on the whole package being needed.`;
+  const sens = s.tests.sensitivity === 'robust' ? 'and stays so with costs −20% and grants +20%'
+    : s.tests.sensitivity === 'not-robust' ? 'but not with costs −20% and grants +20% (ONCRA asks for ±20% sensitivity)'
+      : 'but only just: with costs +20% and grants −20% it would pass';
+  const fin = s.tests.financial === 'fails-option-b'
+    ? `${tag('no', 'Likely fails')}<strong>Financial additionality (ONCRA Guidelines §8.2.1, Option B):</strong> without carbon income the hedge already pays back at ${fmt(s.discountRate * 100, 1)}% (grants cover the costs), ${sens}. ONCRA asks for an IRR without carbon that is zero, negative or below the cost of capital.`
+    : `${tag('ok', 'Passes screen')}<strong>Financial additionality (ONCRA Guidelines §8.2.1, Option B):</strong> without carbon income there is a gap of ${fmtGBP(p.gapWithoutCarbon)}, so the IRR is below a ${fmt(s.discountRate * 100, 1)}% cost of capital, ${sens}. `
+      + (s.tests.carbonClosesGap ? 'Carbon closes the gap.' : `Carbon covers ${pct(s.carbonShareOfGap)} of the gap (${pct(s.carbonShareOfCost)} of total cost), so other finance (a buyer premium or the Nature Pot) is still needed for planting to go ahead.`);
   const grant = s.tests.grantClause === 'ruling-needed'
-    ? `${tag('warn', 'Ruling needed')}<strong>Government-grant clause:</strong> AECS would cover ${pct(s.grantShareOfCost)} of costs. ONCRA Guidelines (27 Mar 2026) §8.2.2: "Activities are not eligible for government subsidies specifically targeting the same mitigation outcomes." ONCRA must rule whether AECS hedge and margin options target the same outcome as carbon units.`
-    : `${tag('ok', 'Clear')}<strong>Government-grant clause:</strong> ${s.grantsIncluded ? 'no AECS payment applies to this option' : 'grants switched off'}, so the clause is not triggered.`;
+    ? `${tag('no', 'Eligibility risk')}<strong>Grants (ONCRA Guidelines §4.2.1 and §8.2.2):</strong> AECS would cover ${pct(s.grantShareOfCost)} of costs. §4.2.1 excludes projects that "have the opportunity to make use of government subsidies or grants specifically aimed at the mitigation activity"; §8.2.2: "Activities are not eligible for government subsidies specifically targeting the same mitigation outcomes." Whether AECS hedge and margin options are "aimed at" carbon removal needs a written ONCRA ruling.`
+    : s.tests.aecsAvailable
+      ? `${tag('warn', 'Ruling needed')}<strong>Grants (ONCRA Guidelines §4.2.1):</strong> ${s.grantsIncluded ? 'the programme offer does not use AECS for this option' : 'grants are switched off here'}, but AECS options could still be open to it, and §4.2.1 refers to the "opportunity" to use mitigation-specific grants, not only their use. ONCRA must rule whether AECS counts.`
+      : `${tag('ok', 'Clear')}<strong>Grants:</strong> no AECS payment applies to this option, so ONCRA's grant clauses are not triggered.`;
   const reg = s.tests.regulatory.gbrStripM
     ? `${tag('warn', 'Partly baseline')}<strong>Regulatory additionality:</strong> planting a hedge is not legally required, but the first ${s.tests.regulatory.gbrStripM} m from the bank is already required by the General Binding Rules, so it is baseline, not additional.`
     : `${tag('ok', 'Likely clear')}<strong>Regulatory additionality:</strong> no law requires planting this hedge (GAEC 7 protects hedges once they exist).`;

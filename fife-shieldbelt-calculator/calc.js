@@ -595,10 +595,18 @@ export function fundingStack(record, inputs) {
   const carbonShareOfGap = pv.gapWithoutCarbon > 0 ? pv.carbon / pv.gapWithoutCarbon : null;
   const carbonShareOfCost = pv.costs > 0 ? pv.carbon / pv.costs : 0;
   const grantShareOfCost = pv.costs > 0 ? pv.grants / pv.costs : 0;
+  // ONCRA Guidelines (27 Mar 2026) §8.2.1 Option B (VERIFIED 4 Nov 2026): where a project has revenue other than carbon
+  // (here AECS), compute the IRR without carbon credit income and show it is zero/negative or below the cost of capital,
+  // with ±20% sensitivity on key assumptions. A positive gap (negative NPV without carbon at 3.5%) means the IRR is below
+  // a 3.5% cost of capital. JUDGEMENT: 3.5% stands in for the operator's cost of capital until a real figure is supplied.
   let financial;
-  if (pv.gapWithoutCarbon <= 0) financial = 'grants-cover';
-  else if (pv.carbon >= pv.gapWithoutCarbon) financial = 'carbon-closes-gap';
-  else financial = 'carbon-partial';
+  if (pv.gapWithoutCarbon <= 0) financial = 'fails-option-b';
+  else financial = 'passes-option-b';
+  const worst = pv.costs * 0.8 - pv.grants * 1.2;   // costs 20% lower, grants 20% higher
+  const best  = pv.costs * 1.2 - pv.grants * 0.8;
+  const sensitivity = financial === 'passes-option-b'
+    ? (worst > 0 ? 'robust' : 'not-robust')
+    : (best > 0 ? 'borderline' : 'robust');
 
   return {
     years: STACK_YEARS, discountRate: STACK_DISCOUNT, km, grantsIncluded: grantsOn, carbonRoute: route,
@@ -609,7 +617,11 @@ export function fundingStack(record, inputs) {
     carbonShareOfGap, carbonShareOfCost, grantShareOfCost,
     tests: {
       financial,
+      sensitivity,
+      carbonClosesGap: pv.gapWithoutCarbon > 0 && pv.carbon >= pv.gapWithoutCarbon,
       grantClause: grantsOn && pv.grants > 0 ? 'ruling-needed' : 'no-grant',
+      // §4.2.1 bars projects that "have the opportunity to make use of" mitigation-specific grants, even if unused
+      aecsAvailable: (safeNum(a.plantingCapitalPerKm) + safeNum(a.hedgeAnnualPerKm) + safeNum(a.stripAnnualPerKm)) > 0 || cfg.form === 'productive',
       regulatory: { gbrStripM: safeNum(f.gbrStripM), plantingRequired: false },
     },
     aecsHedgeReason: a.hedgeReason ?? '',

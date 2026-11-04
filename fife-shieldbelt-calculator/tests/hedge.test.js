@@ -111,7 +111,8 @@ assert(near(st.pv.establishment, 10.95 * 2000, 0.5), 'HV2 establishment £10.95/
 assert(near(st.pv.aecsCapital, 5400 * 2, 0.5), 'AECS planting capital £5.40/m');
 const ann5 = [1, 2, 3, 4, 5].reduce((t, y) => t + 1 / Math.pow(1.035, y), 0);
 assert(near(st.pv.aecsAnnual, 1349 * 2 * ann5, 0.5), 'AECS annual payments for the 5-year agreement only');
-assert(near(st.pv.gapWithoutCarbon, st.pv.costs - st.pv.grants, 0.01) && st.tests.financial === 'carbon-partial', 'gap = costs − grants; carbon covers part of it');
+assert(near(st.pv.gapWithoutCarbon, st.pv.costs - st.pv.grants, 0.01) && st.tests.financial === 'passes-option-b' && !st.tests.carbonClosesGap, 'gap = costs − grants; passes the Option B screen; carbon covers part of the gap');
+assert(['robust', 'not-robust'].includes(st.tests.sensitivity) && resNo.fundingStack.tests.aecsAvailable === true, '±20% sensitivity reported; AECS availability flagged even with grants off (§4.2.1 "opportunity")');
 assert(st.tests.grantClause === 'ruling-needed' && resNo.fundingStack.tests.grantClause === 'no-grant', 'grant clause flagged only when grants are used');
 const dairy = calculate({ ...base, farmType: 'Dairy' }, hv2).fundingStack;
 assert(dairy.fenceSides === 1 && near(dairy.pv.establishment, (10.95 + 9.15) * 2000, 0.5) && near(dairy.pv.aecsCapital, (5400 + 5500) * 2, 0.5), 'livestock: stock fence on one side of a boundary hedge, with the AECS fencing item');
@@ -119,12 +120,12 @@ const hv8s = calculate(base, recs.find(r => r.id === 'fife_east_neuk_coast__hv8_
 assert(hv8s.pv.grants === 0 && near(hv8s.pv.establishment, 14.52 * 2000, 0.5), 'HV8: £14.52/m offer cost, no AECS');
 const native = buildHedgeRecord(db.metadata.hedgeTemplates['Fife (East Neuk Coast)'], cfg({ species: 'native' }));
 const ns = calculate(base, native).fundingStack;
-assert(ns.pv.aecsCapital === 0 && near(ns.annual.aecs, 149 * 2, 0.5), 'native mix: no AECS hedge payments, Grass Strips still possible');
+assert(near(ns.pv.aecsCapital, 5400 * 2, 0.5) && near(ns.annual.aecs, 1349 * 2, 0.5), 'native mix (three native flowering species) meets the AECS minimum, so AECS applies (VERIFIED 4 Nov 2026)');
 assert(calculate(base, recs.find(r => r.variant.startsWith('1.'))).fundingStack === null, 'no funding stack for non-hedge records');
 assert(calculate(base, recs.find(r => r.variant.startsWith('1.'))).hedge === null && hedgeSummary({}, 1000) === null, 'no hedge summary for non-hedge records');
 const custom = buildHedgeRecord(db.metadata.hedgeTemplates['Fife (East Neuk Coast)'], cfg({ species: 'native', stripM: 10 }));
 assert(custom.hedgeConfig.preset === null && /Custom hedge/.test(custom.variant) && custom.width === '10m', 'custom hedge record: label and width');
-assert(/Not AECS-compliant/.test(custom.registry.regulatoryAlignment) && custom.hedgeOutputs.speciesTradeoff, 'native mix shows its trade-offs');
+assert(/three native flowering species/.test(custom.hedgeOutputs.speciesTradeoff) && !/60-80% hawthorn plus/.test(custom.registry.regulatoryAlignment), 'native mix shows its trade-offs; no false 60-80% hawthorn requirement');
 const hv8 = calculate(base, recs.find(r => r.id === 'fife_east_neuk_coast__hv8_productive_hedge'));
 assert(near(hv8.seq50yrTotal, 41.2) && near(hv8.hedge.carbonGross50PerKm, 92.6), 'HV8 counts soil and roots (41.2), shows 92.6 gross');
 

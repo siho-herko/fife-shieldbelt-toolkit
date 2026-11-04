@@ -35,7 +35,7 @@ test.describe('Hedge configurator (v12)', () => {
     await openStep(page, 4);
     await btn(page, 'species', 'native').click();
     await expect(title(page)).toContainText('Custom hedge');
-    await expect(page.locator('#hedge-config-notes')).toContainText('Not AECS-compliant');
+    await expect(page.locator('#hedge-config-notes')).toContainText('three native flowering species');
     await expect(page).toHaveURL(/hedge=double-native-none-6-boundary/);
     const url = page.url();
     await page.goto(url);
@@ -84,11 +84,12 @@ test.describe('Hedge configurator (v12)', () => {
     const stack = page.locator('#section-stack');
     await expect(stack).not.toHaveClass(/hidden/);
     await expect(page.locator('#stack-table')).toContainText('AECS annual payments');
-    await expect(page.locator('#stack-tests')).toContainText('Government-grant clause');
+    await expect(page.locator('#stack-tests')).toContainText('§8.2.1, Option B');
+    await expect(page.locator('#stack-tests')).toContainText('§4.2.1');
     await openStep(page, 6);
     await page.locator('[data-grants="none"]').click();
     await expect(page.locator('#stack-table')).not.toContainText('AECS capital');
-    await expect(page.locator('#stack-tests')).toContainText('grants switched off');
+    await expect(page.locator('#stack-tests')).toContainText('grants are switched off here');
     await page.locator('[data-carbon-route="contribution"]').click();
     await expect(page.locator('#stack-tests')).toContainText('scope 3 inventory');
     await expect(page).toHaveURL(/grants=none/);

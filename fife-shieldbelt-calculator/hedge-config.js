@@ -131,7 +131,7 @@ export const FORMS = {
   },
   triple: {
     label: 'Triple row', short: '3 m triple row', rows: 3, crownM: 3.0, heightM: 3.0, plantsPerM: 8, harvested: false,
-    planting: 'Triple staggered row, 8 plants/m (as in the Productive Hedge specification), rows about 40 cm apart.',
+    planting: 'Triple staggered row, 8 plants/m (as in the Productive Hedge specification), rows about 40 cm apart. AECS asks for double-staggered rows at 6 plants/m: RPID to confirm a triple row qualifies.',
     maintenance: 'As the double row, but allowed to grow out to about 3 m wide and 2.5-3 m tall; trim on a 3-year rotation or lay at 10-15 years.',
     roots: 'Three rows give a denser root mat across a wider band, which supports infiltration and surface-flow interception (hedge width drives surface nitrogen interception: Van Vooren et al. 2017).',
   },
@@ -147,13 +147,13 @@ export const SPECIES = {
   speciesRich: {
     label: 'Species-rich', aecsCompliant: true, sseHedgeType: 'Species-rich native hedgerow',
     mix: '60% hawthorn plus at least 4 other native woody species, e.g. 10% blackthorn, 10% hazel, 5% holly, 5% dog rose, 5% guelder rose, 5% crab apple. '
-      + 'Local provenance, from the NatureScot native list. At 60% hawthorn the mix meets AECS (60-80% hawthorn) and gives at least 4 woody species in every 30 m, '
-      + 'which counts as species-rich in Scotland.',
+      + 'Local provenance, from the NatureScot native list. It meets the AECS rule of at least three native flowering species (AECS guidance gives 60-80% hawthorn as a typical, '
+      + 'not required, mix) and gives at least 4 woody species in every 30 m, which counts as species-rich in Scotland.',
   },
   native: {
-    label: 'Native (hawthorn-led)', aecsCompliant: false, sseHedgeType: 'Native hedgerow',
-    mix: 'Hawthorn-led, 3 or fewer woody species, e.g. 80% hawthorn, 10% blackthorn, 10% hazel. Local provenance.',
-    tradeoff: 'Not AECS-compliant (AECS needs 60-80% hawthorn plus other native species); about half the SSE hedgerow units of a species-rich hedge; lower habitat value.',
+    label: 'Native (hawthorn-led)', aecsCompliant: true, sseHedgeType: 'Native hedgerow',
+    mix: 'Hawthorn-led with three native flowering species, e.g. 80% hawthorn, 10% blackthorn, 10% hazel; local provenance. Three species is the AECS minimum (VERIFIED, Planting or Replanting of Hedges, 15 Dec 2025).',
+    tradeoff: 'About half the SSE hedgerow units of a species-rich hedge and lower habitat value. It only just meets the AECS minimum of three native flowering species: fewer species would not qualify.',
   },
 };
 
@@ -328,7 +328,7 @@ export function aecsPayments(cfg) {
     hedgeEligible,
     hedgeReason: productive ? 'Not used: the productive hedge offer is programme-funded and does not rely on AECS (October 2026).'
       : hedgeEligible ? 'Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).'
-        : 'Hedge options not available: the mix does not meet the AECS species rule (60-80% hawthorn plus other natives).',
+        : 'Hedge options not available: the mix does not meet the AECS rule of at least three native flowering species.',
     plantingCapitalPerKm: hedgeEligible ? Math.round(AECS.hedgePlantingCapitalPerM * 1000) : 0,
     fenceCapitalPerKmPerSide: hedgeEligible ? Math.round(AECS.stockFenceCapitalPerMSide * 1000) : 0,
     hedgeAnnualPerKm: hedgeEligible ? Math.round(AECS.creationOfHedgerowsPerMYr * 1000) : 0,
@@ -456,8 +456,8 @@ export function buildHedgeRecord(template, input) {
   const aecsHedge = f.harvested
     ? 'AECS hedge options not relied on: the productive hedge offer does not use AECS (programme decision, October 2026), and harvest timing would have to fit the option rules.'
     : sp.aecsCompliant
-      ? 'Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year.'
-      : 'Not AECS-compliant: AECS hedge planting needs 60-80% hawthorn plus other native species, so a hawthorn-led mix of 3 or fewer species would need changing to qualify.';
+      ? 'Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Item requirements: double-staggered rows at 6 plants/m and at least three different native flowering species (AECS guidance gives 60-80% hawthorn as a typical mix, not a requirement); livestock fencing at least 1 m from the centre line. Other conditions include in-bye land linked to habitat, no breeding-wader fields, and trimming outside 1 Mar-31 Aug (GAEC 7), not the same length every year.'
+      : 'Not AECS-compliant: AECS hedge planting needs at least three different native flowering species.';
   const stripGrant = geo.aecsStrip.payableM
     ? ` Strip: ${geo.aecsStrip.option}, about ${geo.aecsStrip.payableM} m payable, about GBP${geo.aecsStrip.gbpPerKm}/km/yr at GBP${AECS_STRIP_RATE}/ha/yr.`
     : '';

@@ -30,7 +30,7 @@ Status: committed on `data-refresh-2026-11`; not pushed or deployed. v12.1 chang
 
 ## Rules in the configurator
 
-- Native (hawthorn-led, three or fewer species) is a calculator option only. It shows its trade-offs: not AECS-compliant, about half the SSE hedgerow units, lower habitat value.
+- Native (hawthorn-led, three native flowering species) is a calculator option only. It shows its trade-offs: about half the SSE hedgerow units and lower habitat value; it only just meets the AECS minimum of three native flowering species (corrected in v12.2).
 - Beside a watercourse the hedge is double row only (Cole et al. 2020).
 - The productive hedge has its own species list and no standard trees; its land carbon claim is soil and roots only.
 - Strips narrower than the hedge plus the GAEC 7 2 m line are disabled.
@@ -121,3 +121,17 @@ Si's direction: the app exists to show the stack between ONCRA and AECS, to info
 
 - calc 312, content 200, hedge 112;
 - e2e desktop 86 passed, 1 skipped (the pre-existing skip).
+
+## v12.2: aligned to the ONCRA and AECS text (verified 4 Nov 2026)
+
+- **Financial test.** It now follows ONCRA Guidelines §8.2.1 Option B (p.40), which applies when there is revenue other than carbon:
+  - compute the IRR without carbon income, and show it is zero, negative or below the cost of capital;
+  - run a ±20% sensitivity.
+
+  The app reads a positive 30-year gap without carbon at 3.5% as IRR below 3.5%, and adds the ±20% check. The 3.5% cost of capital is JUDGEMENT.
+- **Grants test.** It now quotes §4.2.1 (p.26): projects must not "have the opportunity to make use of government subsidies or grants specifically aimed at the mitigation activity". It also quotes §8.2.2. The "opportunity" point is flagged even when grants are off, and for HV8.
+- **AECS hedge planting.** The requirements (VERIFIED, option page and guidance, 15 Dec 2025) are double-staggered rows, 6 plants/m, and at least three native flowering species. 60–80% hawthorn is only a "typical mix".
+  - The earlier "native mix is not AECS-compliant" statement was wrong. A three-species native mix meets the minimum, so AECS now applies to it.
+  - Whether a triple row qualifies is now flagged for RPID.
+- **Tests:** hedge 113. The e2e hedge spec was updated.
+- **Source links:** in the review pack (`01_source-links-2026-11-04.md`).
