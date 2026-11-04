@@ -495,6 +495,56 @@ export function calculate(inputs, record) {
     plantingRegime,
     biomassHeight: record.assumedBiomassHeight ?? '',
     windProfile:   record.agronomicWindProfile ?? '',
+
+    // Hedge configurator outputs (v12; null for non-hedge records)
+    hedge: hedgeSummary(record, lengthM),
+  };
+}
+
+/**
+ * Hedge-specific outputs for a v12 hedge record, scaled to the installed length where stated.
+ * Nothing here enters annualNetBenefit: AECS strip payments are possible but not counted (eligibility,
+ * target areas and the ONCRA grants question), and margin soil carbon is a scenario pending measurement.
+ * @param {Object} record
+ * @param {number} lengthM
+ * @returns {Object|null}
+ */
+export function hedgeSummary(record, lengthM) {
+  const cfg = record?.hedgeConfig;
+  const out = record?.hedgeOutputs;
+  if (!cfg || !out) return null;
+  const km = safeNum(lengthM) / 1000;
+  const bio = out.biodiversity ?? {};
+  const geo = out.geometry ?? {};
+  return {
+    preset:        cfg.preset,
+    form:          cfg.form,
+    species:       cfg.species,
+    trees:         cfg.trees,
+    position:      cfg.position,
+    hedgeWidthM:   safeNum(cfg.hedgeWidthM),
+    stripM:        safeNum(cfg.stripM),
+    rows:          safeNum(cfg.rows),
+    configNotes:   cfg.configNotes ?? [],
+    landTakeHa:    safeNum(geo.landTakeHaPerKm) * km,
+    layout:        geo.layout ?? '',
+    aecsStripPayableM:      safeNum(geo.aecsStrip?.payableM),
+    aecsStripGbpPerKm:      safeNum(geo.aecsStrip?.gbpPerKm),
+    aecsStripGbpInstalled:  safeNum(geo.aecsStrip?.gbpPerKm) * km,
+    aecsStripOption:        geo.aecsStrip?.option ?? '',
+    aecsStripNote:          geo.aecsStrip?.note ?? '',
+    sseHedgeType:           bio.hedgeType ?? '',
+    sseDistinctiveness:     bio.distinctiveness ?? '',
+    hluPerKm:               { moderate: safeNum(bio.hluPerKm?.moderate), good: safeNum(bio.hluPerKm?.good) },
+    hluInstalled:           { moderate: safeNum(bio.hluPerKm?.moderate) * km, good: safeNum(bio.hluPerKm?.good) * km },
+    marginBuPerKm:          bio.marginBuPerKm ?? {},
+    marginBuInstalled:      Object.fromEntries(Object.entries(bio.marginBuPerKm ?? {}).map(([k, v]) => [k, safeNum(v) * km])),
+    yearsToTarget:          bio.yearsToTarget ?? {},
+    carbonGross50PerKm:     safeNum(out.carbonGross50),
+    carbonClaim50PerKm:     safeNum(out.carbonClaim50),
+    marginSoilCarbonPerKm:  out.marginSoilCarbonScenario ?? null,
+    waterRetentionPct:      out.waterRetentionPct ?? {},
+    speciesTradeoff:        out.speciesTradeoff ?? null,
   };
 }
 

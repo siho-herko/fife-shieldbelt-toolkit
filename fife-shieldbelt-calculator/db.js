@@ -1,8 +1,8 @@
 /**
  * db.js — Fife Farm Resilience Calculator
  *
- * Data layer: fetches /data/fife_interventions_db_v11.json once per page load
- * and holds all 132 records in a plain JS array.  The service worker caches
+ * Data layer: fetches /data/fife_interventions_db_v12.json once per page load
+ * and holds all 168 records in a plain JS array.  The service worker caches
  * the JSON so subsequent loads are instant (no network request).
  *
  * This replaces the previous IndexedDB implementation.  IndexedDB added
@@ -28,9 +28,9 @@ export const BIOMES = {
 
 export const FARM_TYPES = ['Cereals', 'General Cropping', 'Dairy', 'LFA Grazing'];
 
-export const WIDTHS = ['3m', '6m', '12m', '20m', '60m'];
+export const WIDTHS = ['3m', '6m', '8m', '10m', '12m', '20m', '60m'];
 
-/** ONCRA net factor (20% GHG default × 20% buffer): registry.sserGrossUnitsPerKm = seq50yrTotal × 0.64 for hedges in v11 (0 where carbon is an unsubstantiated scenario). */
+/** ONCRA net factor (20% GHG default × 20% buffer): registry.sserGrossUnitsPerKm = seq50yrTotal × 0.64 for hedges (v11 onwards; 0 where carbon is an unsubstantiated scenario). */
 export const ONCRA_NET_FACTOR = 0.64;
 
 // ---------------------------------------------------------------------------
@@ -39,23 +39,26 @@ export const ONCRA_NET_FACTOR = 0.64;
 
 /** @type {Object[]} */
 let _records = [];
+/** Dataset metadata (v12: hedge presets and per-biome hedge templates for the configurator). */
+let _meta = {};
 
 // ---------------------------------------------------------------------------
 // dbReady — single fetch, populated once, awaited by app.js before any query
 // ---------------------------------------------------------------------------
 
 /**
- * Resolves when all 132 records are loaded into memory.
+ * Resolves when all 168 records are loaded into memory.
  * The service worker caches this file so subsequent page loads are instant.
  * @type {Promise<void>}
  */
-export const dbReady = fetch('/data/fife_interventions_db_v11.json')
+export const dbReady = fetch('/data/fife_interventions_db_v12.json')
   .then(res => {
     if (!res.ok) throw new Error(`HTTP ${res.status} loading intervention data`);
     return res.json();
   })
   .then(json => {
     _records = Array.isArray(json) ? json : (json.interventions ?? []);
+    _meta = Array.isArray(json) ? {} : (json.metadata ?? {});
     console.info(`FifeShieldBelt: ${_records.length} records loaded`);
   })
   .catch(err => {
@@ -69,7 +72,7 @@ export const dbReady = fetch('/data/fife_interventions_db_v11.json')
 // ---------------------------------------------------------------------------
 
 /**
- * Return all 132 intervention records.
+ * Return all 168 intervention records.
  * @returns {Promise<Object[]>}
  */
 export async function getAll() {
@@ -78,7 +81,7 @@ export async function getAll() {
 }
 
 /**
- * Return all records for a given biome (should be 22).
+ * Return all records for a given biome (should be 28).
  * @param {string} biomeName — one of the BIOMES values
  * @returns {Promise<Object[]>}
  */
@@ -96,6 +99,25 @@ export async function getByBiome(biomeName) {
 export async function getById(id) {
   await dbReady;
   return _records.find(r => r.id === id);
+}
+
+/**
+ * Dataset metadata (version, sources, hedgePresets, hedgeTemplates by biome).
+ * @returns {Promise<Object>}
+ */
+export async function getMetadata() {
+  await dbReady;
+  return _meta;
+}
+
+/**
+ * Per-biome hedge template used by hedge-config.js buildHedgeRecord() for the live configurator.
+ * @param {string} biomeName
+ * @returns {Promise<Object|undefined>}
+ */
+export async function getHedgeTemplate(biomeName) {
+  await dbReady;
+  return _meta.hedgeTemplates?.[biomeName];
 }
 
 /**
@@ -124,8 +146,8 @@ export async function validateStore() {
   const REQUIRED_FARMS = new Set(FARM_TYPES);
   const VALID_ID_RE    = /^[a-z0-9_]+$/;
 
-  if (_records.length !== 132) {
-    errors.push(`Record count: expected 132, got ${_records.length}`);
+  if (_records.length !== 168) {
+    errors.push(`Record count: expected 168, got ${_records.length}`);
   }
 
   const biomeCounts = {};
@@ -133,7 +155,7 @@ export async function validateStore() {
     biomeCounts[r.biome] = (biomeCounts[r.biome] ?? 0) + 1;
   }
   for (const [biome, count] of Object.entries(biomeCounts)) {
-    if (count !== 22) errors.push(`Biome "${biome}": expected 22, got ${count}`);
+    if (count !== 28) errors.push(`Biome "${biome}": expected 28, got ${count}`);
   }
 
   for (const r of _records) {
@@ -158,7 +180,7 @@ export async function validateStore() {
   }
 
   if (errors.length === 0) {
-    console.info('✅ FifeShieldBelt data validation passed — 132 records, all fields valid.');
+    console.info('✅ FifeShieldBelt data validation passed — 168 records, all fields valid.');
   } else {
     console.warn(`⚠️ FifeShieldBelt data validation: ${errors.length} error(s).`);
     console.table(errors.map((e, i) => ({ '#': i + 1, error: e })));

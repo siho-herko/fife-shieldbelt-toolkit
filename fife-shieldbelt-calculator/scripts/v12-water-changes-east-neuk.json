@@ -1,0 +1,542 @@
+[
+ {
+  "variant": "1. Grass Silt Buffer",
+  "width": "3m",
+  "placement": "riparian",
+  "v11": 120,
+  "v12": 260,
+  "v11High": 620,
+  "v12High": 1010
+ },
+ {
+  "variant": "1. Grass Silt Buffer",
+  "width": "3m",
+  "placement": "crossSlope",
+  "v11": 60,
+  "v12": 130,
+  "v11High": 310,
+  "v12High": 510
+ },
+ {
+  "variant": "1. Grass Silt Buffer",
+  "width": "3m",
+  "placement": "downSlope",
+  "v11": 10,
+  "v12": 30,
+  "v11High": 60,
+  "v12High": 100
+ },
+ {
+  "variant": "4. Grassed Waterway",
+  "width": "6m",
+  "placement": "riparian",
+  "v11": 200,
+  "v12": 300,
+  "v11High": 850,
+  "v12High": 1100
+ },
+ {
+  "variant": "4. Grassed Waterway",
+  "width": "6m",
+  "placement": "crossSlope",
+  "v11": 100,
+  "v12": 150,
+  "v11High": 420,
+  "v12High": 550
+ },
+ {
+  "variant": "4. Grassed Waterway",
+  "width": "6m",
+  "placement": "downSlope",
+  "v11": 20,
+  "v12": 30,
+  "v11High": 80,
+  "v12High": 110
+ },
+ {
+  "variant": "5. Wide Silt Buffer",
+  "width": "6m",
+  "placement": "riparian",
+  "v11": 200,
+  "v12": 300,
+  "v11High": 850,
+  "v12High": 1100
+ },
+ {
+  "variant": "5. Wide Silt Buffer",
+  "width": "6m",
+  "placement": "crossSlope",
+  "v11": 100,
+  "v12": 150,
+  "v11High": 420,
+  "v12High": 550
+ },
+ {
+  "variant": "5. Wide Silt Buffer",
+  "width": "6m",
+  "placement": "downSlope",
+  "v11": 20,
+  "v12": 30,
+  "v11High": 80,
+  "v12High": 110
+ },
+ {
+  "variant": "6. Shallow Root Shrubs",
+  "width": "6m",
+  "placement": "riparian",
+  "v11": 200,
+  "v12": 300,
+  "v11High": 850,
+  "v12High": 1100
+ },
+ {
+  "variant": "6. Shallow Root Shrubs",
+  "width": "6m",
+  "placement": "crossSlope",
+  "v11": 100,
+  "v12": 150,
+  "v11High": 420,
+  "v12High": 550
+ },
+ {
+  "variant": "6. Shallow Root Shrubs",
+  "width": "6m",
+  "placement": "downSlope",
+  "v11": 20,
+  "v12": 30,
+  "v11High": 80,
+  "v12High": 110
+ },
+ {
+  "variant": "7. Two-Stage Ditch",
+  "width": "6m",
+  "placement": "riparian",
+  "v11": 200,
+  "v12": 300,
+  "v11High": 850,
+  "v12High": 1100
+ },
+ {
+  "variant": "7. Two-Stage Ditch",
+  "width": "6m",
+  "placement": "crossSlope",
+  "v11": 100,
+  "v12": 150,
+  "v11High": 420,
+  "v12High": 550
+ },
+ {
+  "variant": "7. Two-Stage Ditch",
+  "width": "6m",
+  "placement": "downSlope",
+  "v11": 20,
+  "v12": 30,
+  "v11High": 80,
+  "v12High": 110
+ },
+ {
+  "variant": "8. Biomass Coppice Strip",
+  "width": "6m",
+  "placement": "riparian",
+  "v11": 200,
+  "v12": 300,
+  "v11High": 850,
+  "v12High": 1100
+ },
+ {
+  "variant": "8. Biomass Coppice Strip",
+  "width": "6m",
+  "placement": "crossSlope",
+  "v11": 100,
+  "v12": 150,
+  "v11High": 420,
+  "v12High": 550
+ },
+ {
+  "variant": "8. Biomass Coppice Strip",
+  "width": "6m",
+  "placement": "downSlope",
+  "v11": 20,
+  "v12": 30,
+  "v11High": 80,
+  "v12High": 110
+ },
+ {
+  "variant": "9. Distillery Foraging Strip",
+  "width": "6m",
+  "placement": "riparian",
+  "v11": 200,
+  "v12": 300,
+  "v11High": 850,
+  "v12High": 1100
+ },
+ {
+  "variant": "9. Distillery Foraging Strip",
+  "width": "6m",
+  "placement": "crossSlope",
+  "v11": 100,
+  "v12": 150,
+  "v11High": 420,
+  "v12High": 550
+ },
+ {
+  "variant": "9. Distillery Foraging Strip",
+  "width": "6m",
+  "placement": "downSlope",
+  "v11": 20,
+  "v12": 30,
+  "v11High": 80,
+  "v12High": 110
+ },
+ {
+  "variant": "10. Biomass Fuel Coppice",
+  "width": "6m",
+  "placement": "riparian",
+  "v11": 200,
+  "v12": 300,
+  "v11High": 850,
+  "v12High": 1100
+ },
+ {
+  "variant": "10. Biomass Fuel Coppice",
+  "width": "6m",
+  "placement": "crossSlope",
+  "v11": 100,
+  "v12": 150,
+  "v11High": 420,
+  "v12High": 550
+ },
+ {
+  "variant": "10. Biomass Fuel Coppice",
+  "width": "6m",
+  "placement": "downSlope",
+  "v11": 20,
+  "v12": 30,
+  "v11High": 80,
+  "v12High": 110
+ },
+ {
+  "variant": "11. Wetland Nitrate Filter",
+  "width": "6m",
+  "placement": "riparian",
+  "v11": 200,
+  "v12": 300,
+  "v11High": 850,
+  "v12High": 1100
+ },
+ {
+  "variant": "11. Wetland Nitrate Filter",
+  "width": "6m",
+  "placement": "crossSlope",
+  "v11": 100,
+  "v12": 150,
+  "v11High": 420,
+  "v12High": 550
+ },
+ {
+  "variant": "11. Wetland Nitrate Filter",
+  "width": "6m",
+  "placement": "downSlope",
+  "v11": 20,
+  "v12": 30,
+  "v11High": 80,
+  "v12High": 110
+ },
+ {
+  "variant": "12. Coastal Salt-Spray Screen",
+  "width": "12m",
+  "placement": "riparian",
+  "v11": 310,
+  "v12": 340,
+  "v11High": 1060,
+  "v12High": 1170
+ },
+ {
+  "variant": "12. Coastal Salt-Spray Screen",
+  "width": "12m",
+  "placement": "crossSlope",
+  "v11": 160,
+  "v12": 170,
+  "v11High": 530,
+  "v12High": 590
+ },
+ {
+  "variant": "12. Coastal Salt-Spray Screen",
+  "width": "12m",
+  "placement": "downSlope",
+  "v11": 30,
+  "v12": 30,
+  "v11High": 110,
+  "v12High": 120
+ },
+ {
+  "variant": "13. Distillery Harvest Wood",
+  "width": "12m",
+  "placement": "riparian",
+  "v11": 310,
+  "v12": 340,
+  "v11High": 1060,
+  "v12High": 1170
+ },
+ {
+  "variant": "13. Distillery Harvest Wood",
+  "width": "12m",
+  "placement": "crossSlope",
+  "v11": 160,
+  "v12": 170,
+  "v11High": 530,
+  "v12High": 590
+ },
+ {
+  "variant": "13. Distillery Harvest Wood",
+  "width": "12m",
+  "placement": "downSlope",
+  "v11": 30,
+  "v12": 30,
+  "v11High": 110,
+  "v12High": 120
+ },
+ {
+  "variant": "14. Alley Cropping Trees",
+  "width": "12m",
+  "placement": "riparian",
+  "v11": 310,
+  "v12": 340,
+  "v11High": 1060,
+  "v12High": 1170
+ },
+ {
+  "variant": "14. Alley Cropping Trees",
+  "width": "12m",
+  "placement": "crossSlope",
+  "v11": 160,
+  "v12": 170,
+  "v11High": 530,
+  "v12High": 590
+ },
+ {
+  "variant": "14. Alley Cropping Trees",
+  "width": "12m",
+  "placement": "downSlope",
+  "v11": 30,
+  "v12": 30,
+  "v11High": 110,
+  "v12High": 120
+ },
+ {
+  "variant": "15. Livestock Shade Trees",
+  "width": "12m",
+  "placement": "riparian",
+  "v11": 310,
+  "v12": 340,
+  "v11High": 1060,
+  "v12High": 1170
+ },
+ {
+  "variant": "15. Livestock Shade Trees",
+  "width": "12m",
+  "placement": "crossSlope",
+  "v11": 160,
+  "v12": 170,
+  "v11High": 530,
+  "v12High": 590
+ },
+ {
+  "variant": "15. Livestock Shade Trees",
+  "width": "12m",
+  "placement": "downSlope",
+  "v11": 30,
+  "v12": 30,
+  "v11High": 110,
+  "v12High": 120
+ },
+ {
+  "variant": "16. Planted Contour Swale",
+  "width": "12m",
+  "placement": "riparian",
+  "v11": 310,
+  "v12": 340,
+  "v11High": 1060,
+  "v12High": 1170
+ },
+ {
+  "variant": "16. Planted Contour Swale",
+  "width": "12m",
+  "placement": "crossSlope",
+  "v11": 160,
+  "v12": 170,
+  "v11High": 530,
+  "v12High": 590
+ },
+ {
+  "variant": "16. Planted Contour Swale",
+  "width": "12m",
+  "placement": "downSlope",
+  "v11": 30,
+  "v12": 30,
+  "v11High": 110,
+  "v12High": 120
+ },
+ {
+  "variant": "17. Wide Biomass Coppice",
+  "width": "12m",
+  "placement": "riparian",
+  "v11": 310,
+  "v12": 340,
+  "v11High": 1060,
+  "v12High": 1170
+ },
+ {
+  "variant": "17. Wide Biomass Coppice",
+  "width": "12m",
+  "placement": "crossSlope",
+  "v11": 160,
+  "v12": 170,
+  "v11High": 530,
+  "v12High": 590
+ },
+ {
+  "variant": "17. Wide Biomass Coppice",
+  "width": "12m",
+  "placement": "downSlope",
+  "v11": 30,
+  "v12": 30,
+  "v11High": 110,
+  "v12High": 120
+ },
+ {
+  "variant": "18. Biochar Timber Block",
+  "width": "12m",
+  "placement": "riparian",
+  "v11": 310,
+  "v12": 340,
+  "v11High": 1060,
+  "v12High": 1170
+ },
+ {
+  "variant": "18. Biochar Timber Block",
+  "width": "12m",
+  "placement": "crossSlope",
+  "v11": 160,
+  "v12": 170,
+  "v11High": 530,
+  "v12High": 590
+ },
+ {
+  "variant": "18. Biochar Timber Block",
+  "width": "12m",
+  "placement": "downSlope",
+  "v11": 30,
+  "v12": 30,
+  "v11High": 110,
+  "v12High": 120
+ },
+ {
+  "variant": "19. Coastal Erosion Wood",
+  "width": "20m",
+  "placement": "riparian",
+  "v11": 390,
+  "v12": 360,
+  "v11High": 1240,
+  "v12High": 1220
+ },
+ {
+  "variant": "19. Coastal Erosion Wood",
+  "width": "20m",
+  "placement": "crossSlope",
+  "v11": 200,
+  "v12": 180,
+  "v11High": 620,
+  "v12High": 610
+ },
+ {
+  "variant": "19. Coastal Erosion Wood",
+  "width": "20m",
+  "placement": "downSlope",
+  "v11": 40,
+  "v12": 40,
+  "v11High": 120,
+  "v12High": 120
+ },
+ {
+  "variant": "20. Riparian Flood Wood",
+  "width": "20m",
+  "placement": "riparian",
+  "v11": 390,
+  "v12": 360,
+  "v11High": 1240,
+  "v12High": 1220
+ },
+ {
+  "variant": "20. Riparian Flood Wood",
+  "width": "20m",
+  "placement": "crossSlope",
+  "v11": 200,
+  "v12": 180,
+  "v11High": 620,
+  "v12High": 610
+ },
+ {
+  "variant": "20. Riparian Flood Wood",
+  "width": "20m",
+  "placement": "downSlope",
+  "v11": 40,
+  "v12": 40,
+  "v11High": 120,
+  "v12High": 120
+ },
+ {
+  "variant": "21. Thermal Microclimate Belt",
+  "width": "12m",
+  "placement": "riparian",
+  "v11": 310,
+  "v12": 340,
+  "v11High": 1060,
+  "v12High": 1170
+ },
+ {
+  "variant": "21. Thermal Microclimate Belt",
+  "width": "12m",
+  "placement": "crossSlope",
+  "v11": 160,
+  "v12": 170,
+  "v11High": 530,
+  "v12High": 590
+ },
+ {
+  "variant": "21. Thermal Microclimate Belt",
+  "width": "12m",
+  "placement": "downSlope",
+  "v11": 30,
+  "v12": 30,
+  "v11High": 110,
+  "v12High": 120
+ },
+ {
+  "variant": "22. Zoned Riparian Woodland",
+  "width": "60m",
+  "placement": "riparian",
+  "v11": 570,
+  "v12": 390,
+  "v11High": 1460,
+  "v12High": 1300
+ },
+ {
+  "variant": "22. Zoned Riparian Woodland",
+  "width": "60m",
+  "placement": "crossSlope",
+  "v11": 280,
+  "v12": 200,
+  "v11High": 730,
+  "v12High": 650
+ },
+ {
+  "variant": "22. Zoned Riparian Woodland",
+  "width": "60m",
+  "placement": "downSlope",
+  "v11": 60,
+  "v12": 40,
+  "v11High": 150,
+  "v12High": 130
+ }
+]

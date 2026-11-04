@@ -208,7 +208,7 @@
     "Solution_Emerging_Tech_Landscaping": "Saline Seed Priming (Netherlands) to make standard crops resistant to salt-shock.",
     "Relevant_ShieldBelt_Variants": [
       "12m Native Shelterbelt",
-      "3m Dense Wildlife Hedge",
+      "6m Hedge and margin",
       "6m Botanical Shrub Strip",
       "12m Coastal Salt-Spray Screen"
     ],
@@ -234,7 +234,7 @@
     "Solution_Emerging_Tech_Landscaping": "Smart thermal rumen boluses (SmaXtec) to detect cold stress instantly.",
     "Relevant_ShieldBelt_Variants": [
       "12m Native Shelterbelt",
-      "3m Dense Wildlife Hedge",
+      "6m Hedge and margin",
       "6m Biomass Coppice Strip",
       "12m Montane Snow-Fence"
     ],
@@ -286,7 +286,7 @@
     "Solution_Emerging_Tech_Landscaping": "Hyper-Local IoT Microclimate networks to trigger automated frost protection.",
     "Relevant_ShieldBelt_Variants": [
       "12m Native Shelterbelt",
-      "3m Heritage Species Hedge",
+      "6m Wide wildlife hedge",
       "6m Botanical Shrub Strip"
     ],
     "Linked_Solution_Directory_Keys": []
@@ -299,17 +299,17 @@
     "Applicable_Biomes": "East Neuk Coast, Howe of Fife & Eden",
     "Applicable_Farm_Types": "Cereals, General Cropping",
     "Routing_Trigger": "farmImpacts.General Cropping.pestRegulation >= 100",
-    "Farmer_Diagnosis_Copy": "Aphicides are expensive. A heritage hedge bridges the 'hungry gap' for predatory insects like ladybirds. By providing winter shelter, you build a standing army of predators right next to your crop, naturally regulating aphid outbreaks. Note: field margin habitats (floral-rich grass buffers) may provide more effective pest regulation than hedgerows alone, as they support ground-active predators (carabid beetles, spiders) that overwinter in the sward base. Where possible, combine a dense structural hedgerow with an adjacent floral-rich margin strip for maximum IPM benefit.",
+    "Farmer_Diagnosis_Copy": "Aphicides are expensive. A species-rich hedge bridges the 'hungry gap' for predatory insects like ladybirds. By providing winter shelter, you build a standing army of predators right next to your crop, naturally regulating aphid outbreaks. Note: field margin habitats (floral-rich grass buffers) may provide more effective pest regulation than hedgerows alone, as they support ground-active predators (carabid beetles, spiders) that overwinter in the sward base. Where possible, combine a dense structural hedgerow with an adjacent floral-rich margin strip for maximum IPM benefit.",
     "Solution_Agronomic": "Companion Cropping / Intercropping to confuse insect pests visually and olfactorily.",
     "Solution_Infrastructure": "Establish beetle banks in the center of large arable fields.",
     "Solution_Precision_Tech": "Drone-based multispectral imaging to spot crop-stress early.",
     "Solution_Community": "Engage with LEAF to certify pesticide-reduction efforts.",
     "Solution_Emerging_Tech_Landscaping": "UV-C Autonomous Robots (Belgium) or AI-Guided Spot Spraying (SoilEssentials).",
     "Relevant_ShieldBelt_Variants": [
-      "3m Heritage Species Hedge",
+      "6m Wide wildlife hedge",
       "6m Botanical Shrub Strip",
       "12m Botanical Harvest Wood",
-      "3m Dense Wildlife Hedge",
+      "6m Hedge and margin",
       "6m Distillery Foraging Strip",
       "6m Upland Foraging Strip",
       "6m Urban Foraging Strip"
@@ -337,7 +337,7 @@
     "Solution_Emerging_Tech_Landscaping": "Acoustic & Laser Pest Deterrents (Netherlands) to protect fruit from birds.",
     "Relevant_ShieldBelt_Variants": [
       "6m Botanical Shrub Strip",
-      "3m Heritage Species Hedge",
+      "6m Wide wildlife hedge",
       "12m Botanical Harvest Wood",
       "6m Biomass Fuel Coppice",
       "12m Distillery Harvest Wood",
@@ -357,14 +357,14 @@
     "Applicable_Biomes": "All",
     "Applicable_Farm_Types": "All",
     "Routing_Trigger": "radarMetrics.habitatDistinctiveness >= 80",
-    "Farmer_Diagnosis_Copy": "Supply chains and supermarket buyers are getting aggressive about farm biodiversity scores. Planting a heritage hedge gives you an instant, massive boost to your habitat distinctiveness metrics, keeping the auditors happy.",
+    "Farmer_Diagnosis_Copy": "Supply chains and supermarket buyers are getting aggressive about farm biodiversity scores. A species-rich hedge, with standard trees for the highest score, raises your habitat distinctiveness in biodiversity metrics; a grass margin alongside adds area habitat. Scores depend on the metric used and need a survey.",
     "Solution_Agronomic": "Delay cutting grass margins until late summer to allow seed set.",
     "Solution_Infrastructure": "In-Stream Large Woody Debris (LWD) to restore river habitats.",
     "Solution_Precision_Tech": "Acoustic monitoring sensors to record bat/bird calls for auditors.",
     "Solution_Community": "Host farm walks for local schools.",
     "Solution_Emerging_Tech_Landscaping": "Prairie Strips (Iowa STRIPS project) - integrating 10% native botany into crops.",
     "Relevant_ShieldBelt_Variants": [
-      "3m Heritage Species Hedge",
+      "6m Wide wildlife hedge",
       "12m Botanical Harvest Wood",
       "20m Riparian Flood Wood",
       "6m Botanical Shrub Strip",
@@ -447,7 +447,7 @@
     "Relevant_ShieldBelt_Variants": [
       "12m Native Shelterbelt",
       "6m Biomass Coppice Strip",
-      "3m Dense Wildlife Hedge"
+      "6m Hedge and margin"
     ],
     "Linked_Solution_Directory_Keys": [
       "PWM (Pulse Width Modulation) sprayers",
@@ -470,8 +470,8 @@
     "Solution_Community": "Install NFUS educational signage.",
     "Solution_Emerging_Tech_Landscaping": "Virtual Fencing (Nofence / Halter NZ) to dynamically move stock away from walkers.",
     "Relevant_ShieldBelt_Variants": [
-      "3m Dense Wildlife Hedge",
-      "3m Heritage Species Hedge",
+      "6m Hedge and margin",
+      "6m Wide wildlife hedge",
       "6m Botanical Shrub Strip"
     ],
     "Linked_Solution_Directory_Keys": [
@@ -495,7 +495,7 @@
     "Relevant_ShieldBelt_Variants": [
       "12m Native Shelterbelt",
       "6m Botanical Shrub Strip",
-      "3m Dense Wildlife Hedge",
+      "6m Hedge and margin",
       "12m Urban Air-Quality Screen",
       "12m Urban Foraging Wood",
       "20m Urban Flood Buffer",
@@ -644,15 +644,15 @@
     "Applicable_Biomes": "Dreel Burn Catchment",
     "Applicable_Farm_Types": "General Cropping, Arable, Dairy",
     "Routing_Trigger": "biodivMetrics.hedgerowDensity < 50m/ha",
-    "Farmer_Diagnosis_Copy": "Open fields with no hedgerows are exposed to wind erosion, have low biodiversity, and struggle to meet the Whole Farm Plan biodiversity audit requirements. Building a hedgerow network pays back through shelter, carbon credits, AECS payments, and long-term soil protection.",
+    "Farmer_Diagnosis_Copy": "Open fields with no hedgerows are exposed to wind erosion, have low biodiversity, and struggle to meet the Whole Farm Plan biodiversity audit requirements. A hedgerow network can pay back through shelter, long-term soil protection and, where eligible, AECS payments; carbon income is small and combining it with grants needs an ONCRA ruling.",
     "Solution_Agronomic": "Companion Cropping / Intercropping as a short-term connectivity measure",
     "Solution_Infrastructure": "Beetle banks as interim linear habitat before hedgerows establish",
     "Solution_Precision_Tech": "Drone LiDAR mapping to identify optimal hedgerow locations based on slope and flow paths",
     "Solution_Community": "Machinery rings for hedgerow planting machinery; FAS compliance audits for AECS applications",
     "Solution_Emerging_Tech_Landscaping": "Prairie Strips (Iowa STRIPS project) as a template for cross-field habitat strips",
     "Relevant_ShieldBelt_Variants": [
-      "3m Dense Wildlife Hedge",
-      "3m Heritage Species Hedge",
+      "6m Hedge and margin",
+      "6m Wide wildlife hedge",
       "6m Shallow Root Shrubs",
       "6m Botanical Shrub Strip",
       "12m Native Shelterbelt"
@@ -739,8 +739,8 @@
     "Solution_Community": "WhatsApp group with beekeepers and bat groups to coordinate deadwood retention; FAS advice ForestResearch TreeAlert system for reporting suspected tree disease. Farm liability check for trees near public paths, buildings, and roads (landowner responsibility).",
     "Solution_Emerging_Tech_Landscaping": "Fungal Bio-Filters (Rhizocore) applied at new planting sites",
     "Relevant_ShieldBelt_Variants": [
-      "3m Heritage Species Hedge",
-      "3m Dense Wildlife Hedge",
+      "6m Wide wildlife hedge",
+      "6m Hedge and margin",
       "12m Native Shelterbelt",
       "6m Botanical Shrub Strip"
     ],
@@ -857,14 +857,14 @@
     "Routing_Trigger": "farmImpacts.General Cropping.pestRegulation >= 100",
     "Farmer_Diagnosis_Copy": "As the climate warms, new pests and diseases that used to only affect southern farms are creeping into Fife. A robust, biologically diverse field margin network builds an army of predatory insects to fight off new invasions naturally.",
     "Solution_Agronomic": "Broaden crop rotations; integrate diverse companion cropping.",
-    "Solution_Infrastructure": "Establish complex, multi-species heritage hedges and beetle banks.",
+    "Solution_Infrastructure": "Establish species-rich hedges with grass margins and beetle banks.",
     "Solution_Precision_Tech": "Automated spore traps and drone multispectral imaging to catch outbreaks early.",
     "Solution_Community": "Report unfamiliar pests to SRUC advisory services immediately.",
     "Solution_Emerging_Tech_Landscaping": "Genomic Marker Assisted Selection for crop breeding; UV-C Autonomous Robots.",
     "Relevant_ShieldBelt_Variants": [
-      "3m Heritage Species Hedge",
+      "6m Wide wildlife hedge",
       "6m Botanical Shrub Strip",
-      "3m Dense Wildlife Hedge"
+      "6m Hedge and margin"
     ],
     "Linked_Solution_Directory_Keys": [
       "Companion Cropping / Intercropping",

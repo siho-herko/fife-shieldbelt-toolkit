@@ -271,6 +271,58 @@
               <div class="flex flex-wrap gap-2 mt-3" id="variant-detail-tags"></div>
             </div>
 
+            <!-- v12 hedge configurator: shown only for hedge options (HV1–HV8) -->
+            <div id="hedge-config" class="card hedge-config hidden" aria-labelledby="hedge-config-title">
+              <div class="card__header">
+                <span class="card__title" id="hedge-config-title">Customise this hedge</span>
+                <span class="text-sm text-muted" id="hedge-config-origin"></span>
+              </div>
+              <p class="form-hint">Hedge width is how the hedge is managed. Strip width is the land taken out of production; it drives water interception, margin habitat and income forgone.</p>
+              <div class="hedge-config__group">
+                <span class="form-label" id="hc-form-label">Hedge form</span>
+                <div class="seg-toggle hedge-config__toggle" role="group" aria-labelledby="hc-form-label">
+                  <button type="button" class="seg-toggle__btn" data-hc="form" data-value="double">Double row (2 m)</button>
+                  <button type="button" class="seg-toggle__btn" data-hc="form" data-value="triple">Triple row (3 m)</button>
+                  <button type="button" class="seg-toggle__btn" data-hc="form" data-value="productive">Productive (4.2 m, coppiced)</button>
+                </div>
+              </div>
+              <div class="hedge-config__group">
+                <span class="form-label" id="hc-species-label">Species mix</span>
+                <div class="seg-toggle hedge-config__toggle" role="group" aria-labelledby="hc-species-label">
+                  <button type="button" class="seg-toggle__btn" data-hc="species" data-value="speciesRich">Species-rich</button>
+                  <button type="button" class="seg-toggle__btn" data-hc="species" data-value="native">Native (hawthorn-led)</button>
+                </div>
+              </div>
+              <div class="hedge-config__group">
+                <span class="form-label" id="hc-trees-label">Standard trees</span>
+                <div class="seg-toggle hedge-config__toggle" role="group" aria-labelledby="hc-trees-label">
+                  <button type="button" class="seg-toggle__btn" data-hc="trees" data-value="none">None</button>
+                  <button type="button" class="seg-toggle__btn" data-hc="trees" data-value="standards">One every 6–10 m</button>
+                </div>
+              </div>
+              <div class="hedge-config__group">
+                <span class="form-label" id="hc-strip-label">Strip width (out of production)</span>
+                <div class="seg-toggle hedge-config__toggle" role="group" aria-labelledby="hc-strip-label">
+                  <button type="button" class="seg-toggle__btn" data-hc="stripM" data-value="3">3 m</button>
+                  <button type="button" class="seg-toggle__btn" data-hc="stripM" data-value="6">6 m</button>
+                  <button type="button" class="seg-toggle__btn" data-hc="stripM" data-value="8">8 m</button>
+                  <button type="button" class="seg-toggle__btn" data-hc="stripM" data-value="10">10 m</button>
+                  <button type="button" class="seg-toggle__btn" data-hc="stripM" data-value="12">12 m</button>
+                </div>
+              </div>
+              <div class="hedge-config__group">
+                <span class="form-label" id="hc-position-label">Position</span>
+                <div class="seg-toggle hedge-config__toggle" role="group" aria-labelledby="hc-position-label">
+                  <button type="button" class="seg-toggle__btn" data-hc="position" data-value="boundary">Field boundary</button>
+                  <button type="button" class="seg-toggle__btn" data-hc="position" data-value="contour">In-field contour</button>
+                  <button type="button" class="seg-toggle__btn" data-hc="position" data-value="watercourse">Beside a watercourse</button>
+                </div>
+              </div>
+              <div id="hedge-config-notes" class="hedge-config__notes text-sm" aria-live="polite"></div>
+              <dl id="hedge-config-summary" class="hedge-config__summary text-sm"></dl>
+              <button type="button" class="btn btn-ghost hedge-config__reset" id="btn-hedge-preset-reset" hidden>Back to the preset</button>
+            </div>
+
             <div style="margin-top:1rem;">
               <button id="btn-confirm-variant" class="btn btn-primary" type="button" style="width:100%;">
                 ✓ Confirm selection
@@ -649,7 +701,7 @@
     <span class="app-footer__dots">·</span>
     <strong>NFCA Research</strong>
     <span class="app-footer__dots">·</span>
-    132 interventions
+    168 interventions
     <span class="app-footer__dots">·</span>
     6 Fife landscape areas
     <span class="app-footer__dots">·</span>

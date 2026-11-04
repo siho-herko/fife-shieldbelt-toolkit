@@ -14,12 +14,13 @@ const PRECACHE = [
   '/app.js',
   '/db.js',
   '/calc.js',
+  '/hedge-config.js',
   '/charts.js',
   '/styles/main.css',
   '/manifest.json',
   '/icons/icon-192.svg',
   '/icons/icon-512.svg',
-  '/data/fife_interventions_db_v11.json',
+  '/data/fife_interventions_db_v12.json',
   '/data/problems_v2.json',
 ];
 

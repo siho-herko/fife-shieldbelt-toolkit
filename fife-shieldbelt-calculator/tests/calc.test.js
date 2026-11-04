@@ -39,7 +39,7 @@ import { readFileSync } from 'fs';
 // Test harness
 // ---------------------------------------------------------------------------
 
-const db   = JSON.parse(readFileSync('./data/fife_interventions_db_v11.json', 'utf8'));
+const db   = JSON.parse(readFileSync('./data/fife_interventions_db_v12.json', 'utf8'));
 const records = Array.isArray(db) ? db : db.interventions;
 const byId = Object.fromEntries(records.map(r => [r.id, r]));
 
@@ -84,7 +84,7 @@ const r1 = byId['fife_east_neuk_coast__1_grass_silt_buffer'];
 const r2 = byId['fife_east_neuk_coast__9_distillery_foraging_strip'];
 const r3 = byId['fife_east_neuk_coast__19_coastal_erosion_wood'];
 const r4 = byId['fife_west_fife_claylands__15_livestock_shade_trees'];
-const r5 = byId['fife_east_neuk_coast__2_dense_wildlife_hedge'];
+const r5 = byId['fife_east_neuk_coast__hv1_fence_line_hedge'];
 
 console.log('\n=== Fife Farm Resilience calc.js Tests ===\n');
 
@@ -97,7 +97,7 @@ assert(!!r1, 'r1: fife_east_neuk_coast__1_grass_silt_buffer found');
 assert(!!r2, 'r2: fife_east_neuk_coast__9_distillery_foraging_strip found');
 assert(!!r3, 'r3: fife_east_neuk_coast__19_coastal_erosion_wood found');
 assert(!!r4, 'r4: fife_west_fife_claylands__15_livestock_shade_trees found');
-assert(!!r5, 'r5: fife_east_neuk_coast__2_dense_wildlife_hedge found');
+assert(!!r5, 'r5: fife_east_neuk_coast__hv1_fence_line_hedge found (v12 HV1)');
 
 // ---------------------------------------------------------------------------
 // Section A — scaleToLength (no record needed)
@@ -145,8 +145,10 @@ assert(near(netIncomeForegone(r1, 'General Cropping', 1000), 210, 0.01),
 
 // v10 (3 Nov 2026): water values rebuilt from CREW unit values (see build_v10.py)
 // v11: water low case (Defra sediment £0.054/kg): 10 ha × (25×.05×1.37 + .7×.15×46.61 + 200×.5×.054) × 0.5 = £60
-assert(near(crewValue(r1, 'crossSlope', 1000), 60, 0.01),
-  'r1: crewValue crossSlope ≈ £60 (low case)', 60, crewValue(r1, 'crossSlope', 1000));
+// v12: Stutter et al. 2021 retention at 3 m (sediment 76%, TP 55%); N not valued:
+//      10 ha × (200×.758×.054 + .7×.547×46.61) × 0.5 = £130
+assert(near(crewValue(r1, 'crossSlope', 1000), 130, 0.01),
+  'r1: crewValue crossSlope ≈ £130 (v12 low case)', 130, crewValue(r1, 'crossSlope', 1000));
 
 assert(pestRegulationValue(r1, 'General Cropping', 1000) === 0,
   'r1: pestRegulationValue GC = £0.00');
@@ -168,8 +170,8 @@ assert(sserUnits(r1, 1000) === 0,
 
 const r1_net = calculate(inputs(r1), r1).annualNetBenefit;
 // v11: illustrative combined value = carbon (0) + water low case (60) − income forgone (210)
-assert(near(r1_net, -150, 1.00),
-  'r1: annualNetBenefit GC crossSlope NS ≈ −£150', -150, r1_net.toFixed(2));
+assert(near(r1_net, -80, 1.00),
+  'r1: annualNetBenefit GC crossSlope NS ≈ −£80 (v12: water 130 − forgone 210)', -80, r1_net.toFixed(2));
 
 // ---------------------------------------------------------------------------
 // Section D — Record 2: Distillery Foraging Strip (6m)
@@ -200,8 +202,8 @@ assert(sserUnits(r2, 1000) === 0,
 
 // v4 DB: includes windbreak + avoided-cost components for this variant at 1000m.
 const r2_net = calculate(inputs(r2), r2).annualNetBenefit;
-assert(near(r2_net, -320, 1.00),
-  'r2: annualNetBenefit GC crossSlope NS ≈ −£320 (water 100 − forgone 420)', -320, r2_net.toFixed(2));
+assert(near(r2_net, -270, 1.00),
+  'r2: annualNetBenefit GC crossSlope NS ≈ −£270 (v12: water 150 − forgone 420)', -270, r2_net.toFixed(2));
 
 // ---------------------------------------------------------------------------
 // Section E — Record 3: Coastal Erosion Wood (20m)
@@ -226,8 +228,8 @@ assert(near(avoidedCosts(r3, 'crossSlope', 1000), 2529.00, 0.01),
 
 // v4 DB: ground truth from calculate() for GC crossSlope NS at 1000m.
 const r3_net = calculate(inputs(r3), r3).annualNetBenefit;
-assert(near(r3_net, -1180, 1.00),
-  'r3: annualNetBenefit GC crossSlope NS ≈ −£1180', -1180, r3_net.toFixed(2));
+assert(near(r3_net, -1200, 1.00),
+  'r3: annualNetBenefit GC crossSlope NS ≈ −£1200 (v12: water 180 − forgone 1380)', -1200, r3_net.toFixed(2));
 
 // ---------------------------------------------------------------------------
 // Section F — Record 4: Livestock Shade Trees (12m, West Fife Claylands)
@@ -246,8 +248,8 @@ assert(sserUnits(r4, 1000) === 0,
 
 // v4 DB: full calculate() ground truth for GC crossSlope NS at 1000m.
 const r4_net = calculate(inputs(r4), r4).annualNetBenefit;
-assert(near(r4_net, -670, 1.00),
-  'r4: annualNetBenefit GC crossSlope NS ≈ −£670', -670, r4_net.toFixed(2));
+assert(near(r4_net, -660, 1.00),
+  'r4: annualNetBenefit GC crossSlope NS ≈ −£660 (v12 water)', -660, r4_net.toFixed(2));
 
 // ---------------------------------------------------------------------------
 // Section G — Record 5: Dense Wildlife Hedge (3m) — windbreak NS vs EW
@@ -270,9 +272,9 @@ assert(near(sserUnits(r5, 1000), 33.6, 0.01),
 // annualNetBenefit for GC (v10): carbon income per km on net tonnes, set 3 hedge profile:
 // carbIncome = (53.4/50) × 1 km × 0.64 × £60 = 41.01; NIF GC 3 m = £210
 const r5_net = calculate(inputs(r5), r5).annualNetBenefit;
-// v11: 52.5/50 × 0.64 × £60 = £40.32 carbon + £60 water (low) − £210 forgone = −£109.68
-assert(near(r5_net, -109.68, 1.00),
-  'r5: annualNetBenefit GC crossSlope NS ≈ −£109.68', -109.68, r5_net.toFixed(2));
+// v12 (HV1 Fence-line hedge, 2 m hedge in a 3 m strip): 52.5/50 × 0.64 × £60 = £40.32 carbon + £130 water (low) − £210 forgone = −£39.68
+assert(near(r5_net, -39.68, 1.00),
+  'r5: annualNetBenefit GC crossSlope NS ≈ −£39.68', -39.68, r5_net.toFixed(2));
 
 // ---------------------------------------------------------------------------
 // Section H — No NaN anywhere for a record at downSlope placement
@@ -324,7 +326,7 @@ assert(near(r1_windNS_500 * 2, r1_windNS_1000, 0.01),
 // --- J. v11 audit corrections (3 Nov 2026) ---
 console.log('\n--- J. v11 audit corrections ---');
 {
-  const heritage = db.interventions.find(r => r.id === 'fife_east_neuk_coast__3_heritage_species_hedge');
+  const heritage = db.interventions.find(r => r.id === 'fife_east_neuk_coast__hv3_wide_wildlife_hedge');
   assert(near(totalSeq50yr(r5), 52.5, 0.05), 'v11: Dense hedge 50yr gross = 52.5 tCO2e/km (model v2)', 52.5, totalSeq50yr(r5));
   assert(near(totalSeq50yr(heritage), 70.7, 0.05), 'v11: Heritage hedge 50yr gross = 70.7 tCO2e/km (3 m crown)', 70.7, totalSeq50yr(heritage));
   const c1 = calculate(inputs(r1), r1);
@@ -333,7 +335,7 @@ console.log('\n--- J. v11 audit corrections ---');
   assert(near(c1.unvalidatedScenarioValue, c1.pollinationValue + c1.pestRegulationValue + c1.thermalRegulationValue + c1.windbreakValue + c1.avoidedCosts, 0.01),
     'v11: scenario values reported separately', c1.unvalidatedScenarioValue);
   assert(near(c1.netAgronomicBenefit, -c1.netIncomeForegone, 0.01), 'v11: farm headline = −income forgone only');
-  assert(near(c1.widerEcoValueHigh, 310, 0.01), 'v11: water high case (CREW £0.55/kg sediment) crossSlope 3 m = £310', 310, c1.widerEcoValueHigh);
+  assert(near(c1.widerEcoValueHigh, 510, 0.01), 'v12: water high case (CREW £0.55/kg sediment) crossSlope 3 m = £510', 510, c1.widerEcoValueHigh);
   for (const L of [0, 100, 1000, 2000]) {
     const c = calculate({ ...inputs(r5), lengthM: L }, r5);
     assert(near(c.seq50yrTotalPerKm, 52.5, 0.05), `v11: per-km total independent of length (${L} m)`);

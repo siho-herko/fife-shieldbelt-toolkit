@@ -5,7 +5,8 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "test": "node tests/calc.test.js && node tests/content.test.js",
+    "test": "node tests/calc.test.js && node tests/content.test.js && node tests/hedge.test.js",
+    "test:hedge": "node tests/hedge.test.js",
     "test:calc": "node tests/calc.test.js",
     "test:content": "node tests/content.test.js",
     "test:e2e": "npx playwright test",

@@ -70,7 +70,7 @@ assert(
 );
 
 // 5. Variant references have valid width prefixes
-const VALID_WIDTHS = ['3m', '6m', '12m', '20m', '60m'];
+const VALID_WIDTHS = ['3m', '6m', '8m', '10m', '12m', '20m', '60m'];
 for (const p of problems) {
   for (const v of (p.Relevant_ShieldBelt_Variants ?? [])) {
     const width = v.split(' ')[0];

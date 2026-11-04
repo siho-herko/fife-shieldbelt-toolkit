@@ -41,6 +41,8 @@ html, body {
   --c-w12m:  #a16207;
   --c-w20m:  #9d174d;
   --c-w60m:  #0f4c3a;
+  --c-w8m:   #0e7490;
+  --c-w10m:  #4d7c0f;
 
   /* Typography */
   --font-display: 'Playfair Display', Georgia, serif;
@@ -696,6 +698,8 @@ input, select, textarea {
 
 .badge-width[data-width="3m"]  { background: var(--c-w3m); }
 .badge-width[data-width="6m"]  { background: var(--c-w6m); }
+.badge-width[data-width="8m"]  { background: var(--c-w8m); }
+.badge-width[data-width="10m"] { background: var(--c-w10m); }
 .badge-width[data-width="12m"] { background: var(--c-w12m); }
 .badge-width[data-width="20m"] { background: var(--c-w20m); }
 .badge-width[data-width="60m"] { background: var(--c-w60m); color: #ecfdf5; }
@@ -1643,6 +1647,23 @@ input, select, textarea {
   background: rgba(26,61,43,0.06);
   color: var(--c-forest);
 }
+
+/* ==========================================================================
+   27b. Hedge configurator (v12)
+   ========================================================================== */
+.hedge-config { margin-top: 1rem; }
+.hedge-config__group { margin-top: 0.75rem; display: flex; flex-direction: column; gap: 4px; }
+.hedge-config__toggle { display: flex; flex-wrap: wrap; }
+.hedge-config__toggle .seg-toggle__btn { flex: 1 1 auto; padding: 6px 10px; border-bottom: 1.5px solid var(--c-stone); margin-bottom: -1.5px; }
+.hedge-config__toggle .seg-toggle__btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.hedge-config__notes:empty { display: none; }
+.hedge-config__notes { margin-top: 0.75rem; padding: 8px 10px; background: rgba(181,131,10,0.10); border-left: 3px solid var(--c-gold, #b5830a); border-radius: 4px; line-height: 1.5; }
+.hedge-config__notes p { margin: 0 0 4px; }
+.hedge-config__summary { margin: 0.75rem 0 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; line-height: 1.45; }
+.hedge-config__summary dt { color: var(--c-muted); font-weight: 600; }
+.hedge-config__summary dd { margin: 0 0 6px; min-width: 0; overflow-wrap: anywhere; }
+.hedge-config__reset { margin-top: 0.75rem; width: 100%; }
+@media print { .hedge-config__toggle, .hedge-config__reset { display: none !important; } }
 
 /* ==========================================================================
    28. Results section body flex

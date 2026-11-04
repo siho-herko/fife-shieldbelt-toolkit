@@ -7,7 +7,9 @@
  * Author: NFCA / Fife ShieldBelt project
  */
 
-import { dbReady, getByBiome, getById, getAll, BIOMES, FARM_TYPES } from './db.js';
+import { dbReady, getByBiome, getById, getAll, getHedgeTemplate, BIOMES, FARM_TYPES } from './db.js';
+import { buildHedgeRecord, normaliseConfig, parseConfigKey, configKey, presetForConfig, minStripM,
+         FORMS, SPECIES, TREES, POSITIONS, DEFAULT_PRESET } from './hedge-config.js';
 import { calculate, fmt, fmtGBP, fmtCarbon, fmtSSER, parseWidth }   from './calc.js';
 import { hBar, hStackedBar, lineChart, radarChart, htmlLegend, clearCharts } from './charts.js';
 
@@ -82,6 +84,8 @@ const WIDTH_COLOR = {
   '12m': '#a16207',
   '20m': '#9d174d',
   '60m': '#0f4c3a',
+  '8m':  '#0e7490',
+  '10m': '#4d7c0f',
 };
 
 // =============================================================================
@@ -98,6 +102,8 @@ const state = {
   creditPrice:          70,
   problemCode:          null,
   windbreakOrient:      'NS',
+  hedgeCfg:             null,   // v12 hedge configurator choices (null for non-hedge options)
+  hedgeBasePreset:      null,   // preset code the current hedge choices started from
   // Derived (never set directly by user)
   biomeRecords:    [],
   currentRecord:   null,
@@ -181,7 +187,13 @@ function initBiomeSelector() {
       if (!radio.checked) return;
       state.biome = radio.value;
       setText('step-biome-summary', BIOME_DISPLAY[state.biome] || state.biome);
+      const prevName = state.biomeRecords.find(r => r.id === state.variantId)?.variant ?? null;
       await loadBiomeRecords(state.biome);
+      // Keep the same option (and any hedge customisation) in the new location:
+      // match the name first, then the variant code (e.g. 'HV2', '14')
+      const same = prevName && (state.biomeRecords.find(r => r.variant === prevName)
+        || state.biomeRecords.find(r => r.variant.split('.')[0] === prevName.split('.')[0]));
+      state.variantId = same?.id ?? null;
       populateVariantSelector();
       if (state.problemCode) {
         const rec = recommendVariant(state.problemCode, state.biomeRecords, state.farmType);
@@ -338,7 +350,7 @@ function populateVariantSelector() {
   }
   sel.disabled = false;
   sel.innerHTML = '<option value="">— Choose a variant —</option>';
-  const widthEmoji = { '3m': '🔵', '6m': '🟢', '12m': '🟡', '20m': '🔴' };
+  const widthEmoji = { '3m': '🔵', '6m': '🟢', '8m': '🟢', '10m': '🟢', '12m': '🟡', '20m': '🔴' };
   state.biomeRecords.forEach(r => {
     const opt       = document.createElement('option');
     opt.value       = r.id;
@@ -354,8 +366,17 @@ function syncVariantSelect() {
   if (sel) sel.value = state.variantId || '';
   if (state.variantId) {
     const rec = state.biomeRecords.find(r => r.id === state.variantId);
-    if (rec) setText('step-variant-summary', `${rec.width} ${rec.variant}`);
+    if (rec) setText('step-variant-summary', variantSummaryText(rec));
   }
+}
+
+/** Step summary: for a customised hedge, say which preset it started from. */
+function variantSummaryText(rec) {
+  const cur = state.currentRecord;
+  if (cur?.hedgeConfig && rec.hedgeConfig && !cur.hedgeConfig.preset) {
+    return `${cur.width} custom hedge (from ${rec.variant.split('.')[0]})`;
+  }
+  return `${rec.width} ${rec.variant}`;
 }
 
 function initVariantSelector() {
@@ -363,6 +384,7 @@ function initVariantSelector() {
   if (!sel) return;
   sel.addEventListener('change', async () => {
     state.variantId = sel.value || null;
+    state.hedgeCfg = null;   // a new choice starts from that option's own preset
     if (state.variantId) {
       const rec = state.biomeRecords.find(r => r.id === state.variantId);
       if (rec) setText('step-variant-summary', `${rec.width} ${rec.variant}`);
@@ -392,7 +414,12 @@ function renderVariantDetail(record) {
   if (badge) { badge.textContent = record.width; badge.dataset.width = record.width; }
 
   const desc = document.getElementById('variant-detail-desc');
-  if (desc) desc.textContent = record.registry?.soilTypeCondition || record.bespokePlantingRegime || '';
+  if (desc) {
+    const hc = record.hedgeConfig;
+    desc.textContent = hc
+      ? `${hc.hedgeWidthM} m ${FORMS[hc.form]?.label.toLowerCase() ?? ''} hedge in ${hc.stripM === 8 ? 'an' : 'a'} ${hc.stripM} m strip (${POSITIONS[hc.position]?.label.toLowerCase() ?? ''}). ${record.registry?.agronomicUtility ?? ''}`
+      : (record.registry?.soilTypeCondition || record.bespokePlantingRegime || '');
+  }
 
   const tags = document.getElementById('variant-detail-tags');
   if (tags) {
@@ -1045,7 +1072,9 @@ function renderResults(results) {
   // --- Agronomic notes ---
   const agro = document.getElementById('agronomic-notes');
   if (agro) {
+    const h = r.hedge;
     agro.innerHTML = [
+      h && `<p><strong>Hedge and strip:</strong> ${h.hedgeWidthM} m hedge in ${h.stripM === 8 ? 'an' : 'a'} ${h.stripM} m strip (${fmt(h.landTakeHa, 2)} ha out of production). ${h.layout}</p>`,
       r.plantingRegime && `<p><strong>Planting:</strong> ${r.plantingRegime}</p>`,
       r.maintenanceRegime && `<p><strong>Maintenance:</strong> ${r.maintenanceRegime}</p>`,
       r.rootArchitecture && `<p><strong>Root architecture:</strong> ${r.rootArchitecture}</p>`,
@@ -1316,8 +1345,13 @@ function encodeStateToURL() {
     placement: state.placement,
   });
   if (state.variantId) {
-    const num = state.variantId.match(/\d+/)?.[0];
-    if (num) p.set('variant', num);
+    // Variant code = the label prefix before the first '.', e.g. '14' or 'HV2'
+    const rec = state.biomeRecords.find(r => r.id === state.variantId);
+    const code = rec?.variant.split('.')[0];
+    if (code) p.set('variant', code);
+  }
+  if (state.currentRecord?.hedgeConfig && !state.currentRecord.hedgeConfig.preset && state.hedgeCfg) {
+    p.set('hedge', configKey(state.hedgeCfg));
   }
   if (state.problemCode) p.set('problem', state.problemCode);
 
@@ -1349,6 +1383,13 @@ function restoreStateFromURL() {
   if (rawProblem && problemsByCode[rawProblem]) state.problemCode = rawProblem;
 
   if (p.has('variant'))  state._urlVariantNum  = p.get('variant'); // resolved after records load
+  // v12: legacy hedge links (2 = Dense Wildlife Hedge, 3 = Heritage Species Hedge) map to HV2 and HV3
+  if (state._urlVariantNum === '2' || state._urlVariantNum === '3') state._urlVariantNum = 'HV' + state._urlVariantNum;
+  const rawHedge = parseConfigKey(p.get('hedge'));
+  if (rawHedge) {
+    state.hedgeCfg = normaliseConfig(rawHedge).cfg;
+    state.hedgeBasePreset = state._urlVariantNum ?? null;
+  }
 }
 
 // =============================================================================
@@ -1724,7 +1765,7 @@ function updateSSERWidthColor(width) {
   const el = document.getElementById('stat-sser-value')?.closest('.stat-box');
   if (!el) return;
   const map = {
-    '3m': 'var(--c-w3m)', '6m': 'var(--c-w6m)', '12m': 'var(--c-w12m)', '20m': 'var(--c-w20m)', '60m': 'var(--c-w60m)',
+    '3m': 'var(--c-w3m)', '6m': 'var(--c-w6m)', '8m': 'var(--c-w8m)', '10m': 'var(--c-w10m)', '12m': 'var(--c-w12m)', '20m': 'var(--c-w20m)', '60m': 'var(--c-w60m)',
   };
   el.style.borderColor = map[width] || '';
 }
@@ -1733,9 +1774,10 @@ function handleReset() {
   Object.assign(state, {
     biome: BIOMES.EAST_NEUK, variantId: null, farmType: 'General Cropping',
     placement: 'crossSlope', lengthM: 1000, creditPrice: 70,
-    problemCode: null, windbreakOrient: 'NS',
+    problemCode: null, windbreakOrient: 'NS', hedgeCfg: null, hedgeBasePreset: null,
     biomeRecords: [], currentRecord: null, results: null, activeProblem: null,
   });
+  document.getElementById('hedge-config')?.classList.add('hidden');
 
   // Reset form controls
   const lenInput = document.getElementById('strip-length');
@@ -1759,18 +1801,164 @@ function handleReset() {
 }
 
 // =============================================================================
+// Hedge configurator (v12)
+// =============================================================================
+
+function pickCfg(c) {
+  return { form: c.form, species: c.species, trees: c.trees, stripM: Number(c.stripM), position: c.position };
+}
+
+/** Rebuild state.currentRecord from the biome's hedge template and state.hedgeCfg (same engine as the data build). */
+async function rebuildHedgeRecord() {
+  const tpl = await getHedgeTemplate(state.biome);
+  if (!tpl || !state.hedgeCfg) return;
+  const rec = buildHedgeRecord(tpl, state.hedgeCfg);
+  state.hedgeCfg = pickCfg(rec.hedgeConfig);
+  // If the choices match a preset, use the stored preset record (identical numbers, stable id)
+  const preset = rec.hedgeConfig.preset
+    ? state.biomeRecords.find(r => r.hedgeConfig?.preset === rec.hedgeConfig.preset) : null;
+  if (preset) {
+    state.variantId = preset.id;
+    state.hedgeBasePreset = preset.hedgeConfig.preset;
+    state.currentRecord = { ...preset, hedgeConfig: { ...preset.hedgeConfig, configNotes: rec.hedgeConfig.configNotes } };
+  } else {
+    state.currentRecord = rec;
+  }
+}
+
+function initHedgeConfig() {
+  document.querySelectorAll('#hedge-config [data-hc]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      if (!state.hedgeCfg || btn.disabled) return;
+      const key = btn.dataset.hc;
+      const val = key === 'stripM' ? Number(btn.dataset.value) : btn.dataset.value;
+      const next = { ...state.hedgeCfg, [key]: val };
+      // Moving to a new position: widen the strip to that position's minimum rather than rejecting the click
+      if (key === 'position' || key === 'form') {
+        const form = key === 'form' ? val : next.form;
+        const pos = key === 'position' ? val : next.position;
+        if (pos === 'watercourse' && form !== 'double') next.form = 'double';
+        next.stripM = Math.max(next.stripM, minStripM(next.form, pos));
+      }
+      state.hedgeCfg = normaliseConfig(next).cfg;
+      if (key === 'position') {
+        const pl = POSITIONS[val]?.placement;
+        if (pl) setPlacement(pl);
+      }
+      await rebuildHedgeRecord();
+      renderHedgeConfig();
+      renderVariantDetail(state.currentRecord);
+      syncVariantSelect();
+      updateLengthDerived();
+      await recalc();
+    });
+  });
+  document.getElementById('btn-hedge-preset-reset')?.addEventListener('click', async () => {
+    const base = state.biomeRecords.find(r => r.id === state.variantId);
+    if (!base?.hedgeConfig) return;
+    state.hedgeCfg = pickCfg(base.hedgeConfig);
+    await rebuildHedgeRecord();
+    renderHedgeConfig();
+    renderVariantDetail(state.currentRecord);
+    syncVariantSelect();
+    updateLengthDerived();
+    await recalc();
+  });
+}
+
+function setPlacement(pl) {
+  state.placement = pl;
+  document.querySelectorAll('[data-placement]').forEach(b => {
+    b.classList.toggle('active', b.dataset.placement === pl);
+  });
+}
+
+function renderHedgeConfig() {
+  const card = document.getElementById('hedge-config');
+  if (!card) return;
+  const rec = state.currentRecord;
+  const cfg = state.hedgeCfg;
+  if (!rec?.hedgeConfig || !cfg) { card.classList.add('hidden'); return; }
+  card.classList.remove('hidden');
+
+  card.querySelectorAll('[data-hc]').forEach(btn => {
+    const key = btn.dataset.hc;
+    const val = key === 'stripM' ? Number(btn.dataset.value) : btn.dataset.value;
+    const on = cfg[key] === val;
+    btn.classList.toggle('active', on);
+    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    let disabled = false, why = '';
+    if (key === 'stripM' && val < minStripM(cfg.form, cfg.position)) { disabled = true; why = 'Too narrow for this hedge and position (GAEC 7 keeps cultivation 2 m from the hedge centre).'; }
+    if (key === 'form' && val !== 'double' && cfg.position === 'watercourse') { disabled = true; why = 'Double row only beside water, so the grass margin can trap sediment (Cole et al. 2020).'; }
+    if ((key === 'species' || key === 'trees') && cfg.form === 'productive' && !on) { disabled = true; why = 'The productive hedge has its own species list and no standard trees.'; }
+    btn.disabled = disabled;
+    btn.title = why;
+  });
+
+  const presetCode = rec.hedgeConfig.preset;
+  const base = state.biomeRecords.find(r => r.id === state.variantId);
+  setText('hedge-config-origin', presetCode ? `Preset ${presetCode}` : `Customised from ${base?.variant.split('.')[0] ?? 'a preset'}`);
+  const resetBtn = document.getElementById('btn-hedge-preset-reset');
+  if (resetBtn) { resetBtn.hidden = !!presetCode; resetBtn.classList.toggle('hidden', !!presetCode); }
+
+  const notes = [...(rec.hedgeConfig.configNotes ?? [])];
+  if (rec.hedgeOutputs?.speciesTradeoff) notes.push(rec.hedgeOutputs.speciesTradeoff);
+  if (cfg.position === 'contour' && cfg.form === 'double') notes.push('On slopes and in nitrate vulnerable zones a triple row is recommended: hedge width drives surface nitrogen interception (Van Vooren et al. 2017).');
+  const notesEl = document.getElementById('hedge-config-notes');
+  if (notesEl) notesEl.innerHTML = notes.map(n => `<p>${escapeHTML(n)}</p>`).join('');
+
+  const o = rec.hedgeOutputs ?? {};
+  const g = o.geometry ?? {}, b = o.biodiversity ?? {}, m = o.marginSoilCarbonScenario ?? {};
+  const km = state.lengthM / 1000;
+  const rows = [
+    ['Hedge / strip', `${rec.hedgeConfig.hedgeWidthM} m hedge (${rec.hedgeConfig.rows} rows, ${rec.hedgeConfig.plantsPerM} plants/m) in ${rec.hedgeConfig.stripM === 8 ? 'an' : 'a'} ${rec.hedgeConfig.stripM} m strip; ${fmt(g.landTakeHaPerKm * km, 2)} ha out of production`],
+    ['Layout', g.layout ?? ''],
+    ['Carbon counted', rec.carbonSource?.harvested
+      ? `${fmt(rec.seq50yrTotal, 1)} tCO₂e/km over 50 yr (soil and roots only; ${fmt(o.carbonGross50, 1)} gross incl. harvested biomass)`
+      : `${fmt(rec.seq50yrTotal, 1)} tCO₂e/km over 50 yr, gross (provisional)`],
+    ['SSE hedgerow units', `${fmt(b.hluPerKm?.moderate * km, 2)}–${fmt(b.hluPerKm?.good * km, 2)} (${b.hedgeType}; ${b.distinctiveness})`],
+    ['SSE margin units', `${fmt(b.marginBuPerKm?.arableMargin * km, 2)} as arable margin; ${fmt(b.marginBuPerKm?.grasslandModerate * km, 2)}–${fmt(b.marginBuPerKm?.grasslandGood * km, 2)} if accepted as neutral grassland`],
+    ['Water retention', `about ${o.waterRetentionPct?.sediment}% sediment, ${o.waterRetentionPct?.phosphorus}% phosphorus (indicative)`],
+    ['AECS strip payment', g.aecsStrip?.payableM ? `about ${fmtGBP(g.aecsStrip.gbpPerKm * km)}/yr for ${g.aecsStrip.payableM} m payable; possible, not counted` : (g.aecsStrip?.note ?? '')],
+    ['Margin soil carbon', m.low != null ? `${fmt(m.low * km, 1)}–${fmt(m.central * km, 1)} tCO₂e scenario; not counted until measured` : ''],
+  ];
+  const dl = document.getElementById('hedge-config-summary');
+  if (dl) dl.innerHTML = rows.filter(r => r[1]).map(([k, v]) => `<dt>${escapeHTML(k)}</dt><dd>${escapeHTML(v)}</dd>`).join('');
+}
+
+function escapeHTML(s) {
+  return String(s ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+}
+
+// =============================================================================
 // Core recalc
 // =============================================================================
 
 async function applyVariantAndRecalc() {
   if (!state.variantId && state.biomeRecords.length) {
-    state.variantId = state.biomeRecords[0]?.id || null;
+    // v12 default: HV2 Hedge and margin (programme default), else the first option
+    const def = state.biomeRecords.find(r => r.variant.startsWith(DEFAULT_PRESET + '.'));
+    state.variantId = (def ?? state.biomeRecords[0])?.id || null;
     syncVariantSelect();
   }
   if (!state.variantId) return;
 
-  state.currentRecord = await getById(state.variantId);
-  if (!state.currentRecord) return;
+  const base = await getById(state.variantId);
+  if (!base) return;
+  state.currentRecord = base;
+  if (base.hedgeConfig) {
+    // A different preset (chosen from the list or by a problem recommendation) starts from its own settings
+    if (!state.hedgeCfg || state.hedgeBasePreset !== base.hedgeConfig.preset) {
+      state.hedgeCfg = pickCfg(base.hedgeConfig);
+      state.hedgeBasePreset = base.hedgeConfig.preset;
+    }
+    await rebuildHedgeRecord();
+  } else {
+    state.hedgeCfg = null;
+    state.hedgeBasePreset = null;
+  }
+  renderHedgeConfig();
+  syncVariantSelect();
 
   renderBiomeContextCard(state.biome);
   renderVariantDetail(state.currentRecord);
@@ -1798,6 +1986,7 @@ async function recalc() {
   state.results     = calculate(inputs, state.currentRecord);
   state.lastResults = state.results;
   renderResults(state.results);
+  renderHedgeConfig();   // installed-length figures in the configurator follow the strip length
   encodeStateToURL();
 }
 
@@ -1908,6 +2097,7 @@ async function init() {
     initCreditPriceSlider();
     initPlacementToggle();
     initWindbreakToggle();
+    initHedgeConfig();
     initModal();
 
     document.getElementById('btn-calculate')?.addEventListener('click', applyVariantAndRecalc);
