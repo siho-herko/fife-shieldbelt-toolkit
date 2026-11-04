@@ -2280,7 +2280,7 @@
         "marginSoilCarbonScenario": {
           "low": 2.8,
           "central": 5,
-          "note": "Grass margin soil carbon (cropland to permanent grass, 28-50 tCO2e/ha over 50 years; CITED). Not counted: needs a measured margin soil stratum in the ONCRA design."
+          "note": "Grass margin soil carbon scenario: 28-50 tCO2e/ha over 50 years (JUDGEMENT placeholder; a measured German study found about +22 t C/ha, roughly 80 tCO2e/ha, in grassy hedge edges at 0-100 cm: Drexler & Don 2024). Not counted: needs a measured margin soil stratum in the ONCRA design."
         },
         "waterRetentionPct": {
           "sediment": 76,
@@ -2566,7 +2566,7 @@
         "marginSoilCarbonScenario": {
           "low": 11.2,
           "central": 20,
-          "note": "Grass margin soil carbon (cropland to permanent grass, 28-50 tCO2e/ha over 50 years; CITED). Not counted: needs a measured margin soil stratum in the ONCRA design."
+          "note": "Grass margin soil carbon scenario: 28-50 tCO2e/ha over 50 years (JUDGEMENT placeholder; a measured German study found about +22 t C/ha, roughly 80 tCO2e/ha, in grassy hedge edges at 0-100 cm: Drexler & Don 2024). Not counted: needs a measured margin soil stratum in the ONCRA design."
         },
         "waterRetentionPct": {
           "sediment": 80,
@@ -2851,7 +2851,7 @@
         "marginSoilCarbonScenario": {
           "low": 8.4,
           "central": 15,
-          "note": "Grass margin soil carbon (cropland to permanent grass, 28-50 tCO2e/ha over 50 years; CITED). Not counted: needs a measured margin soil stratum in the ONCRA design."
+          "note": "Grass margin soil carbon scenario: 28-50 tCO2e/ha over 50 years (JUDGEMENT placeholder; a measured German study found about +22 t C/ha, roughly 80 tCO2e/ha, in grassy hedge edges at 0-100 cm: Drexler & Don 2024). Not counted: needs a measured margin soil stratum in the ONCRA design."
         },
         "waterRetentionPct": {
           "sediment": 80,
@@ -3136,7 +3136,7 @@
         "marginSoilCarbonScenario": {
           "low": 11.2,
           "central": 20,
-          "note": "Grass margin soil carbon (cropland to permanent grass, 28-50 tCO2e/ha over 50 years; CITED). Not counted: needs a measured margin soil stratum in the ONCRA design."
+          "note": "Grass margin soil carbon scenario: 28-50 tCO2e/ha over 50 years (JUDGEMENT placeholder; a measured German study found about +22 t C/ha, roughly 80 tCO2e/ha, in grassy hedge edges at 0-100 cm: Drexler & Don 2024). Not counted: needs a measured margin soil stratum in the ONCRA design."
         },
         "waterRetentionPct": {
           "sediment": 80,
@@ -3421,7 +3421,7 @@
         "marginSoilCarbonScenario": {
           "low": 22.4,
           "central": 40,
-          "note": "Grass margin soil carbon (cropland to permanent grass, 28-50 tCO2e/ha over 50 years; CITED). Not counted: needs a measured margin soil stratum in the ONCRA design."
+          "note": "Grass margin soil carbon scenario: 28-50 tCO2e/ha over 50 years (JUDGEMENT placeholder; a measured German study found about +22 t C/ha, roughly 80 tCO2e/ha, in grassy hedge edges at 0-100 cm: Drexler & Don 2024). Not counted: needs a measured margin soil stratum in the ONCRA design."
         },
         "waterRetentionPct": {
           "sediment": 83,
@@ -3706,7 +3706,7 @@
         "marginSoilCarbonScenario": {
           "low": 14,
           "central": 25,
-          "note": "Grass margin soil carbon (cropland to permanent grass, 28-50 tCO2e/ha over 50 years; CITED). Not counted: needs a measured margin soil stratum in the ONCRA design."
+          "note": "Grass margin soil carbon scenario: 28-50 tCO2e/ha over 50 years (JUDGEMENT placeholder; a measured German study found about +22 t C/ha, roughly 80 tCO2e/ha, in grassy hedge edges at 0-100 cm: Drexler & Don 2024). Not counted: needs a measured margin soil stratum in the ONCRA design."
         },
         "waterRetentionPct": {
           "sediment": 82,
@@ -3991,7 +3991,7 @@
         "marginSoilCarbonScenario": {
           "low": 28,
           "central": 50,
-          "note": "Grass margin soil carbon (cropland to permanent grass, 28-50 tCO2e/ha over 50 years; CITED). Not counted: needs a measured margin soil stratum in the ONCRA design."
+          "note": "Grass margin soil carbon scenario: 28-50 tCO2e/ha over 50 years (JUDGEMENT placeholder; a measured German study found about +22 t C/ha, roughly 80 tCO2e/ha, in grassy hedge edges at 0-100 cm: Drexler & Don 2024). Not counted: needs a measured margin soil stratum in the ONCRA design."
         },
         "waterRetentionPct": {
           "sediment": 84,
@@ -4276,7 +4276,7 @@
         "marginSoilCarbonScenario": {
           "low": 10.6,
           "central": 19,
-          "note": "Grass margin soil carbon (cropland to permanent grass, 28-50 tCO2e/ha over 50 years; CITED). Not counted: needs a measured margin soil stratum in the ONCRA design."
+          "note": "Grass margin soil carbon scenario: 28-50 tCO2e/ha over 50 years (JUDGEMENT placeholder; a measured German study found about +22 t C/ha, roughly 80 tCO2e/ha, in grassy hedge edges at 0-100 cm: Drexler & Don 2024). Not counted: needs a measured margin soil stratum in the ONCRA design."
         },
         "waterRetentionPct": {
           "sediment": 82,
@@ -8561,7 +8561,7 @@
         "marginSoilCarbonScenario": {
           "low": 2.8,
           "central": 5,
-          "note": "Grass margin soil carbon (cropland to permanent grass, 28-50 tCO2e/ha over 50 years; CITED). Not counted: needs a measured margin soil stratum in the ONCRA design."
+          "note": "Grass margin soil carbon scenario: 28-50 tCO2e/ha over 50 years (JUDGEMENT placeholder; a measured German study found about +22 t C/ha, roughly 80 tCO2e/ha, in grassy hedge edges at 0-100 cm: Drexler & Don 2024). Not counted: needs a measured margin soil stratum in the ONCRA design."
         },
         "waterRetentionPct": {
           "sediment": 76,
@@ -8847,7 +8847,7 @@
         "marginSoilCarbonScenario": {
           "low": 11.2,
           "central": 20,
-          "note": "Grass margin soil carbon (cropland to permanent grass, 28-50 tCO2e/ha over 50 years; CITED). Not counted: needs a measured margin soil stratum in the ONCRA design."
+          "note": "Grass margin soil carbon scenario: 28-50 tCO2e/ha over 50 years (JUDGEMENT placeholder; a measured German study found about +22 t C/ha, roughly 80 tCO2e/ha, in grassy hedge edges at 0-100 cm: Drexler & Don 2024). Not counted: needs a measured margin soil stratum in the ONCRA design."
         },
         "waterRetentionPct": {
           "sediment": 80,
@@ -9132,7 +9132,7 @@
         "marginSoilCarbonScenario": {
           "low": 8.4,
           "central": 15,
-          "note": "Grass margin soil carbon (cropland to permanent grass, 28-50 tCO2e/ha over 50 years; CITED). Not counted: needs a measured margin soil stratum in the ONCRA design."
+          "note": "Grass margin soil carbon scenario: 28-50 tCO2e/ha over 50 years (JUDGEMENT placeholder; a measured German study found about +22 t C/ha, roughly 80 tCO2e/ha, in grassy hedge edges at 0-100 cm: Drexler & Don 2024). Not counted: needs a measured margin soil stratum in the ONCRA design."
         },
         "waterRetentionPct": {
           "sediment": 80,
@@ -9417,7 +9417,7 @@
         "marginSoilCarbonScenario": {
           "low": 11.2,
           "central": 20,
-          "note": "Grass margin soil carbon (cropland to permanent grass, 28-50 tCO2e/ha over 50 years; CITED). Not counted: needs a measured margin soil stratum in the ONCRA design."
+          "note": "Grass margin soil carbon scenario: 28-50 tCO2e/ha over 50 years (JUDGEMENT placeholder; a measured German study found about +22 t C/ha, roughly 80 tCO2e/ha, in grassy hedge edges at 0-100 cm: Drexler & Don 2024). Not counted: needs a measured margin soil stratum in the ONCRA design."
         },
         "waterRetentionPct": {
           "sediment": 80,
@@ -9702,7 +9702,7 @@
         "marginSoilCarbonScenario": {
           "low": 22.4,
           "central": 40,
-          "note": "Grass margin soil carbon (cropland to permanent grass, 28-50 tCO2e/ha over 50 years; CITED). Not counted: needs a measured margin soil stratum in the ONCRA design."
+          "note": "Grass margin soil carbon scenario: 28-50 tCO2e/ha over 50 years (JUDGEMENT placeholder; a measured German study found about +22 t C/ha, roughly 80 tCO2e/ha, in grassy hedge edges at 0-100 cm: Drexler & Don 2024). Not counted: needs a measured margin soil stratum in the ONCRA design."
         },
         "waterRetentionPct": {
           "sediment": 83,
@@ -9987,7 +9987,7 @@
         "marginSoilCarbonScenario": {
           "low": 14,
           "central": 25,
-          "note": "Grass margin soil carbon (cropland to permanent grass, 28-50 tCO2e/ha over 50 years; CITED). Not counted: needs a measured margin soil stratum in the ONCRA design."
+          "note": "Grass margin soil carbon scenario: 28-50 tCO2e/ha over 50 years (JUDGEMENT placeholder; a measured German study found about +22 t C/ha, roughly 80 tCO2e/ha, in grassy hedge edges at 0-100 cm: Drexler & Don 2024). Not counted: needs a measured margin soil stratum in the ONCRA design."
         },
         "waterRetentionPct": {
           "sediment": 82,
@@ -10272,7 +10272,7 @@
         "marginSoilCarbonScenario": {
           "low": 28,
           "central": 50,
-          "note": "Grass margin soil carbon (cropland to permanent grass, 28-50 tCO2e/ha over 50 years; CITED). Not counted: needs a measured margin soil stratum in the ONCRA design."
+          "note": "Grass margin soil carbon scenario: 28-50 tCO2e/ha over 50 years (JUDGEMENT placeholder; a measured German study found about +22 t C/ha, roughly 80 tCO2e/ha, in grassy hedge edges at 0-100 cm: Drexler & Don 2024). Not counted: needs a measured margin soil stratum in the ONCRA design."
         },
         "waterRetentionPct": {
           "sediment": 84,
@@ -10557,7 +10557,7 @@
         "marginSoilCarbonScenario": {
           "low": 10.6,
           "central": 19,
-          "note": "Grass margin soil carbon (cropland to permanent grass, 28-50 tCO2e/ha over 50 years; CITED). Not counted: needs a measured margin soil stratum in the ONCRA design."
+          "note": "Grass margin soil carbon scenario: 28-50 tCO2e/ha over 50 years (JUDGEMENT placeholder; a measured German study found about +22 t C/ha, roughly 80 tCO2e/ha, in grassy hedge edges at 0-100 cm: Drexler & Don 2024). Not counted: needs a measured margin soil stratum in the ONCRA design."
         },
         "waterRetentionPct": {
           "sediment": 82,
@@ -14842,7 +14842,7 @@
         "marginSoilCarbonScenario": {
           "low": 2.8,
           "central": 5,
-          "note": "Grass margin soil carbon (cropland to permanent grass, 28-50 tCO2e/ha over 50 years; CITED). Not counted: needs a measured margin soil stratum in the ONCRA design."
+          "note": "Grass margin soil carbon scenario: 28-50 tCO2e/ha over 50 years (JUDGEMENT placeholder; a measured German study found about +22 t C/ha, roughly 80 tCO2e/ha, in grassy hedge edges at 0-100 cm: Drexler & Don 2024). Not counted: needs a measured margin soil stratum in the ONCRA design."
         },
         "waterRetentionPct": {
           "sediment": 76,
@@ -15128,7 +15128,7 @@
         "marginSoilCarbonScenario": {
           "low": 11.2,
           "central": 20,
-          "note": "Grass margin soil carbon (cropland to permanent grass, 28-50 tCO2e/ha over 50 years; CITED). Not counted: needs a measured margin soil stratum in the ONCRA design."
+          "note": "Grass margin soil carbon scenario: 28-50 tCO2e/ha over 50 years (JUDGEMENT placeholder; a measured German study found about +22 t C/ha, roughly 80 tCO2e/ha, in grassy hedge edges at 0-100 cm: Drexler & Don 2024). Not counted: needs a measured margin soil stratum in the ONCRA design."
         },
         "waterRetentionPct": {
           "sediment": 80,
@@ -15413,7 +15413,7 @@
         "marginSoilCarbonScenario": {
           "low": 8.4,
           "central": 15,
-          "note": "Grass margin soil carbon (cropland to permanent grass, 28-50 tCO2e/ha over 50 years; CITED). Not counted: needs a measured margin soil stratum in the ONCRA design."
+          "note": "Grass margin soil carbon scenario: 28-50 tCO2e/ha over 50 years (JUDGEMENT placeholder; a measured German study found about +22 t C/ha, roughly 80 tCO2e/ha, in grassy hedge edges at 0-100 cm: Drexler & Don 2024). Not counted: needs a measured margin soil stratum in the ONCRA design."
         },
         "waterRetentionPct": {
           "sediment": 80,
@@ -15698,7 +15698,7 @@
         "marginSoilCarbonScenario": {
           "low": 11.2,
           "central": 20,
-          "note": "Grass margin soil carbon (cropland to permanent grass, 28-50 tCO2e/ha over 50 years; CITED). Not counted: needs a measured margin soil stratum in the ONCRA design."
+          "note": "Grass margin soil carbon scenario: 28-50 tCO2e/ha over 50 years (JUDGEMENT placeholder; a measured German study found about +22 t C/ha, roughly 80 tCO2e/ha, in grassy hedge edges at 0-100 cm: Drexler & Don 2024). Not counted: needs a measured margin soil stratum in the ONCRA design."
         },
         "waterRetentionPct": {
           "sediment": 80,
@@ -15983,7 +15983,7 @@
         "marginSoilCarbonScenario": {
           "low": 22.4,
           "central": 40,
-          "note": "Grass margin soil carbon (cropland to permanent grass, 28-50 tCO2e/ha over 50 years; CITED). Not counted: needs a measured margin soil stratum in the ONCRA design."
+          "note": "Grass margin soil carbon scenario: 28-50 tCO2e/ha over 50 years (JUDGEMENT placeholder; a measured German study found about +22 t C/ha, roughly 80 tCO2e/ha, in grassy hedge edges at 0-100 cm: Drexler & Don 2024). Not counted: needs a measured margin soil stratum in the ONCRA design."
         },
         "waterRetentionPct": {
           "sediment": 83,
@@ -16268,7 +16268,7 @@
         "marginSoilCarbonScenario": {
           "low": 14,
           "central": 25,
-          "note": "Grass margin soil carbon (cropland to permanent grass, 28-50 tCO2e/ha over 50 years; CITED). Not counted: needs a measured margin soil stratum in the ONCRA design."
+          "note": "Grass margin soil carbon scenario: 28-50 tCO2e/ha over 50 years (JUDGEMENT placeholder; a measured German study found about +22 t C/ha, roughly 80 tCO2e/ha, in grassy hedge edges at 0-100 cm: Drexler & Don 2024). Not counted: needs a measured margin soil stratum in the ONCRA design."
         },
         "waterRetentionPct": {
           "sediment": 82,
@@ -16553,7 +16553,7 @@
         "marginSoilCarbonScenario": {
           "low": 28,
           "central": 50,
-          "note": "Grass margin soil carbon (cropland to permanent grass, 28-50 tCO2e/ha over 50 years; CITED). Not counted: needs a measured margin soil stratum in the ONCRA design."
+          "note": "Grass margin soil carbon scenario: 28-50 tCO2e/ha over 50 years (JUDGEMENT placeholder; a measured German study found about +22 t C/ha, roughly 80 tCO2e/ha, in grassy hedge edges at 0-100 cm: Drexler & Don 2024). Not counted: needs a measured margin soil stratum in the ONCRA design."
         },
         "waterRetentionPct": {
           "sediment": 84,
@@ -16838,7 +16838,7 @@
         "marginSoilCarbonScenario": {
           "low": 10.6,
           "central": 19,
-          "note": "Grass margin soil carbon (cropland to permanent grass, 28-50 tCO2e/ha over 50 years; CITED). Not counted: needs a measured margin soil stratum in the ONCRA design."
+          "note": "Grass margin soil carbon scenario: 28-50 tCO2e/ha over 50 years (JUDGEMENT placeholder; a measured German study found about +22 t C/ha, roughly 80 tCO2e/ha, in grassy hedge edges at 0-100 cm: Drexler & Don 2024). Not counted: needs a measured margin soil stratum in the ONCRA design."
         },
         "waterRetentionPct": {
           "sediment": 82,
@@ -21123,7 +21123,7 @@
         "marginSoilCarbonScenario": {
           "low": 2.8,
           "central": 5,
-          "note": "Grass margin soil carbon (cropland to permanent grass, 28-50 tCO2e/ha over 50 years; CITED). Not counted: needs a measured margin soil stratum in the ONCRA design."
+          "note": "Grass margin soil carbon scenario: 28-50 tCO2e/ha over 50 years (JUDGEMENT placeholder; a measured German study found about +22 t C/ha, roughly 80 tCO2e/ha, in grassy hedge edges at 0-100 cm: Drexler & Don 2024). Not counted: needs a measured margin soil stratum in the ONCRA design."
         },
         "waterRetentionPct": {
           "sediment": 76,
@@ -21409,7 +21409,7 @@
         "marginSoilCarbonScenario": {
           "low": 11.2,
           "central": 20,
-          "note": "Grass margin soil carbon (cropland to permanent grass, 28-50 tCO2e/ha over 50 years; CITED). Not counted: needs a measured margin soil stratum in the ONCRA design."
+          "note": "Grass margin soil carbon scenario: 28-50 tCO2e/ha over 50 years (JUDGEMENT placeholder; a measured German study found about +22 t C/ha, roughly 80 tCO2e/ha, in grassy hedge edges at 0-100 cm: Drexler & Don 2024). Not counted: needs a measured margin soil stratum in the ONCRA design."
         },
         "waterRetentionPct": {
           "sediment": 80,
@@ -21694,7 +21694,7 @@
         "marginSoilCarbonScenario": {
           "low": 8.4,
           "central": 15,
-          "note": "Grass margin soil carbon (cropland to permanent grass, 28-50 tCO2e/ha over 50 years; CITED). Not counted: needs a measured margin soil stratum in the ONCRA design."
+          "note": "Grass margin soil carbon scenario: 28-50 tCO2e/ha over 50 years (JUDGEMENT placeholder; a measured German study found about +22 t C/ha, roughly 80 tCO2e/ha, in grassy hedge edges at 0-100 cm: Drexler & Don 2024). Not counted: needs a measured margin soil stratum in the ONCRA design."
         },
         "waterRetentionPct": {
           "sediment": 80,
@@ -21979,7 +21979,7 @@
         "marginSoilCarbonScenario": {
           "low": 11.2,
           "central": 20,
-          "note": "Grass margin soil carbon (cropland to permanent grass, 28-50 tCO2e/ha over 50 years; CITED). Not counted: needs a measured margin soil stratum in the ONCRA design."
+          "note": "Grass margin soil carbon scenario: 28-50 tCO2e/ha over 50 years (JUDGEMENT placeholder; a measured German study found about +22 t C/ha, roughly 80 tCO2e/ha, in grassy hedge edges at 0-100 cm: Drexler & Don 2024). Not counted: needs a measured margin soil stratum in the ONCRA design."
         },
         "waterRetentionPct": {
           "sediment": 80,
@@ -22264,7 +22264,7 @@
         "marginSoilCarbonScenario": {
           "low": 22.4,
           "central": 40,
-          "note": "Grass margin soil carbon (cropland to permanent grass, 28-50 tCO2e/ha over 50 years; CITED). Not counted: needs a measured margin soil stratum in the ONCRA design."
+          "note": "Grass margin soil carbon scenario: 28-50 tCO2e/ha over 50 years (JUDGEMENT placeholder; a measured German study found about +22 t C/ha, roughly 80 tCO2e/ha, in grassy hedge edges at 0-100 cm: Drexler & Don 2024). Not counted: needs a measured margin soil stratum in the ONCRA design."
         },
         "waterRetentionPct": {
           "sediment": 83,
@@ -22549,7 +22549,7 @@
         "marginSoilCarbonScenario": {
           "low": 14,
           "central": 25,
-          "note": "Grass margin soil carbon (cropland to permanent grass, 28-50 tCO2e/ha over 50 years; CITED). Not counted: needs a measured margin soil stratum in the ONCRA design."
+          "note": "Grass margin soil carbon scenario: 28-50 tCO2e/ha over 50 years (JUDGEMENT placeholder; a measured German study found about +22 t C/ha, roughly 80 tCO2e/ha, in grassy hedge edges at 0-100 cm: Drexler & Don 2024). Not counted: needs a measured margin soil stratum in the ONCRA design."
         },
         "waterRetentionPct": {
           "sediment": 82,
@@ -22834,7 +22834,7 @@
         "marginSoilCarbonScenario": {
           "low": 28,
           "central": 50,
-          "note": "Grass margin soil carbon (cropland to permanent grass, 28-50 tCO2e/ha over 50 years; CITED). Not counted: needs a measured margin soil stratum in the ONCRA design."
+          "note": "Grass margin soil carbon scenario: 28-50 tCO2e/ha over 50 years (JUDGEMENT placeholder; a measured German study found about +22 t C/ha, roughly 80 tCO2e/ha, in grassy hedge edges at 0-100 cm: Drexler & Don 2024). Not counted: needs a measured margin soil stratum in the ONCRA design."
         },
         "waterRetentionPct": {
           "sediment": 84,
@@ -23119,7 +23119,7 @@
         "marginSoilCarbonScenario": {
           "low": 10.6,
           "central": 19,
-          "note": "Grass margin soil carbon (cropland to permanent grass, 28-50 tCO2e/ha over 50 years; CITED). Not counted: needs a measured margin soil stratum in the ONCRA design."
+          "note": "Grass margin soil carbon scenario: 28-50 tCO2e/ha over 50 years (JUDGEMENT placeholder; a measured German study found about +22 t C/ha, roughly 80 tCO2e/ha, in grassy hedge edges at 0-100 cm: Drexler & Don 2024). Not counted: needs a measured margin soil stratum in the ONCRA design."
         },
         "waterRetentionPct": {
           "sediment": 82,
@@ -27404,7 +27404,7 @@
         "marginSoilCarbonScenario": {
           "low": 2.8,
           "central": 5,
-          "note": "Grass margin soil carbon (cropland to permanent grass, 28-50 tCO2e/ha over 50 years; CITED). Not counted: needs a measured margin soil stratum in the ONCRA design."
+          "note": "Grass margin soil carbon scenario: 28-50 tCO2e/ha over 50 years (JUDGEMENT placeholder; a measured German study found about +22 t C/ha, roughly 80 tCO2e/ha, in grassy hedge edges at 0-100 cm: Drexler & Don 2024). Not counted: needs a measured margin soil stratum in the ONCRA design."
         },
         "waterRetentionPct": {
           "sediment": 76,
@@ -27690,7 +27690,7 @@
         "marginSoilCarbonScenario": {
           "low": 11.2,
           "central": 20,
-          "note": "Grass margin soil carbon (cropland to permanent grass, 28-50 tCO2e/ha over 50 years; CITED). Not counted: needs a measured margin soil stratum in the ONCRA design."
+          "note": "Grass margin soil carbon scenario: 28-50 tCO2e/ha over 50 years (JUDGEMENT placeholder; a measured German study found about +22 t C/ha, roughly 80 tCO2e/ha, in grassy hedge edges at 0-100 cm: Drexler & Don 2024). Not counted: needs a measured margin soil stratum in the ONCRA design."
         },
         "waterRetentionPct": {
           "sediment": 80,
@@ -27975,7 +27975,7 @@
         "marginSoilCarbonScenario": {
           "low": 8.4,
           "central": 15,
-          "note": "Grass margin soil carbon (cropland to permanent grass, 28-50 tCO2e/ha over 50 years; CITED). Not counted: needs a measured margin soil stratum in the ONCRA design."
+          "note": "Grass margin soil carbon scenario: 28-50 tCO2e/ha over 50 years (JUDGEMENT placeholder; a measured German study found about +22 t C/ha, roughly 80 tCO2e/ha, in grassy hedge edges at 0-100 cm: Drexler & Don 2024). Not counted: needs a measured margin soil stratum in the ONCRA design."
         },
         "waterRetentionPct": {
           "sediment": 80,
@@ -28260,7 +28260,7 @@
         "marginSoilCarbonScenario": {
           "low": 11.2,
           "central": 20,
-          "note": "Grass margin soil carbon (cropland to permanent grass, 28-50 tCO2e/ha over 50 years; CITED). Not counted: needs a measured margin soil stratum in the ONCRA design."
+          "note": "Grass margin soil carbon scenario: 28-50 tCO2e/ha over 50 years (JUDGEMENT placeholder; a measured German study found about +22 t C/ha, roughly 80 tCO2e/ha, in grassy hedge edges at 0-100 cm: Drexler & Don 2024). Not counted: needs a measured margin soil stratum in the ONCRA design."
         },
         "waterRetentionPct": {
           "sediment": 80,
@@ -28545,7 +28545,7 @@
         "marginSoilCarbonScenario": {
           "low": 22.4,
           "central": 40,
-          "note": "Grass margin soil carbon (cropland to permanent grass, 28-50 tCO2e/ha over 50 years; CITED). Not counted: needs a measured margin soil stratum in the ONCRA design."
+          "note": "Grass margin soil carbon scenario: 28-50 tCO2e/ha over 50 years (JUDGEMENT placeholder; a measured German study found about +22 t C/ha, roughly 80 tCO2e/ha, in grassy hedge edges at 0-100 cm: Drexler & Don 2024). Not counted: needs a measured margin soil stratum in the ONCRA design."
         },
         "waterRetentionPct": {
           "sediment": 83,
@@ -28830,7 +28830,7 @@
         "marginSoilCarbonScenario": {
           "low": 14,
           "central": 25,
-          "note": "Grass margin soil carbon (cropland to permanent grass, 28-50 tCO2e/ha over 50 years; CITED). Not counted: needs a measured margin soil stratum in the ONCRA design."
+          "note": "Grass margin soil carbon scenario: 28-50 tCO2e/ha over 50 years (JUDGEMENT placeholder; a measured German study found about +22 t C/ha, roughly 80 tCO2e/ha, in grassy hedge edges at 0-100 cm: Drexler & Don 2024). Not counted: needs a measured margin soil stratum in the ONCRA design."
         },
         "waterRetentionPct": {
           "sediment": 82,
@@ -29115,7 +29115,7 @@
         "marginSoilCarbonScenario": {
           "low": 28,
           "central": 50,
-          "note": "Grass margin soil carbon (cropland to permanent grass, 28-50 tCO2e/ha over 50 years; CITED). Not counted: needs a measured margin soil stratum in the ONCRA design."
+          "note": "Grass margin soil carbon scenario: 28-50 tCO2e/ha over 50 years (JUDGEMENT placeholder; a measured German study found about +22 t C/ha, roughly 80 tCO2e/ha, in grassy hedge edges at 0-100 cm: Drexler & Don 2024). Not counted: needs a measured margin soil stratum in the ONCRA design."
         },
         "waterRetentionPct": {
           "sediment": 84,
@@ -29400,7 +29400,7 @@
         "marginSoilCarbonScenario": {
           "low": 10.6,
           "central": 19,
-          "note": "Grass margin soil carbon (cropland to permanent grass, 28-50 tCO2e/ha over 50 years; CITED). Not counted: needs a measured margin soil stratum in the ONCRA design."
+          "note": "Grass margin soil carbon scenario: 28-50 tCO2e/ha over 50 years (JUDGEMENT placeholder; a measured German study found about +22 t C/ha, roughly 80 tCO2e/ha, in grassy hedge edges at 0-100 cm: Drexler & Don 2024). Not counted: needs a measured margin soil stratum in the ONCRA design."
         },
         "waterRetentionPct": {
           "sediment": 82,
@@ -33685,7 +33685,7 @@
         "marginSoilCarbonScenario": {
           "low": 2.8,
           "central": 5,
-          "note": "Grass margin soil carbon (cropland to permanent grass, 28-50 tCO2e/ha over 50 years; CITED). Not counted: needs a measured margin soil stratum in the ONCRA design."
+          "note": "Grass margin soil carbon scenario: 28-50 tCO2e/ha over 50 years (JUDGEMENT placeholder; a measured German study found about +22 t C/ha, roughly 80 tCO2e/ha, in grassy hedge edges at 0-100 cm: Drexler & Don 2024). Not counted: needs a measured margin soil stratum in the ONCRA design."
         },
         "waterRetentionPct": {
           "sediment": 76,
@@ -33971,7 +33971,7 @@
         "marginSoilCarbonScenario": {
           "low": 11.2,
           "central": 20,
-          "note": "Grass margin soil carbon (cropland to permanent grass, 28-50 tCO2e/ha over 50 years; CITED). Not counted: needs a measured margin soil stratum in the ONCRA design."
+          "note": "Grass margin soil carbon scenario: 28-50 tCO2e/ha over 50 years (JUDGEMENT placeholder; a measured German study found about +22 t C/ha, roughly 80 tCO2e/ha, in grassy hedge edges at 0-100 cm: Drexler & Don 2024). Not counted: needs a measured margin soil stratum in the ONCRA design."
         },
         "waterRetentionPct": {
           "sediment": 80,
@@ -34256,7 +34256,7 @@
         "marginSoilCarbonScenario": {
           "low": 8.4,
           "central": 15,
-          "note": "Grass margin soil carbon (cropland to permanent grass, 28-50 tCO2e/ha over 50 years; CITED). Not counted: needs a measured margin soil stratum in the ONCRA design."
+          "note": "Grass margin soil carbon scenario: 28-50 tCO2e/ha over 50 years (JUDGEMENT placeholder; a measured German study found about +22 t C/ha, roughly 80 tCO2e/ha, in grassy hedge edges at 0-100 cm: Drexler & Don 2024). Not counted: needs a measured margin soil stratum in the ONCRA design."
         },
         "waterRetentionPct": {
           "sediment": 80,
@@ -34541,7 +34541,7 @@
         "marginSoilCarbonScenario": {
           "low": 11.2,
           "central": 20,
-          "note": "Grass margin soil carbon (cropland to permanent grass, 28-50 tCO2e/ha over 50 years; CITED). Not counted: needs a measured margin soil stratum in the ONCRA design."
+          "note": "Grass margin soil carbon scenario: 28-50 tCO2e/ha over 50 years (JUDGEMENT placeholder; a measured German study found about +22 t C/ha, roughly 80 tCO2e/ha, in grassy hedge edges at 0-100 cm: Drexler & Don 2024). Not counted: needs a measured margin soil stratum in the ONCRA design."
         },
         "waterRetentionPct": {
           "sediment": 80,
@@ -34826,7 +34826,7 @@
         "marginSoilCarbonScenario": {
           "low": 22.4,
           "central": 40,
-          "note": "Grass margin soil carbon (cropland to permanent grass, 28-50 tCO2e/ha over 50 years; CITED). Not counted: needs a measured margin soil stratum in the ONCRA design."
+          "note": "Grass margin soil carbon scenario: 28-50 tCO2e/ha over 50 years (JUDGEMENT placeholder; a measured German study found about +22 t C/ha, roughly 80 tCO2e/ha, in grassy hedge edges at 0-100 cm: Drexler & Don 2024). Not counted: needs a measured margin soil stratum in the ONCRA design."
         },
         "waterRetentionPct": {
           "sediment": 83,
@@ -35111,7 +35111,7 @@
         "marginSoilCarbonScenario": {
           "low": 14,
           "central": 25,
-          "note": "Grass margin soil carbon (cropland to permanent grass, 28-50 tCO2e/ha over 50 years; CITED). Not counted: needs a measured margin soil stratum in the ONCRA design."
+          "note": "Grass margin soil carbon scenario: 28-50 tCO2e/ha over 50 years (JUDGEMENT placeholder; a measured German study found about +22 t C/ha, roughly 80 tCO2e/ha, in grassy hedge edges at 0-100 cm: Drexler & Don 2024). Not counted: needs a measured margin soil stratum in the ONCRA design."
         },
         "waterRetentionPct": {
           "sediment": 82,
@@ -35396,7 +35396,7 @@
         "marginSoilCarbonScenario": {
           "low": 28,
           "central": 50,
-          "note": "Grass margin soil carbon (cropland to permanent grass, 28-50 tCO2e/ha over 50 years; CITED). Not counted: needs a measured margin soil stratum in the ONCRA design."
+          "note": "Grass margin soil carbon scenario: 28-50 tCO2e/ha over 50 years (JUDGEMENT placeholder; a measured German study found about +22 t C/ha, roughly 80 tCO2e/ha, in grassy hedge edges at 0-100 cm: Drexler & Don 2024). Not counted: needs a measured margin soil stratum in the ONCRA design."
         },
         "waterRetentionPct": {
           "sediment": 84,
@@ -35681,7 +35681,7 @@
         "marginSoilCarbonScenario": {
           "low": 10.6,
           "central": 19,
-          "note": "Grass margin soil carbon (cropland to permanent grass, 28-50 tCO2e/ha over 50 years; CITED). Not counted: needs a measured margin soil stratum in the ONCRA design."
+          "note": "Grass margin soil carbon scenario: 28-50 tCO2e/ha over 50 years (JUDGEMENT placeholder; a measured German study found about +22 t C/ha, roughly 80 tCO2e/ha, in grassy hedge edges at 0-100 cm: Drexler & Don 2024). Not counted: needs a measured margin soil stratum in the ONCRA design."
         },
         "waterRetentionPct": {
           "sediment": 82,

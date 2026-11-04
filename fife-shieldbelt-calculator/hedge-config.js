@@ -399,11 +399,19 @@ export function incomeForgone(stripM) {
   return out;
 }
 
-/** CITED Poeplau et al. 2011 via the evidence review: cropland to permanent grass 28-50 tCO2e/ha over 50 yr. Scenario only, not counted. */
+/**
+ * JUDGEMENT placeholder, NOT a sourced derivation (provenance traced 4 Nov 2026):
+ *  - 28 tCO2e/ha/50 yr is the grass-strip soil figure inherited from the April 2026 v9 dataset (no recorded source);
+ *  - 50 is the central value suggested in evidence review pass 2 (3 Nov 2026), which cited Poeplau et al. 2011
+ *    (Global Change Biol 17:2415) from a search snippet only; the paper was not opened.
+ * Primary cross-check (VERIFIED 4 Nov 2026): Drexler & Don 2024 (Geoderma 445:116878) measured the grassy hedgerow
+ * edge at +22 ± 22 Mg C/ha vs cropland, 0-100 cm, at hedges of mean age 60 yr (median 35): about 81 tCO2e/ha, or about
+ * 67 tCO2e/ha scaled linearly to 50 yr. So 28-50 sits at the low end. Scenario only, not counted.
+ */
 export function marginSoilCarbon(cfg) {
   const ha = Math.max(0, cfg.stripM - FORMS[cfg.form].crownM) / 10;
   return { low: r1(28 * ha), central: r1(50 * ha),
-    note: 'Grass margin soil carbon (cropland to permanent grass, 28-50 tCO2e/ha over 50 years; CITED). Not counted: needs a measured margin soil stratum in the ONCRA design.' };
+    note: 'Grass margin soil carbon scenario: 28-50 tCO2e/ha over 50 years (JUDGEMENT placeholder; a measured German study found about +22 t C/ha, roughly 80 tCO2e/ha, in grassy hedge edges at 0-100 cm: Drexler & Don 2024). Not counted: needs a measured margin soil stratum in the ONCRA design.' };
 }
 
 // ---------------------------------------------------------------------------
