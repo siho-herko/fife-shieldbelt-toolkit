@@ -24,6 +24,9 @@
  * @property {number} lengthM          - Strip length in metres
  * @property {number} creditPrice      - £ per tCO₂e
  * @property {string} windbreakOrient  - 'NS'|'EW'
+ * @property {string} [carbonRoute]    - 'oncra' (default: ONCRA units, gross × 0.64) | 'contribution' (gross removals valued
+ *                                       for value-chain contribution / intervention reporting; not a credit, not inventory)
+ * @property {string} [grants]         - 'aecs' (default: AECS payments counted where the option could qualify) | 'none'
  */
 
 /**
@@ -104,6 +107,22 @@ export function cumulativeSeqTrajectory(carbonSequestration) {
  * Rules VERIFIED — ONCRA LSC Protocol v2 §2.1.6; Guidelines (27 Mar 2026) §5.6, §8.3.1.8.
  */
 export const ONCRA_NET_FACTOR = 0.64;
+
+/**
+ * Carbon value routes (v12.1, 4 Nov 2026).
+ *  oncra:        ONCRA Land Stored Carbon units, illustrative net = gross × 0.64 (contribution claims only for Potential Units).
+ *  contribution: the same removals valued without registry deductions, for a value-chain buyer's intervention (impact)
+ *                reporting. VERIFIED (GHG Protocol LSR Standard v1.1, Box 1.1, Box 5.1, Req 7): removals on field-edge
+ *                hedgerows cannot currently enter a company's physical scope 3 inventory; intervention reporting (Ch 16)
+ *                is reported separately and does not count toward inventory targets.
+ */
+export const CARBON_ROUTES = {
+  oncra:        { factor: ONCRA_NET_FACTOR, label: 'ONCRA units (gross × 0.64)' },
+  contribution: { factor: 1.0, label: 'Value-chain contribution (gross; not a credit, not inventory)' },
+};
+export function carbonRouteFactor(route) {
+  return (CARBON_ROUTES[route] ?? CARBON_ROUTES.oncra).factor;
+}
 
 /**
  * True unless the record's carbon is flagged as an unsubstantiated scenario (v11 data).
@@ -345,6 +364,9 @@ export function sserUnits(record, lengthM) {
  */
 export function calculate(inputs, record) {
   const { farmType, placement, lengthM, creditPrice, windbreakOrient } = inputs;
+  const carbonRoute = CARBON_ROUTES[inputs.carbonRoute] ? inputs.carbonRoute : 'oncra';
+  const grantsOn    = inputs.grants !== 'none';
+  const routeFactor = carbonRouteFactor(carbonRoute);
 
   // --- Identity ---
   const widthM  = parseWidth(record.width);
@@ -353,7 +375,7 @@ export function calculate(inputs, record) {
   // --- Carbon ---
   const seq50 = totalSeq50yr(record);
   const seqTraj = cumulativeSeqTrajectory(record.carbonSequestration);
-  const carbIncome = annualCarbonIncome(record, lengthM, creditPrice);
+  const carbIncome = annualCarbonIncome(record, lengthM, creditPrice, routeFactor);
 
   // --- Agronomic ---
   const nif  = netIncomeForegone(record, farmType, lengthM);
@@ -388,12 +410,16 @@ export function calculate(inputs, record) {
   // MRV, registry fees and discounting.
   const carbonOk = carbonSubstantiated(record);
   const unvalidatedScenarioValue = poll + pest + thermal + wbVal + acVal;
-  const annualNetBenefit = carbIncome + crewTotal - nif;      // kept name for compatibility
+  // v12.1 (Si, 4 Nov 2026): AECS annual payments the option could attract are counted, so the app shows the ONCRA + AECS
+  // stack. They apply during a 5-year agreement; the 30-year view and the additionality test are in fundingStack().
+  const stack = fundingStack(record, { ...inputs, carbonRoute, grants: grantsOn ? 'aecs' : 'none' });
+  const aecsAnnual = stack ? stack.annual.aecs : 0;
+  const annualNetBenefit = carbIncome + crewTotal + aecsAnnual - nif;      // kept name for compatibility
   const illustrativeCombinedValue = annualNetBenefit;
 
   // Derived summary metrics
   const netAgronomicBenefit = -nif;                           // sourced farm cost only
-  const seq25yrRevenue      = carbonOk ? (seqTraj[4] ?? 0) * (lengthM / 1000) * ONCRA_NET_FACTOR * creditPrice : 0;
+  const seq25yrRevenue      = carbonOk ? (seqTraj[4] ?? 0) * (lengthM / 1000) * routeFactor * creditPrice : 0;
   const widerEcoValue       = crewTotal; // water purification, low case (flood storage and air not valued in v11)
   const hiKey = { riparian: 'riparianTotalHigh', crossSlope: 'crossSlopeTotalHigh', downSlope: 'downSlopeTotalHigh' }[placement];
   const widerEcoValueHigh   = scaleToLength(safeNum(record.crewValuations?.[hiKey] ?? record.crewValuations?.[{ riparian: 'riparianTotal', crossSlope: 'crossSlopeTotal', downSlope: 'downSlopeTotal' }[placement]]), lengthM);
@@ -449,6 +475,11 @@ export function calculate(inputs, record) {
     seq50yrNetInstalled:   carbonOk ? seq50 * (lengthM / 1000) * ONCRA_NET_FACTOR : 0,
     seqTrajectory:      seqTraj,
     annualCarbonIncome: carbIncome,
+    carbonRoute,
+    carbonRouteFactor:  routeFactor,
+    grantsIncluded:     grantsOn,
+    aecsAnnual,
+    fundingStack:       stack,
 
     // Agronomic
     netIncomeForegone:  nif,
@@ -498,6 +529,91 @@ export function calculate(inputs, record) {
 
     // Hedge configurator outputs (v12; null for non-hedge records)
     hedge: hedgeSummary(record, lengthM),
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Funding stack and illustrative additionality test (v12.1)
+// ---------------------------------------------------------------------------
+
+/** JUDGEMENT: 30-year view (the SSE Toolkit / England 30-year management expectation; MOREhedges term), 3.5% discount (HM Treasury Green Book STPR). */
+export const STACK_YEARS = 30;
+export const STACK_DISCOUNT = 0.035;
+const LIVESTOCK = new Set(['Dairy', 'LFA Grazing']);
+const pvFactor = y => 1 / Math.pow(1 + STACK_DISCOUNT, y);
+const pvAnnuity = (from, to) => { let t = 0; for (let y = from; y <= to; y++) t += pvFactor(y); return t; };
+
+/**
+ * Costs, grants and carbon for a hedge over 30 years, and what an additionality test would look at.
+ * Illustrative screening only: not financial advice, not an ONCRA determination. Water value is shown but is not cash,
+ * so it is left out of the funding gap. Maintenance (trimming, margin cutting) and MRV/registry costs are not yet included.
+ * @returns {Object|null} null for non-hedge records
+ */
+export function fundingStack(record, inputs) {
+  const f = record?.hedgeOutputs?.funding;
+  const cfg = record?.hedgeConfig;
+  if (!f || !cfg) return null;
+  const km = safeNum(inputs.lengthM) / 1000;
+  const grantsOn = inputs.grants !== 'none';
+  const route = CARBON_ROUTES[inputs.carbonRoute] ? inputs.carbonRoute : 'oncra';
+  const factor = carbonRouteFactor(route);
+  const price = safeNum(inputs.creditPrice);
+  const livestock = LIVESTOCK.has(inputs.farmType);
+  const sides = !livestock ? 0 : (cfg.position === 'boundary' ? 1 : 2);
+  const a = f.aecs ?? {};
+  const yrs = safeNum(a.agreementYears) || 5;
+
+  const establishment = (safeNum(f.establishmentCostPerM) * 1000 + sides * 9.15 * 1000) * km;
+  const nifAnnual = safeNum(record.farmImpacts?.[inputs.farmType]?.netIncomeForegone) * km;
+  const aecsCapital = grantsOn ? (safeNum(a.plantingCapitalPerKm) + sides * safeNum(a.fenceCapitalPerKmPerSide)) * km : 0;
+  const aecsAnnual = grantsOn ? (safeNum(a.hedgeAnnualPerKm) + safeNum(a.stripAnnualPerKm)) * km : 0;
+
+  // Carbon cash flow: each 5-year band spread evenly over its years
+  const bands = Object.values(record.carbonSequestration ?? {}).map(safeNum);
+  let carbonPV = 0, carbonT30 = 0;
+  for (let y = 1; y <= STACK_YEARS; y++) {
+    const t = (bands[Math.floor((y - 1) / 5)] ?? 0) / 5 * km * factor;
+    carbonT30 += t;
+    carbonPV += t * price * pvFactor(y);
+  }
+  const wpKey = { riparian: 'riparianTotal', crossSlope: 'crossSlopeTotal', downSlope: 'downSlopeTotal' }[inputs.placement] ?? 'crossSlopeTotal';
+  const waterPV = safeNum(record.crewValuations?.[wpKey]) * km * pvAnnuity(1, STACK_YEARS);
+
+  const pv = {
+    establishment,
+    incomeForgone: nifAnnual * pvAnnuity(1, STACK_YEARS),
+    aecsCapital,
+    aecsAnnual: aecsAnnual * pvAnnuity(1, yrs),
+    carbon: carbonPV,
+    water: waterPV,
+  };
+  pv.costs = pv.establishment + pv.incomeForgone;
+  pv.grants = pv.aecsCapital + pv.aecsAnnual;
+  pv.gapWithoutCarbon = pv.costs - pv.grants;
+  pv.gapAfterCarbon = pv.gapWithoutCarbon - pv.carbon;
+
+  const carbonShareOfGap = pv.gapWithoutCarbon > 0 ? pv.carbon / pv.gapWithoutCarbon : null;
+  const carbonShareOfCost = pv.costs > 0 ? pv.carbon / pv.costs : 0;
+  const grantShareOfCost = pv.costs > 0 ? pv.grants / pv.costs : 0;
+  let financial;
+  if (pv.gapWithoutCarbon <= 0) financial = 'grants-cover';
+  else if (pv.carbon >= pv.gapWithoutCarbon) financial = 'carbon-closes-gap';
+  else financial = 'carbon-partial';
+
+  return {
+    years: STACK_YEARS, discountRate: STACK_DISCOUNT, km, grantsIncluded: grantsOn, carbonRoute: route,
+    fenceSides: sides,
+    annual: { aecs: aecsAnnual, incomeForgone: nifAnnual },
+    pv,
+    carbonTonnes30: carbonT30,
+    carbonShareOfGap, carbonShareOfCost, grantShareOfCost,
+    tests: {
+      financial,
+      grantClause: grantsOn && pv.grants > 0 ? 'ruling-needed' : 'no-grant',
+      regulatory: { gbrStripM: safeNum(f.gbrStripM), plantingRequired: false },
+    },
+    aecsHedgeReason: a.hedgeReason ?? '',
+    aecsStripOption: a.stripOption ?? '',
   };
 }
 

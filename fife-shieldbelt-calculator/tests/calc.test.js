@@ -272,9 +272,13 @@ assert(near(sserUnits(r5, 1000), 33.6, 0.01),
 // annualNetBenefit for GC (v10): carbon income per km on net tonnes, set 3 hedge profile:
 // carbIncome = (53.4/50) × 1 km × 0.64 × £60 = 41.01; NIF GC 3 m = £210
 const r5_net = calculate(inputs(r5), r5).annualNetBenefit;
-// v12 (HV1 Fence-line hedge, 2 m hedge in a 3 m strip): 52.5/50 × 0.64 × £60 = £40.32 carbon + £130 water (low) − £210 forgone = −£39.68
-assert(near(r5_net, -39.68, 1.00),
-  'r5: annualNetBenefit GC crossSlope NS ≈ −£39.68', -39.68, r5_net.toFixed(2));
+// v12.1 (HV1 Fence-line hedge, 2 m hedge in a 3 m strip): 52.5/50 × 0.64 × £60 = £40.32 carbon + £130 water (low)
+//        + £1,200 AECS Creation of Hedgerows (counted while the 5-year agreement runs; no Grass Strips at 3 m) − £210 forgone = £1,160.32
+//        With grants: 'none' → −£39.68
+assert(near(r5_net, 1160.32, 1.00),
+  'r5: annualNetBenefit GC crossSlope NS ≈ £1,160.32 (AECS included)', 1160.32, r5_net.toFixed(2));
+const r5_noGrant = calculate({ ...inputs(r5), grants: 'none' }, r5).annualNetBenefit;
+assert(near(r5_noGrant, -39.68, 1.00), 'r5: annualNetBenefit without grants ≈ −£39.68', -39.68, r5_noGrant.toFixed(2));
 
 // ---------------------------------------------------------------------------
 // Section H — No NaN anywhere for a record at downSlope placement

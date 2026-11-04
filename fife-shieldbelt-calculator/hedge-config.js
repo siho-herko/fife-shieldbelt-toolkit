@@ -283,8 +283,58 @@ export function geometry(cfg) {
     landTakeHaPerKm: r2(w / 10),
     aecsStrip: { option, payableM: cfg.form === 'productive' ? 0 : payableM, gbpPerKm,
       note: cfg.form === 'productive' ? 'Not used: the productive hedge offer does not rely on AECS (programme decision, October 2026).'
-        : payableM ? 'Possible, not counted in totals: target areas, RPID geometry and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) all apply.'
+        : payableM ? 'Counted in the totals when grants are included. Not guaranteed: AECS is competitive and targeted, RPID must confirm the geometry, and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) applies.'
           : 'None: the margin beyond the 2 m line is under the 3 m minimum.' },
+  };
+}
+
+// ---------------------------------------------------------------------------
+// 4b. Funding stack inputs for the illustrative additionality test (v12.1, 4 Nov 2026)
+// ---------------------------------------------------------------------------
+/**
+ * AECS rates VERIFIED on ruralpayments.org (checked 21 Oct and 3 Nov 2026): Planting or Replanting of Hedges
+ * £5.40/m capital (page 15 Dec 2025); Creation of Hedgerows £1.20/m/yr (15 Dec 2025); stock fence £5.50/m per side
+ * (14 Nov 2025). Agreements run 5 years; AECS is competitive and targeted, so no payment is guaranteed.
+ */
+export const AECS = { hedgePlantingCapitalPerM: 5.40, creationOfHedgerowsPerMYr: 1.20, stockFenceCapitalPerMSide: 5.50, agreementYears: 5 };
+
+/**
+ * Establishment cost build-up, JUDGEMENT from claude/productive-hedge-farmer-cost.md (21 Oct 2026; arable no-fence
+ * offer case: bare-root plants at 55% of Scotplants retail, spiral guard and cane, contractor planting, mulch, 3 years'
+ * aftercare). Reproduces the £14.52/m offer cost at 8 plants/m. Contractor quotes are needed before external use.
+ */
+export const COST = { plantEach: 0.771, guardEach: 0.35, labourEach: 0.35, aftercareEach: 0.1875, mulchPerM: 1.00, standardsPerM: 0.25, stockFencePerMSide: 9.15 };
+
+/** £ per metre, excluding fencing (fencing depends on farm type and is added in calc.js). */
+export function establishmentCostPerM(cfg) {
+  const f = FORMS[cfg.form];
+  const perPlant = COST.plantEach + COST.guardEach + COST.labourEach + COST.aftercareEach;
+  const trees = TREES[cfg.trees].withTrees || cfg.form === 'productive' ? COST.standardsPerM : 0;
+  return r2(f.plantsPerM * perPlant + COST.mulchPerM + trees);
+}
+
+/** Stock-fence sides assumed for livestock farm types (JUDGEMENT): one on a boundary (the other side is the existing boundary), two elsewhere. */
+export function fenceSides(cfg, livestock) {
+  if (!livestock) return 0;
+  return cfg.position === 'boundary' ? 1 : 2;
+}
+
+/** AECS payments per km that this configuration could attract (eligibility is never confirmed here). */
+export function aecsPayments(cfg) {
+  const geo = geometry(cfg);
+  const productive = cfg.form === 'productive';
+  const hedgeEligible = !productive && SPECIES[cfg.species].aecsCompliant;
+  return {
+    hedgeEligible,
+    hedgeReason: productive ? 'Not used: the productive hedge offer is programme-funded and does not rely on AECS (October 2026).'
+      : hedgeEligible ? 'Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).'
+        : 'Hedge options not available: the mix does not meet the AECS species rule (60-80% hawthorn plus other natives).',
+    plantingCapitalPerKm: hedgeEligible ? Math.round(AECS.hedgePlantingCapitalPerM * 1000) : 0,
+    fenceCapitalPerKmPerSide: hedgeEligible ? Math.round(AECS.stockFenceCapitalPerMSide * 1000) : 0,
+    hedgeAnnualPerKm: hedgeEligible ? Math.round(AECS.creationOfHedgerowsPerMYr * 1000) : 0,
+    stripAnnualPerKm: geo.aecsStrip.gbpPerKm,
+    stripOption: geo.aecsStrip.option,
+    agreementYears: AECS.agreementYears,
   };
 }
 
@@ -409,7 +459,7 @@ export function buildHedgeRecord(template, input) {
       ? 'Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year.'
       : 'Not AECS-compliant: AECS hedge planting needs 60-80% hawthorn plus other native species, so a hawthorn-led mix of 3 or fewer species would need changing to qualify.';
   const stripGrant = geo.aecsStrip.payableM
-    ? ` Strip: ${geo.aecsStrip.option}, about ${geo.aecsStrip.payableM} m payable, about GBP${geo.aecsStrip.gbpPerKm}/km/yr at GBP${AECS_STRIP_RATE}/ha/yr (not counted in totals).`
+    ? ` Strip: ${geo.aecsStrip.option}, about ${geo.aecsStrip.payableM} m payable, about GBP${geo.aecsStrip.gbpPerKm}/km/yr at GBP${AECS_STRIP_RATE}/ha/yr.`
     : '';
   const trees = tr.withTrees ? ' MOREhedges (Woodland Trust) may fund up to 75% of costs for 100-250 m per season where the hedge links to woodland, with a tree every 6 m and a 30-year term; do not double-fund with AECS.' : '';
 
@@ -430,6 +480,7 @@ export function buildHedgeRecord(template, input) {
       carbonGross50: carbon.gross50,
       carbonClaim50: seq,
       speciesTradeoff: sp.tradeoff ?? null,
+      funding: { establishmentCostPerM: establishmentCostPerM(cfg), aecs: aecsPayments(cfg), gbrStripM: cfg.position === 'watercourse' ? 2 : 0 },
     },
     carbonSequestration: Object.fromEntries(BAND_KEYS.map((k, i) => [k, bands[i]])),
     sepaMetrics: JSON.parse(JSON.stringify(scen.sepaMetrics)),

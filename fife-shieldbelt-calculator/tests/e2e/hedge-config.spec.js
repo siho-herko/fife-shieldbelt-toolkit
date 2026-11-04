@@ -78,6 +78,26 @@ test.describe('Hedge configurator (v12)', () => {
     await expect(page.locator('#hedge-config')).toHaveClass(/hidden/);
   });
 
+  test('funding stack: shown for hedges, responds to grants and carbon route, encoded in the URL', async ({ page }) => {
+    await page.goto(`${BASE}/?variant=HV2`);
+    await waitForAppReady(page);
+    const stack = page.locator('#section-stack');
+    await expect(stack).not.toHaveClass(/hidden/);
+    await expect(page.locator('#stack-table')).toContainText('AECS annual payments');
+    await expect(page.locator('#stack-tests')).toContainText('Government-grant clause');
+    await openStep(page, 6);
+    await page.locator('[data-grants="none"]').click();
+    await expect(page.locator('#stack-table')).not.toContainText('AECS capital');
+    await expect(page.locator('#stack-tests')).toContainText('grants switched off');
+    await page.locator('[data-carbon-route="contribution"]').click();
+    await expect(page.locator('#stack-tests')).toContainText('scope 3 inventory');
+    await expect(page).toHaveURL(/grants=none/);
+    await expect(page).toHaveURL(/carbon=contribution/);
+    await page.goto(`${BASE}/?variant=14`);
+    await waitForAppReady(page);
+    await expect(stack).toHaveClass(/hidden/);
+  });
+
   test('changing location keeps the hedge customisation', async ({ page }) => {
     await page.goto(`${BASE}/?variant=HV2&hedge=triple-speciesRich-standards-8-contour`);
     await waitForAppReady(page);

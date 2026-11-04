@@ -2289,7 +2289,21 @@
         },
         "carbonGross50": 52.5,
         "carbonClaim50": 52.5,
-        "speciesTradeoff": null
+        "speciesTradeoff": null,
+        "funding": {
+          "establishmentCostPerM": 10.95,
+          "aecs": {
+            "hedgeEligible": true,
+            "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
+            "plantingCapitalPerKm": 5400,
+            "fenceCapitalPerKmPerSide": 5500,
+            "hedgeAnnualPerKm": 1200,
+            "stripAnnualPerKm": 0,
+            "stripOption": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
+            "agreementYears": 5
+          },
+          "gbrStripM": 0
+        }
       },
       "carbonSequestration": {
         "yr_1_5": 15.04,
@@ -2527,7 +2541,7 @@
             "option": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
             "payableM": 3,
             "gbpPerKm": 149,
-            "note": "Possible, not counted in totals: target areas, RPID geometry and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) all apply."
+            "note": "Counted in the totals when grants are included. Not guaranteed: AECS is competitive and targeted, RPID must confirm the geometry, and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) applies."
           }
         },
         "biodiversity": {
@@ -2561,7 +2575,21 @@
         },
         "carbonGross50": 52.5,
         "carbonClaim50": 52.5,
-        "speciesTradeoff": null
+        "speciesTradeoff": null,
+        "funding": {
+          "establishmentCostPerM": 10.95,
+          "aecs": {
+            "hedgeEligible": true,
+            "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
+            "plantingCapitalPerKm": 5400,
+            "fenceCapitalPerKmPerSide": 5500,
+            "hedgeAnnualPerKm": 1200,
+            "stripAnnualPerKm": 149,
+            "stripOption": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
+            "agreementYears": 5
+          },
+          "gbrStripM": 0
+        }
       },
       "carbonSequestration": {
         "yr_1_5": 15.04,
@@ -2745,7 +2773,7 @@
         "waterImpacts": "6 m strip: indicative retention of about 80% of sediment and 67% of total phosphorus reaching it (Stutter et al. 2021 width-only fits; soil and slope matter more). Best value where the strip lies across the flow path.",
         "carbonAgronomicAssumptions": "Carbon profile: provisional lower-end literature estimate (hedge_carbon_model.py v2 / hedge-config.js). 2 m crown; 50-year gross 52.5 tCO2e/km (biomass 24.5, roots 12, soil 15.9). Grass margin soil carbon is not counted (scenario 11.2-20 tCO2e/km). Not validated; site soil measurement replaces the soil term.",
         "agronomicUtility": "Hedge centre 1 m from the boundary; 4 m of grass margin on the field side.",
-        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre), about 3 m payable, about GBP149/km/yr at GBP495.62/ha/yr (not counted in totals). GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
+        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre), about 3 m payable, about GBP149/km/yr at GBP495.62/ha/yr. GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
         "additionality": "Not assessed. ONCRA financial additionality (Guidelines s8.2.1) and regulatory additionality (s8.2.2), including the government-grant clause (s4.2.1), are unresolved for this activity and need a written ONCRA ruling. Any biodiversity or water benefit claim needs a measured baseline and verification.",
         "sserGrossUnitsPerKm": 33.6
       },
@@ -2832,7 +2860,21 @@
         },
         "carbonGross50": 70.7,
         "carbonClaim50": 70.7,
-        "speciesTradeoff": null
+        "speciesTradeoff": null,
+        "funding": {
+          "establishmentCostPerM": 14.27,
+          "aecs": {
+            "hedgeEligible": true,
+            "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
+            "plantingCapitalPerKm": 5400,
+            "fenceCapitalPerKmPerSide": 5500,
+            "hedgeAnnualPerKm": 1200,
+            "stripAnnualPerKm": 0,
+            "stripOption": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
+            "agreementYears": 5
+          },
+          "gbrStripM": 0
+        }
       },
       "carbonSequestration": {
         "yr_1_5": 20.52,
@@ -3069,7 +3111,7 @@
             "option": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
             "payableM": 3,
             "gbpPerKm": 149,
-            "note": "Possible, not counted in totals: target areas, RPID geometry and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) all apply."
+            "note": "Counted in the totals when grants are included. Not guaranteed: AECS is competitive and targeted, RPID must confirm the geometry, and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) applies."
           }
         },
         "biodiversity": {
@@ -3103,7 +3145,21 @@
         },
         "carbonGross50": 52.5,
         "carbonClaim50": 52.5,
-        "speciesTradeoff": null
+        "speciesTradeoff": null,
+        "funding": {
+          "establishmentCostPerM": 11.2,
+          "aecs": {
+            "hedgeEligible": true,
+            "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
+            "plantingCapitalPerKm": 5400,
+            "fenceCapitalPerKmPerSide": 5500,
+            "hedgeAnnualPerKm": 1200,
+            "stripAnnualPerKm": 149,
+            "stripOption": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
+            "agreementYears": 5
+          },
+          "gbrStripM": 0
+        }
       },
       "carbonSequestration": {
         "yr_1_5": 15.04,
@@ -3287,7 +3343,7 @@
         "waterImpacts": "6 m strip: indicative retention of about 80% of sediment and 67% of total phosphorus reaching it (Stutter et al. 2021 width-only fits; soil and slope matter more). Best value where the strip lies across the flow path.",
         "carbonAgronomicAssumptions": "Carbon profile: provisional lower-end literature estimate (hedge_carbon_model.py v2 / hedge-config.js). 2 m crown; 50-year gross 52.5 tCO2e/km (biomass 24.5, roots 12, soil 15.9). Standard trees are not counted (no substantiated model). Grass margin soil carbon is not counted (scenario 11.2-20 tCO2e/km). Not validated; site soil measurement replaces the soil term.",
         "agronomicUtility": "Hedge centre 1 m from the boundary; 4 m of grass margin on the field side.",
-        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre), about 3 m payable, about GBP149/km/yr at GBP495.62/ha/yr (not counted in totals). MOREhedges (Woodland Trust) may fund up to 75% of costs for 100-250 m per season where the hedge links to woodland, with a tree every 6 m and a 30-year term; do not double-fund with AECS. GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
+        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre), about 3 m payable, about GBP149/km/yr at GBP495.62/ha/yr. MOREhedges (Woodland Trust) may fund up to 75% of costs for 100-250 m per season where the hedge links to woodland, with a tree every 6 m and a 30-year term; do not double-fund with AECS. GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
         "additionality": "Not assessed. ONCRA financial additionality (Guidelines s8.2.1) and regulatory additionality (s8.2.2), including the government-grant clause (s4.2.1), are unresolved for this activity and need a written ONCRA ruling. Any biodiversity or water benefit claim needs a measured baseline and verification.",
         "sserGrossUnitsPerKm": 33.6
       },
@@ -3340,7 +3396,7 @@
             "option": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
             "payableM": 7,
             "gbpPerKm": 347,
-            "note": "Possible, not counted in totals: target areas, RPID geometry and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) all apply."
+            "note": "Counted in the totals when grants are included. Not guaranteed: AECS is competitive and targeted, RPID must confirm the geometry, and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) applies."
           }
         },
         "biodiversity": {
@@ -3374,7 +3430,21 @@
         },
         "carbonGross50": 52.5,
         "carbonClaim50": 52.5,
-        "speciesTradeoff": null
+        "speciesTradeoff": null,
+        "funding": {
+          "establishmentCostPerM": 10.95,
+          "aecs": {
+            "hedgeEligible": true,
+            "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
+            "plantingCapitalPerKm": 5400,
+            "fenceCapitalPerKmPerSide": 5500,
+            "hedgeAnnualPerKm": 1200,
+            "stripAnnualPerKm": 347,
+            "stripOption": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
+            "agreementYears": 5
+          },
+          "gbrStripM": 0
+        }
       },
       "carbonSequestration": {
         "yr_1_5": 15.04,
@@ -3558,7 +3628,7 @@
         "waterImpacts": "10 m strip: indicative retention of about 83% of sediment and 74% of total phosphorus reaching it (Stutter et al. 2021 width-only fits; soil and slope matter more). Best value where the strip lies across the flow path.",
         "carbonAgronomicAssumptions": "Carbon profile: provisional lower-end literature estimate (hedge_carbon_model.py v2 / hedge-config.js). 2 m crown; 50-year gross 52.5 tCO2e/km (biomass 24.5, roots 12, soil 15.9). Grass margin soil carbon is not counted (scenario 22.4-40 tCO2e/km). Not validated; site soil measurement replaces the soil term.",
         "agronomicUtility": "Hedge centre 1 m from the boundary; 8 m of grass margin on the field side.",
-        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre), about 7 m payable, about GBP347/km/yr at GBP495.62/ha/yr (not counted in totals). GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
+        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre), about 7 m payable, about GBP347/km/yr at GBP495.62/ha/yr. GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
         "additionality": "Not assessed. ONCRA financial additionality (Guidelines s8.2.1) and regulatory additionality (s8.2.2), including the government-grant clause (s4.2.1), are unresolved for this activity and need a written ONCRA ruling. Any biodiversity or water benefit claim needs a measured baseline and verification.",
         "sserGrossUnitsPerKm": 33.6
       },
@@ -3611,7 +3681,7 @@
             "option": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
             "payableM": 4,
             "gbpPerKm": 198,
-            "note": "Possible, not counted in totals: target areas, RPID geometry and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) all apply."
+            "note": "Counted in the totals when grants are included. Not guaranteed: AECS is competitive and targeted, RPID must confirm the geometry, and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) applies."
           }
         },
         "biodiversity": {
@@ -3645,7 +3715,21 @@
         },
         "carbonGross50": 70.7,
         "carbonClaim50": 70.7,
-        "speciesTradeoff": null
+        "speciesTradeoff": null,
+        "funding": {
+          "establishmentCostPerM": 14.27,
+          "aecs": {
+            "hedgeEligible": true,
+            "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
+            "plantingCapitalPerKm": 5400,
+            "fenceCapitalPerKmPerSide": 5500,
+            "hedgeAnnualPerKm": 1200,
+            "stripAnnualPerKm": 198,
+            "stripOption": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
+            "agreementYears": 5
+          },
+          "gbrStripM": 0
+        }
       },
       "carbonSequestration": {
         "yr_1_5": 20.52,
@@ -3829,7 +3913,7 @@
         "waterImpacts": "8 m strip: indicative retention of about 82% of sediment and 71% of total phosphorus reaching it (Stutter et al. 2021 width-only fits; soil and slope matter more). On the contour, the upslope grass zone traps sediment before the hedge (zoned buffer, Cole et al. 2020).",
         "carbonAgronomicAssumptions": "Carbon profile: provisional lower-end literature estimate (hedge_carbon_model.py v2 / hedge-config.js). 3 m crown; 50-year gross 70.7 tCO2e/km (biomass 36.8, roots 18, soil 15.9). Grass margin soil carbon is not counted (scenario 14-25 tCO2e/km). Not validated; site soil measurement replaces the soil term.",
         "agronomicUtility": "Hedge centre 2 m from the downslope edge (GAEC 7); 4.5 m of grass margin on the upslope side.",
-        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre), about 4 m payable, about GBP198/km/yr at GBP495.62/ha/yr (not counted in totals). GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
+        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre), about 4 m payable, about GBP198/km/yr at GBP495.62/ha/yr. GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
         "additionality": "Not assessed. ONCRA financial additionality (Guidelines s8.2.1) and regulatory additionality (s8.2.2), including the government-grant clause (s4.2.1), are unresolved for this activity and need a written ONCRA ruling. Any biodiversity or water benefit claim needs a measured baseline and verification.",
         "sserGrossUnitsPerKm": 45.25
       },
@@ -3882,7 +3966,7 @@
             "option": "Water Margins in Arable Fields (paid beyond the 2 m GBR strip; minimum 3, 6 or 12 m by water body)",
             "payableM": 8,
             "gbpPerKm": 396,
-            "note": "Possible, not counted in totals: target areas, RPID geometry and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) all apply."
+            "note": "Counted in the totals when grants are included. Not guaranteed: AECS is competitive and targeted, RPID must confirm the geometry, and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) applies."
           }
         },
         "biodiversity": {
@@ -3916,7 +4000,21 @@
         },
         "carbonGross50": 52.5,
         "carbonClaim50": 52.5,
-        "speciesTradeoff": null
+        "speciesTradeoff": null,
+        "funding": {
+          "establishmentCostPerM": 10.95,
+          "aecs": {
+            "hedgeEligible": true,
+            "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
+            "plantingCapitalPerKm": 5400,
+            "fenceCapitalPerKmPerSide": 5500,
+            "hedgeAnnualPerKm": 1200,
+            "stripAnnualPerKm": 396,
+            "stripOption": "Water Margins in Arable Fields (paid beyond the 2 m GBR strip; minimum 3, 6 or 12 m by water body)",
+            "agreementYears": 5
+          },
+          "gbrStripM": 2
+        }
       },
       "carbonSequestration": {
         "yr_1_5": 15.04,
@@ -4100,7 +4198,7 @@
         "waterImpacts": "12 m strip: indicative retention of about 84% of sediment and 76% of total phosphorus reaching it (Stutter et al. 2021 width-only fits; soil and slope matter more). Beside water, the grass zone does the sediment work; the hedge adds shade and some nitrate uptake.",
         "carbonAgronomicAssumptions": "Carbon profile: provisional lower-end literature estimate (hedge_carbon_model.py v2 / hedge-config.js). 2 m crown; 50-year gross 52.5 tCO2e/km (biomass 24.5, roots 12, soil 15.9). Grass margin soil carbon is not counted (scenario 28-50 tCO2e/km). Not validated; site soil measurement replaces the soil term.",
         "agronomicUtility": "Measured from the top of the bank: 2 m GBR strip, then the grass water margin, then the hedge set back with 2 m of GAEC strip on the field side.",
-        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Water Margins in Arable Fields (paid beyond the 2 m GBR strip; minimum 3, 6 or 12 m by water body), about 8 m payable, about GBP396/km/yr at GBP495.62/ha/yr (not counted in totals). GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
+        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Water Margins in Arable Fields (paid beyond the 2 m GBR strip; minimum 3, 6 or 12 m by water body), about 8 m payable, about GBP396/km/yr at GBP495.62/ha/yr. GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
         "additionality": "Not assessed. ONCRA financial additionality (Guidelines s8.2.1) and regulatory additionality (s8.2.2), including the government-grant clause (s4.2.1), are unresolved for this activity and need a written ONCRA ruling. Any biodiversity or water benefit claim needs a measured baseline and verification.",
         "sserGrossUnitsPerKm": 33.6
       },
@@ -4187,7 +4285,21 @@
         },
         "carbonGross50": 92.6,
         "carbonClaim50": 41.2,
-        "speciesTradeoff": null
+        "speciesTradeoff": null,
+        "funding": {
+          "establishmentCostPerM": 14.52,
+          "aecs": {
+            "hedgeEligible": false,
+            "hedgeReason": "Not used: the productive hedge offer is programme-funded and does not rely on AECS (October 2026).",
+            "plantingCapitalPerKm": 0,
+            "fenceCapitalPerKmPerSide": 0,
+            "hedgeAnnualPerKm": 0,
+            "stripAnnualPerKm": 0,
+            "stripOption": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
+            "agreementYears": 5
+          },
+          "gbrStripM": 0
+        }
       },
       "carbonSequestration": {
         "yr_1_5": 11.64,
@@ -8458,7 +8570,21 @@
         },
         "carbonGross50": 52.5,
         "carbonClaim50": 52.5,
-        "speciesTradeoff": null
+        "speciesTradeoff": null,
+        "funding": {
+          "establishmentCostPerM": 10.95,
+          "aecs": {
+            "hedgeEligible": true,
+            "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
+            "plantingCapitalPerKm": 5400,
+            "fenceCapitalPerKmPerSide": 5500,
+            "hedgeAnnualPerKm": 1200,
+            "stripAnnualPerKm": 0,
+            "stripOption": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
+            "agreementYears": 5
+          },
+          "gbrStripM": 0
+        }
       },
       "carbonSequestration": {
         "yr_1_5": 15.04,
@@ -8696,7 +8822,7 @@
             "option": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
             "payableM": 3,
             "gbpPerKm": 149,
-            "note": "Possible, not counted in totals: target areas, RPID geometry and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) all apply."
+            "note": "Counted in the totals when grants are included. Not guaranteed: AECS is competitive and targeted, RPID must confirm the geometry, and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) applies."
           }
         },
         "biodiversity": {
@@ -8730,7 +8856,21 @@
         },
         "carbonGross50": 52.5,
         "carbonClaim50": 52.5,
-        "speciesTradeoff": null
+        "speciesTradeoff": null,
+        "funding": {
+          "establishmentCostPerM": 10.95,
+          "aecs": {
+            "hedgeEligible": true,
+            "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
+            "plantingCapitalPerKm": 5400,
+            "fenceCapitalPerKmPerSide": 5500,
+            "hedgeAnnualPerKm": 1200,
+            "stripAnnualPerKm": 149,
+            "stripOption": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
+            "agreementYears": 5
+          },
+          "gbrStripM": 0
+        }
       },
       "carbonSequestration": {
         "yr_1_5": 15.04,
@@ -8914,7 +9054,7 @@
         "waterImpacts": "6 m strip: indicative retention of about 80% of sediment and 67% of total phosphorus reaching it (Stutter et al. 2021 width-only fits; soil and slope matter more). Best value where the strip lies across the flow path.",
         "carbonAgronomicAssumptions": "Carbon profile: provisional lower-end literature estimate (hedge_carbon_model.py v2 / hedge-config.js). 2 m crown; 50-year gross 52.5 tCO2e/km (biomass 24.5, roots 12, soil 15.9). Grass margin soil carbon is not counted (scenario 11.2-20 tCO2e/km). Not validated; site soil measurement replaces the soil term.",
         "agronomicUtility": "Hedge centre 1 m from the boundary; 4 m of grass margin on the field side.",
-        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre), about 3 m payable, about GBP149/km/yr at GBP495.62/ha/yr (not counted in totals). GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
+        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre), about 3 m payable, about GBP149/km/yr at GBP495.62/ha/yr. GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
         "additionality": "Not assessed. ONCRA financial additionality (Guidelines s8.2.1) and regulatory additionality (s8.2.2), including the government-grant clause (s4.2.1), are unresolved for this activity and need a written ONCRA ruling. Any biodiversity or water benefit claim needs a measured baseline and verification.",
         "sserGrossUnitsPerKm": 33.6
       },
@@ -9001,7 +9141,21 @@
         },
         "carbonGross50": 70.7,
         "carbonClaim50": 70.7,
-        "speciesTradeoff": null
+        "speciesTradeoff": null,
+        "funding": {
+          "establishmentCostPerM": 14.27,
+          "aecs": {
+            "hedgeEligible": true,
+            "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
+            "plantingCapitalPerKm": 5400,
+            "fenceCapitalPerKmPerSide": 5500,
+            "hedgeAnnualPerKm": 1200,
+            "stripAnnualPerKm": 0,
+            "stripOption": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
+            "agreementYears": 5
+          },
+          "gbrStripM": 0
+        }
       },
       "carbonSequestration": {
         "yr_1_5": 20.52,
@@ -9238,7 +9392,7 @@
             "option": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
             "payableM": 3,
             "gbpPerKm": 149,
-            "note": "Possible, not counted in totals: target areas, RPID geometry and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) all apply."
+            "note": "Counted in the totals when grants are included. Not guaranteed: AECS is competitive and targeted, RPID must confirm the geometry, and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) applies."
           }
         },
         "biodiversity": {
@@ -9272,7 +9426,21 @@
         },
         "carbonGross50": 52.5,
         "carbonClaim50": 52.5,
-        "speciesTradeoff": null
+        "speciesTradeoff": null,
+        "funding": {
+          "establishmentCostPerM": 11.2,
+          "aecs": {
+            "hedgeEligible": true,
+            "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
+            "plantingCapitalPerKm": 5400,
+            "fenceCapitalPerKmPerSide": 5500,
+            "hedgeAnnualPerKm": 1200,
+            "stripAnnualPerKm": 149,
+            "stripOption": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
+            "agreementYears": 5
+          },
+          "gbrStripM": 0
+        }
       },
       "carbonSequestration": {
         "yr_1_5": 15.04,
@@ -9456,7 +9624,7 @@
         "waterImpacts": "6 m strip: indicative retention of about 80% of sediment and 67% of total phosphorus reaching it (Stutter et al. 2021 width-only fits; soil and slope matter more). Best value where the strip lies across the flow path.",
         "carbonAgronomicAssumptions": "Carbon profile: provisional lower-end literature estimate (hedge_carbon_model.py v2 / hedge-config.js). 2 m crown; 50-year gross 52.5 tCO2e/km (biomass 24.5, roots 12, soil 15.9). Standard trees are not counted (no substantiated model). Grass margin soil carbon is not counted (scenario 11.2-20 tCO2e/km). Not validated; site soil measurement replaces the soil term.",
         "agronomicUtility": "Hedge centre 1 m from the boundary; 4 m of grass margin on the field side.",
-        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre), about 3 m payable, about GBP149/km/yr at GBP495.62/ha/yr (not counted in totals). MOREhedges (Woodland Trust) may fund up to 75% of costs for 100-250 m per season where the hedge links to woodland, with a tree every 6 m and a 30-year term; do not double-fund with AECS. GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
+        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre), about 3 m payable, about GBP149/km/yr at GBP495.62/ha/yr. MOREhedges (Woodland Trust) may fund up to 75% of costs for 100-250 m per season where the hedge links to woodland, with a tree every 6 m and a 30-year term; do not double-fund with AECS. GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
         "additionality": "Not assessed. ONCRA financial additionality (Guidelines s8.2.1) and regulatory additionality (s8.2.2), including the government-grant clause (s4.2.1), are unresolved for this activity and need a written ONCRA ruling. Any biodiversity or water benefit claim needs a measured baseline and verification.",
         "sserGrossUnitsPerKm": 33.6
       },
@@ -9509,7 +9677,7 @@
             "option": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
             "payableM": 7,
             "gbpPerKm": 347,
-            "note": "Possible, not counted in totals: target areas, RPID geometry and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) all apply."
+            "note": "Counted in the totals when grants are included. Not guaranteed: AECS is competitive and targeted, RPID must confirm the geometry, and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) applies."
           }
         },
         "biodiversity": {
@@ -9543,7 +9711,21 @@
         },
         "carbonGross50": 52.5,
         "carbonClaim50": 52.5,
-        "speciesTradeoff": null
+        "speciesTradeoff": null,
+        "funding": {
+          "establishmentCostPerM": 10.95,
+          "aecs": {
+            "hedgeEligible": true,
+            "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
+            "plantingCapitalPerKm": 5400,
+            "fenceCapitalPerKmPerSide": 5500,
+            "hedgeAnnualPerKm": 1200,
+            "stripAnnualPerKm": 347,
+            "stripOption": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
+            "agreementYears": 5
+          },
+          "gbrStripM": 0
+        }
       },
       "carbonSequestration": {
         "yr_1_5": 15.04,
@@ -9727,7 +9909,7 @@
         "waterImpacts": "10 m strip: indicative retention of about 83% of sediment and 74% of total phosphorus reaching it (Stutter et al. 2021 width-only fits; soil and slope matter more). Best value where the strip lies across the flow path.",
         "carbonAgronomicAssumptions": "Carbon profile: provisional lower-end literature estimate (hedge_carbon_model.py v2 / hedge-config.js). 2 m crown; 50-year gross 52.5 tCO2e/km (biomass 24.5, roots 12, soil 15.9). Grass margin soil carbon is not counted (scenario 22.4-40 tCO2e/km). Not validated; site soil measurement replaces the soil term.",
         "agronomicUtility": "Hedge centre 1 m from the boundary; 8 m of grass margin on the field side.",
-        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre), about 7 m payable, about GBP347/km/yr at GBP495.62/ha/yr (not counted in totals). GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
+        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre), about 7 m payable, about GBP347/km/yr at GBP495.62/ha/yr. GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
         "additionality": "Not assessed. ONCRA financial additionality (Guidelines s8.2.1) and regulatory additionality (s8.2.2), including the government-grant clause (s4.2.1), are unresolved for this activity and need a written ONCRA ruling. Any biodiversity or water benefit claim needs a measured baseline and verification.",
         "sserGrossUnitsPerKm": 33.6
       },
@@ -9780,7 +9962,7 @@
             "option": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
             "payableM": 4,
             "gbpPerKm": 198,
-            "note": "Possible, not counted in totals: target areas, RPID geometry and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) all apply."
+            "note": "Counted in the totals when grants are included. Not guaranteed: AECS is competitive and targeted, RPID must confirm the geometry, and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) applies."
           }
         },
         "biodiversity": {
@@ -9814,7 +9996,21 @@
         },
         "carbonGross50": 70.7,
         "carbonClaim50": 70.7,
-        "speciesTradeoff": null
+        "speciesTradeoff": null,
+        "funding": {
+          "establishmentCostPerM": 14.27,
+          "aecs": {
+            "hedgeEligible": true,
+            "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
+            "plantingCapitalPerKm": 5400,
+            "fenceCapitalPerKmPerSide": 5500,
+            "hedgeAnnualPerKm": 1200,
+            "stripAnnualPerKm": 198,
+            "stripOption": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
+            "agreementYears": 5
+          },
+          "gbrStripM": 0
+        }
       },
       "carbonSequestration": {
         "yr_1_5": 20.52,
@@ -9998,7 +10194,7 @@
         "waterImpacts": "8 m strip: indicative retention of about 82% of sediment and 71% of total phosphorus reaching it (Stutter et al. 2021 width-only fits; soil and slope matter more). On the contour, the upslope grass zone traps sediment before the hedge (zoned buffer, Cole et al. 2020).",
         "carbonAgronomicAssumptions": "Carbon profile: provisional lower-end literature estimate (hedge_carbon_model.py v2 / hedge-config.js). 3 m crown; 50-year gross 70.7 tCO2e/km (biomass 36.8, roots 18, soil 15.9). Grass margin soil carbon is not counted (scenario 14-25 tCO2e/km). Not validated; site soil measurement replaces the soil term.",
         "agronomicUtility": "Hedge centre 2 m from the downslope edge (GAEC 7); 4.5 m of grass margin on the upslope side.",
-        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre), about 4 m payable, about GBP198/km/yr at GBP495.62/ha/yr (not counted in totals). GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
+        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre), about 4 m payable, about GBP198/km/yr at GBP495.62/ha/yr. GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
         "additionality": "Not assessed. ONCRA financial additionality (Guidelines s8.2.1) and regulatory additionality (s8.2.2), including the government-grant clause (s4.2.1), are unresolved for this activity and need a written ONCRA ruling. Any biodiversity or water benefit claim needs a measured baseline and verification.",
         "sserGrossUnitsPerKm": 45.25
       },
@@ -10051,7 +10247,7 @@
             "option": "Water Margins in Arable Fields (paid beyond the 2 m GBR strip; minimum 3, 6 or 12 m by water body)",
             "payableM": 8,
             "gbpPerKm": 396,
-            "note": "Possible, not counted in totals: target areas, RPID geometry and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) all apply."
+            "note": "Counted in the totals when grants are included. Not guaranteed: AECS is competitive and targeted, RPID must confirm the geometry, and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) applies."
           }
         },
         "biodiversity": {
@@ -10085,7 +10281,21 @@
         },
         "carbonGross50": 52.5,
         "carbonClaim50": 52.5,
-        "speciesTradeoff": null
+        "speciesTradeoff": null,
+        "funding": {
+          "establishmentCostPerM": 10.95,
+          "aecs": {
+            "hedgeEligible": true,
+            "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
+            "plantingCapitalPerKm": 5400,
+            "fenceCapitalPerKmPerSide": 5500,
+            "hedgeAnnualPerKm": 1200,
+            "stripAnnualPerKm": 396,
+            "stripOption": "Water Margins in Arable Fields (paid beyond the 2 m GBR strip; minimum 3, 6 or 12 m by water body)",
+            "agreementYears": 5
+          },
+          "gbrStripM": 2
+        }
       },
       "carbonSequestration": {
         "yr_1_5": 15.04,
@@ -10269,7 +10479,7 @@
         "waterImpacts": "12 m strip: indicative retention of about 84% of sediment and 76% of total phosphorus reaching it (Stutter et al. 2021 width-only fits; soil and slope matter more). Beside water, the grass zone does the sediment work; the hedge adds shade and some nitrate uptake.",
         "carbonAgronomicAssumptions": "Carbon profile: provisional lower-end literature estimate (hedge_carbon_model.py v2 / hedge-config.js). 2 m crown; 50-year gross 52.5 tCO2e/km (biomass 24.5, roots 12, soil 15.9). Grass margin soil carbon is not counted (scenario 28-50 tCO2e/km). Not validated; site soil measurement replaces the soil term.",
         "agronomicUtility": "Measured from the top of the bank: 2 m GBR strip, then the grass water margin, then the hedge set back with 2 m of GAEC strip on the field side.",
-        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Water Margins in Arable Fields (paid beyond the 2 m GBR strip; minimum 3, 6 or 12 m by water body), about 8 m payable, about GBP396/km/yr at GBP495.62/ha/yr (not counted in totals). GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
+        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Water Margins in Arable Fields (paid beyond the 2 m GBR strip; minimum 3, 6 or 12 m by water body), about 8 m payable, about GBP396/km/yr at GBP495.62/ha/yr. GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
         "additionality": "Not assessed. ONCRA financial additionality (Guidelines s8.2.1) and regulatory additionality (s8.2.2), including the government-grant clause (s4.2.1), are unresolved for this activity and need a written ONCRA ruling. Any biodiversity or water benefit claim needs a measured baseline and verification.",
         "sserGrossUnitsPerKm": 33.6
       },
@@ -10356,7 +10566,21 @@
         },
         "carbonGross50": 92.6,
         "carbonClaim50": 41.2,
-        "speciesTradeoff": null
+        "speciesTradeoff": null,
+        "funding": {
+          "establishmentCostPerM": 14.52,
+          "aecs": {
+            "hedgeEligible": false,
+            "hedgeReason": "Not used: the productive hedge offer is programme-funded and does not rely on AECS (October 2026).",
+            "plantingCapitalPerKm": 0,
+            "fenceCapitalPerKmPerSide": 0,
+            "hedgeAnnualPerKm": 0,
+            "stripAnnualPerKm": 0,
+            "stripOption": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
+            "agreementYears": 5
+          },
+          "gbrStripM": 0
+        }
       },
       "carbonSequestration": {
         "yr_1_5": 11.64,
@@ -14627,7 +14851,21 @@
         },
         "carbonGross50": 52.5,
         "carbonClaim50": 52.5,
-        "speciesTradeoff": null
+        "speciesTradeoff": null,
+        "funding": {
+          "establishmentCostPerM": 10.95,
+          "aecs": {
+            "hedgeEligible": true,
+            "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
+            "plantingCapitalPerKm": 5400,
+            "fenceCapitalPerKmPerSide": 5500,
+            "hedgeAnnualPerKm": 1200,
+            "stripAnnualPerKm": 0,
+            "stripOption": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
+            "agreementYears": 5
+          },
+          "gbrStripM": 0
+        }
       },
       "carbonSequestration": {
         "yr_1_5": 15.04,
@@ -14865,7 +15103,7 @@
             "option": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
             "payableM": 3,
             "gbpPerKm": 149,
-            "note": "Possible, not counted in totals: target areas, RPID geometry and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) all apply."
+            "note": "Counted in the totals when grants are included. Not guaranteed: AECS is competitive and targeted, RPID must confirm the geometry, and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) applies."
           }
         },
         "biodiversity": {
@@ -14899,7 +15137,21 @@
         },
         "carbonGross50": 52.5,
         "carbonClaim50": 52.5,
-        "speciesTradeoff": null
+        "speciesTradeoff": null,
+        "funding": {
+          "establishmentCostPerM": 10.95,
+          "aecs": {
+            "hedgeEligible": true,
+            "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
+            "plantingCapitalPerKm": 5400,
+            "fenceCapitalPerKmPerSide": 5500,
+            "hedgeAnnualPerKm": 1200,
+            "stripAnnualPerKm": 149,
+            "stripOption": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
+            "agreementYears": 5
+          },
+          "gbrStripM": 0
+        }
       },
       "carbonSequestration": {
         "yr_1_5": 15.04,
@@ -15083,7 +15335,7 @@
         "waterImpacts": "6 m strip: indicative retention of about 80% of sediment and 67% of total phosphorus reaching it (Stutter et al. 2021 width-only fits; soil and slope matter more). Best value where the strip lies across the flow path.",
         "carbonAgronomicAssumptions": "Carbon profile: provisional lower-end literature estimate (hedge_carbon_model.py v2 / hedge-config.js). 2 m crown; 50-year gross 52.5 tCO2e/km (biomass 24.5, roots 12, soil 15.9). Grass margin soil carbon is not counted (scenario 11.2-20 tCO2e/km). Not validated; site soil measurement replaces the soil term.",
         "agronomicUtility": "Hedge centre 1 m from the boundary; 4 m of grass margin on the field side.",
-        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre), about 3 m payable, about GBP149/km/yr at GBP495.62/ha/yr (not counted in totals). GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
+        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre), about 3 m payable, about GBP149/km/yr at GBP495.62/ha/yr. GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
         "additionality": "Not assessed. ONCRA financial additionality (Guidelines s8.2.1) and regulatory additionality (s8.2.2), including the government-grant clause (s4.2.1), are unresolved for this activity and need a written ONCRA ruling. Any biodiversity or water benefit claim needs a measured baseline and verification.",
         "sserGrossUnitsPerKm": 33.6
       },
@@ -15170,7 +15422,21 @@
         },
         "carbonGross50": 70.7,
         "carbonClaim50": 70.7,
-        "speciesTradeoff": null
+        "speciesTradeoff": null,
+        "funding": {
+          "establishmentCostPerM": 14.27,
+          "aecs": {
+            "hedgeEligible": true,
+            "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
+            "plantingCapitalPerKm": 5400,
+            "fenceCapitalPerKmPerSide": 5500,
+            "hedgeAnnualPerKm": 1200,
+            "stripAnnualPerKm": 0,
+            "stripOption": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
+            "agreementYears": 5
+          },
+          "gbrStripM": 0
+        }
       },
       "carbonSequestration": {
         "yr_1_5": 20.52,
@@ -15407,7 +15673,7 @@
             "option": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
             "payableM": 3,
             "gbpPerKm": 149,
-            "note": "Possible, not counted in totals: target areas, RPID geometry and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) all apply."
+            "note": "Counted in the totals when grants are included. Not guaranteed: AECS is competitive and targeted, RPID must confirm the geometry, and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) applies."
           }
         },
         "biodiversity": {
@@ -15441,7 +15707,21 @@
         },
         "carbonGross50": 52.5,
         "carbonClaim50": 52.5,
-        "speciesTradeoff": null
+        "speciesTradeoff": null,
+        "funding": {
+          "establishmentCostPerM": 11.2,
+          "aecs": {
+            "hedgeEligible": true,
+            "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
+            "plantingCapitalPerKm": 5400,
+            "fenceCapitalPerKmPerSide": 5500,
+            "hedgeAnnualPerKm": 1200,
+            "stripAnnualPerKm": 149,
+            "stripOption": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
+            "agreementYears": 5
+          },
+          "gbrStripM": 0
+        }
       },
       "carbonSequestration": {
         "yr_1_5": 15.04,
@@ -15625,7 +15905,7 @@
         "waterImpacts": "6 m strip: indicative retention of about 80% of sediment and 67% of total phosphorus reaching it (Stutter et al. 2021 width-only fits; soil and slope matter more). Best value where the strip lies across the flow path.",
         "carbonAgronomicAssumptions": "Carbon profile: provisional lower-end literature estimate (hedge_carbon_model.py v2 / hedge-config.js). 2 m crown; 50-year gross 52.5 tCO2e/km (biomass 24.5, roots 12, soil 15.9). Standard trees are not counted (no substantiated model). Grass margin soil carbon is not counted (scenario 11.2-20 tCO2e/km). Not validated; site soil measurement replaces the soil term.",
         "agronomicUtility": "Hedge centre 1 m from the boundary; 4 m of grass margin on the field side.",
-        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre), about 3 m payable, about GBP149/km/yr at GBP495.62/ha/yr (not counted in totals). MOREhedges (Woodland Trust) may fund up to 75% of costs for 100-250 m per season where the hedge links to woodland, with a tree every 6 m and a 30-year term; do not double-fund with AECS. GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
+        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre), about 3 m payable, about GBP149/km/yr at GBP495.62/ha/yr. MOREhedges (Woodland Trust) may fund up to 75% of costs for 100-250 m per season where the hedge links to woodland, with a tree every 6 m and a 30-year term; do not double-fund with AECS. GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
         "additionality": "Not assessed. ONCRA financial additionality (Guidelines s8.2.1) and regulatory additionality (s8.2.2), including the government-grant clause (s4.2.1), are unresolved for this activity and need a written ONCRA ruling. Any biodiversity or water benefit claim needs a measured baseline and verification.",
         "sserGrossUnitsPerKm": 33.6
       },
@@ -15678,7 +15958,7 @@
             "option": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
             "payableM": 7,
             "gbpPerKm": 347,
-            "note": "Possible, not counted in totals: target areas, RPID geometry and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) all apply."
+            "note": "Counted in the totals when grants are included. Not guaranteed: AECS is competitive and targeted, RPID must confirm the geometry, and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) applies."
           }
         },
         "biodiversity": {
@@ -15712,7 +15992,21 @@
         },
         "carbonGross50": 52.5,
         "carbonClaim50": 52.5,
-        "speciesTradeoff": null
+        "speciesTradeoff": null,
+        "funding": {
+          "establishmentCostPerM": 10.95,
+          "aecs": {
+            "hedgeEligible": true,
+            "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
+            "plantingCapitalPerKm": 5400,
+            "fenceCapitalPerKmPerSide": 5500,
+            "hedgeAnnualPerKm": 1200,
+            "stripAnnualPerKm": 347,
+            "stripOption": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
+            "agreementYears": 5
+          },
+          "gbrStripM": 0
+        }
       },
       "carbonSequestration": {
         "yr_1_5": 15.04,
@@ -15896,7 +16190,7 @@
         "waterImpacts": "10 m strip: indicative retention of about 83% of sediment and 74% of total phosphorus reaching it (Stutter et al. 2021 width-only fits; soil and slope matter more). Best value where the strip lies across the flow path.",
         "carbonAgronomicAssumptions": "Carbon profile: provisional lower-end literature estimate (hedge_carbon_model.py v2 / hedge-config.js). 2 m crown; 50-year gross 52.5 tCO2e/km (biomass 24.5, roots 12, soil 15.9). Grass margin soil carbon is not counted (scenario 22.4-40 tCO2e/km). Not validated; site soil measurement replaces the soil term.",
         "agronomicUtility": "Hedge centre 1 m from the boundary; 8 m of grass margin on the field side.",
-        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre), about 7 m payable, about GBP347/km/yr at GBP495.62/ha/yr (not counted in totals). GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
+        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre), about 7 m payable, about GBP347/km/yr at GBP495.62/ha/yr. GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
         "additionality": "Not assessed. ONCRA financial additionality (Guidelines s8.2.1) and regulatory additionality (s8.2.2), including the government-grant clause (s4.2.1), are unresolved for this activity and need a written ONCRA ruling. Any biodiversity or water benefit claim needs a measured baseline and verification.",
         "sserGrossUnitsPerKm": 33.6
       },
@@ -15949,7 +16243,7 @@
             "option": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
             "payableM": 4,
             "gbpPerKm": 198,
-            "note": "Possible, not counted in totals: target areas, RPID geometry and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) all apply."
+            "note": "Counted in the totals when grants are included. Not guaranteed: AECS is competitive and targeted, RPID must confirm the geometry, and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) applies."
           }
         },
         "biodiversity": {
@@ -15983,7 +16277,21 @@
         },
         "carbonGross50": 70.7,
         "carbonClaim50": 70.7,
-        "speciesTradeoff": null
+        "speciesTradeoff": null,
+        "funding": {
+          "establishmentCostPerM": 14.27,
+          "aecs": {
+            "hedgeEligible": true,
+            "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
+            "plantingCapitalPerKm": 5400,
+            "fenceCapitalPerKmPerSide": 5500,
+            "hedgeAnnualPerKm": 1200,
+            "stripAnnualPerKm": 198,
+            "stripOption": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
+            "agreementYears": 5
+          },
+          "gbrStripM": 0
+        }
       },
       "carbonSequestration": {
         "yr_1_5": 20.52,
@@ -16167,7 +16475,7 @@
         "waterImpacts": "8 m strip: indicative retention of about 82% of sediment and 71% of total phosphorus reaching it (Stutter et al. 2021 width-only fits; soil and slope matter more). On the contour, the upslope grass zone traps sediment before the hedge (zoned buffer, Cole et al. 2020).",
         "carbonAgronomicAssumptions": "Carbon profile: provisional lower-end literature estimate (hedge_carbon_model.py v2 / hedge-config.js). 3 m crown; 50-year gross 70.7 tCO2e/km (biomass 36.8, roots 18, soil 15.9). Grass margin soil carbon is not counted (scenario 14-25 tCO2e/km). Not validated; site soil measurement replaces the soil term.",
         "agronomicUtility": "Hedge centre 2 m from the downslope edge (GAEC 7); 4.5 m of grass margin on the upslope side.",
-        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre), about 4 m payable, about GBP198/km/yr at GBP495.62/ha/yr (not counted in totals). GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
+        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre), about 4 m payable, about GBP198/km/yr at GBP495.62/ha/yr. GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
         "additionality": "Not assessed. ONCRA financial additionality (Guidelines s8.2.1) and regulatory additionality (s8.2.2), including the government-grant clause (s4.2.1), are unresolved for this activity and need a written ONCRA ruling. Any biodiversity or water benefit claim needs a measured baseline and verification.",
         "sserGrossUnitsPerKm": 45.25
       },
@@ -16220,7 +16528,7 @@
             "option": "Water Margins in Arable Fields (paid beyond the 2 m GBR strip; minimum 3, 6 or 12 m by water body)",
             "payableM": 8,
             "gbpPerKm": 396,
-            "note": "Possible, not counted in totals: target areas, RPID geometry and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) all apply."
+            "note": "Counted in the totals when grants are included. Not guaranteed: AECS is competitive and targeted, RPID must confirm the geometry, and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) applies."
           }
         },
         "biodiversity": {
@@ -16254,7 +16562,21 @@
         },
         "carbonGross50": 52.5,
         "carbonClaim50": 52.5,
-        "speciesTradeoff": null
+        "speciesTradeoff": null,
+        "funding": {
+          "establishmentCostPerM": 10.95,
+          "aecs": {
+            "hedgeEligible": true,
+            "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
+            "plantingCapitalPerKm": 5400,
+            "fenceCapitalPerKmPerSide": 5500,
+            "hedgeAnnualPerKm": 1200,
+            "stripAnnualPerKm": 396,
+            "stripOption": "Water Margins in Arable Fields (paid beyond the 2 m GBR strip; minimum 3, 6 or 12 m by water body)",
+            "agreementYears": 5
+          },
+          "gbrStripM": 2
+        }
       },
       "carbonSequestration": {
         "yr_1_5": 15.04,
@@ -16438,7 +16760,7 @@
         "waterImpacts": "12 m strip: indicative retention of about 84% of sediment and 76% of total phosphorus reaching it (Stutter et al. 2021 width-only fits; soil and slope matter more). Beside water, the grass zone does the sediment work; the hedge adds shade and some nitrate uptake.",
         "carbonAgronomicAssumptions": "Carbon profile: provisional lower-end literature estimate (hedge_carbon_model.py v2 / hedge-config.js). 2 m crown; 50-year gross 52.5 tCO2e/km (biomass 24.5, roots 12, soil 15.9). Grass margin soil carbon is not counted (scenario 28-50 tCO2e/km). Not validated; site soil measurement replaces the soil term.",
         "agronomicUtility": "Measured from the top of the bank: 2 m GBR strip, then the grass water margin, then the hedge set back with 2 m of GAEC strip on the field side.",
-        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Water Margins in Arable Fields (paid beyond the 2 m GBR strip; minimum 3, 6 or 12 m by water body), about 8 m payable, about GBP396/km/yr at GBP495.62/ha/yr (not counted in totals). GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
+        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Water Margins in Arable Fields (paid beyond the 2 m GBR strip; minimum 3, 6 or 12 m by water body), about 8 m payable, about GBP396/km/yr at GBP495.62/ha/yr. GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
         "additionality": "Not assessed. ONCRA financial additionality (Guidelines s8.2.1) and regulatory additionality (s8.2.2), including the government-grant clause (s4.2.1), are unresolved for this activity and need a written ONCRA ruling. Any biodiversity or water benefit claim needs a measured baseline and verification.",
         "sserGrossUnitsPerKm": 33.6
       },
@@ -16525,7 +16847,21 @@
         },
         "carbonGross50": 92.6,
         "carbonClaim50": 41.2,
-        "speciesTradeoff": null
+        "speciesTradeoff": null,
+        "funding": {
+          "establishmentCostPerM": 14.52,
+          "aecs": {
+            "hedgeEligible": false,
+            "hedgeReason": "Not used: the productive hedge offer is programme-funded and does not rely on AECS (October 2026).",
+            "plantingCapitalPerKm": 0,
+            "fenceCapitalPerKmPerSide": 0,
+            "hedgeAnnualPerKm": 0,
+            "stripAnnualPerKm": 0,
+            "stripOption": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
+            "agreementYears": 5
+          },
+          "gbrStripM": 0
+        }
       },
       "carbonSequestration": {
         "yr_1_5": 11.64,
@@ -20796,7 +21132,21 @@
         },
         "carbonGross50": 52.5,
         "carbonClaim50": 52.5,
-        "speciesTradeoff": null
+        "speciesTradeoff": null,
+        "funding": {
+          "establishmentCostPerM": 10.95,
+          "aecs": {
+            "hedgeEligible": true,
+            "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
+            "plantingCapitalPerKm": 5400,
+            "fenceCapitalPerKmPerSide": 5500,
+            "hedgeAnnualPerKm": 1200,
+            "stripAnnualPerKm": 0,
+            "stripOption": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
+            "agreementYears": 5
+          },
+          "gbrStripM": 0
+        }
       },
       "carbonSequestration": {
         "yr_1_5": 15.04,
@@ -21034,7 +21384,7 @@
             "option": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
             "payableM": 3,
             "gbpPerKm": 149,
-            "note": "Possible, not counted in totals: target areas, RPID geometry and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) all apply."
+            "note": "Counted in the totals when grants are included. Not guaranteed: AECS is competitive and targeted, RPID must confirm the geometry, and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) applies."
           }
         },
         "biodiversity": {
@@ -21068,7 +21418,21 @@
         },
         "carbonGross50": 52.5,
         "carbonClaim50": 52.5,
-        "speciesTradeoff": null
+        "speciesTradeoff": null,
+        "funding": {
+          "establishmentCostPerM": 10.95,
+          "aecs": {
+            "hedgeEligible": true,
+            "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
+            "plantingCapitalPerKm": 5400,
+            "fenceCapitalPerKmPerSide": 5500,
+            "hedgeAnnualPerKm": 1200,
+            "stripAnnualPerKm": 149,
+            "stripOption": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
+            "agreementYears": 5
+          },
+          "gbrStripM": 0
+        }
       },
       "carbonSequestration": {
         "yr_1_5": 15.04,
@@ -21252,7 +21616,7 @@
         "waterImpacts": "6 m strip: indicative retention of about 80% of sediment and 67% of total phosphorus reaching it (Stutter et al. 2021 width-only fits; soil and slope matter more). Best value where the strip lies across the flow path.",
         "carbonAgronomicAssumptions": "Carbon profile: provisional lower-end literature estimate (hedge_carbon_model.py v2 / hedge-config.js). 2 m crown; 50-year gross 52.5 tCO2e/km (biomass 24.5, roots 12, soil 15.9). Grass margin soil carbon is not counted (scenario 11.2-20 tCO2e/km). Not validated; site soil measurement replaces the soil term.",
         "agronomicUtility": "Hedge centre 1 m from the boundary; 4 m of grass margin on the field side.",
-        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre), about 3 m payable, about GBP149/km/yr at GBP495.62/ha/yr (not counted in totals). GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
+        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre), about 3 m payable, about GBP149/km/yr at GBP495.62/ha/yr. GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
         "additionality": "Not assessed. ONCRA financial additionality (Guidelines s8.2.1) and regulatory additionality (s8.2.2), including the government-grant clause (s4.2.1), are unresolved for this activity and need a written ONCRA ruling. Any biodiversity or water benefit claim needs a measured baseline and verification.",
         "sserGrossUnitsPerKm": 33.6
       },
@@ -21339,7 +21703,21 @@
         },
         "carbonGross50": 70.7,
         "carbonClaim50": 70.7,
-        "speciesTradeoff": null
+        "speciesTradeoff": null,
+        "funding": {
+          "establishmentCostPerM": 14.27,
+          "aecs": {
+            "hedgeEligible": true,
+            "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
+            "plantingCapitalPerKm": 5400,
+            "fenceCapitalPerKmPerSide": 5500,
+            "hedgeAnnualPerKm": 1200,
+            "stripAnnualPerKm": 0,
+            "stripOption": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
+            "agreementYears": 5
+          },
+          "gbrStripM": 0
+        }
       },
       "carbonSequestration": {
         "yr_1_5": 20.52,
@@ -21576,7 +21954,7 @@
             "option": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
             "payableM": 3,
             "gbpPerKm": 149,
-            "note": "Possible, not counted in totals: target areas, RPID geometry and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) all apply."
+            "note": "Counted in the totals when grants are included. Not guaranteed: AECS is competitive and targeted, RPID must confirm the geometry, and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) applies."
           }
         },
         "biodiversity": {
@@ -21610,7 +21988,21 @@
         },
         "carbonGross50": 52.5,
         "carbonClaim50": 52.5,
-        "speciesTradeoff": null
+        "speciesTradeoff": null,
+        "funding": {
+          "establishmentCostPerM": 11.2,
+          "aecs": {
+            "hedgeEligible": true,
+            "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
+            "plantingCapitalPerKm": 5400,
+            "fenceCapitalPerKmPerSide": 5500,
+            "hedgeAnnualPerKm": 1200,
+            "stripAnnualPerKm": 149,
+            "stripOption": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
+            "agreementYears": 5
+          },
+          "gbrStripM": 0
+        }
       },
       "carbonSequestration": {
         "yr_1_5": 15.04,
@@ -21794,7 +22186,7 @@
         "waterImpacts": "6 m strip: indicative retention of about 80% of sediment and 67% of total phosphorus reaching it (Stutter et al. 2021 width-only fits; soil and slope matter more). Best value where the strip lies across the flow path.",
         "carbonAgronomicAssumptions": "Carbon profile: provisional lower-end literature estimate (hedge_carbon_model.py v2 / hedge-config.js). 2 m crown; 50-year gross 52.5 tCO2e/km (biomass 24.5, roots 12, soil 15.9). Standard trees are not counted (no substantiated model). Grass margin soil carbon is not counted (scenario 11.2-20 tCO2e/km). Not validated; site soil measurement replaces the soil term.",
         "agronomicUtility": "Hedge centre 1 m from the boundary; 4 m of grass margin on the field side.",
-        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre), about 3 m payable, about GBP149/km/yr at GBP495.62/ha/yr (not counted in totals). MOREhedges (Woodland Trust) may fund up to 75% of costs for 100-250 m per season where the hedge links to woodland, with a tree every 6 m and a 30-year term; do not double-fund with AECS. GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
+        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre), about 3 m payable, about GBP149/km/yr at GBP495.62/ha/yr. MOREhedges (Woodland Trust) may fund up to 75% of costs for 100-250 m per season where the hedge links to woodland, with a tree every 6 m and a 30-year term; do not double-fund with AECS. GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
         "additionality": "Not assessed. ONCRA financial additionality (Guidelines s8.2.1) and regulatory additionality (s8.2.2), including the government-grant clause (s4.2.1), are unresolved for this activity and need a written ONCRA ruling. Any biodiversity or water benefit claim needs a measured baseline and verification.",
         "sserGrossUnitsPerKm": 33.6
       },
@@ -21847,7 +22239,7 @@
             "option": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
             "payableM": 7,
             "gbpPerKm": 347,
-            "note": "Possible, not counted in totals: target areas, RPID geometry and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) all apply."
+            "note": "Counted in the totals when grants are included. Not guaranteed: AECS is competitive and targeted, RPID must confirm the geometry, and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) applies."
           }
         },
         "biodiversity": {
@@ -21881,7 +22273,21 @@
         },
         "carbonGross50": 52.5,
         "carbonClaim50": 52.5,
-        "speciesTradeoff": null
+        "speciesTradeoff": null,
+        "funding": {
+          "establishmentCostPerM": 10.95,
+          "aecs": {
+            "hedgeEligible": true,
+            "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
+            "plantingCapitalPerKm": 5400,
+            "fenceCapitalPerKmPerSide": 5500,
+            "hedgeAnnualPerKm": 1200,
+            "stripAnnualPerKm": 347,
+            "stripOption": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
+            "agreementYears": 5
+          },
+          "gbrStripM": 0
+        }
       },
       "carbonSequestration": {
         "yr_1_5": 15.04,
@@ -22065,7 +22471,7 @@
         "waterImpacts": "10 m strip: indicative retention of about 83% of sediment and 74% of total phosphorus reaching it (Stutter et al. 2021 width-only fits; soil and slope matter more). Best value where the strip lies across the flow path.",
         "carbonAgronomicAssumptions": "Carbon profile: provisional lower-end literature estimate (hedge_carbon_model.py v2 / hedge-config.js). 2 m crown; 50-year gross 52.5 tCO2e/km (biomass 24.5, roots 12, soil 15.9). Grass margin soil carbon is not counted (scenario 22.4-40 tCO2e/km). Not validated; site soil measurement replaces the soil term.",
         "agronomicUtility": "Hedge centre 1 m from the boundary; 8 m of grass margin on the field side.",
-        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre), about 7 m payable, about GBP347/km/yr at GBP495.62/ha/yr (not counted in totals). GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
+        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre), about 7 m payable, about GBP347/km/yr at GBP495.62/ha/yr. GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
         "additionality": "Not assessed. ONCRA financial additionality (Guidelines s8.2.1) and regulatory additionality (s8.2.2), including the government-grant clause (s4.2.1), are unresolved for this activity and need a written ONCRA ruling. Any biodiversity or water benefit claim needs a measured baseline and verification.",
         "sserGrossUnitsPerKm": 33.6
       },
@@ -22118,7 +22524,7 @@
             "option": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
             "payableM": 4,
             "gbpPerKm": 198,
-            "note": "Possible, not counted in totals: target areas, RPID geometry and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) all apply."
+            "note": "Counted in the totals when grants are included. Not guaranteed: AECS is competitive and targeted, RPID must confirm the geometry, and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) applies."
           }
         },
         "biodiversity": {
@@ -22152,7 +22558,21 @@
         },
         "carbonGross50": 70.7,
         "carbonClaim50": 70.7,
-        "speciesTradeoff": null
+        "speciesTradeoff": null,
+        "funding": {
+          "establishmentCostPerM": 14.27,
+          "aecs": {
+            "hedgeEligible": true,
+            "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
+            "plantingCapitalPerKm": 5400,
+            "fenceCapitalPerKmPerSide": 5500,
+            "hedgeAnnualPerKm": 1200,
+            "stripAnnualPerKm": 198,
+            "stripOption": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
+            "agreementYears": 5
+          },
+          "gbrStripM": 0
+        }
       },
       "carbonSequestration": {
         "yr_1_5": 20.52,
@@ -22336,7 +22756,7 @@
         "waterImpacts": "8 m strip: indicative retention of about 82% of sediment and 71% of total phosphorus reaching it (Stutter et al. 2021 width-only fits; soil and slope matter more). On the contour, the upslope grass zone traps sediment before the hedge (zoned buffer, Cole et al. 2020).",
         "carbonAgronomicAssumptions": "Carbon profile: provisional lower-end literature estimate (hedge_carbon_model.py v2 / hedge-config.js). 3 m crown; 50-year gross 70.7 tCO2e/km (biomass 36.8, roots 18, soil 15.9). Grass margin soil carbon is not counted (scenario 14-25 tCO2e/km). Not validated; site soil measurement replaces the soil term.",
         "agronomicUtility": "Hedge centre 2 m from the downslope edge (GAEC 7); 4.5 m of grass margin on the upslope side.",
-        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre), about 4 m payable, about GBP198/km/yr at GBP495.62/ha/yr (not counted in totals). GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
+        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre), about 4 m payable, about GBP198/km/yr at GBP495.62/ha/yr. GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
         "additionality": "Not assessed. ONCRA financial additionality (Guidelines s8.2.1) and regulatory additionality (s8.2.2), including the government-grant clause (s4.2.1), are unresolved for this activity and need a written ONCRA ruling. Any biodiversity or water benefit claim needs a measured baseline and verification.",
         "sserGrossUnitsPerKm": 45.25
       },
@@ -22389,7 +22809,7 @@
             "option": "Water Margins in Arable Fields (paid beyond the 2 m GBR strip; minimum 3, 6 or 12 m by water body)",
             "payableM": 8,
             "gbpPerKm": 396,
-            "note": "Possible, not counted in totals: target areas, RPID geometry and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) all apply."
+            "note": "Counted in the totals when grants are included. Not guaranteed: AECS is competitive and targeted, RPID must confirm the geometry, and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) applies."
           }
         },
         "biodiversity": {
@@ -22423,7 +22843,21 @@
         },
         "carbonGross50": 52.5,
         "carbonClaim50": 52.5,
-        "speciesTradeoff": null
+        "speciesTradeoff": null,
+        "funding": {
+          "establishmentCostPerM": 10.95,
+          "aecs": {
+            "hedgeEligible": true,
+            "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
+            "plantingCapitalPerKm": 5400,
+            "fenceCapitalPerKmPerSide": 5500,
+            "hedgeAnnualPerKm": 1200,
+            "stripAnnualPerKm": 396,
+            "stripOption": "Water Margins in Arable Fields (paid beyond the 2 m GBR strip; minimum 3, 6 or 12 m by water body)",
+            "agreementYears": 5
+          },
+          "gbrStripM": 2
+        }
       },
       "carbonSequestration": {
         "yr_1_5": 15.04,
@@ -22607,7 +23041,7 @@
         "waterImpacts": "12 m strip: indicative retention of about 84% of sediment and 76% of total phosphorus reaching it (Stutter et al. 2021 width-only fits; soil and slope matter more). Beside water, the grass zone does the sediment work; the hedge adds shade and some nitrate uptake.",
         "carbonAgronomicAssumptions": "Carbon profile: provisional lower-end literature estimate (hedge_carbon_model.py v2 / hedge-config.js). 2 m crown; 50-year gross 52.5 tCO2e/km (biomass 24.5, roots 12, soil 15.9). Grass margin soil carbon is not counted (scenario 28-50 tCO2e/km). Not validated; site soil measurement replaces the soil term.",
         "agronomicUtility": "Measured from the top of the bank: 2 m GBR strip, then the grass water margin, then the hedge set back with 2 m of GAEC strip on the field side.",
-        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Water Margins in Arable Fields (paid beyond the 2 m GBR strip; minimum 3, 6 or 12 m by water body), about 8 m payable, about GBP396/km/yr at GBP495.62/ha/yr (not counted in totals). GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
+        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Water Margins in Arable Fields (paid beyond the 2 m GBR strip; minimum 3, 6 or 12 m by water body), about 8 m payable, about GBP396/km/yr at GBP495.62/ha/yr. GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
         "additionality": "Not assessed. ONCRA financial additionality (Guidelines s8.2.1) and regulatory additionality (s8.2.2), including the government-grant clause (s4.2.1), are unresolved for this activity and need a written ONCRA ruling. Any biodiversity or water benefit claim needs a measured baseline and verification.",
         "sserGrossUnitsPerKm": 33.6
       },
@@ -22694,7 +23128,21 @@
         },
         "carbonGross50": 92.6,
         "carbonClaim50": 41.2,
-        "speciesTradeoff": null
+        "speciesTradeoff": null,
+        "funding": {
+          "establishmentCostPerM": 14.52,
+          "aecs": {
+            "hedgeEligible": false,
+            "hedgeReason": "Not used: the productive hedge offer is programme-funded and does not rely on AECS (October 2026).",
+            "plantingCapitalPerKm": 0,
+            "fenceCapitalPerKmPerSide": 0,
+            "hedgeAnnualPerKm": 0,
+            "stripAnnualPerKm": 0,
+            "stripOption": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
+            "agreementYears": 5
+          },
+          "gbrStripM": 0
+        }
       },
       "carbonSequestration": {
         "yr_1_5": 11.64,
@@ -26965,7 +27413,21 @@
         },
         "carbonGross50": 52.5,
         "carbonClaim50": 52.5,
-        "speciesTradeoff": null
+        "speciesTradeoff": null,
+        "funding": {
+          "establishmentCostPerM": 10.95,
+          "aecs": {
+            "hedgeEligible": true,
+            "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
+            "plantingCapitalPerKm": 5400,
+            "fenceCapitalPerKmPerSide": 5500,
+            "hedgeAnnualPerKm": 1200,
+            "stripAnnualPerKm": 0,
+            "stripOption": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
+            "agreementYears": 5
+          },
+          "gbrStripM": 0
+        }
       },
       "carbonSequestration": {
         "yr_1_5": 15.04,
@@ -27203,7 +27665,7 @@
             "option": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
             "payableM": 3,
             "gbpPerKm": 149,
-            "note": "Possible, not counted in totals: target areas, RPID geometry and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) all apply."
+            "note": "Counted in the totals when grants are included. Not guaranteed: AECS is competitive and targeted, RPID must confirm the geometry, and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) applies."
           }
         },
         "biodiversity": {
@@ -27237,7 +27699,21 @@
         },
         "carbonGross50": 52.5,
         "carbonClaim50": 52.5,
-        "speciesTradeoff": null
+        "speciesTradeoff": null,
+        "funding": {
+          "establishmentCostPerM": 10.95,
+          "aecs": {
+            "hedgeEligible": true,
+            "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
+            "plantingCapitalPerKm": 5400,
+            "fenceCapitalPerKmPerSide": 5500,
+            "hedgeAnnualPerKm": 1200,
+            "stripAnnualPerKm": 149,
+            "stripOption": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
+            "agreementYears": 5
+          },
+          "gbrStripM": 0
+        }
       },
       "carbonSequestration": {
         "yr_1_5": 15.04,
@@ -27421,7 +27897,7 @@
         "waterImpacts": "6 m strip: indicative retention of about 80% of sediment and 67% of total phosphorus reaching it (Stutter et al. 2021 width-only fits; soil and slope matter more). Best value where the strip lies across the flow path.",
         "carbonAgronomicAssumptions": "Carbon profile: provisional lower-end literature estimate (hedge_carbon_model.py v2 / hedge-config.js). 2 m crown; 50-year gross 52.5 tCO2e/km (biomass 24.5, roots 12, soil 15.9). Grass margin soil carbon is not counted (scenario 11.2-20 tCO2e/km). Not validated; site soil measurement replaces the soil term.",
         "agronomicUtility": "Hedge centre 1 m from the boundary; 4 m of grass margin on the field side.",
-        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre), about 3 m payable, about GBP149/km/yr at GBP495.62/ha/yr (not counted in totals). GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
+        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre), about 3 m payable, about GBP149/km/yr at GBP495.62/ha/yr. GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
         "additionality": "Not assessed. ONCRA financial additionality (Guidelines s8.2.1) and regulatory additionality (s8.2.2), including the government-grant clause (s4.2.1), are unresolved for this activity and need a written ONCRA ruling. Any biodiversity or water benefit claim needs a measured baseline and verification.",
         "sserGrossUnitsPerKm": 33.6
       },
@@ -27508,7 +27984,21 @@
         },
         "carbonGross50": 70.7,
         "carbonClaim50": 70.7,
-        "speciesTradeoff": null
+        "speciesTradeoff": null,
+        "funding": {
+          "establishmentCostPerM": 14.27,
+          "aecs": {
+            "hedgeEligible": true,
+            "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
+            "plantingCapitalPerKm": 5400,
+            "fenceCapitalPerKmPerSide": 5500,
+            "hedgeAnnualPerKm": 1200,
+            "stripAnnualPerKm": 0,
+            "stripOption": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
+            "agreementYears": 5
+          },
+          "gbrStripM": 0
+        }
       },
       "carbonSequestration": {
         "yr_1_5": 20.52,
@@ -27745,7 +28235,7 @@
             "option": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
             "payableM": 3,
             "gbpPerKm": 149,
-            "note": "Possible, not counted in totals: target areas, RPID geometry and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) all apply."
+            "note": "Counted in the totals when grants are included. Not guaranteed: AECS is competitive and targeted, RPID must confirm the geometry, and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) applies."
           }
         },
         "biodiversity": {
@@ -27779,7 +28269,21 @@
         },
         "carbonGross50": 52.5,
         "carbonClaim50": 52.5,
-        "speciesTradeoff": null
+        "speciesTradeoff": null,
+        "funding": {
+          "establishmentCostPerM": 11.2,
+          "aecs": {
+            "hedgeEligible": true,
+            "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
+            "plantingCapitalPerKm": 5400,
+            "fenceCapitalPerKmPerSide": 5500,
+            "hedgeAnnualPerKm": 1200,
+            "stripAnnualPerKm": 149,
+            "stripOption": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
+            "agreementYears": 5
+          },
+          "gbrStripM": 0
+        }
       },
       "carbonSequestration": {
         "yr_1_5": 15.04,
@@ -27963,7 +28467,7 @@
         "waterImpacts": "6 m strip: indicative retention of about 80% of sediment and 67% of total phosphorus reaching it (Stutter et al. 2021 width-only fits; soil and slope matter more). Best value where the strip lies across the flow path.",
         "carbonAgronomicAssumptions": "Carbon profile: provisional lower-end literature estimate (hedge_carbon_model.py v2 / hedge-config.js). 2 m crown; 50-year gross 52.5 tCO2e/km (biomass 24.5, roots 12, soil 15.9). Standard trees are not counted (no substantiated model). Grass margin soil carbon is not counted (scenario 11.2-20 tCO2e/km). Not validated; site soil measurement replaces the soil term.",
         "agronomicUtility": "Hedge centre 1 m from the boundary; 4 m of grass margin on the field side.",
-        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre), about 3 m payable, about GBP149/km/yr at GBP495.62/ha/yr (not counted in totals). MOREhedges (Woodland Trust) may fund up to 75% of costs for 100-250 m per season where the hedge links to woodland, with a tree every 6 m and a 30-year term; do not double-fund with AECS. GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
+        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre), about 3 m payable, about GBP149/km/yr at GBP495.62/ha/yr. MOREhedges (Woodland Trust) may fund up to 75% of costs for 100-250 m per season where the hedge links to woodland, with a tree every 6 m and a 30-year term; do not double-fund with AECS. GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
         "additionality": "Not assessed. ONCRA financial additionality (Guidelines s8.2.1) and regulatory additionality (s8.2.2), including the government-grant clause (s4.2.1), are unresolved for this activity and need a written ONCRA ruling. Any biodiversity or water benefit claim needs a measured baseline and verification.",
         "sserGrossUnitsPerKm": 33.6
       },
@@ -28016,7 +28520,7 @@
             "option": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
             "payableM": 7,
             "gbpPerKm": 347,
-            "note": "Possible, not counted in totals: target areas, RPID geometry and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) all apply."
+            "note": "Counted in the totals when grants are included. Not guaranteed: AECS is competitive and targeted, RPID must confirm the geometry, and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) applies."
           }
         },
         "biodiversity": {
@@ -28050,7 +28554,21 @@
         },
         "carbonGross50": 52.5,
         "carbonClaim50": 52.5,
-        "speciesTradeoff": null
+        "speciesTradeoff": null,
+        "funding": {
+          "establishmentCostPerM": 10.95,
+          "aecs": {
+            "hedgeEligible": true,
+            "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
+            "plantingCapitalPerKm": 5400,
+            "fenceCapitalPerKmPerSide": 5500,
+            "hedgeAnnualPerKm": 1200,
+            "stripAnnualPerKm": 347,
+            "stripOption": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
+            "agreementYears": 5
+          },
+          "gbrStripM": 0
+        }
       },
       "carbonSequestration": {
         "yr_1_5": 15.04,
@@ -28234,7 +28752,7 @@
         "waterImpacts": "10 m strip: indicative retention of about 83% of sediment and 74% of total phosphorus reaching it (Stutter et al. 2021 width-only fits; soil and slope matter more). Best value where the strip lies across the flow path.",
         "carbonAgronomicAssumptions": "Carbon profile: provisional lower-end literature estimate (hedge_carbon_model.py v2 / hedge-config.js). 2 m crown; 50-year gross 52.5 tCO2e/km (biomass 24.5, roots 12, soil 15.9). Grass margin soil carbon is not counted (scenario 22.4-40 tCO2e/km). Not validated; site soil measurement replaces the soil term.",
         "agronomicUtility": "Hedge centre 1 m from the boundary; 8 m of grass margin on the field side.",
-        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre), about 7 m payable, about GBP347/km/yr at GBP495.62/ha/yr (not counted in totals). GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
+        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre), about 7 m payable, about GBP347/km/yr at GBP495.62/ha/yr. GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
         "additionality": "Not assessed. ONCRA financial additionality (Guidelines s8.2.1) and regulatory additionality (s8.2.2), including the government-grant clause (s4.2.1), are unresolved for this activity and need a written ONCRA ruling. Any biodiversity or water benefit claim needs a measured baseline and verification.",
         "sserGrossUnitsPerKm": 33.6
       },
@@ -28287,7 +28805,7 @@
             "option": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
             "payableM": 4,
             "gbpPerKm": 198,
-            "note": "Possible, not counted in totals: target areas, RPID geometry and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) all apply."
+            "note": "Counted in the totals when grants are included. Not guaranteed: AECS is competitive and targeted, RPID must confirm the geometry, and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) applies."
           }
         },
         "biodiversity": {
@@ -28321,7 +28839,21 @@
         },
         "carbonGross50": 70.7,
         "carbonClaim50": 70.7,
-        "speciesTradeoff": null
+        "speciesTradeoff": null,
+        "funding": {
+          "establishmentCostPerM": 14.27,
+          "aecs": {
+            "hedgeEligible": true,
+            "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
+            "plantingCapitalPerKm": 5400,
+            "fenceCapitalPerKmPerSide": 5500,
+            "hedgeAnnualPerKm": 1200,
+            "stripAnnualPerKm": 198,
+            "stripOption": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
+            "agreementYears": 5
+          },
+          "gbrStripM": 0
+        }
       },
       "carbonSequestration": {
         "yr_1_5": 20.52,
@@ -28505,7 +29037,7 @@
         "waterImpacts": "8 m strip: indicative retention of about 82% of sediment and 71% of total phosphorus reaching it (Stutter et al. 2021 width-only fits; soil and slope matter more). On the contour, the upslope grass zone traps sediment before the hedge (zoned buffer, Cole et al. 2020).",
         "carbonAgronomicAssumptions": "Carbon profile: provisional lower-end literature estimate (hedge_carbon_model.py v2 / hedge-config.js). 3 m crown; 50-year gross 70.7 tCO2e/km (biomass 36.8, roots 18, soil 15.9). Grass margin soil carbon is not counted (scenario 14-25 tCO2e/km). Not validated; site soil measurement replaces the soil term.",
         "agronomicUtility": "Hedge centre 2 m from the downslope edge (GAEC 7); 4.5 m of grass margin on the upslope side.",
-        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre), about 4 m payable, about GBP198/km/yr at GBP495.62/ha/yr (not counted in totals). GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
+        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre), about 4 m payable, about GBP198/km/yr at GBP495.62/ha/yr. GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
         "additionality": "Not assessed. ONCRA financial additionality (Guidelines s8.2.1) and regulatory additionality (s8.2.2), including the government-grant clause (s4.2.1), are unresolved for this activity and need a written ONCRA ruling. Any biodiversity or water benefit claim needs a measured baseline and verification.",
         "sserGrossUnitsPerKm": 45.25
       },
@@ -28558,7 +29090,7 @@
             "option": "Water Margins in Arable Fields (paid beyond the 2 m GBR strip; minimum 3, 6 or 12 m by water body)",
             "payableM": 8,
             "gbpPerKm": 396,
-            "note": "Possible, not counted in totals: target areas, RPID geometry and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) all apply."
+            "note": "Counted in the totals when grants are included. Not guaranteed: AECS is competitive and targeted, RPID must confirm the geometry, and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) applies."
           }
         },
         "biodiversity": {
@@ -28592,7 +29124,21 @@
         },
         "carbonGross50": 52.5,
         "carbonClaim50": 52.5,
-        "speciesTradeoff": null
+        "speciesTradeoff": null,
+        "funding": {
+          "establishmentCostPerM": 10.95,
+          "aecs": {
+            "hedgeEligible": true,
+            "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
+            "plantingCapitalPerKm": 5400,
+            "fenceCapitalPerKmPerSide": 5500,
+            "hedgeAnnualPerKm": 1200,
+            "stripAnnualPerKm": 396,
+            "stripOption": "Water Margins in Arable Fields (paid beyond the 2 m GBR strip; minimum 3, 6 or 12 m by water body)",
+            "agreementYears": 5
+          },
+          "gbrStripM": 2
+        }
       },
       "carbonSequestration": {
         "yr_1_5": 15.04,
@@ -28776,7 +29322,7 @@
         "waterImpacts": "12 m strip: indicative retention of about 84% of sediment and 76% of total phosphorus reaching it (Stutter et al. 2021 width-only fits; soil and slope matter more). Beside water, the grass zone does the sediment work; the hedge adds shade and some nitrate uptake.",
         "carbonAgronomicAssumptions": "Carbon profile: provisional lower-end literature estimate (hedge_carbon_model.py v2 / hedge-config.js). 2 m crown; 50-year gross 52.5 tCO2e/km (biomass 24.5, roots 12, soil 15.9). Grass margin soil carbon is not counted (scenario 28-50 tCO2e/km). Not validated; site soil measurement replaces the soil term.",
         "agronomicUtility": "Measured from the top of the bank: 2 m GBR strip, then the grass water margin, then the hedge set back with 2 m of GAEC strip on the field side.",
-        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Water Margins in Arable Fields (paid beyond the 2 m GBR strip; minimum 3, 6 or 12 m by water body), about 8 m payable, about GBP396/km/yr at GBP495.62/ha/yr (not counted in totals). GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
+        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Water Margins in Arable Fields (paid beyond the 2 m GBR strip; minimum 3, 6 or 12 m by water body), about 8 m payable, about GBP396/km/yr at GBP495.62/ha/yr. GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
         "additionality": "Not assessed. ONCRA financial additionality (Guidelines s8.2.1) and regulatory additionality (s8.2.2), including the government-grant clause (s4.2.1), are unresolved for this activity and need a written ONCRA ruling. Any biodiversity or water benefit claim needs a measured baseline and verification.",
         "sserGrossUnitsPerKm": 33.6
       },
@@ -28863,7 +29409,21 @@
         },
         "carbonGross50": 92.6,
         "carbonClaim50": 41.2,
-        "speciesTradeoff": null
+        "speciesTradeoff": null,
+        "funding": {
+          "establishmentCostPerM": 14.52,
+          "aecs": {
+            "hedgeEligible": false,
+            "hedgeReason": "Not used: the productive hedge offer is programme-funded and does not rely on AECS (October 2026).",
+            "plantingCapitalPerKm": 0,
+            "fenceCapitalPerKmPerSide": 0,
+            "hedgeAnnualPerKm": 0,
+            "stripAnnualPerKm": 0,
+            "stripOption": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
+            "agreementYears": 5
+          },
+          "gbrStripM": 0
+        }
       },
       "carbonSequestration": {
         "yr_1_5": 11.64,
@@ -33134,7 +33694,21 @@
         },
         "carbonGross50": 52.5,
         "carbonClaim50": 52.5,
-        "speciesTradeoff": null
+        "speciesTradeoff": null,
+        "funding": {
+          "establishmentCostPerM": 10.95,
+          "aecs": {
+            "hedgeEligible": true,
+            "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
+            "plantingCapitalPerKm": 5400,
+            "fenceCapitalPerKmPerSide": 5500,
+            "hedgeAnnualPerKm": 1200,
+            "stripAnnualPerKm": 0,
+            "stripOption": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
+            "agreementYears": 5
+          },
+          "gbrStripM": 0
+        }
       },
       "carbonSequestration": {
         "yr_1_5": 15.04,
@@ -33372,7 +33946,7 @@
             "option": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
             "payableM": 3,
             "gbpPerKm": 149,
-            "note": "Possible, not counted in totals: target areas, RPID geometry and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) all apply."
+            "note": "Counted in the totals when grants are included. Not guaranteed: AECS is competitive and targeted, RPID must confirm the geometry, and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) applies."
           }
         },
         "biodiversity": {
@@ -33406,7 +33980,21 @@
         },
         "carbonGross50": 52.5,
         "carbonClaim50": 52.5,
-        "speciesTradeoff": null
+        "speciesTradeoff": null,
+        "funding": {
+          "establishmentCostPerM": 10.95,
+          "aecs": {
+            "hedgeEligible": true,
+            "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
+            "plantingCapitalPerKm": 5400,
+            "fenceCapitalPerKmPerSide": 5500,
+            "hedgeAnnualPerKm": 1200,
+            "stripAnnualPerKm": 149,
+            "stripOption": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
+            "agreementYears": 5
+          },
+          "gbrStripM": 0
+        }
       },
       "carbonSequestration": {
         "yr_1_5": 15.04,
@@ -33590,7 +34178,7 @@
         "waterImpacts": "6 m strip: indicative retention of about 80% of sediment and 67% of total phosphorus reaching it (Stutter et al. 2021 width-only fits; soil and slope matter more). Best value where the strip lies across the flow path.",
         "carbonAgronomicAssumptions": "Carbon profile: provisional lower-end literature estimate (hedge_carbon_model.py v2 / hedge-config.js). 2 m crown; 50-year gross 52.5 tCO2e/km (biomass 24.5, roots 12, soil 15.9). Grass margin soil carbon is not counted (scenario 11.2-20 tCO2e/km). Not validated; site soil measurement replaces the soil term.",
         "agronomicUtility": "Hedge centre 1 m from the boundary; 4 m of grass margin on the field side.",
-        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre), about 3 m payable, about GBP149/km/yr at GBP495.62/ha/yr (not counted in totals). GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
+        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre), about 3 m payable, about GBP149/km/yr at GBP495.62/ha/yr. GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
         "additionality": "Not assessed. ONCRA financial additionality (Guidelines s8.2.1) and regulatory additionality (s8.2.2), including the government-grant clause (s4.2.1), are unresolved for this activity and need a written ONCRA ruling. Any biodiversity or water benefit claim needs a measured baseline and verification.",
         "sserGrossUnitsPerKm": 33.6
       },
@@ -33677,7 +34265,21 @@
         },
         "carbonGross50": 70.7,
         "carbonClaim50": 70.7,
-        "speciesTradeoff": null
+        "speciesTradeoff": null,
+        "funding": {
+          "establishmentCostPerM": 14.27,
+          "aecs": {
+            "hedgeEligible": true,
+            "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
+            "plantingCapitalPerKm": 5400,
+            "fenceCapitalPerKmPerSide": 5500,
+            "hedgeAnnualPerKm": 1200,
+            "stripAnnualPerKm": 0,
+            "stripOption": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
+            "agreementYears": 5
+          },
+          "gbrStripM": 0
+        }
       },
       "carbonSequestration": {
         "yr_1_5": 20.52,
@@ -33914,7 +34516,7 @@
             "option": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
             "payableM": 3,
             "gbpPerKm": 149,
-            "note": "Possible, not counted in totals: target areas, RPID geometry and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) all apply."
+            "note": "Counted in the totals when grants are included. Not guaranteed: AECS is competitive and targeted, RPID must confirm the geometry, and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) applies."
           }
         },
         "biodiversity": {
@@ -33948,7 +34550,21 @@
         },
         "carbonGross50": 52.5,
         "carbonClaim50": 52.5,
-        "speciesTradeoff": null
+        "speciesTradeoff": null,
+        "funding": {
+          "establishmentCostPerM": 11.2,
+          "aecs": {
+            "hedgeEligible": true,
+            "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
+            "plantingCapitalPerKm": 5400,
+            "fenceCapitalPerKmPerSide": 5500,
+            "hedgeAnnualPerKm": 1200,
+            "stripAnnualPerKm": 149,
+            "stripOption": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
+            "agreementYears": 5
+          },
+          "gbrStripM": 0
+        }
       },
       "carbonSequestration": {
         "yr_1_5": 15.04,
@@ -34132,7 +34748,7 @@
         "waterImpacts": "6 m strip: indicative retention of about 80% of sediment and 67% of total phosphorus reaching it (Stutter et al. 2021 width-only fits; soil and slope matter more). Best value where the strip lies across the flow path.",
         "carbonAgronomicAssumptions": "Carbon profile: provisional lower-end literature estimate (hedge_carbon_model.py v2 / hedge-config.js). 2 m crown; 50-year gross 52.5 tCO2e/km (biomass 24.5, roots 12, soil 15.9). Standard trees are not counted (no substantiated model). Grass margin soil carbon is not counted (scenario 11.2-20 tCO2e/km). Not validated; site soil measurement replaces the soil term.",
         "agronomicUtility": "Hedge centre 1 m from the boundary; 4 m of grass margin on the field side.",
-        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre), about 3 m payable, about GBP149/km/yr at GBP495.62/ha/yr (not counted in totals). MOREhedges (Woodland Trust) may fund up to 75% of costs for 100-250 m per season where the hedge links to woodland, with a tree every 6 m and a 30-year term; do not double-fund with AECS. GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
+        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre), about 3 m payable, about GBP149/km/yr at GBP495.62/ha/yr. MOREhedges (Woodland Trust) may fund up to 75% of costs for 100-250 m per season where the hedge links to woodland, with a tree every 6 m and a 30-year term; do not double-fund with AECS. GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
         "additionality": "Not assessed. ONCRA financial additionality (Guidelines s8.2.1) and regulatory additionality (s8.2.2), including the government-grant clause (s4.2.1), are unresolved for this activity and need a written ONCRA ruling. Any biodiversity or water benefit claim needs a measured baseline and verification.",
         "sserGrossUnitsPerKm": 33.6
       },
@@ -34185,7 +34801,7 @@
             "option": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
             "payableM": 7,
             "gbpPerKm": 347,
-            "note": "Possible, not counted in totals: target areas, RPID geometry and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) all apply."
+            "note": "Counted in the totals when grants are included. Not guaranteed: AECS is competitive and targeted, RPID must confirm the geometry, and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) applies."
           }
         },
         "biodiversity": {
@@ -34219,7 +34835,21 @@
         },
         "carbonGross50": 52.5,
         "carbonClaim50": 52.5,
-        "speciesTradeoff": null
+        "speciesTradeoff": null,
+        "funding": {
+          "establishmentCostPerM": 10.95,
+          "aecs": {
+            "hedgeEligible": true,
+            "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
+            "plantingCapitalPerKm": 5400,
+            "fenceCapitalPerKmPerSide": 5500,
+            "hedgeAnnualPerKm": 1200,
+            "stripAnnualPerKm": 347,
+            "stripOption": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
+            "agreementYears": 5
+          },
+          "gbrStripM": 0
+        }
       },
       "carbonSequestration": {
         "yr_1_5": 15.04,
@@ -34403,7 +35033,7 @@
         "waterImpacts": "10 m strip: indicative retention of about 83% of sediment and 74% of total phosphorus reaching it (Stutter et al. 2021 width-only fits; soil and slope matter more). Best value where the strip lies across the flow path.",
         "carbonAgronomicAssumptions": "Carbon profile: provisional lower-end literature estimate (hedge_carbon_model.py v2 / hedge-config.js). 2 m crown; 50-year gross 52.5 tCO2e/km (biomass 24.5, roots 12, soil 15.9). Grass margin soil carbon is not counted (scenario 22.4-40 tCO2e/km). Not validated; site soil measurement replaces the soil term.",
         "agronomicUtility": "Hedge centre 1 m from the boundary; 8 m of grass margin on the field side.",
-        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre), about 7 m payable, about GBP347/km/yr at GBP495.62/ha/yr (not counted in totals). GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
+        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre), about 7 m payable, about GBP347/km/yr at GBP495.62/ha/yr. GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
         "additionality": "Not assessed. ONCRA financial additionality (Guidelines s8.2.1) and regulatory additionality (s8.2.2), including the government-grant clause (s4.2.1), are unresolved for this activity and need a written ONCRA ruling. Any biodiversity or water benefit claim needs a measured baseline and verification.",
         "sserGrossUnitsPerKm": 33.6
       },
@@ -34456,7 +35086,7 @@
             "option": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
             "payableM": 4,
             "gbpPerKm": 198,
-            "note": "Possible, not counted in totals: target areas, RPID geometry and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) all apply."
+            "note": "Counted in the totals when grants are included. Not guaranteed: AECS is competitive and targeted, RPID must confirm the geometry, and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) applies."
           }
         },
         "biodiversity": {
@@ -34490,7 +35120,21 @@
         },
         "carbonGross50": 70.7,
         "carbonClaim50": 70.7,
-        "speciesTradeoff": null
+        "speciesTradeoff": null,
+        "funding": {
+          "establishmentCostPerM": 14.27,
+          "aecs": {
+            "hedgeEligible": true,
+            "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
+            "plantingCapitalPerKm": 5400,
+            "fenceCapitalPerKmPerSide": 5500,
+            "hedgeAnnualPerKm": 1200,
+            "stripAnnualPerKm": 198,
+            "stripOption": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
+            "agreementYears": 5
+          },
+          "gbrStripM": 0
+        }
       },
       "carbonSequestration": {
         "yr_1_5": 20.52,
@@ -34674,7 +35318,7 @@
         "waterImpacts": "8 m strip: indicative retention of about 82% of sediment and 71% of total phosphorus reaching it (Stutter et al. 2021 width-only fits; soil and slope matter more). On the contour, the upslope grass zone traps sediment before the hedge (zoned buffer, Cole et al. 2020).",
         "carbonAgronomicAssumptions": "Carbon profile: provisional lower-end literature estimate (hedge_carbon_model.py v2 / hedge-config.js). 3 m crown; 50-year gross 70.7 tCO2e/km (biomass 36.8, roots 18, soil 15.9). Grass margin soil carbon is not counted (scenario 14-25 tCO2e/km). Not validated; site soil measurement replaces the soil term.",
         "agronomicUtility": "Hedge centre 2 m from the downslope edge (GAEC 7); 4.5 m of grass margin on the upslope side.",
-        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre), about 4 m payable, about GBP198/km/yr at GBP495.62/ha/yr (not counted in totals). GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
+        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre), about 4 m payable, about GBP198/km/yr at GBP495.62/ha/yr. GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
         "additionality": "Not assessed. ONCRA financial additionality (Guidelines s8.2.1) and regulatory additionality (s8.2.2), including the government-grant clause (s4.2.1), are unresolved for this activity and need a written ONCRA ruling. Any biodiversity or water benefit claim needs a measured baseline and verification.",
         "sserGrossUnitsPerKm": 45.25
       },
@@ -34727,7 +35371,7 @@
             "option": "Water Margins in Arable Fields (paid beyond the 2 m GBR strip; minimum 3, 6 or 12 m by water body)",
             "payableM": 8,
             "gbpPerKm": 396,
-            "note": "Possible, not counted in totals: target areas, RPID geometry and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) all apply."
+            "note": "Counted in the totals when grants are included. Not guaranteed: AECS is competitive and targeted, RPID must confirm the geometry, and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) applies."
           }
         },
         "biodiversity": {
@@ -34761,7 +35405,21 @@
         },
         "carbonGross50": 52.5,
         "carbonClaim50": 52.5,
-        "speciesTradeoff": null
+        "speciesTradeoff": null,
+        "funding": {
+          "establishmentCostPerM": 10.95,
+          "aecs": {
+            "hedgeEligible": true,
+            "hedgeReason": "Planting or Replanting of Hedges (capital) with Creation of Hedgerows (annual, 5-year agreement).",
+            "plantingCapitalPerKm": 5400,
+            "fenceCapitalPerKmPerSide": 5500,
+            "hedgeAnnualPerKm": 1200,
+            "stripAnnualPerKm": 396,
+            "stripOption": "Water Margins in Arable Fields (paid beyond the 2 m GBR strip; minimum 3, 6 or 12 m by water body)",
+            "agreementYears": 5
+          },
+          "gbrStripM": 2
+        }
       },
       "carbonSequestration": {
         "yr_1_5": 15.04,
@@ -34945,7 +35603,7 @@
         "waterImpacts": "12 m strip: indicative retention of about 84% of sediment and 76% of total phosphorus reaching it (Stutter et al. 2021 width-only fits; soil and slope matter more). Beside water, the grass zone does the sediment work; the hedge adds shade and some nitrate uptake.",
         "carbonAgronomicAssumptions": "Carbon profile: provisional lower-end literature estimate (hedge_carbon_model.py v2 / hedge-config.js). 2 m crown; 50-year gross 52.5 tCO2e/km (biomass 24.5, roots 12, soil 15.9). Grass margin soil carbon is not counted (scenario 28-50 tCO2e/km). Not validated; site soil measurement replaces the soil term.",
         "agronomicUtility": "Measured from the top of the bank: 2 m GBR strip, then the grass water margin, then the hedge set back with 2 m of GAEC strip on the field side.",
-        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Water Margins in Arable Fields (paid beyond the 2 m GBR strip; minimum 3, 6 or 12 m by water body), about 8 m payable, about GBP396/km/yr at GBP495.62/ha/yr (not counted in totals). GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
+        "regulatoryAlignment": "Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Conditions include a double row of at least 6 plants/m, 60-80% hawthorn, NatureScot native species, in-bye land linked to habitat, no breeding-wader fields, and trimming 1 Dec-end Feb but not the same length every year. Strip: Water Margins in Arable Fields (paid beyond the 2 m GBR strip; minimum 3, 6 or 12 m by water body), about 8 m payable, about GBP396/km/yr at GBP495.62/ha/yr. GAEC 7 applies. Eligibility is not confirmed for any site. Using a grant may affect ONCRA eligibility (Guidelines 27 Mar 2026 s4.2.1, s8.2.2): a written ONCRA ruling is needed before grants and carbon units are combined.",
         "additionality": "Not assessed. ONCRA financial additionality (Guidelines s8.2.1) and regulatory additionality (s8.2.2), including the government-grant clause (s4.2.1), are unresolved for this activity and need a written ONCRA ruling. Any biodiversity or water benefit claim needs a measured baseline and verification.",
         "sserGrossUnitsPerKm": 33.6
       },
@@ -35032,7 +35690,21 @@
         },
         "carbonGross50": 92.6,
         "carbonClaim50": 41.2,
-        "speciesTradeoff": null
+        "speciesTradeoff": null,
+        "funding": {
+          "establishmentCostPerM": 14.52,
+          "aecs": {
+            "hedgeEligible": false,
+            "hedgeReason": "Not used: the productive hedge offer is programme-funded and does not rely on AECS (October 2026).",
+            "plantingCapitalPerKm": 0,
+            "fenceCapitalPerKmPerSide": 0,
+            "hedgeAnnualPerKm": 0,
+            "stripAnnualPerKm": 0,
+            "stripOption": "Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)",
+            "agreementYears": 5
+          },
+          "gbrStripM": 0
+        }
       },
       "carbonSequestration": {
         "yr_1_5": 11.64,

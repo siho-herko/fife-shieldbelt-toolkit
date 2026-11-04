@@ -1,6 +1,6 @@
 # v12: hedgerow options and configurator (4 Nov 2026)
 
-Status: committed on `data-refresh-2026-11`; not pushed or deployed.
+Status: committed on `data-refresh-2026-11`; not pushed or deployed. v12.1 changes (below) follow Si's review on 4 Nov 2026.
 
 ## What changed
 
@@ -12,12 +12,12 @@ Status: committed on `data-refresh-2026-11`; not pushed or deployed.
 | Hedge income forgone | Flat 0.3 ha/km | Strip width × gross margin × 0.7 (0.3–1.2 ha/km) |
 | Water values (all records) | v11 retention table, including nitrate | Stutter et al. 2021 width fits for sediment and total P; nitrate not valued |
 | Biodiversity | Not shown | SSE Toolkit v1.0 screening units: hedgerow and margin |
-| Grants | Text only | Possible AECS strip payment shown per km, never counted |
+| Grants | Text only | AECS hedge and strip payments shown and counted (v12.1; Grants toggle) |
 | Records | 132 (22 per area) | 168 (28 per area) |
 
 ## Presets (East Neuk; per km)
 
-| Code | Option | Hedge / strip (m) | Income forgone, cereals (£/yr) | Carbon counted, 50 yr (tCO2e) | Water, cross-slope (£/yr) | SSE HLU (Mod–Good) | AECS strip (£/yr, not counted) |
+| Code | Option | Hedge / strip (m) | Income forgone, cereals (£/yr) | Carbon counted, 50 yr (tCO2e) | Water, cross-slope (£/yr) | SSE HLU (Mod–Good) | AECS strip (£/yr) |
 |---|---|---|---|---|---|---|---|
 | HV1 | Fence-line hedge | 2 / 3 | 200 | 52.5 | 130–510 | 6.70–7.82 | 0 |
 | HV2 | Hedge and margin (default) | 2 / 6 | 400 | 52.5 | 150–550 | 6.70–7.82 | 149 |
@@ -68,3 +68,56 @@ Status: committed on `data-refresh-2026-11`; not pushed or deployed.
 - **ONCRA:** the grants ruling, and a measured margin soil stratum.
 - **Specialist review:** the hedge carbon model.
 - **Si's go-ahead before deployment.**
+
+## v12.1: ONCRA + AECS stack and additionality test (Si, 4 Nov 2026)
+
+Si's direction: the app exists to show the stack between ONCRA and AECS, to inform how the Scottish Government and ONCRA should treat it. Carbon should keep a value even where it is not an ONCRA credit. The focus is on what an additionality test would look like.
+
+- **AECS counted in totals (Grants toggle, default on):**
+  - Creation of Hedgerows £1.20/m/yr and Grass Strips or Water Margins £495.62/ha/yr are added to the annual combined value while the 5-year agreement runs.
+  - Capital is £5.40/m for hedge planting, plus £5.50/m per side for stock fencing.
+  - None applies to the native mix's hedge options or to HV8.
+  - With "No grants" selected, AECS is excluded.
+- **Carbon value route (toggle):**
+  - ONCRA units: gross × 0.64.
+  - Value-chain contribution: gross, not a credit.
+  - **VERIFIED limit (GHG Protocol LSR Standard v1.1, Box 1.1, Box 5.1, Req 7):** field-edge hedges cannot currently be counted as removals in a scope 3 inventory. A buyer can report them as an intervention (Ch 16), separately from the inventory and its targets. The app says so.
+- **Funding stack and additionality test (new results card, hedges only):**
+  - Present value over 30 years at 3.5%: establishment cost, income forgone, AECS capital and 5-year annual payments, the funding gap without carbon, carbon, and the gap after carbon. Water value is shown but is not cash.
+  - Establishment cost per metre comes from the programme's planting build-up (21 Oct 2026): £10.95 double row, £14.27 triple row, £14.52 productive, plus £0.25 for standard trees.
+  - Livestock farm types add stock fencing at £9.15/m per side: one side on a boundary, two elsewhere.
+- **Test flags:**
+  - financial additionality: grants cover the costs / carbon covers part of the gap / carbon closes the gap;
+  - government-grant clause (Guidelines §8.2.2, quoted), triggered whenever grants are used;
+  - regulatory additionality (the GBR 2 m strip beside water is baseline);
+  - claims (no double counting between ONCRA units and value-chain reporting).
+- **Not yet included:** trimming, margin cutting, MRV and registry costs.
+- **Example, HV2 on general cropping, 1 km, £70/t, ONCRA, AECS on:**
+
+  | Item | £ (present value) |
+  |---|---|
+  | Costs | 18,675 |
+  | AECS | 11,491 |
+  | Gap without carbon | 7,184 |
+  | Carbon | 1,559 (22% of the gap; 8% of cost) |
+
+  Without grants, the gap is £18,675 and carbon covers 8%.
+
+**Microsite corrections in the same pass:**
+
+- **West Fife dairy charts:** now use HV1.
+- **Pre-existing chart and data mismatches fixed:**
+  - East Neuk menu rows, c1b, c1r, c4b and c4r;
+  - Howe c1r;
+  - East Neuk scenario chart c3b;
+  - Forth c6r.
+- **Rebuilt with a stated mapping:** the c5r radar, because the old axes could not be traced to the data.
+- **Old wording:** remaining "3m hedge" wording updated.
+- **HV table:** now shows AECS that could apply, the 30-year funding gap and carbon's share.
+- **"Beaver Buffer Wood 20m" (Howe):** relabelled "Willow Bank Buffer 20m", which is the database record its values match.
+- **Change log:** trigrammatic-microsites `docs/v12-microsite-changes-2026-11-04.csv`.
+
+**Tests:**
+
+- calc 312, content 200, hedge 112;
+- e2e desktop 86 passed, 1 skipped (the pre-existing skip).

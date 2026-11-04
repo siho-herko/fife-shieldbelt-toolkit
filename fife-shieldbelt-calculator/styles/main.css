@@ -1665,6 +1665,20 @@ input, select, textarea {
 .hedge-config__reset { margin-top: 0.75rem; width: 100%; }
 @media print { .hedge-config__toggle, .hedge-config__reset { display: none !important; } }
 
+/* Funding stack (v12.1) */
+.stack-table-wrap { overflow-x: auto; margin-top: 0.75rem; }
+.stack-table { width: 100%; border-collapse: collapse; min-width: 300px; }
+.stack-table th, .stack-table td { padding: 6px 8px; border-bottom: 1px solid var(--c-stone); text-align: left; vertical-align: top; }
+.stack-table td.num, .stack-table th.num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.stack-table tr.stack-total td { font-weight: 700; border-top: 2px solid var(--c-forest); }
+.stack-table tr.stack-info td { color: var(--c-muted); }
+.stack-tests { margin: 0.5rem 0 0; padding-left: 1.1rem; line-height: 1.55; }
+.stack-tests li { margin-bottom: 6px; }
+.stack-tests .tag { display: inline-block; font-size: 0.7rem; font-weight: 700; padding: 1px 6px; border-radius: 4px; margin-right: 6px; background: var(--c-stone); }
+.stack-tests .tag--ok { background: #e5f4e4; color: #14532d; }
+.stack-tests .tag--warn { background: #f9eeda; color: #7c2d12; }
+.stack-tests .tag--no { background: #fbebeb; color: #7f1d1d; }
+
 /* ==========================================================================
    28. Results section body flex
    ========================================================================== */
