@@ -49,7 +49,7 @@ assert(sseUnits(cfg({ stripM: 10 })).hluPerKm.moderate === sseUnits(cfg()).hluPe
 
 console.log('\n--- 4. Geometry, rules and grants ---');
 assert(geometry(cfg()).aecsStrip.payableM === 3 && geometry(cfg()).aecsStrip.gbpPerKm === 149, 'HV2: 3 m Grass Strips payable, £149/km/yr');
-assert(geometry(cfg({ form: 'triple' })).aecsStrip.payableM === 0, 'HV3 (3 m hedge, 6 m strip): 2.5 m beyond the line, so nothing payable');
+assert(geometry(cfg({ form: 'triple' })).aecsStrip.payableM === 2.5, 'HV3: 3 m managed grass strip, 2.5 m potentially payable; RPID ruling needed');
 assert(geometry(cfg({ stripM: 12, position: 'watercourse' })).aecsStrip.payableM === 8, 'HV7: 8 m Water Margins payable');
 assert(geometry(cfg({ form: 'productive', stripM: 8 })).aecsStrip.gbpPerKm === 0, 'HV8: no AECS (Si, 21 Oct)');
 assert(minStripM('double', 'boundary') === 3 && minStripM('triple', 'boundary') === 6 && minStripM('double', 'watercourse') === 6, 'minimum strips: 3 / 6 / 6 m');
@@ -102,7 +102,7 @@ assert(near(res.annualNetBenefit, expected, 0.5), 'combined value counts AECS an
 const resNo = calculate({ ...base, grants: 'none' }, hv2);
 assert(near(resNo.annualNetBenefit, expected - 1349 * 2, 0.5) && resNo.aecsAnnual === 0, 'grants: none removes AECS from the totals');
 const resC = calculate({ ...base, carbonRoute: 'contribution' }, hv2);
-assert(near(resC.annualCarbonIncome, 52.5 / 50 * 70 * 2, 0.01) && near(res.annualCarbonIncome, 52.5 / 50 * 0.64 * 70 * 2, 0.01), 'carbon route: contribution values gross removals; ONCRA uses × 0.64');
+assert(resC.annualCarbonIncome === 0 && near(res.annualCarbonIncome, 52.5 / 50 * 0.64 * 70 * 2, 0.01), 'contribution has no assumed sponsorship by default; ONCRA uses × 0.64');
 
 console.log('\n--- 8. Funding stack and additionality test ---');
 const st = res.fundingStack;
@@ -111,9 +111,9 @@ assert(near(st.pv.establishment, 10.95 * 2000, 0.5), 'HV2 establishment £10.95/
 assert(near(st.pv.aecsCapital, 5400 * 2, 0.5), 'AECS planting capital £5.40/m');
 const ann5 = [1, 2, 3, 4, 5].reduce((t, y) => t + 1 / Math.pow(1.035, y), 0);
 assert(near(st.pv.aecsAnnual, 1349 * 2 * ann5, 0.5), 'AECS annual payments for the 5-year agreement only');
-assert(near(st.pv.gapWithoutCarbon, st.pv.costs - st.pv.grants, 0.01) && st.tests.financial === 'passes-option-b' && !st.tests.carbonClosesGap, 'gap = costs − grants; passes the Option B screen; carbon covers part of the gap');
-assert(['robust', 'not-robust'].includes(st.tests.sensitivity) && resNo.fundingStack.tests.aecsAvailable === true, '±20% sensitivity reported; AECS availability flagged even with grants off (§4.2.1 "opportunity")');
-assert(st.tests.grantClause === 'ruling-needed' && resNo.fundingStack.tests.grantClause === 'no-grant', 'grant clause flagged only when grants are used');
+assert(near(st.pv.gapWithoutCarbon, st.pv.costs - st.pv.grants, 0.01) && st.tests.financial === 'not-determined' && st.irr.status === 'none', 'funding gap is descriptive; no IRR and no automatic Option B pass');
+assert(st.sensitivity.length === 5 && resNo.fundingStack.tests.aecsAvailable === true, '±20% sensitivity reported; AECS availability flagged even with grants off (§4.2.1 "opportunity")');
+assert(st.tests.grantClause === 'ruling-needed' && resNo.fundingStack.tests.grantClause === 'ruling-needed', 'grant opportunity remains unresolved with grants switched off');
 const dairy = calculate({ ...base, farmType: 'Dairy' }, hv2).fundingStack;
 assert(dairy.fenceSides === 1 && near(dairy.pv.establishment, (10.95 + 9.15) * 2000, 0.5) && near(dairy.pv.aecsCapital, (5400 + 5500) * 2, 0.5), 'livestock: stock fence on one side of a boundary hedge, with the AECS fencing item');
 const hv8s = calculate(base, recs.find(r => r.id === 'fife_east_neuk_coast__hv8_productive_hedge')).fundingStack;

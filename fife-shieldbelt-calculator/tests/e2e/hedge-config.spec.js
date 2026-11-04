@@ -84,14 +84,14 @@ test.describe('Hedge configurator (v12)', () => {
     const stack = page.locator('#section-stack');
     await expect(stack).not.toHaveClass(/hidden/);
     await expect(page.locator('#stack-table')).toContainText('AECS annual payments');
-    await expect(page.locator('#stack-tests')).toContainText('§8.2.1, Option B');
+    await expect(page.locator('#stack-tests')).toContainText('not an Option B pass');
     await expect(page.locator('#stack-tests')).toContainText('§4.2.1');
     await openStep(page, 6);
     await page.locator('[data-grants="none"]').click();
-    await expect(page.locator('#stack-table')).not.toContainText('AECS capital');
-    await expect(page.locator('#stack-tests')).toContainText('grants are switched off here');
+    await expect(page.locator('#stack-table')).toContainText('AECS capital (conditional)');
+    await expect(page.locator('#stack-tests')).toContainText('Switching grants off does not settle either clause');
     await page.locator('[data-carbon-route="contribution"]').click();
-    await expect(page.locator('#stack-tests')).toContainText('scope 3 inventory');
+    await expect(page.locator('#stack-tests')).toContainText('inventory limitation');
     await expect(page).toHaveURL(/grants=none/);
     await expect(page).toHaveURL(/carbon=contribution/);
     await page.goto(`${BASE}/?variant=14`);

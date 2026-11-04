@@ -383,7 +383,7 @@
           <button class="step-accordion__trigger" aria-expanded="false"
             aria-controls="step-price-body" id="step-price-trigger">
             <span class="step-accordion__number" aria-hidden="true">6</span>
-            <span class="step-accordion__label">Carbon Credit Price</span>
+            <span class="step-accordion__label">Offer assumptions</span>
             <span class="step-accordion__summary" id="step-price-summary">£70 / tCO₂e</span>
             <svg class="step-accordion__chevron" width="16" height="16" viewBox="0 0 24 24"
               fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -393,19 +393,19 @@
           <div class="step-accordion__body" id="step-price-body" hidden
             role="region" aria-labelledby="step-price-trigger">
             <div class="form-group">
-              <label class="form-label" for="credit-price">Market price per tCO₂e</label>
+              <label class="form-label" for="credit-price">Hypothetical buyer price per tCO₂e</label>
               <div class="slider-row">
                 <input type="range" class="form-slider" id="credit-price"
-                  name="credit-price" min="20" max="150" step="5" value="70"
-                  aria-valuenow="70" aria-valuemin="20" aria-valuemax="150"
+                  name="credit-price" min="0" max="150" step="5" value="70"
+                  aria-valuenow="70" aria-valuemin="0" aria-valuemax="150"
                   aria-label="Carbon credit price per tonne CO₂e" />
                 <span class="slider-value" id="credit-price-display">£70</span>
               </div>
               <div class="flex justify-between text-xs text-muted mt-2">
-                <span>£20</span><span>£150 / tCO₂e</span>
+                <span>£0</span><span>£150 / tCO₂e</span>
               </div>
               <span class="form-hint mt-2">
-                Default £70 sits in the £60–£80 range indicated by ONCRA (October 2026); £150 is an upside case.
+                £70 is a discussion assumption, not an available offer. No buyer demand is confirmed. Compare 100% assumed sales with 0% below; contracted receipts remain £0.
                 For comparison, the Woodland Carbon Code 2025 average Pending Issuance Unit price was £28.32 (voluntary disclosure, 3 respondents).
                 ONCRA units use illustrative net tonnes (gross × 0.64, ONCRA default deductions; 0.52 if rated medium risk). Carbon is valued for hedges only.
                 ONCRA Potential Units support contribution claims only.
@@ -415,12 +415,12 @@
               <span class="form-label" id="carbon-route-label">Carbon value route</span>
               <div class="seg-toggle hedge-config__toggle" role="group" aria-labelledby="carbon-route-label">
                 <button type="button" class="seg-toggle__btn active" data-carbon-route="oncra" aria-pressed="true">ONCRA units (net)</button>
-                <button type="button" class="seg-toggle__btn" data-carbon-route="contribution" aria-pressed="false">Value-chain contribution (gross)</button>
+                <button type="button" class="seg-toggle__btn" data-carbon-route="contribution" aria-pressed="false">Sponsorship contribution</button>
               </div>
               <span class="form-hint mt-2">
-                The contribution route values the same removals for a buyer that funds hedges in its own supply chain, without registry deductions.
-                It is not a credit, and under the GHG Protocol Land Sector and Removals Standard v1.1 field-edge hedges cannot yet be counted in a scope 3 inventory:
-                they can be reported as an intervention, separately from the inventory and targets.
+                Sponsorship is a hypothetical £/km/year contribution, entered below. Gross carbon stocks are not sold as verified tonnes.
+                GHG Protocol intervention reporting needs its own baseline and net-impact assessment; it does not create a credit or a price.
+                Non-productive field-edge hedges cannot currently enter a scope 3 inventory under LSR v1.1. Productive agroforestry needs separate assessment.
               </span>
             </div>
             <div class="form-group">
@@ -434,6 +434,34 @@
                 Whether ONCRA units can be combined with AECS needs a written ONCRA ruling: compare the two settings to see what an additionality test would look at.
               </span>
             </div>
+<div id="scenario-assumptions"><p class="form-hint">These are research assumptions, not eligibility decisions. Costs and prices are held constant. Zero ongoing costs means uncosted, not cost-free. Beside water, at least 2 m is treated as an existing statutory baseline. Sponsorship does not buy a stated number of tonnes.</p>
+<details class="scenario-details"><summary>Sales and sponsorship</summary><div class="scenario-grid"><div class="form-group"><label class="form-label" for="scenario-soldPercent">Assumed share sold or funded (%)</label><input class="form-input" type="number" id="scenario-soldPercent" data-scenario="soldPercent" value="100" min="0" max="100" step="5"></div>
+<div class="form-group"><label class="form-label" for="scenario-sponsorshipPerKm">Sponsorship (£/km/year; contribution route)</label><input class="form-input" type="number" id="scenario-sponsorshipPerKm" data-scenario="sponsorshipPerKm" value="0" min="0" max="100000" step="10"></div>
+<div class="form-group"><label class="form-label" for="scenario-salesFeePercent">Sales fees (%; ONCRA route)</label><input class="form-input" type="number" id="scenario-salesFeePercent" data-scenario="salesFeePercent" value="0" min="0" max="100" step="1"></div>
+<div class="form-group"><label class="form-label" for="scenario-creditSaleMode">Hypothetical ONCRA payment timing</label><select class="form-select" id="scenario-creditSaleMode" data-scenario="creditSaleMode"><option value="annual">Annual receipts</option><option value="forward12">First 12 vintages paid at planting</option></select></div>
+<div class="form-group"><label class="form-label" for="scenario-issuanceDelayYears">Delay after vintage (years; annual sales)</label><input class="form-input" type="number" id="scenario-issuanceDelayYears" data-scenario="issuanceDelayYears" value="0" min="0" max="10" step="1"></div></div></details>
+<details class="scenario-details"><summary>Existing land and margin</summary><div class="scenario-grid"><div class="form-group"><label class="form-label" for="scenario-existingUncroppedM">Already uncropped width (m)</label><input class="form-input" type="number" id="scenario-existingUncroppedM" data-scenario="existingUncroppedM" value="0" min="0" max="60" step="0.5"></div>
+<div class="form-group"><label class="form-label" for="scenario-edgeFactor">Marginal productivity factor</label><input class="form-input" type="number" id="scenario-edgeFactor" data-scenario="edgeFactor" value="0.7" min="0" max="2" step="0.05"></div>
+<div class="form-group"><label class="form-label" for="scenario-baselineHabitat">Margin baseline</label><select class="form-select" id="scenario-baselineHabitat" data-scenario="baselineHabitat"><option value="unknown">Not assessed</option><option value="cereal">Cereal cropland scenario</option><option value="existing-grassland">Existing grassland — survey needed</option></select></div></div></details>
+<details class="scenario-details"><summary>AECS assumptions</summary><div class="scenario-grid"><div class="form-group"><label class="form-label" for="scenario-grantInterpretation">Policy interpretation to test</label><select class="form-select" id="scenario-grantInterpretation" data-scenario="grantInterpretation"><option value="unresolved">AECS–ONCRA treatment unresolved</option><option value="separate-outcomes">Assume separate outcomes accepted</option><option value="excluded">Assume ONCRA route excluded</option></select></div>
+<div class="form-group"><label class="form-label" for="scenario-targeting">Parcel in the option target area?</label><select class="form-select" id="scenario-targeting" data-scenario="targeting"><option value="unknown">Assume yes — not checked</option><option value="yes">Yes, checked</option><option value="no">No</option></select></div>
+<div class="form-group"><label class="form-label" for="scenario-parcelArable">Cropped in at least 3 of the last 5 years?</label><select class="form-select" id="scenario-parcelArable" data-scenario="parcelArable"><option value="unknown">Assume yes — not checked</option><option value="yes">Yes</option><option value="no">No</option></select></div>
+<div class="form-group"><label class="form-label" for="scenario-hedgeConditions">Hedge access, habitat and management conditions?</label><select class="form-select" id="scenario-hedgeConditions" data-scenario="hedgeConditions"><option value="unknown">Assume met — not checked</option><option value="yes">Met for this scenario</option><option value="no">Not met</option></select></div>
+<div class="form-group"><label class="form-label" for="scenario-waterbody">Waterbody beside the margin</label><select class="form-select" id="scenario-waterbody" data-scenario="waterbody"><option value="unknown">Not checked</option><option value="small">Channel bed up to 1.2 m</option><option value="wide">Channel bed wider than 1.2 m</option><option value="still">Loch or other still water</option></select></div>
+<div class="form-group"><label class="form-label" for="scenario-tripleFunding">Triple-row hedge payments</label><select class="form-select" id="scenario-tripleFunding" data-scenario="tripleFunding"><option value="assumed">Include both, pending RPID ruling</option><option value="exclude">Exclude capital and annual hedge payment</option></select></div>
+<div class="form-group"><label class="form-label" for="scenario-efa">Same area used for EFA?</label><select class="form-select" id="scenario-efa" data-scenario="efa"><option value="unknown">Not checked</option><option value="no">No</option><option value="yes">Yes — adjusted amount needed</option></select></div>
+<div class="form-group"><label class="form-label" for="scenario-efaAdjustedAnnualPerKm">Adjusted combined AECS annual amount (£/km; −1 = unknown)</label><input class="form-input" type="number" id="scenario-efaAdjustedAnnualPerKm" data-scenario="efaAdjustedAnnualPerKm" value="-1" min="-1" max="100000" step="1"></div>
+<div class="form-group"><label class="form-label" for="scenario-capitalPaymentYear">Capital grant payment</label><select class="form-select" id="scenario-capitalPaymentYear" data-scenario="capitalPaymentYear"><option value="0">At planting (financing assumption)</option><option value="1">End of year 1</option></select></div></div></details>
+<details class="scenario-details"><summary>Fencing and financial assumptions</summary><div class="scenario-grid"><div class="form-group"><label class="form-label" for="scenario-fenceSides">New fence sides required</label><select class="form-select" id="scenario-fenceSides" data-scenario="fenceSides"><option value="auto">Farm-type assumption</option><option value="0">None — existing protection</option><option value="1">One side</option><option value="2">Two sides</option></select></div>
+<div class="form-group"><label class="form-label" for="scenario-fenceEligibility">New fence qualifies for capital support?</label><select class="form-select" id="scenario-fenceEligibility" data-scenario="fenceEligibility"><option value="unknown">Assume yes — not checked</option><option value="eligible">Eligible for this scenario</option><option value="ineligible">Ineligible</option></select></div>
+<div class="form-group"><label class="form-label" for="scenario-sharedBoundary">Shared boundary claim?</label><select class="form-select" id="scenario-sharedBoundary" data-scenario="sharedBoundary"><option value="no">No</option><option value="yes">Yes — half hedge/fence capital and hedge annual length</option></select></div>
+<div class="form-group"><label class="form-label" for="scenario-discountPercent">Real financial discount rate (%)</label><input class="form-input" type="number" id="scenario-discountPercent" data-scenario="discountPercent" value="3.5" min="0" max="30" step="0.5"></div>
+<div class="form-group"><label class="form-label" for="scenario-financeYears">Appraisal period (years)</label><input class="form-input" type="number" id="scenario-financeYears" data-scenario="financeYears" value="30" min="10" max="50" step="1"></div>
+<div class="form-group"><label class="form-label" for="scenario-maintenancePerKm">Ongoing maintenance (£/km/year)</label><input class="form-input" type="number" id="scenario-maintenancePerKm" data-scenario="maintenancePerKm" value="0" min="0" max="100000" step="10"></div>
+<div class="form-group"><label class="form-label" for="scenario-mrvAnnual">Monitoring, verification and fees (£/project/year)</label><input class="form-input" type="number" id="scenario-mrvAnnual" data-scenario="mrvAnnual" value="0" min="0" max="1000000" step="10"></div>
+<div class="form-group"><label class="form-label" for="scenario-setupCost">Additional initial project costs (£)</label><input class="form-input" type="number" id="scenario-setupCost" data-scenario="setupCost" value="0" min="0" max="10000000" step="100"></div>
+<div class="form-group"><label class="form-label" for="scenario-privateBenefitPerKm">Evidenced private benefits (£/km/year)</label><input class="form-input" type="number" id="scenario-privateBenefitPerKm" data-scenario="privateBenefitPerKm" value="0" min="0" max="100000" step="10"></div>
+<div class="form-group"><label class="form-label" for="scenario-additionalFunding">Other initial non-repayable funding (£)</label><input class="form-input" type="number" id="scenario-additionalFunding" data-scenario="additionalFunding" value="0" min="0" max="10000000" step="100"></div></div></details></div>
           </div>
         </div>
 
@@ -494,6 +522,7 @@
 
       <!-- Results (populated by renderResults) -->
       <div id="results-content" class="hidden">
+        <aside class="test-phase" role="note"><strong>Test-phase demonstration — no current farmer offer.</strong> We are testing possible ONCRA and AECS arrangements and their adoption barriers. Buyer demand and eligibility are unconfirmed; contracted carbon receipts: £0. All financial figures below are selected scenarios.</aside>
 
         <!-- ─── LOCATION & INTERVENTION BANNER ──────────────────────── -->
         <!-- Shown above Output Summary on all layouts.                  -->
@@ -523,7 +552,7 @@
               title="Go to Avoided Costs and Productivity Benefits">
               <div class="stat-box__value stat-box__value--gold" id="stat-agro-benefit">—</div>
               <div class="stat-box__label">Farm Cost: Income Forgone</div>
-              <div class="stat-box__sublabel">Gross margin × strip area × 0.7 (SAC FMH, Feb 2026). Productivity and avoided-cost values below are unvalidated scenarios, not counted</div>
+              <div class="stat-box__sublabel">Gross margin × incremental cropped area × selected productivity factor (default 0.7). Dairy uses forage hectares; the LFA composite is a weak proxy. See baseline assumptions.</div>
               <div class="stat-box__arrow">↓</div>
             </div>
 
@@ -531,8 +560,8 @@
               aria-label="25-year carbon value, illustrative — click to see trajectory"
               title="Go to Carbon Sequestration Trajectory">
               <div class="stat-box__value stat-box__value--leaf" id="stat-25yr-carbon">—</div>
-              <div class="stat-box__label">25-Year Carbon Value (illustrative)</div>
-              <div class="stat-box__sublabel" id="stat-carbon-sublabel">Hedges only: 25-yr gross removal × 0.64 × price. Not a payment schedule; ONCRA Potential Units carry contribution claims only</div>
+              <div class="stat-box__label" id="stat-carbon-label">Receipts through year 25 (scenario)</div>
+              <div class="stat-box__sublabel" id="stat-carbon-sublabel">Hypothetical sales and payment timing, not contracted income. ONCRA Potential Units carry contribution claims only</div>
               <div class="stat-box__arrow">↓</div>
             </div>
 
@@ -558,7 +587,8 @@
             <table class="stack-table text-sm" id="stack-table"></table>
           </div>
           <div class="results-section__title mt-4">What an additionality test would look at</div>
-          <ul class="stack-tests text-sm" id="stack-tests"></ul>
+          <div id="stack-schedule"></div>
+<ul class="stack-tests text-sm" id="stack-tests"></ul>
           <p class="text-xs text-muted mt-2" id="stack-note"></p>
         </div>
 

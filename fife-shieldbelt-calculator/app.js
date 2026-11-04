@@ -1,3 +1,4 @@
+import { SCENARIO_DEFAULTS, normaliseScenario } from './scenario.js';
 /**
  * app.js — Fife Farm Resilience Calculator
  * Full application wiring: DB → calc → charts → DOM.
@@ -105,6 +106,7 @@ const state = {
   hedgeCfg:             null,   // v12 hedge configurator choices (null for non-hedge options)
   hedgeBasePreset:      null,   // preset code the current hedge choices started from
   carbonRoute:          'oncra', // 'oncra' | 'contribution' (v12.1)
+  scenario:             { ...SCENARIO_DEFAULTS },
   grants:               'aecs',  // 'aecs' | 'none' (v12.1)
   // Derived (never set directly by user)
   biomeRecords:    [],
@@ -550,7 +552,7 @@ function initCreditPriceSlider() {
 function initPlacementToggle() {
   document.querySelectorAll('[data-placement]').forEach(btn => {
     btn.addEventListener('click', async () => {
-      state.placement = btn.dataset.placement;
+      state.placement = state.hedgeCfg ? (state.hedgeCfg.position === 'watercourse' ? 'riparian' : state.hedgeCfg.position === 'contour' ? 'crossSlope' : btn.dataset.placement) : btn.dataset.placement;
       document.querySelectorAll('[data-placement]').forEach(b => {
         b.classList.toggle('active', b.dataset.placement === state.placement);
       });
@@ -893,9 +895,11 @@ function renderResults(results) {
 
   setStatBox('stat-25yr-carbon',
     r.carbonSubstantiated ? fmtGBP(r.seq25yrRevenue) : 'Not estimated');
+  setText('stat-carbon-label', `Receipts through year ${Math.min(25, r.fundingStack?.years ?? 25)} (scenario)`);
+  document.getElementById('stat-carbon-box')?.setAttribute('aria-label', `Hypothetical receipts through year ${Math.min(25, r.fundingStack?.years ?? 25)}`);
   setText('stat-carbon-sublabel', r.carbonRoute === 'contribution'
-    ? 'Hedges only: 25-yr gross removal × price, value-chain contribution route. Not a credit and not a scope 3 inventory removal; not a payment schedule'
-    : 'Hedges only: 25-yr gross removal × 0.64 × price. Not a payment schedule; ONCRA Potential Units carry contribution claims only');
+    ? 'Hypothetical sponsorship receipts within the selected appraisal (up to year 25), in £/km/year; no tonnes sold. Contracted receipts: £0.'
+    : 'Hypothetical receipts within the selected appraisal (up to year 25), after selected sales share, fees and timing. No buyer demand confirmed; contracted receipts: £0.');
   renderFundingStack(r);
 
   setStatBox('stat-wider-eco',
@@ -1350,6 +1354,7 @@ function encodeStateToURL() {
     orient:  state.windbreakOrient,
     placement: state.placement,
   });
+  p.set('scenario', JSON.stringify(normaliseScenario(state.scenario)));
   if (state.carbonRoute !== 'oncra') p.set('carbon', state.carbonRoute);
   if (state.grants !== 'aecs') p.set('grants', state.grants);
   if (state.variantId) {
@@ -1371,6 +1376,7 @@ function restoreStateFromURL() {
   const p = new URLSearchParams(window.location.search);
 
   // FIX [url-robustness]: validate all URL params — silently use defaults for invalid values
+  try { state.scenario = normaliseScenario(JSON.parse(p.get('scenario') || '{}')); } catch { state.scenario = { ...SCENARIO_DEFAULTS }; }
   const rawBiome = p.get('biome');
   if (rawBiome && BIOME_SLUG[rawBiome]) state.biome = BIOME_SLUG[rawBiome];
 
@@ -1381,7 +1387,7 @@ function restoreStateFromURL() {
   if (p.has('length') && isFinite(rawLength) && rawLength > 0) state.lengthM = rawLength;
 
   const rawPrice = parseInt(p.get('price'), 10);
-  if (p.has('price') && isFinite(rawPrice) && rawPrice >= 0) state.creditPrice = Math.min(150, Math.max(20, rawPrice));
+  if (p.has('price') && isFinite(rawPrice) && rawPrice >= 0) state.creditPrice = Math.min(150, Math.max(0, rawPrice));
 
   if (p.has('orient'))   state.windbreakOrient = p.get('orient') === 'EW' ? 'EW' : 'NS';
   if (p.has('placement'))state.placement       = ['riparian','crossSlope','downSlope'].includes(p.get('placement')) ? p.get('placement') : 'crossSlope';
@@ -1784,7 +1790,7 @@ function handleReset() {
   Object.assign(state, {
     biome: BIOMES.EAST_NEUK, variantId: null, farmType: 'General Cropping',
     placement: 'crossSlope', lengthM: 1000, creditPrice: 70,
-    problemCode: null, windbreakOrient: 'NS', hedgeCfg: null, hedgeBasePreset: null, carbonRoute: 'oncra', grants: 'aecs',
+    problemCode: null, windbreakOrient: 'NS', hedgeCfg: null, hedgeBasePreset: null, carbonRoute: 'oncra', grants: 'aecs', scenario: { ...SCENARIO_DEFAULTS },
     biomeRecords: [], currentRecord: null, results: null, activeProblem: null,
   });
   document.getElementById('hedge-config')?.classList.add('hidden');
@@ -1824,10 +1830,15 @@ function syncFundingToggles() {
     const on = b.dataset.grants === state.grants;
     b.classList.toggle('active', on); b.setAttribute('aria-pressed', on ? 'true' : 'false');
   });
+  document.querySelectorAll('[data-scenario]').forEach(el => { el.value = state.scenario[el.dataset.scenario]; });
   setText('step-price-summary', `£${state.creditPrice} / tCO₂e · ${state.carbonRoute === 'oncra' ? 'ONCRA' : 'contribution'} · ${state.grants === 'aecs' ? 'AECS' : 'no grants'}`);
 }
 
 function initFundingToggles() {
+  document.querySelectorAll('[data-scenario]').forEach(el => el.addEventListener('change', async () => {
+    state.scenario = normaliseScenario({ ...state.scenario, [el.dataset.scenario]: el.value });
+    syncFundingToggles(); await recalc();
+  }));
   document.querySelectorAll('[data-carbon-route]').forEach(b => b.addEventListener('click', async () => {
     state.carbonRoute = CARBON_ROUTES[b.dataset.carbonRoute] ? b.dataset.carbonRoute : 'oncra';
     syncFundingToggles(); await recalc();
@@ -1843,52 +1854,46 @@ const pct = x => (x == null ? '—' : `${Math.round(x * 100)}%`);
 
 function renderFundingStack(r) {
   const card = document.getElementById('section-stack');
-  if (!card) return;
   const s = r.fundingStack;
-  if (!s) { card.classList.add('hidden'); return; }
-  card.classList.remove('hidden');
-  const route = s.carbonRoute === 'oncra' ? 'ONCRA units (gross × 0.64)' : 'value-chain contribution (gross)';
-  setText('stack-intro', `Present value over ${s.years} years at ${fmt(s.discountRate * 100, 1)}% for ${fmt(s.km, 2)} km, ${state.farmType}`
-    + `${s.fenceSides ? `, stock fence on ${s.fenceSides === 1 ? 'one side' : 'both sides'}` : ''}. Carbon at £${state.creditPrice}/t, ${route}.`
-    + ` ${s.grantsIncluded ? 'AECS included where the option could qualify.' : 'No grants.'}`);
-  const row = (label, v, cls = '', sign = '') => `<tr class="${cls}"><td>${label}</td><td class="num">${sign}${fmtGBP(Math.abs(v))}</td></tr>`;
-  const p = s.pv;
-  const t = document.getElementById('stack-table');
-  if (t) t.innerHTML = '<thead><tr><th>Item</th><th class="num">Present value</th></tr></thead><tbody>'
-    + row('Establishment (plants, guards, planting, mulch, 3 years\' aftercare' + (s.fenceSides ? ', fencing' : '') + ')', p.establishment, '', '−')
-    + row(`Income forgone (${s.years} years)`, p.incomeForgone, '', '−')
-    + (s.grantsIncluded ? row('AECS capital (hedge planting' + (s.fenceSides ? ', fencing' : '') + ')', p.aecsCapital, '', '+')
-      + row('AECS annual payments (5-year agreement)', p.aecsAnnual, '', '+') : '')
-    + row('Funding gap without carbon', p.gapWithoutCarbon, 'stack-total', p.gapWithoutCarbon > 0 ? '−' : '+')
-    + row(`Carbon (${s.carbonRoute === 'oncra' ? 'ONCRA units' : 'contribution'}; ${fmt(s.carbonTonnes30, 1)} t over ${s.years} years)`, p.carbon, '', '+')
-    + row('Gap after carbon', p.gapAfterCarbon, 'stack-total', p.gapAfterCarbon > 0 ? '−' : '+')
-    + row('Water quality value (avoided damage, not cash; not in the gap)', p.water, 'stack-info', '')
-    + '</tbody>';
-
-  const tag = (kind, text) => `<span class="tag tag--${kind}">${text}</span>`;
-  const sens = s.tests.sensitivity === 'robust' ? 'and stays so with costs −20% and grants +20%'
-    : s.tests.sensitivity === 'not-robust' ? 'but not with costs −20% and grants +20% (ONCRA asks for ±20% sensitivity)'
-      : 'but only just: with costs +20% and grants −20% it would pass';
-  const fin = s.tests.financial === 'fails-option-b'
-    ? `${tag('no', 'Likely fails')}<strong>Financial additionality (ONCRA Guidelines §8.2.1, Option B):</strong> without carbon income the hedge already pays back at ${fmt(s.discountRate * 100, 1)}% (grants cover the costs), ${sens}. ONCRA asks for an IRR without carbon that is zero, negative or below the cost of capital.`
-    : `${tag('ok', 'Passes screen')}<strong>Financial additionality (ONCRA Guidelines §8.2.1, Option B):</strong> without carbon income there is a gap of ${fmtGBP(p.gapWithoutCarbon)}, so the IRR is below a ${fmt(s.discountRate * 100, 1)}% cost of capital, ${sens}. `
-      + (s.tests.carbonClosesGap ? 'Carbon closes the gap.' : `Carbon covers ${pct(s.carbonShareOfGap)} of the gap (${pct(s.carbonShareOfCost)} of total cost), so other finance (a buyer premium or the Nature Pot) is still needed for planting to go ahead.`);
-  const grant = s.tests.grantClause === 'ruling-needed'
-    ? `${tag('no', 'Eligibility risk')}<strong>Grants (ONCRA Guidelines §4.2.1 and §8.2.2):</strong> AECS would cover ${pct(s.grantShareOfCost)} of costs. §4.2.1 excludes projects that "have the opportunity to make use of government subsidies or grants specifically aimed at the mitigation activity"; §8.2.2: "Activities are not eligible for government subsidies specifically targeting the same mitigation outcomes." Whether AECS hedge and margin options are "aimed at" carbon removal needs a written ONCRA ruling.`
-    : s.tests.aecsAvailable
-      ? `${tag('warn', 'Ruling needed')}<strong>Grants (ONCRA Guidelines §4.2.1):</strong> ${s.grantsIncluded ? 'the programme offer does not use AECS for this option' : 'grants are switched off here'}, but AECS options could still be open to it, and §4.2.1 refers to the "opportunity" to use mitigation-specific grants, not only their use. ONCRA must rule whether AECS counts.`
-      : `${tag('ok', 'Clear')}<strong>Grants:</strong> no AECS payment applies to this option, so ONCRA's grant clauses are not triggered.`;
-  const reg = s.tests.regulatory.gbrStripM
-    ? `${tag('warn', 'Partly baseline')}<strong>Regulatory additionality:</strong> planting a hedge is not legally required, but the first ${s.tests.regulatory.gbrStripM} m from the bank is already required by the General Binding Rules, so it is baseline, not additional.`
-    : `${tag('ok', 'Likely clear')}<strong>Regulatory additionality:</strong> no law requires planting this hedge (GAEC 7 protects hedges once they exist).`;
-  const claims = s.carbonRoute === 'oncra'
-    ? `${tag('warn', 'Claims')}<strong>Claims:</strong> ONCRA Potential Units carry contribution claims only; the same tonnes cannot also be reported as a buyer's value-chain removals.`
-    : `${tag('warn', 'Claims')}<strong>Claims:</strong> contribution route only: field-edge hedges cannot yet enter a scope 3 inventory (GHG Protocol LSR Standard v1.1, Req 7 not yet implementable); report as an intervention, separately, and never sell the same tonnes as ONCRA units.`;
-  const tests = document.getElementById('stack-tests');
-  if (tests) tests.innerHTML = [fin, grant, reg, claims].map(x => `<li>${x}</li>`).join('');
-  setText('stack-note', 'Screening estimate, not financial advice or an ONCRA determination. Costs are the programme\'s planting build-up (21 Oct 2026); '
-    + 'trimming, margin cutting, MRV and registry costs are not yet included, and AECS is competitive, so no payment is guaranteed. '
-    + (s.aecsHedgeReason ? 'AECS hedge options: ' + s.aecsHedgeReason : ''));
+  if (!card) return;
+  card.classList.toggle('hidden', !s);
+  if (!s) return;
+  const p=s.pv, o=s.scenario, sponsor=s.carbonRoute==='contribution';
+  const money=x=>`${x<0?'−':''}${fmtGBP(Math.abs(x))}`;
+  const row=(label,value)=>`<tr><td>${label}</td><td class="num">${money(value)}</td></tr>`;
+  setText('stack-intro', `Hypothetical ${sponsor?'sponsorship':'ONCRA'} financing for ${fmt(s.km,2)} km, ${state.farmType}. ${s.years}-year present value at ${fmt(s.discountRate*100,1)}%, a selected financial assumption, not an evidenced cost of capital or the Treasury social rate. ${o.soldPercent}% assumed ${sponsor?'funded':'sold'}. No buyer demand confirmed; contracted carbon receipts £0.`);
+  const table=document.getElementById('stack-table');
+  if(table)table.innerHTML='<thead><tr><th>Selected scenario</th><th class="num">Present value</th></tr></thead><tbody>'
+    +row('Establishment, including selected fencing (unquoted estimate)',-p.establishment)
+    +row('Incremental income forgone',-p.incomeForgone)
+    +row('Entered setup, maintenance, monitoring and fees',-p.lifecycle)
+    +row('AECS capital (conditional)',p.aecsCapital)+row('AECS annual payments (5 years; conditional)',p.aecsAnnual)
+    +row('Entered private benefits and other finance',p.privateBenefits+p.additionalFunding)
+    +row('Balance without carbon or sponsorship (negative = funding gap)',-p.gapWithoutCarbon)
+    +row(sponsor?'Hypothetical sponsorship receipts (no tonnes sold)':'Hypothetical ONCRA receipts after sales share and fees',p.carbon)
+    +row('Remaining balance (negative = funding still needed)',-p.gapAfterCarbon)
+    +row('Public water-quality value — separate, not cash or included above',p.water)+'</tbody>';
+  const irr=s.irr.status==='none'?'No real IRR above −100% for these cash flows.':s.irr.status==='unique'?`IRR without carbon: ${fmt(s.irr.rates[0]*100,2)}%. This alone is not an ONCRA decision.`:s.irr.status==='multiple'?`Multiple IRRs (${s.irr.rates.map(x=>fmt(x*100,2)+'%').join(', ')}); a single hurdle comparison is ambiguous.`:'IRR is indeterminate or numerically unresolved; use the cash flows and seek an agreed appraisal method.';
+  const tag=text=>`<span class="tag tag--warn">${text}</span>`;
+  const tests=document.getElementById('stack-tests');
+  if(tests)tests.innerHTML=[
+    `${tag('Not determined')}<strong>Financial additionality:</strong> ${irr} NPV and funding gap are descriptive results, not an Option B pass. ${p.gapWithoutCarbon>0?`Hypothetical receipts cover ${pct(s.carbonShareOfGap)} of the gap. `:''}Identify residual finance and how carbon changes the investment decision. Other revenue calls for investment analysis; barrier analysis needs documented barriers.`,
+    `${tag('Ruling needed')}<strong>Grant treatment:</strong> selected interpretation: ${o.grantInterpretation==='excluded'?'ONCRA excluded; ONCRA receipts are zero':o.grantInterpretation==='separate-outcomes'?'separate outcomes assumed acceptable, not approved':'unresolved; receipts shown as a conditional what-if'}. ONCRA §4.2.1 concerns the opportunity for mitigation-specific grants; §8.2.2 concerns the same mitigation outcomes. Switching grants off does not settle either clause.`,
+    `${tag('Not assessed')}<strong>Regulatory additionality:</strong> ${s.tests.regulatory.gbrStripM?'At least 2 m beside water is treated as an existing statutory baseline. ':''}Check legal, consent and restoration obligations for this parcel. GAEC 7 does not generally require planting a new hedge. Use current SEPA EASR rules.`,
+    `${tag('Not assessed')}<strong>Common practice:</strong> evidence of comparable adoption and the relevant geographic and sectoral context is needed (ONCRA §8.2.3).`,
+    `${tag('Not assessed')}<strong>Environmental additionality:</strong> provisional literature stocks are not verified net removals. Baseline, project emissions, leakage and uncertainty need evidence. ${state.hedgeCfg?.form==='productive'?'Coppice roots and regrowth need a harvest-cycle ledger; excluding harvested biomass alone is insufficient.':''}`,
+    `${tag('Ruling needed')}<strong>NDC and claims:</strong> UK inventory/NDC coverage and ONCRA treatment remain unresolved. Potential Units carry contribution claims only. Separate physical inventory reporting, intervention reporting and credit claims; avoid duplicate sales or mitigation claims. Non-productive hedges face the LSR v1.1 inventory limitation. Sponsorship does not certify tonnes.`,
+  ].map(x=>`<li>${x}</li>`).join('');
+  const target=document.getElementById('stack-schedule');
+  const y1=s.schedule[1],y6=s.schedule[6];
+  if(target)target.innerHTML=`<p><strong>Cash timing:</strong> year 1 balance ${money(y1.withCarbon)}; year 6 ${money(y6.withCarbon)}. Water value is excluded. The familiar mixed annual illustration during AECS is ${money(r.annualNetBenefit)}: 50-year average carbon value (or annual sponsorship), plus conditional AECS and non-cash water value, less incremental income forgone. It excludes the other entered costs and is not farm profit.</p>`
+    +`<p>${o.creditSaleMode==='forward12'&&!sponsor?`First 12 future vintages: ${fmt(s.forwardTonnes,2)} illustrative net tonnes before assumed sales share; upfront payment is hypothetical, not contracted. `:''}The appraisal horizon is not the storage commitment: LSC describes at least 40-year potential storage and encourages longer permanence.</p>`
+    +`<details class="scenario-details"><summary>Year-by-year farmer cash flow</summary><div class="scenario-scroll"><table><thead><tr><th>Year</th><th>Costs</th><th>AECS</th><th>Other benefits / finance</th><th>${sponsor?'Sponsorship':'ONCRA'}</th><th>Without</th><th>With</th></tr></thead><tbody>`
+    +s.schedule.map(x=>`<tr><td>${x.year}</td><td>${money(-x.costs)}</td><td>${money(x.capital+x.grant)}</td><td>${money(x.privateBenefit+x.otherFunding)}</td><td>${money(x.carbon)}</td><td>${money(x.withoutCarbon)}</td><td>${money(x.withCarbon)}</td></tr>`).join('')+'</tbody></table></div></details>'
+    +'<details class="scenario-details"><summary>Funding-gap sensitivity (±20% assumptions)</summary><p>Statutory grant rates are held fixed. Use the grant controls for eligibility, expiry and payment scenarios. The combined case lowers costs and raises private benefits, or the reverse, by 20%. These checks do not complete ONCRA’s investment analysis.</p><div class="scenario-scroll"><table><thead><tr><th>Assumption</th><th>−20%</th><th>+20%</th></tr></thead><tbody>'
+    +s.sensitivity.map(x=>`<tr><td>${({establishment:'Establishment',incomeForgone:'Income forgone',lifecycle:'Entered lifecycle costs',privateBenefits:'Entered private benefits',combined:'Combined favourable / adverse costs and private benefits'})[x.driver]}</td><td>${money(x.minus20)}</td><td>${money(x.plus20)}</td></tr>`).join('')+'</tbody></table></div></details>'
+    +'<details class="scenario-details"><summary>Unconfirmed grant assumptions</summary><ul>'+s.grantNotes.map(x=>`<li>${escapeHTML(x)}</li>`).join('')+'</ul></details>';
+  setText('stack-note', 'Research scenario, not a current farmer offer. Zero maintenance or monitoring inputs mean those costs are uncosted, not absent. Costs need quotes and evidence. ONCRA/RPID decisions, site measurements and buyer testing remain project deliverables. The current Treasury public-appraisal rate is 3% real for years 1–30 (28 October 2026); this financial scenario uses the selected rate instead.');
 }
 
 // =============================================================================
@@ -1905,6 +1910,8 @@ async function rebuildHedgeRecord() {
   if (!tpl || !state.hedgeCfg) return;
   const rec = buildHedgeRecord(tpl, state.hedgeCfg);
   state.hedgeCfg = pickCfg(rec.hedgeConfig);
+  if (state.hedgeCfg.position !== 'boundary') setPlacement(POSITIONS[state.hedgeCfg.position].placement);
+  document.querySelectorAll('[data-placement]').forEach(btn => { btn.disabled = state.hedgeCfg.position !== 'boundary' && btn.dataset.placement !== state.placement; });
   // If the choices match a preset, use the stored preset record (identical numbers, stable id)
   const preset = rec.hedgeConfig.preset
     ? state.biomeRecords.find(r => r.hedgeConfig?.preset === rec.hedgeConfig.preset) : null;
@@ -1948,6 +1955,7 @@ function initHedgeConfig() {
     const base = state.biomeRecords.find(r => r.id === state.variantId);
     if (!base?.hedgeConfig) return;
     state.hedgeCfg = pickCfg(base.hedgeConfig);
+    setPlacement(POSITIONS[state.hedgeCfg.position].placement);
     await rebuildHedgeRecord();
     renderHedgeConfig();
     renderVariantDetail(state.currentRecord);
@@ -1994,7 +2002,7 @@ function renderHedgeConfig() {
 
   const notes = [...(rec.hedgeConfig.configNotes ?? [])];
   if (rec.hedgeOutputs?.speciesTradeoff) notes.push(rec.hedgeOutputs.speciesTradeoff);
-  if (cfg.position === 'contour' && cfg.form === 'double') notes.push('On slopes and in nitrate vulnerable zones a triple row is recommended: hedge width drives surface nitrogen interception (Van Vooren et al. 2017).');
+  if (cfg.position === 'contour' && cfg.form === 'double') notes.push('The programme prefers a triple row in selected contour settings; row count is a design choice, not a universal nitrate-removal rule. Site hydrology and RPID eligibility need checking.');
   const notesEl = document.getElementById('hedge-config-notes');
   if (notesEl) notesEl.innerHTML = notes.map(n => `<p>${escapeHTML(n)}</p>`).join('');
 
@@ -2008,10 +2016,10 @@ function renderHedgeConfig() {
       ? `${fmt(rec.seq50yrTotal, 1)} tCO₂e/km over 50 yr (soil and roots only; ${fmt(o.carbonGross50, 1)} gross incl. harvested biomass)`
       : `${fmt(rec.seq50yrTotal, 1)} tCO₂e/km over 50 yr, gross (provisional)`],
     ['SSE hedgerow units', `${fmt(b.hluPerKm?.moderate * km, 2)}–${fmt(b.hluPerKm?.good * km, 2)} (${b.hedgeType}; ${b.distinctiveness})`],
-    ['SSE margin units', `${fmt(b.marginBuPerKm?.arableMargin * km, 2)} as arable margin; ${fmt(b.marginBuPerKm?.grasslandModerate * km, 2)}–${fmt(b.marginBuPerKm?.grasslandGood * km, 2)} if accepted as neutral grassland`],
+    ['SSE margin units', state.scenario.baselineHabitat === 'cereal' && state.scenario.existingUncroppedM === 0 && cfg.position !== 'watercourse' ? `${fmt(b.marginBuPerKm?.arableMargin * km, 2)} as arable margin; ${fmt(b.marginBuPerKm?.grasslandModerate * km, 2)}–${fmt(b.marginBuPerKm?.grasslandGood * km, 2)} as neutral grassland, subject to ecologist assessment; cereal baseline assumed` : 'Not assessed: existing margin habitat and mapped areas need a survey. HLU and area BU are separate; SPBM consultation units are not interchangeable.'],
     ['Water retention', `about ${o.waterRetentionPct?.sediment}% sediment, ${o.waterRetentionPct?.phosphorus}% phosphorus (indicative)`],
-    ['AECS payments', aecsSummary(o.funding?.aecs, g, km)],
-    ['Margin soil carbon', m.low != null ? `${fmt(m.low * km, 1)}–${fmt(m.central * km, 1)} tCO₂e scenario; not counted until measured` : ''],
+    ['AECS payments', state.results?.fundingStack ? `${fmtGBP(state.results.fundingStack.pv.aecsCapital)} capital PV; ${fmtGBP(state.results.fundingStack.annual.aecs)}/year for 5 years under selected assumptions. Eligibility and grant compatibility unconfirmed.` : 'Conditional scenario — see funding assumptions'],
+    ['Margin soil carbon', m.low != null ? `${fmt(m.low * km, 1)}–${fmt(m.central * km, 1)} tCO₂e placeholder; excluded pending baseline, depth, time and uncertainty assessment` : ''],
   ];
   const dl = document.getElementById('hedge-config-summary');
   if (dl) dl.innerHTML = rows.filter(r => r[1]).map(([k, v]) => `<dt>${escapeHTML(k)}</dt><dd>${escapeHTML(v)}</dd>`).join('');
@@ -2051,11 +2059,13 @@ async function applyVariantAndRecalc() {
     if (!state.hedgeCfg || state.hedgeBasePreset !== base.hedgeConfig.preset) {
       state.hedgeCfg = pickCfg(base.hedgeConfig);
       state.hedgeBasePreset = base.hedgeConfig.preset;
+      setPlacement(POSITIONS[state.hedgeCfg.position].placement);
     }
     await rebuildHedgeRecord();
   } else {
     state.hedgeCfg = null;
     state.hedgeBasePreset = null;
+    document.querySelectorAll('[data-placement]').forEach(btn => { btn.disabled = false; });
   }
   renderHedgeConfig();
   syncVariantSelect();
@@ -2083,6 +2093,7 @@ async function recalc() {
     windbreakOrient: state.windbreakOrient,
     carbonRoute:     state.carbonRoute,
     grants:          state.grants,
+    scenario:        state.scenario,
   };
 
   state.results     = calculate(inputs, state.currentRecord);

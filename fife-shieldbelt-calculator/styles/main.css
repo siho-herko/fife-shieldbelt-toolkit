@@ -2377,3 +2377,14 @@ input[type="range"]::-moz-range-thumb {
   white-space: nowrap;
 }
 
+
+/* Review scenarios: readable on narrow screens. */
+.test-phase { padding: 1rem; margin: 0 0 1rem; border: 1px solid #8b6f2f; border-radius: .6rem; background: #fff8df; color: #302b1e; line-height: 1.5; }
+.scenario-details { margin: .75rem 0; padding: .7rem; border: 1px solid #bbb; border-radius: .5rem; }
+.scenario-details summary { cursor: pointer; font-weight: 600; }
+.scenario-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,220px),1fr)); gap: .8rem; padding-top: .8rem; }
+.scenario-grid input,.scenario-grid select { width: 100%; min-width: 0; max-width: 100%; }
+.scenario-scroll { overflow-x: auto; max-width: 100%; }
+.scenario-scroll table { width: 100%; border-collapse: collapse; }
+.scenario-scroll th,.scenario-scroll td { padding: .4rem; text-align: right; border-bottom: 1px solid #ccc; white-space: nowrap; }
+.scenario-scroll th:first-child,.scenario-scroll td:first-child { text-align: left; }

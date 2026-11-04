@@ -60,7 +60,7 @@ for (const [biome, recs] of byBiome) {
 }
 
 const md = db.metadata;
-md.version = '12.0';
+md.version = '12.3';
 md.last_updated = '2026-11-04';
 md.units['width'] = 'strip width in metres: land taken out of production (for hedges, the hedge width is hedgeConfig.hedgeWidthM)';
 md.units['hedgeOutputs.biodiversity.hluPerKm'] = 'SSE Biodiversity Toolkit v1.0 hedgerow units per km (screening; Moderate and Good condition)';

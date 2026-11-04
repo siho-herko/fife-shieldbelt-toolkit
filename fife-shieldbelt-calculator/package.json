@@ -1,11 +1,11 @@
 {
   "name": "fife-shieldbelt-calculator",
   "version": "2.0.0",
-  "description": "Fife Farm Resilience Calculator — NFCA agronomic, carbon and ecosystem advisory tool",
+  "description": "Fife Farm Resilience Calculator \u2014 NFCA agronomic, carbon and ecosystem advisory tool",
   "type": "module",
   "private": true,
   "scripts": {
-    "test": "node tests/calc.test.js && node tests/content.test.js && node tests/hedge.test.js",
+    "test": "node tests/calc.test.js && node tests/content.test.js && node tests/hedge.test.js && node tests/scenario.test.js",
     "test:hedge": "node tests/hedge.test.js",
     "test:calc": "node tests/calc.test.js",
     "test:content": "node tests/content.test.js",

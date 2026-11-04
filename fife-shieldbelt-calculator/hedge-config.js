@@ -148,7 +148,7 @@ export const SPECIES = {
     label: 'Species-rich', aecsCompliant: true, sseHedgeType: 'Species-rich native hedgerow',
     mix: '60% hawthorn plus at least 4 other native woody species, e.g. 10% blackthorn, 10% hazel, 5% holly, 5% dog rose, 5% guelder rose, 5% crab apple. '
       + 'Local provenance, from the NatureScot native list. It meets the AECS rule of at least three native flowering species (AECS guidance gives 60-80% hawthorn as a typical, '
-      + 'not required, mix) and gives at least 4 woody species in every 30 m, which counts as species-rich in Scotland.',
+      + 'not required, mix) and is intended to establish at least 4 woody species per 30 m. Spatial planting, survival and survey evidence are needed to confirm species richness.',
   },
   native: {
     label: 'Native (hawthorn-led)', aecsCompliant: true, sseHedgeType: 'Native hedgerow',
@@ -193,7 +193,7 @@ export const PRESETS = [
   { code: 'HV7', name: 'Riparian hedge and water margin', form: 'double', species: 'speciesRich', trees: 'none', stripM: 12, position: 'watercourse',
     summary: 'A double-row hedge set back from the bank behind a grass water margin. Double row only beside water, so the grass zone can trap sediment.' },
   { code: 'HV8', name: 'Productive hedge', form: 'productive', species: 'speciesRich', trees: 'none', stripM: 8, position: 'boundary',
-    summary: 'A 4.2 m triple-row hedge coppiced for biochar feedstock. The land carbon claim is soil and roots only. Does not rely on AECS.' },
+    summary: 'A 4.2 m triple-row hedge coppiced for biochar feedstock. The land carbon claim is provisional soil and roots only. Does not rely on AECS.' },
 ];
 export const DEFAULT_PRESET = 'HV2';
 
@@ -267,16 +267,18 @@ export function geometry(cfg) {
     layout = `Hedge centre ${crown / 2} m from the boundary; ${r1(marginM)} m of grass margin on the field side.`;
   } else if (cfg.position === 'contour') {
     marginM = w - crown;
-    payableM = w - 2 - 2;
+    payableM = w - Math.max(2, crown / 2) - 2;
     option = 'Grass Strips in Arable Fields (target areas only; paid only beyond 2 m from the hedge centre)';
-    layout = `Hedge centre 2 m from the downslope edge (GAEC 7); ${r1(w - 2 - crown / 2)} m of grass margin on the upslope side.`;
+    layout = `Hedge centre ${Math.max(2, crown / 2)} m from the downslope edge; ${r1(w - Math.max(2, crown / 2) - crown / 2)} m of grass margin on the upslope side.`;
   } else {
     marginM = w - crown;
     payableM = w - 2 - crown;
     option = 'Water Margins in Arable Fields (paid beyond the 2 m GBR strip; minimum 3, 6 or 12 m by water body)';
     layout = `Measured from the top of the bank: 2 m GBR strip, then the grass water margin, then the hedge set back with 2 m of GAEC strip on the field side.`;
   }
-  payableM = payableM >= 3 ? r1(payableM) : 0;
+  // Managed-strip minimum and paid area are different tests. Geometry remains subject to RPID.
+  const managedM = cfg.position === 'contour' ? w - Math.max(2, crown / 2) - crown / 2 : marginM;
+  payableM = (cfg.position === 'watercourse' || managedM >= 3) ? r1(Math.max(0, Math.min(18, payableM))) : 0;
   const gbpPerKm = cfg.form === 'productive' ? 0 : Math.round(payableM / 10 * AECS_STRIP_RATE);
   return {
     hedgeWidthM: crown, stripM: w, marginM: r1(marginM), layout,
@@ -284,7 +286,7 @@ export function geometry(cfg) {
     aecsStrip: { option, payableM: cfg.form === 'productive' ? 0 : payableM, gbpPerKm,
       note: cfg.form === 'productive' ? 'Not used: the productive hedge offer does not rely on AECS (programme decision, October 2026).'
         : payableM ? 'Counted in the totals when grants are included. Not guaranteed: AECS is competitive and targeted, RPID must confirm the geometry, and the ONCRA grants question (Guidelines s4.2.1, s8.2.2) applies.'
-          : 'None: the margin beyond the 2 m line is under the 3 m minimum.' },
+          : 'No payment modelled: the managed grass strip is below 3 m or there is no area beyond the statutory exclusion.' },
   };
 }
 
@@ -331,6 +333,8 @@ export function aecsPayments(cfg) {
         : 'Hedge options not available: the mix does not meet the AECS rule of at least three native flowering species.',
     plantingCapitalPerKm: hedgeEligible ? Math.round(AECS.hedgePlantingCapitalPerM * 1000) : 0,
     fenceCapitalPerKmPerSide: hedgeEligible ? Math.round(AECS.stockFenceCapitalPerMSide * 1000) : 0,
+    eligibilityStatus: 'conditional-scenario',
+    tripleRowRulingNeeded: cfg.form === 'triple',
     hedgeAnnualPerKm: hedgeEligible ? Math.round(AECS.creationOfHedgerowsPerMYr * 1000) : 0,
     stripAnnualPerKm: geo.aecsStrip.gbpPerKm,
     stripOption: geo.aecsStrip.option,
@@ -387,7 +391,7 @@ export function sseUnits(cfg) {
 // 6. Income forgone and margin soil carbon
 // ---------------------------------------------------------------------------
 /** SAC Farm Management Handbook (Feb 2026 updates) gross margins £/ha, as in v11; ×0.7 edge factor (JUDGEMENT). */
-export const GROSS_MARGIN = { 'Cereals': 953.33, 'General Cropping': 988.5, 'Dairy': 3633, 'LFA Grazing': 685.3 };
+export const GROSS_MARGIN = { 'Cereals': 953.33, 'General Cropping': 988.5, 'Dairy': 3633, 'LFA Grazing': 685.27 };
 export const EDGE_FACTOR = 0.7;
 
 export function incomeForgone(stripM) {
@@ -406,12 +410,13 @@ export function incomeForgone(stripM) {
  *    (Global Change Biol 17:2415) from a search snippet only; the paper was not opened.
  * Primary cross-check (VERIFIED 4 Nov 2026): Drexler & Don 2024 (Geoderma 445:116878) measured the grassy hedgerow
  * edge at +22 ± 22 Mg C/ha vs cropland, 0-100 cm, at hedges of mean age 60 yr (median 35): about 81 tCO2e/ha, or about
- * 67 tCO2e/ha scaled linearly to 50 yr. So 28-50 sits at the low end. Scenario only, not counted.
+ * 67 tCO2e/ha if scaled linearly to 50 yr, which is NOT an evidenced accumulation trajectory.
+ * The ±22 is standard deviation. A lower number than a cross-sectional mean is not proven conservative. Excluded placeholder.
  */
 export function marginSoilCarbon(cfg) {
   const ha = Math.max(0, cfg.stripM - FORMS[cfg.form].crownM) / 10;
   return { low: r1(28 * ha), central: r1(50 * ha),
-    note: 'Grass margin soil carbon scenario: 28-50 tCO2e/ha over 50 years (JUDGEMENT placeholder; a measured German study found about +22 t C/ha, roughly 80 tCO2e/ha, in grassy hedge edges at 0-100 cm: Drexler & Don 2024). Not counted: needs a measured margin soil stratum in the ONCRA design.' };
+    note: 'Grass margin soil carbon scenario: 28-50 tCO2e/ha over 50 years (JUDGEMENT placeholder; a measured German study found about +22 ± 22 t C/ha (standard deviation), roughly 81 tCO2e/ha mean stock contrast, in grassy hedge edges at 0-100 cm: Drexler & Don 2024). Not a 50-year forecast or a demonstrated conservative range. Not counted: needs an evidenced baseline, depth, time model and margin soil stratum.' };
 }
 
 // ---------------------------------------------------------------------------
@@ -464,7 +469,7 @@ export function buildHedgeRecord(template, input) {
   const aecsHedge = f.harvested
     ? 'AECS hedge options not relied on: the productive hedge offer does not use AECS (programme decision, October 2026), and harvest timing would have to fit the option rules.'
     : sp.aecsCompliant
-      ? 'Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Item requirements: double-staggered rows at 6 plants/m and at least three different native flowering species (AECS guidance gives 60-80% hawthorn as a typical mix, not a requirement); livestock fencing at least 1 m from the centre line. Other conditions include in-bye land linked to habitat, no breeding-wader fields, and trimming outside 1 Mar-31 Aug (GAEC 7), not the same length every year.'
+      ? 'Possible AECS route (rates checked 3 Nov 2026; pages dated 15 Dec 2025): Planting or Replanting of Hedges (capital GBP5.40/m) with Creation of Hedgerows (GBP1.20/m/yr). Item requirements: double-staggered rows at 6 plants/m and at least three different native flowering species (AECS guidance gives 60-80% hawthorn as a typical mix, not a requirement); livestock fencing at least 1 m from the centre line. Other conditions include in-bye land linked to habitat, no breeding-wader fields, and AECS Creation trimming only from 1 December to the end of February, and not the same length every year; the wider GAEC nesting restriction also applies.'
       : 'Not AECS-compliant: AECS hedge planting needs at least three different native flowering species.';
   const stripGrant = geo.aecsStrip.payableM
     ? ` Strip: ${geo.aecsStrip.option}, about ${geo.aecsStrip.payableM} m payable, about GBP${geo.aecsStrip.gbpPerKm}/km/yr at GBP${AECS_STRIP_RATE}/ha/yr.`
@@ -503,14 +508,14 @@ export function buildHedgeRecord(template, input) {
       maintenanceRegime: f.maintenance + ' Margin: low-productivity grass mix with at least four flowering species; no fertiliser or sprays; cut after 15 August with cuttings removed. Do not plant on peat deeper than 30 cm or in fields used by breeding waders.',
       rootArchitecture: f.roots,
       biodiversityImpacts: `${sse.hedgeType} (SSE distinctiveness ${sse.distinctiveness}). Screening SSE units: ${sse.hluPerKm.moderate}-${sse.hluPerKm.good} hedgerow units/km at Moderate-Good condition`
-        + ` (${sse.yearsToTarget.moderate}-${sse.yearsToTarget.good} years to target), plus ${sse.marginBuPerKm.arableMargin} area units/km for the margin as an arable field margin`
+        + ` (${sse.yearsToTarget.moderate}-${sse.yearsToTarget.good} years to target). Separate area-unit examples assume an entirely cereal baseline, not this parcel: ${sse.marginBuPerKm.arableMargin} area units/km as arable margin`
         + ` (${sse.marginBuPerKm.grasslandModerate}-${sse.marginBuPerKm.grasslandGood} if accepted as neutral grassland).`
         + (sp.tradeoff ? ' ' + sp.tradeoff : ''),
       waterImpacts: `${cfg.stripM} m strip: indicative retention of about ${water.retention.sediment}% of sediment and ${water.retention.phosphorus}% of total phosphorus reaching it (Stutter et al. 2021 width-only fits; soil and slope matter more). `
         + (cfg.position === 'contour' ? 'On the contour, the upslope grass zone traps sediment before the hedge (zoned buffer, Cole et al. 2020).' : cfg.position === 'watercourse' ? 'Beside water, the grass zone does the sediment work; the hedge adds shade and some nitrate uptake.' : 'Best value where the strip lies across the flow path.'),
       carbonAgronomicAssumptions: `Carbon profile: provisional lower-end literature estimate (hedge_carbon_model.py v2 / hedge-config.js). ${f.crownM} m crown; 50-year gross ${carbon.gross50} tCO2e/km `
         + `(biomass ${carbon.pools50.AGB}, roots ${carbon.pools50.BGB}, soil ${carbon.pools50.SOC}). `
-        + (f.harvested ? `Coppiced for biochar feedstock, so the land claim is soil and roots only: ${carbon.claim50} tCO2e/km; the harvested biomass is accounted under a biochar standard, never both. ` : '')
+        + (f.harvested ? `Coppiced for biochar feedstock, so the land claim is provisional soil and roots only: ${carbon.claim50} tCO2e/km; harvested biomass would need separate biochar accounting, without duplicate claims. Coppice root survival, regrowth and lifecycle emissions require a harvest-cycle ledger. ` : '')
         + (tr.withTrees ? 'Standard trees are not counted (no substantiated model). ' : '')
         + `Grass margin soil carbon is not counted (scenario ${msc.low}-${msc.central} tCO2e/km). Not validated; site soil measurement replaces the soil term.`,
       agronomicUtility: geo.layout,

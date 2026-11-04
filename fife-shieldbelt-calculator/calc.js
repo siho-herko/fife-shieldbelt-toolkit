@@ -1,3 +1,4 @@
+import { normaliseScenario, incrementalIncome, scenarioFunding } from './scenario.js';
 /**
  * calc.js — Fife Farm Resilience Calculator
  * Pure calculation engine — no DOM, no side effects.
@@ -24,8 +25,7 @@
  * @property {number} lengthM          - Strip length in metres
  * @property {number} creditPrice      - £ per tCO₂e
  * @property {string} windbreakOrient  - 'NS'|'EW'
- * @property {string} [carbonRoute]    - 'oncra' (default: ONCRA units, gross × 0.64) | 'contribution' (gross removals valued
- *                                       for value-chain contribution / intervention reporting; not a credit, not inventory)
+ * @property {string} [carbonRoute]    - 'oncra' (default: ONCRA units, gross × 0.64) | 'contribution' (hypothetical sponsorship in £/km/year, not tonnes sold)
  * @property {string} [grants]         - 'aecs' (default: AECS payments counted where the option could qualify) | 'none'
  */
 
@@ -111,14 +111,14 @@ export const ONCRA_NET_FACTOR = 0.64;
 /**
  * Carbon value routes (v12.1, 4 Nov 2026).
  *  oncra:        ONCRA Land Stored Carbon units, illustrative net = gross × 0.64 (contribution claims only for Potential Units).
- *  contribution: the same removals valued without registry deductions, for a value-chain buyer's intervention (impact)
- *                reporting. VERIFIED (GHG Protocol LSR Standard v1.1, Box 1.1, Box 5.1, Req 7): removals on field-edge
+ *  contribution: separately negotiated sponsorship in £/km/year, without assigning a sale price to gross tonnes.
+ *                Intervention reporting needs its own net-impact assessment. VERIFIED (GHG Protocol LSR Standard v1.1, Box 1.1, Box 5.1, Req 7): removals on field-edge
  *                hedgerows cannot currently enter a company's physical scope 3 inventory; intervention reporting (Ch 16)
  *                is reported separately and does not count toward inventory targets.
  */
 export const CARBON_ROUTES = {
   oncra:        { factor: ONCRA_NET_FACTOR, label: 'ONCRA units (gross × 0.64)' },
-  contribution: { factor: 1.0, label: 'Value-chain contribution (gross; not a credit, not inventory)' },
+  contribution: { factor: 0, label: 'Hypothetical sponsorship (£/km/year; no tonnes sold)' },
 };
 export function carbonRouteFactor(route) {
   return (CARBON_ROUTES[route] ?? CARBON_ROUTES.oncra).factor;
@@ -375,10 +375,15 @@ export function calculate(inputs, record) {
   // --- Carbon ---
   const seq50 = totalSeq50yr(record);
   const seqTraj = cumulativeSeqTrajectory(record.carbonSequestration);
-  const carbIncome = annualCarbonIncome(record, lengthM, creditPrice, routeFactor);
+  const scenario = normaliseScenario(inputs.scenario);
+  const salesFactor = scenario.soldPercent / 100;
+  const routeAllowed = carbonRoute !== 'oncra' || scenario.grantInterpretation !== 'excluded';
+  const carbIncome = !carbonSubstantiated(record) || !routeAllowed ? 0 : carbonRoute === 'contribution'
+    ? scenario.sponsorshipPerKm * lengthM / 1000 * salesFactor
+    : annualCarbonIncome(record, lengthM, creditPrice, routeFactor) * salesFactor * (1-scenario.salesFeePercent/100);
 
   // --- Agronomic ---
-  const nif  = netIncomeForegone(record, farmType, lengthM);
+  const nif  = incrementalIncome(record, inputs);
   const poll = pollinationValue(record, farmType, lengthM);
   const netAgronomicImpact = poll - nif;
 
@@ -419,7 +424,7 @@ export function calculate(inputs, record) {
 
   // Derived summary metrics
   const netAgronomicBenefit = -nif;                           // sourced farm cost only
-  const seq25yrRevenue      = carbonOk ? (seqTraj[4] ?? 0) * (lengthM / 1000) * routeFactor * creditPrice : 0;
+  const seq25yrRevenue = stack ? stack.schedule.filter(row => row.year <= 25).reduce((sum,row) => sum + row.carbon, 0) : 0;
   const widerEcoValue       = crewTotal; // water purification, low case (flood storage and air not valued in v11)
   const hiKey = { riparian: 'riparianTotalHigh', crossSlope: 'crossSlopeTotalHigh', downSlope: 'downSlopeTotalHigh' }[placement];
   const widerEcoValueHigh   = scaleToLength(safeNum(record.crewValuations?.[hiKey] ?? record.crewValuations?.[{ riparian: 'riparianTotal', crossSlope: 'crossSlopeTotal', downSlope: 'downSlopeTotal' }[placement]]), lengthM);
@@ -536,103 +541,15 @@ export function calculate(inputs, record) {
 // Funding stack and illustrative additionality test (v12.1)
 // ---------------------------------------------------------------------------
 
-/** JUDGEMENT: 30-year view (the SSE Toolkit / England 30-year management expectation; MOREhedges term), 3.5% discount (HM Treasury Green Book STPR). */
+/** Financial scenario rate, not the Treasury social discount rate or an evidenced private hurdle. */
 export const STACK_YEARS = 30;
 export const STACK_DISCOUNT = 0.035;
-const LIVESTOCK = new Set(['Dairy', 'LFA Grazing']);
-const pvFactor = y => 1 / Math.pow(1 + STACK_DISCOUNT, y);
-const pvAnnuity = (from, to) => { let t = 0; for (let y = from; y <= to; y++) t += pvFactor(y); return t; };
-
-/**
- * Costs, grants and carbon for a hedge over 30 years, and what an additionality test would look at.
- * Illustrative screening only: not financial advice, not an ONCRA determination. Water value is shown but is not cash,
- * so it is left out of the funding gap. Maintenance (trimming, margin cutting) and MRV/registry costs are not yet included.
- * @returns {Object|null} null for non-hedge records
- */
-export function fundingStack(record, inputs) {
-  const f = record?.hedgeOutputs?.funding;
-  const cfg = record?.hedgeConfig;
-  if (!f || !cfg) return null;
-  const km = safeNum(inputs.lengthM) / 1000;
-  const grantsOn = inputs.grants !== 'none';
-  const route = CARBON_ROUTES[inputs.carbonRoute] ? inputs.carbonRoute : 'oncra';
-  const factor = carbonRouteFactor(route);
-  const price = safeNum(inputs.creditPrice);
-  const livestock = LIVESTOCK.has(inputs.farmType);
-  const sides = !livestock ? 0 : (cfg.position === 'boundary' ? 1 : 2);
-  const a = f.aecs ?? {};
-  const yrs = safeNum(a.agreementYears) || 5;
-
-  const establishment = (safeNum(f.establishmentCostPerM) * 1000 + sides * 9.15 * 1000) * km;
-  const nifAnnual = safeNum(record.farmImpacts?.[inputs.farmType]?.netIncomeForegone) * km;
-  const aecsCapital = grantsOn ? (safeNum(a.plantingCapitalPerKm) + sides * safeNum(a.fenceCapitalPerKmPerSide)) * km : 0;
-  const aecsAnnual = grantsOn ? (safeNum(a.hedgeAnnualPerKm) + safeNum(a.stripAnnualPerKm)) * km : 0;
-
-  // Carbon cash flow: each 5-year band spread evenly over its years
-  const bands = Object.values(record.carbonSequestration ?? {}).map(safeNum);
-  let carbonPV = 0, carbonT30 = 0;
-  for (let y = 1; y <= STACK_YEARS; y++) {
-    const t = (bands[Math.floor((y - 1) / 5)] ?? 0) / 5 * km * factor;
-    carbonT30 += t;
-    carbonPV += t * price * pvFactor(y);
-  }
-  const wpKey = { riparian: 'riparianTotal', crossSlope: 'crossSlopeTotal', downSlope: 'downSlopeTotal' }[inputs.placement] ?? 'crossSlopeTotal';
-  const waterPV = safeNum(record.crewValuations?.[wpKey]) * km * pvAnnuity(1, STACK_YEARS);
-
-  const pv = {
-    establishment,
-    incomeForgone: nifAnnual * pvAnnuity(1, STACK_YEARS),
-    aecsCapital,
-    aecsAnnual: aecsAnnual * pvAnnuity(1, yrs),
-    carbon: carbonPV,
-    water: waterPV,
-  };
-  pv.costs = pv.establishment + pv.incomeForgone;
-  pv.grants = pv.aecsCapital + pv.aecsAnnual;
-  pv.gapWithoutCarbon = pv.costs - pv.grants;
-  pv.gapAfterCarbon = pv.gapWithoutCarbon - pv.carbon;
-
-  const carbonShareOfGap = pv.gapWithoutCarbon > 0 ? pv.carbon / pv.gapWithoutCarbon : null;
-  const carbonShareOfCost = pv.costs > 0 ? pv.carbon / pv.costs : 0;
-  const grantShareOfCost = pv.costs > 0 ? pv.grants / pv.costs : 0;
-  // ONCRA Guidelines (27 Mar 2026) §8.2.1 Option B (VERIFIED 4 Nov 2026): where a project has revenue other than carbon
-  // (here AECS), compute the IRR without carbon credit income and show it is zero/negative or below the cost of capital,
-  // with ±20% sensitivity on key assumptions. A positive gap (negative NPV without carbon at 3.5%) means the IRR is below
-  // a 3.5% cost of capital. JUDGEMENT: 3.5% stands in for the operator's cost of capital until a real figure is supplied.
-  let financial;
-  if (pv.gapWithoutCarbon <= 0) financial = 'fails-option-b';
-  else financial = 'passes-option-b';
-  const worst = pv.costs * 0.8 - pv.grants * 1.2;   // costs 20% lower, grants 20% higher
-  const best  = pv.costs * 1.2 - pv.grants * 0.8;
-  const sensitivity = financial === 'passes-option-b'
-    ? (worst > 0 ? 'robust' : 'not-robust')
-    : (best > 0 ? 'borderline' : 'robust');
-
-  return {
-    years: STACK_YEARS, discountRate: STACK_DISCOUNT, km, grantsIncluded: grantsOn, carbonRoute: route,
-    fenceSides: sides,
-    annual: { aecs: aecsAnnual, incomeForgone: nifAnnual },
-    pv,
-    carbonTonnes30: carbonT30,
-    carbonShareOfGap, carbonShareOfCost, grantShareOfCost,
-    tests: {
-      financial,
-      sensitivity,
-      carbonClosesGap: pv.gapWithoutCarbon > 0 && pv.carbon >= pv.gapWithoutCarbon,
-      grantClause: grantsOn && pv.grants > 0 ? 'ruling-needed' : 'no-grant',
-      // §4.2.1 bars projects that "have the opportunity to make use of" mitigation-specific grants, even if unused
-      aecsAvailable: (safeNum(a.plantingCapitalPerKm) + safeNum(a.hedgeAnnualPerKm) + safeNum(a.stripAnnualPerKm)) > 0 || cfg.form === 'productive',
-      regulatory: { gbrStripM: safeNum(f.gbrStripM), plantingRequired: false },
-    },
-    aecsHedgeReason: a.hedgeReason ?? '',
-    aecsStripOption: a.stripOption ?? '',
-  };
-}
+export const fundingStack = scenarioFunding;
 
 /**
  * Hedge-specific outputs for a v12 hedge record, scaled to the installed length where stated.
- * Nothing here enters annualNetBenefit: AECS strip payments are possible but not counted (eligibility,
- * target areas and the ONCRA grants question), and margin soil carbon is a scenario pending measurement.
+ * AECS enters the selected conditional funding scenario, subject to parcel and policy assumptions.
+ * Margin soil carbon remains an excluded placeholder pending an evidenced design.
  * @param {Object} record
  * @param {number} lengthM
  * @returns {Object|null}

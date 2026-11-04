@@ -36,17 +36,19 @@ Both items were traced back through the build scripts and the 3 Nov evidence rev
 | Cereals | (1,140 + 713 + 1,007) ÷ 3 | **953.33** | VERIFIED inputs; unweighted mean = JUDGEMENT |
 | General Cropping | (1,140 + 713 + 1,007 + 1,094) ÷ 4 | **988.50** | VERIFIED inputs; JUDGEMENT. Excludes potatoes and vegetables (the Feb 2026 update has no potato table), so probably understated for East Neuk and Howe cropping |
 | Dairy | Moderate Input 7,000 L, per forage ha | **3,633** | VERIFIED; choice of system = JUDGEMENT. The other dairy tables give £2,895 (spring block), £2,536 (moderate/high) and £6,124 (high output) |
-| LFA Grazing | (467 ÷ 0.88 + 624 ÷ 0.875 + 812) ÷ 3 = (530.7 + 713.1 + 812) ÷ 3 | **685.30** | DERIVED |
+| LFA Grazing | (467 ÷ 0.88 + 624 ÷ 0.875 + 812) ÷ 3 = 685.2748918 (no intermediate rounding) | **685.27** | DERIVED; weak composite |
 
 **Caveats on the LFA figure:**
 
 - The two beef per-hectare figures are upper bounds: the handbook gives the areas as minima (">").
 - The handbook's own area rows are inconsistent.
-- It averages beef and sheep systems.
+- It averages beef and sheep systems with different land denominators. Sheep p.10 note 4 states that supporting hill grazing is not costed; £812/forage ha is not a whole-land-area margin. Dairy is also per forage hectare.
+- The beef gross margins include support income; losing a small strip does not necessarily reduce the payment or herd. Use marginal stocking/forage effects for a real decision.
+- The former £685.30 used intermediate rounding. £685.27 is the unrounded-formula result to two decimals; this does not resolve the denominator weakness.
 
 **Then:**
 
-- **Income forgone** = strip area (ha/km) × gross margin × 0.7.
+- **Income forgone** = incremental cropped area (ha/km) × gross margin × selected marginal-productivity factor (default 0.7). The app now subtracts existing uncropped width; a minimum 2 m statutory water margin is baseline for riparian hedges.
   - The 0.7 edge factor is JUDGEMENT, adopted by Si on 3 Nov 2026.
   - Results are rounded to £10. Gross income forgone (before the 0.7 factor) is also stored.
 - **Weaknesses to flag:**
@@ -75,14 +77,14 @@ Both items were traced back through the build scripts and the 3 Nov evidence rev
 
 - **Drexler & Don 2024**, *Geoderma* 445:116878 (open access; 23 German sites).
   - The grassy hedgerow edge held "22 ± 22 Mg C ha−1 (28 ± 30 %)" more SOC than the reference cropland, at 0–100 cm. The hedges' mean age was 60 years (median 35, range 15 to over 200).
-  - Converted: 22 × 44/12 ≈ **81 tCO2e/ha** at about 60 years. Scaled linearly to 50 years, that is ≈ **67 tCO2e/ha**. The ± is the spread across sites.
+  - Converted: 22 × 44/12 ≈ **81 tCO2e/ha** mean cross-sectional stock contrast. The ±22 is **standard deviation**, not a confidence bound. Multiplying by 50/60 gives ≈67 arithmetically, but mean hedge age is not an accumulation curve and this is not a validated 50-year forecast.
   - The paper gives no 0–30 cm edge value. For the hedge itself it gives 0.42 ± 0.32 Mg C/ha/yr at 0–30 cm.
 - **Van Vooren et al. 2017** (in the pack; abstract VERIFIED): grass strips held **+37% SOC in the top 30 cm** relative to arable land. Strip ages varied, and no stock is given, so a site baseline is needed to convert this to t/ha.
 
 ### Conclusion and recommendation (JUDGEMENT)
 
-- 28–50 tCO2e/ha over 50 years sits at the low end of the only measured hedge-edge evidence (Drexler & Don, ≈67 tCO2e/ha at 50 years, with wide site variation). So it is conservative, but it remains a placeholder.
-- It stays **not counted**, as now. The app label is corrected to "JUDGEMENT placeholder" with the Drexler & Don cross-check (commit pending in this pass).
+- 28–50 tCO2e/ha over 50 years is an excluded placeholder. It is below the study’s mean stock contrast, but the evidence does **not** establish that it is conservative or validate its time trajectory.
+- It stays **not counted**, as now. The app label is corrected to "JUDGEMENT placeholder" with the Drexler & Don cross-check (review correction applied).
 - **Before any figure is counted:**
-  - replace it with a Drexler & Don-based lower-end value at a stated depth, or open Poeplau 2011 and source a Scottish arable topsoil stock;
+  - establish a compatible baseline, depth, time model, uncertainty treatment and site transferability. Selecting a lower number from Drexler & Don or obtaining Poeplau does not by itself establish additional removals;
   - in any case, measure it: a margin soil stratum in the ONCRA design, with a baseline before planting, bulk density, and equivalent soil mass.

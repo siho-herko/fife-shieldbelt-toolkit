@@ -1,3 +1,5 @@
+> Historical v12–v12.2 implementation note. The funding-pass, contribution pricing and grant-geometry descriptions are superseded by review-fixes-2026-11-04.md.
+
 # v12: hedgerow options and configurator (4 Nov 2026)
 
 Status: committed on `data-refresh-2026-11`; not pushed or deployed. v12.1 changes (below) follow Si's review on 4 Nov 2026.

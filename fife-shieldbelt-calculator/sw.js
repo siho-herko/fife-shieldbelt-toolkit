@@ -14,6 +14,7 @@ const PRECACHE = [
   '/app.js',
   '/db.js',
   '/calc.js',
+  '/scenario.js',
   '/hedge-config.js',
   '/charts.js',
   '/styles/main.css',
