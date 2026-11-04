@@ -9,7 +9,7 @@ test('zero-sales scenario survives sharing without an ONCRA pass',async({page})=
  const url=page.url();await page.goto(url);await waitForAppReady(page);
  await expect(page.locator('#scenario-soldPercent')).toHaveValue('0');
  await expect(page.locator('#stack-tests')).not.toContainText('Passes screen');
- await expect(page.locator('#stack-tests')).toContainText('No real IRR');
+ await expect(page.locator('#stack-tests')).toContainText('No IRR exists');
 });
 test('sponsorship uses a contribution amount rather than a gross-tonne price',async({page})=>{
  await page.goto('/?variant=HV2');await waitForAppReady(page);await inputs(page);
@@ -31,4 +31,9 @@ test('changing preset from riparian to contour updates placement',async({page,is
  const id=await page.locator('#variant-select option').filter({hasText:'HV6.'}).getAttribute('value');
  await page.locator('#variant-select').selectOption(id);
  await expect(page).toHaveURL(/placement=crossSlope/);
+});
+
+test('IRR "none" explains whether the cash flows never pay back (default HV2)', async ({ page }) => {
+  await page.goto('/?variant=HV2'); await waitForAppReady(page);
+  await expect(page.locator('#stack-tests')).toContainText('lose money at every discount rate');
 });

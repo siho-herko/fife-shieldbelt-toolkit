@@ -1873,7 +1873,10 @@ function renderFundingStack(r) {
     +row(sponsor?'Hypothetical sponsorship receipts (no tonnes sold)':'Hypothetical ONCRA receipts after sales share and fees',p.carbon)
     +row('Remaining balance (negative = funding still needed)',-p.gapAfterCarbon)
     +row('Public water-quality value — separate, not cash or included above',p.water)+'</tbody>';
-  const irr=s.irr.status==='none'?'No real IRR above −100% for these cash flows.':s.irr.status==='unique'?`IRR without carbon: ${fmt(s.irr.rates[0]*100,2)}%. This alone is not an ONCRA decision.`:s.irr.status==='multiple'?`Multiple IRRs (${s.irr.rates.map(x=>fmt(x*100,2)+'%').join(', ')}); a single hurdle comparison is ambiguous.`:'IRR is indeterminate or numerically unresolved; use the cash flows and seek an agreed appraisal method.';
+  const undiscounted=s.schedule.reduce((t,x)=>t+x.withoutCarbon,0);
+  const irr=s.irr.status==='none'?(undiscounted<0
+      ?'No IRR exists: without carbon or sponsorship these cash flows lose money at every discount rate (they never recover the outlay), which is the situation ONCRA’s “zero or negative IRR” wording describes. This alone is not an ONCRA decision.'
+      :'No IRR exists: without carbon or sponsorship these cash flows are positive at every discount rate, so carbon is not needed for the investment to pay. This alone is not an ONCRA decision.'):s.irr.status==='unique'?`IRR without carbon: ${fmt(s.irr.rates[0]*100,2)}%. This alone is not an ONCRA decision.`:s.irr.status==='multiple'?`Multiple IRRs (${s.irr.rates.map(x=>fmt(x*100,2)+'%').join(', ')}); a single hurdle comparison is ambiguous.`:'IRR is indeterminate or numerically unresolved; use the cash flows and seek an agreed appraisal method.';
   const tag=text=>`<span class="tag tag--warn">${text}</span>`;
   const tests=document.getElementById('stack-tests');
   if(tests)tests.innerHTML=[

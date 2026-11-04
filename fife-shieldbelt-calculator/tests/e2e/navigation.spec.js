@@ -333,8 +333,8 @@ test.describe('Carbon credit price', () => {
   test('slider is present with correct range', async ({ page }) => {
     const slider = page.locator('#credit-price');
     await expect(slider).toBeVisible();
-    // The slider uses min=20, max=150 as defined in index.html (Si, 3 Nov 2026)
-    await expect(slider).toHaveAttribute('min', '20');
+    // min=0 allows an explicit zero-price case (independent review, 4 Nov 2026; Si agreed); max=150 (Si, 3 Nov 2026)
+    await expect(slider).toHaveAttribute('min', '0');
     await expect(slider).toHaveAttribute('max', '150');
   });
 

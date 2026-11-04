@@ -30,3 +30,14 @@ Reproducibility:
 Run `npm test` in the calculator directory. `scripts/build_v12.mjs` rebuilds the 168 records. `scripts/update-review-microsites.mjs` updates the eight preset rows in all three adjacent microsite projects from the current calculator. The browser regression cases cover both prior hedge behaviour and new scenario/placement behaviour. See the implementation handover for recorded verification results.
 
 Verification recorded in this pass: 312 calculation, 200 content, 113 hedge and 28 new scenario checks passed (653 total). Browser regression: 13 desktop cases passed; 3 mobile cases passed, with one desktop-only preset-switch case skipped on mobile. An additional browser smoke check covered mobile control sizing and no script errors. The three microsite tables were checked against regenerated preset values.
+
+## Follow-up after the review (Claude, 4 Nov 2026)
+
+- **Checked:** the reviewer's changes were committed unchanged (d9f3874). Unit tests pass: 312 + 200 + 113 + 28.
+- **Discount rate verified:** HM Treasury's Green Book discounting guidance (October 2026) gives a 3.00% standard rate for years 1–30.
+- **IRR wording:** when no IRR exists, the stack now says which case applies. Either the cash flows lose money at every discount rate, which is the situation ONCRA's "zero or negative IRR" wording describes, or they are positive at every rate. Before, it only said "no real IRR".
+- **Price slider:** Si agreed to keep the reviewer's £0–150 range for an explicit zero-price case. The navigation e2e test was updated to match.
+- **Full desktop e2e:** 91 passed, 1 skipped.
+  - The reviewer had run only the new specs, so the slider test failure wasn't caught.
+  - On mobile, the 30 failures that pre-date this work remain.
+- **Sensitivity (no change):** the combined ±20% case and the fixed statutory grant rates are as the reviewer designed them. AECS uncertainty is handled by the eligibility controls, not by ±20%.
