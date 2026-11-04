@@ -1,7 +1,8 @@
 /**
- * sw.js — Service Worker for Fife Farm Resilience Calculator
+ * sw.js — Service Worker for Fife Landscape Resilience Calculator
  * Strategy: Cache-first for assets; network-first for data files.
  * Bump SHIELDBELT_CACHE_VERSION in version.js on every deploy.
+ * Release marker (keep in sync with version.js so SW byte-diff always fires): 1.9.0
  */
 
 importScripts('version.js');
@@ -17,10 +18,13 @@ const PRECACHE = [
   '/scenario.js',
   '/hedge-config.js',
   '/charts.js',
+  '/url-snapshot.js',
   '/styles/main.css',
   '/manifest.json',
   '/icons/icon-192.svg',
   '/icons/icon-512.svg',
+  '/images/funders/heritage-fund-stamp-gd-en.png',
+  '/images/funders/scotgov-naturescot-lockup.png',
   '/data/fife_interventions_db_v12.json',
   '/data/problems_v2.json',
 ];

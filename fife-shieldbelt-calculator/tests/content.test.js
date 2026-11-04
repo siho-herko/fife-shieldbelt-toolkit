@@ -26,10 +26,16 @@ console.log('\n=== Content Integrity Tests ===\n');
 // ---------------------------------------------------------------------------
 console.log('--- 1. Record counts ---');
 assert(problems.length === 33,  '33 problems total');
-assert(problems.filter(p => p.Applicable_Biomes !== 'Dreel Burn Catchment').length === 27,
-  '27 phase-1 problems');
-assert(problems.filter(p => p.Applicable_Biomes === 'Dreel Burn Catchment').length === 6,
-  '6 phase-2 (Dreel Burn) problems');
+assert(problems.filter(p => p.Applicable_Biomes === 'Dreel Burn Catchment').length === 0,
+  'no Dreel Burn Catchment biome values');
+assert(
+  ['SOILORGAN_LOW', 'DROUGHT_BURN', 'HEDGEROW_SPARSE', 'LIVESTOCK_RIPARIAN', 'CARBON_BASELINE', 'ASH_DIEBACK']
+    .every(code => {
+      const p = problems.find(x => x.Problem_Code === code);
+      return p && p.Applicable_Biomes === 'All';
+    }),
+  'former Dreel problems mapped to All biomes'
+);
 
 // ---------------------------------------------------------------------------
 // 2. All required fields present and non-empty
@@ -79,6 +85,16 @@ for (const p of problems) {
       `${p.Problem_Code}: variant "${v}" has valid width prefix`
     );
   }
+}
+
+// No duplicate variant strings within a problem
+console.log('\n--- 4b. No duplicate variant mappings ---');
+for (const p of problems) {
+  const vs = p.Relevant_ShieldBelt_Variants ?? [];
+  assert(
+    new Set(vs).size === vs.length,
+    `${p.Problem_Code}: no duplicate Relevant_ShieldBelt_Variants`
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -149,18 +165,35 @@ assert(
 );
 
 // ---------------------------------------------------------------------------
-// 10. No duplicate Problem_Codes within the same phase
+// 10. No duplicate Problem_Codes
 // ---------------------------------------------------------------------------
-console.log('\n--- 10. Phase uniqueness ---');
-const phase1Codes = problems
-  .filter(p => p.Applicable_Biomes !== 'Dreel Burn Catchment')
-  .map(p => p.Problem_Code);
-assert(new Set(phase1Codes).size === phase1Codes.length, 'Phase-1 codes all unique');
+console.log('\n--- 10. Code uniqueness ---');
+const allCodes = problems.map(p => p.Problem_Code);
+assert(new Set(allCodes).size === allCodes.length, 'All Problem_Codes unique');
 
-const phase2Codes = problems
-  .filter(p => p.Applicable_Biomes === 'Dreel Burn Catchment')
-  .map(p => p.Problem_Code);
-assert(new Set(phase2Codes).size === phase2Codes.length, 'Phase-2 codes all unique');
+// ---------------------------------------------------------------------------
+// 11. Relevant_ShieldBelt_Variants resolve against interventions DB
+// ---------------------------------------------------------------------------
+console.log('\n--- 11. Variant mappings resolve in interventions DB ---');
+const interventions = JSON.parse(readFileSync('./data/fife_interventions_db_v12.json', 'utf8'));
+const records = Array.isArray(interventions) ? interventions : (interventions.interventions ?? []);
+const catalog = new Set();
+for (const r of records) {
+  const bare = String(r.variant || '').replace(/^(?:HV)?\d+\.\s*/, '');
+  if (r.width && bare) catalog.add(`${r.width} ${bare}`);
+  if (r.width && r.variant) catalog.add(`${r.width} ${r.variant}`);
+}
+const unresolved = [];
+for (const p of problems) {
+  for (const v of (p.Relevant_ShieldBelt_Variants ?? [])) {
+    if (!catalog.has(v)) unresolved.push(`${p.Problem_Code}: ${v}`);
+  }
+}
+assert(
+  unresolved.length === 0,
+  'All Relevant_ShieldBelt_Variants match a DB width+name' +
+    (unresolved.length ? ` (unresolved: ${unresolved.slice(0, 8).join('; ')})` : '')
+);
 
 // ---------------------------------------------------------------------------
 // Result

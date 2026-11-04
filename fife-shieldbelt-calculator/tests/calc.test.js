@@ -86,7 +86,7 @@ const r3 = byId['fife_east_neuk_coast__19_coastal_erosion_wood'];
 const r4 = byId['fife_west_fife_claylands__15_livestock_shade_trees'];
 const r5 = byId['fife_east_neuk_coast__hv1_fence_line_hedge'];
 
-console.log('\n=== Fife Farm Resilience calc.js Tests ===\n');
+console.log('\n=== Fife Landscape Resilience calc.js Tests ===\n');
 
 // ---------------------------------------------------------------------------
 // Record presence check

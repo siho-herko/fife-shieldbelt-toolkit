@@ -1,7 +1,7 @@
 /**
  * navigation.spec.js
  *
- * End-to-end tests for the Fife Farm Resilience Calculator navigation flow.
+ * End-to-end tests for the Fife Landscape Resilience Calculator navigation flow.
  * Covers the 6-step input accordion, auto-advance behaviour, Confirm Selection,
  * output section scroll anchors, the mobile drawer, and URL state encoding.
  *
@@ -27,7 +27,7 @@ const BASE = 'http://localhost:8080';
 test.describe('App load', () => {
   test('page title and loading screen', async ({ page }) => {
     await page.goto(BASE);
-    await expect(page).toHaveTitle(/Farm Resilience/i);
+    await expect(page).toHaveTitle(/Fife Landscape Resilience Calculator/i);
 
     // Loading screen must appear briefly then hide
     await waitForAppReady(page);
@@ -35,14 +35,12 @@ test.describe('App load', () => {
     await expect(loadingScreen).toBeHidden();
   });
 
-  test('empty state is shown before any interaction', async ({ page }) => {
+  test('empty state is shown before problem or browse path', async ({ page }) => {
     await page.goto(BASE);
     await waitForAppReady(page);
-    // The app auto-loads results using the default biome/variant on fresh load (by design).
-    // Verify that either results or empty-state is rendered (not still loading).
-    const hasResults  = await page.locator('#results-content').isVisible();
-    const hasEmpty    = await page.locator('#results-empty').isVisible();
-    expect(hasResults || hasEmpty).toBe(true);
+    // P0 gating: full outcomes stay hidden until problem selected or browse path
+    await expect(page.locator('#results-empty')).toBeVisible();
+    await expect(page.locator('#results-content')).toHaveClass(/hidden/);
   });
 
   test('all 6 accordion steps are present', async ({ page }) => {
@@ -53,10 +51,11 @@ test.describe('App load', () => {
     }
   });
 
-  test('step 1 (Your Location) is open by default', async ({ page }) => {
+  test('step 1 (Biggest Problem) is open by default', async ({ page }) => {
     await page.goto(BASE);
     await waitForAppReady(page);
     await expect(await isStepOpen(page, 1)).toBe(true);
+    await expect(page.locator('#step-problem .step-accordion__label')).toContainText(/Biggest Problem/i);
   });
 
   test('steps 2–6 are collapsed by default', async ({ page }) => {
@@ -65,6 +64,53 @@ test.describe('App load', () => {
     for (let i = 2; i <= 6; i++) {
       await expect(await isStepOpen(page, i)).toBe(false);
     }
+  });
+
+  test('header shows Landscape Resilience title without NFCA', async ({ page }) => {
+    await page.goto(BASE);
+    await waitForAppReady(page);
+    await expect(page.locator('.app-header__title')).toContainText(/Fife Landscape Resilience Calculator/i);
+    await expect(page.locator('.app-header__title')).toContainText(/marginal land/i);
+    await expect(page.locator('.app-header')).not.toContainText(/NFCA/i);
+    await expect(page.locator('.app-header')).not.toContainText(/ShieldBelt/i);
+  });
+
+  test('summary and guide links target resilience-* hosts', async ({ page }) => {
+    await page.goto(BASE);
+    await waitForAppReady(page);
+    const summary = page.locator('.app-header__link');
+    await expect(summary).toHaveAttribute('href', 'https://resilience-fife.trigrammatic.com');
+    await expect(summary).toContainText(/Fife Landscape Resilience Summary/i);
+    const guide = page.locator('#results-empty a[href*="resilience-dreel-burn"]');
+    await expect(guide).toHaveAttribute('href', 'https://resilience-dreel-burn.trigrammatic.com');
+    await expect(guide).toContainText(/Dreel Burn Landscape Resilience Guide/i);
+  });
+
+  test('footer has FIRNS acknowledgement, funder logos, and Trigrammatic credit', async ({ page }) => {
+    await page.goto(BASE);
+    await waitForAppReady(page);
+    const footer = page.locator('.app-footer');
+    await expect(footer).toContainText(/Fife Landscape Resilience Calculator/i);
+    await expect(footer).toContainText(/Facility for Investment Ready Nature in Scotland/i);
+    await expect(footer).toContainText(/Thanks to National Lottery players/i);
+    await expect(footer).toContainText(/Built by Trigrammatic/i);
+    await expect(footer).not.toContainText(/NFCA/i);
+    await expect(footer).not.toContainText(/natcert/i);
+    await expect(page.locator('.app-footer__logo--heritage')).toBeVisible();
+    await expect(page.locator('.app-footer__logo--lockup')).toBeVisible();
+    await expect(page.locator('.app-footer__credit a')).toHaveAttribute(
+      'href',
+      'https://trigrammatic.com/en/work/nature-finance'
+    );
+  });
+
+  test('html lang is en-GB and canonical points at resilience-calculator', async ({ page }) => {
+    await page.goto(BASE);
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en-GB');
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+      'href',
+      'https://resilience-calculator.trigrammatic.com/'
+    );
   });
 });
 
@@ -106,7 +152,7 @@ test.describe('Accordion manual toggle', () => {
 });
 
 // ---------------------------------------------------------------------------
-// 3. Location selection auto-advances to step 2 (Farm Type)
+// 3. Location selection auto-advances to step 3 (Farm Type)
 // ---------------------------------------------------------------------------
 test.describe('Location selection', () => {
   test.beforeEach(async ({ page }) => {
@@ -114,10 +160,10 @@ test.describe('Location selection', () => {
     await waitForAppReady(page);
   });
 
-  test('selecting a location closes step 1 and opens step 2', async ({ page }) => {
+  test('selecting a location closes step 2 and opens step 3', async ({ page }) => {
     await selectBiome(page, 'Fife (Howe of Fife & Eden)');
-    await expect(await isStepOpen(page, 1)).toBe(false);
-    await expect(await isStepOpen(page, 2)).toBe(true);
+    await expect(await isStepOpen(page, 2)).toBe(false);
+    await expect(await isStepOpen(page, 3)).toBe(true);
   });
 
   test('step summary updates with the selected location name', async ({ page }) => {
@@ -127,10 +173,10 @@ test.describe('Location selection', () => {
   });
 
   test('location context card is shown after selecting a location', async ({ page }) => {
-    await openStep(page, 1);
+    await openStep(page, 2);
     // The biome context card lives inside step-biome-body
     const card = page.locator('#biome-context-card');
-    // After page load a default biome is pre-selected; the card should be visible
+    // After page load a default biome is pre-selected; the card should be attached
     await expect(card).toBeAttached();
   });
 
@@ -144,8 +190,8 @@ test.describe('Location selection', () => {
       'Fife (West Fife Claylands)',
     ];
     for (const b of biomes) {
-      // Re-open step 1 between iterations
-      await openStep(page, 1);
+      // Re-open step 2 (Location) between iterations
+      await openStep(page, 2);
       // Radio inputs are visually hidden — verify the card label exists instead
       const label = page.locator(`.biome-card:has(input[name="biome"][value="${b}"])`);
       await expect(label).toBeAttached();
@@ -156,14 +202,14 @@ test.describe('Location selection', () => {
 });
 
 // ---------------------------------------------------------------------------
-// 4. Problem chip selection auto-advances to step 4 (Variant)
+// 4. Problem chip selection (step 1) unlocks outcomes and advances to Location
 // ---------------------------------------------------------------------------
 test.describe('Problem chip selection', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(BASE);
     await waitForAppReady(page);
-    // Biggest Problem is step 3 (after Location → Farm Type)
-    await openStep(page, 3);
+    // Biggest Problem is step 1 (problem-first)
+    await openStep(page, 1);
   });
 
   test('problem chips are rendered', async ({ page }) => {
@@ -181,12 +227,18 @@ test.describe('Problem chip selection', () => {
     expect(count).toBe(0);
   });
 
-  test('clicking a problem chip closes step 3 and opens step 4', async ({ page }) => {
+  test('clicking a problem chip closes step 1 and opens step 2', async ({ page }) => {
     const firstChip = page.locator('.problem-chip').first();
     await firstChip.click();
     await page.waitForTimeout(500);
-    await expect(await isStepOpen(page, 3)).toBe(false);
-    await expect(await isStepOpen(page, 4)).toBe(true);
+    await expect(await isStepOpen(page, 1)).toBe(false);
+    await expect(await isStepOpen(page, 2)).toBe(true);
+  });
+
+  test('problem chip unlocks full outcomes', async ({ page }) => {
+    await page.locator('.problem-chip').first().click();
+    await page.waitForTimeout(600);
+    await expect(page.locator('#results-content')).not.toHaveClass(/hidden/);
   });
 
   test('problem chip becomes aria-pressed=true after click', async ({ page }) => {
@@ -198,23 +250,47 @@ test.describe('Problem chip selection', () => {
     await expect(updated).toHaveAttribute('aria-pressed', 'true');
   });
 
-  test('step 3 summary updates after a chip is clicked', async ({ page }) => {
+  test('step 1 summary updates after a chip is clicked', async ({ page }) => {
     await page.locator('.problem-chip').first().click();
     await page.waitForTimeout(300);
     const summary = page.locator('#step-problem-summary');
     // Summary should no longer say "Not selected"
     await expect(summary).not.toHaveText('Not selected');
   });
+
+  test('escape hatch opens intervention browse path without auto-sizing', async ({ page }) => {
+    await page.locator('#btn-browse-intervention').click();
+    await page.waitForTimeout(500);
+    await expect(await isStepOpen(page, 4)).toBe(true);
+    // Charts stay gated until Confirm / Calculate — no implicit first-variant sizing
+    await expect(page.locator('#results-empty')).toBeVisible();
+    await expect(page.locator('#results-content')).toHaveClass(/hidden/);
+    await expect(page.locator('#results-empty-body')).toContainText('Confirm selection');
+  });
+
+  test('browse path shows outcomes after Confirm selection', async ({ page }) => {
+    await page.locator('#btn-browse-intervention').click();
+    await page.waitForTimeout(300);
+    const sel = page.locator('#variant-select');
+    const count = await sel.locator('option').count();
+    if (count > 1) {
+      await sel.selectOption({ index: 1 });
+      await page.waitForTimeout(200);
+    }
+    await confirmVariant(page);
+    await page.waitForTimeout(400);
+    await expect(page.locator('#results-content')).not.toHaveClass(/hidden/);
+  });
 });
 
 // ---------------------------------------------------------------------------
-// 5. Farm type selection auto-advances to step 3 (Biggest Problem)
+// 5. Farm type selection auto-advances to step 4 (Variant)
 // ---------------------------------------------------------------------------
 test.describe('Farm type selection', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(BASE);
     await waitForAppReady(page);
-    await openStep(page, 2);
+    await openStep(page, 3);
   });
 
   test('four farm type options are present', async ({ page }) => {
@@ -222,16 +298,14 @@ test.describe('Farm type selection', () => {
     await expect(radios).toHaveCount(4);
   });
 
-  test('selecting a farm type closes step 2 and opens step 3', async ({ page }) => {
+  test('selecting a farm type closes step 3 and opens step 4', async ({ page }) => {
     await page.locator('input[name="farm-type"]').first().click();
     await page.waitForTimeout(400);
-    await expect(await isStepOpen(page, 2)).toBe(false);
-    await expect(await isStepOpen(page, 3)).toBe(true);
+    await expect(await isStepOpen(page, 3)).toBe(false);
+    await expect(await isStepOpen(page, 4)).toBe(true);
   });
 
-  test('step 2 summary updates with the selected farm type', async ({ page }) => {
-    const label = await page.locator('input[name="farm-type"]').first().getAttribute('value') ??
-                  await page.locator('input[name="farm-type"]').first().inputValue();
+  test('step 3 summary updates with the selected farm type', async ({ page }) => {
     await page.locator('input[name="farm-type"]').first().click();
     await page.waitForTimeout(300);
     const summary = page.locator('#step-farmtype-summary');
@@ -271,11 +345,18 @@ test.describe('Variant selection', () => {
     await expect(await isStepOpen(page, 5)).toBe(false);
   });
 
-  test('pressing Confirm Selection closes step 4 and opens steps 5 and 6', async ({ page }) => {
+  test('pressing Confirm Selection closes step 4 and opens step 5 only', async ({ page }) => {
     await confirmVariant(page);
     await expect(await isStepOpen(page, 4)).toBe(false);
     await expect(await isStepOpen(page, 5)).toBe(true);
-    await expect(await isStepOpen(page, 6)).toBe(true);
+    // Assumptions (step 6) stays collapsed — demoted from first-run path
+    await expect(await isStepOpen(page, 6)).toBe(false);
+  });
+
+  test('Confirm Selection unlocks outcomes without a problem', async ({ page }) => {
+    await confirmVariant(page);
+    await page.waitForTimeout(400);
+    await expect(page.locator('#results-content')).not.toHaveClass(/hidden/);
   });
 });
 
@@ -321,13 +402,17 @@ test.describe('Strip length', () => {
 });
 
 // ---------------------------------------------------------------------------
-// 8. Carbon credit price slider
+// 8. Assumptions step (demoted carbon credit price)
 // ---------------------------------------------------------------------------
-test.describe('Carbon credit price', () => {
+test.describe('Assumptions (carbon credit price)', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(BASE);
     await waitForAppReady(page);
     await openStep(page, 6);
+  });
+
+  test('step 6 is labelled Assumptions', async ({ page }) => {
+    await expect(page.locator('#step-price .step-accordion__label')).toContainText(/Assumptions/i);
   });
 
   test('slider is present with correct range', async ({ page }) => {
@@ -395,8 +480,9 @@ test.describe('Results rendering', () => {
     await expect(page.locator('#section-agronomic')).toBeVisible();
   });
 
-  test('Wider Ecosystem Services section is present', async ({ page }) => {
+  test('Wider Ecosystem Service Value section is present', async ({ page }) => {
     await expect(page.locator('#section-wider-eco')).toBeVisible();
+    await expect(page.locator('#section-wider-eco .card__title')).toHaveText(/Wider Ecosystem Service Value/i);
   });
 
   test('Avoided Costs and Productivity Benefits section is present', async ({ page }) => {
@@ -459,12 +545,15 @@ test.describe('Stat box scroll anchors', () => {
 // 11. URL state: encoding and restoring
 // ---------------------------------------------------------------------------
 test.describe('URL state', () => {
-  test('URL params are written after selecting a variant', async ({ page }) => {
+  test('URL params are written after unlocking outcomes', async ({ page }) => {
     await page.goto(BASE);
     await waitForAppReady(page);
-    // The app encodes state to URL on init (encodeStateToURL is called by renderResults)
+    await page.locator('#btn-browse-intervention').click();
+    await page.waitForTimeout(300);
+    // Browse alone no longer encodes — Confirm unlocks outcomes and writes URL state
+    await confirmVariant(page);
+    await page.waitForTimeout(500);
     const url = page.url();
-    // Should contain biome slug (e.g. biome=east_neuk) and variant
     expect(url).toMatch(/biome=/);
   });
 
@@ -496,6 +585,23 @@ test.describe('URL state', () => {
     await waitForAppReady(page);
     await expect(page.locator('#loading-screen')).toBeHidden();
   });
+
+  test('snap param restores diagnosis context in print brief', async ({ page }) => {
+    // Minimal snap payload: {"code":"X","cat":"Water","s":"Wet margins","d":"Diagnosis text","m":{"a":"Agro","i":"Infra","p":"Prec","c":"Comm","e":"Emerg"}}
+    // Precomputed base64url for stable fixture
+    const payload = Buffer.from(JSON.stringify({
+      code: 'TEST_SNAP',
+      cat: 'Water',
+      s: 'Wet margins after rain',
+      d: 'Shared diagnosis for advisor reopen',
+      m: { a: 'Agro note', i: 'Infra note', p: 'Prec note', c: 'Comm note', e: 'Emerg note' },
+    }), 'utf8').toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
+
+    await page.goto(`${BASE}/?biome=east_neuk&farm=general_cropping&length=1000&price=60&orient=NS&placement=crossSlope&variant=1&snap=${payload}`);
+    await waitForAppReady(page);
+    const snap = page.locator('#print-brief-snapshot');
+    await expect(snap).toContainText(/Shared diagnosis for advisor reopen|Wet margins after rain|Other responses/i);
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -506,7 +612,7 @@ test.describe('Solution Summary panel', () => {
     // Load with a known problem code via chip interaction
     await page.goto(BASE);
     await waitForAppReady(page);
-    await openStep(page, 3);
+    await openStep(page, 1);
     // Click the first available problem chip
     await page.locator('.problem-chip').first().click();
     await page.waitForTimeout(600);
@@ -528,6 +634,99 @@ test.describe('Solution Summary panel', () => {
   test('panel shows "Recommended" for auto-selected variant', async ({ page }) => {
     // After clicking a chip the variant is auto-recommended
     await expect(page.locator('#problem-panel')).toContainText('Recommended');
+  });
+
+  test('solution map is reframed as other responses (not directory)', async ({ page }) => {
+    await expect(page.locator('#problem-panel')).toContainText(/Other responses often considered/i);
+    await expect(page.locator('#problem-panel')).toContainText(/only sizes ShieldBelt/i);
+    await expect(page.locator('#problem-panel')).not.toContainText(/Solutions Directory/i);
+    await expect(page.locator('#problem-panel')).not.toContainText(/coming soon/i);
+  });
+
+  test('Also consider chips are clickable buttons', async ({ page }) => {
+    const alts = page.locator('#problem-panel button.solution-pill--action');
+    const count = await alts.count();
+    if (count > 0) {
+      await alts.first().click();
+      await page.waitForTimeout(500);
+      await expect(page.locator('#results-content')).not.toHaveClass(/hidden/);
+    }
+  });
+
+  test('advisor handoff and print brief are present', async ({ page }) => {
+    await expect(page.locator('#advisor-handoff')).toBeVisible();
+    await expect(page.locator('#btn-print-brief')).toBeVisible();
+    await expect(page.locator('#btn-share-advisor')).toBeVisible();
+    await expect(page.locator('#advisor-handoff')).toContainText(/advisor/i);
+  });
+
+  test('why recommended and planning questions appear', async ({ page }) => {
+    await expect(page.locator('#why-recommended')).toBeVisible();
+    await expect(page.locator('#why-recommended')).toContainText(/Why this option/i);
+    await expect(page.locator('#planning-notes')).toBeVisible();
+    await expect(page.locator('#planning-notes')).toContainText(/Planning questions/i);
+  });
+
+  test('print brief snapshot is populated for print', async ({ page }) => {
+    const snap = page.locator('#print-brief-snapshot');
+    await expect(snap).toBeAttached();
+    await expect(snap).toContainText(/ShieldBelt planning brief/i);
+    await expect(snap).toContainText(/Diagnosis/i);
+    await expect(snap).toContainText(/Other responses often considered/i);
+    await expect(snap).toContainText(/Bring to the meeting/i);
+    await expect(snap).toContainText(/Sized outcomes/i);
+  });
+
+  test('share URL encodes problem snap payload', async ({ page }) => {
+    await page.waitForTimeout(400);
+    const url = page.url();
+    expect(url).toMatch(/problem=/);
+    expect(url).toMatch(/snap=/);
+  });
+
+  test('resilience-wide bridge stays hidden until product URL exists', async ({ page }) => {
+    const bridge = page.locator('#resilience-wide-bridge');
+    await expect(bridge).toBeAttached();
+    await expect(bridge).toBeHidden();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// 12b. Problem chip relevance badges / filters (P1)
+// ---------------------------------------------------------------------------
+test.describe('Problem chip relevance', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto(BASE);
+    await waitForAppReady(page);
+    await openStep(page, 1);
+  });
+
+  test('filter bar is present', async ({ page }) => {
+    await expect(page.locator('#problem-filter-bar')).toBeVisible();
+    await expect(page.locator('#filter-prioritise-fits')).toBeChecked();
+    await expect(page.locator('#filter-dreel-burn')).toHaveCount(0);
+  });
+
+  test('fit context names current location and farm type', async ({ page }) => {
+    const ctx = page.locator('#problem-fit-context');
+    await expect(ctx).toBeVisible();
+    await expect(ctx).toContainText('current');
+    await expect(ctx).toContainText('General Cropping');
+  });
+
+  test('fit badges appear on relevant chips', async ({ page }) => {
+    const fitBadges = page.locator('.problem-chip__badge--fit');
+    await expect(fitBadges.first()).toBeVisible();
+  });
+
+  test('Dreel Burn lens is removed', async ({ page }) => {
+    await expect(page.locator('#filter-dreel-burn')).toHaveCount(0);
+    await expect(page.locator('.problem-chip[data-lens="dreel"]')).toHaveCount(0);
+    await expect(page.locator('.problem-chip__badge--dreel')).toHaveCount(0);
+  });
+
+  test('no locked data-phase=2 chips', async ({ page }) => {
+    await expect(page.locator('.problem-chip[data-phase="2"]')).toHaveCount(0);
   });
 });
 
@@ -653,7 +852,7 @@ test.describe('Compare Scenarios modal', () => {
 });
 
 // ---------------------------------------------------------------------------
-// 15. Copy link and save scenario buttons
+// 15. Advisor share / email and save scenario buttons
 // ---------------------------------------------------------------------------
 test.describe('Copy link and save scenario', () => {
   test.beforeEach(async ({ page }) => {
@@ -661,12 +860,18 @@ test.describe('Copy link and save scenario', () => {
     await waitForAppReady(page);
   });
 
-  test('Copy link button is present', async ({ page }) => {
-    await expect(page.locator('#btn-copy-link')).toBeVisible();
+  test('Advisor share and email buttons are present (no duplicate export copy link)', async ({ page }) => {
+    await expect(page.locator('#btn-share-advisor')).toBeVisible();
+    await expect(page.locator('#btn-email-scenario')).toBeVisible();
+    await expect(page.locator('#btn-copy-link')).toHaveCount(0);
   });
 
   test('Save scenario button is present', async ({ page }) => {
     await expect(page.locator('#btn-save-scenario')).toBeVisible();
+  });
+
+  test('Save scenario notes browser-only storage', async ({ page }) => {
+    await expect(page.locator('.save-browser-note')).toContainText(/Saved in this browser only/i);
   });
 });
 

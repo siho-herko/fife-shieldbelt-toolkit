@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-GB">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#1a3d2b" />
-  <meta name="description" content="Calculate the agronomic, carbon and ecosystem outcomes of ShieldBelt interventions on Fife farmland. An NFCA interactive advisory tool." />
-  <meta name="author" content="Nature Finance Certification Alliance (NFCA)" />
+  <meta name="description" content="Start from what’s hard on your farm. Explore nature-based solutions on marginal land (ShieldBelt linear margins) for Fife holdings — a planning start with an advisor." />
+  <link rel="canonical" href="https://resilience-calculator.trigrammatic.com/" />
 
   <!-- Open Graph -->
-  <meta property="og:title" content="Fife Farm Resilience Calculator · NFCA" />
-  <meta property="og:description" content="Interactive tool for Fife farmers and land agents: agronomic, carbon &amp; ecosystem impact of linear field-margin ShieldBelt interventions." />
+  <meta property="og:title" content="Fife Landscape Resilience Calculator" />
+  <meta property="og:description" content="Nature-based options on marginal land (ShieldBelt). Problem-aware sizing of linear field-margin interventions for Fife farmers and advisors." />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://fife-shieldbelt-toolkit.pages.dev/" />
+  <meta property="og:url" content="https://resilience-calculator.trigrammatic.com/" />
   <meta property="og:image" content="icons/icon-512.svg" />
 
   <!-- PWA -->
@@ -21,9 +21,9 @@
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="ShieldBelt Calc" />
+  <meta name="apple-mobile-web-app-title" content="Resilience Calc" />
 
-  <title>Fife Farm Resilience Calculator · NFCA</title>
+  <title>Fife Landscape Resilience Calculator</title>
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -42,7 +42,12 @@
 <!-- ========================================================================
      PRINT HEADER (hidden on screen, visible in @media print)
      ======================================================================== -->
-<div class="print-header" aria-hidden="true" data-date=""></div>
+<div class="print-header" aria-hidden="true" data-date="">
+  <div class="print-header__title">ShieldBelt planning brief</div>
+  <div class="print-header__sub">Nature-based options on marginal land · Fife Landscape Resilience Calculator</div>
+</div>
+<div id="print-brief-snapshot" class="print-brief-snapshot" hidden aria-hidden="true"></div>
+<div id="print-brief-footer" class="print-brief-footer" aria-hidden="true"></div>
 
 <!-- ========================================================================
      MOBILE DRAWER BACKDROP
@@ -57,19 +62,18 @@
   <header class="app-header" role="banner">
     <div class="app-header__inner">
       <div class="app-header__brand">
-        <span class="app-header__logo" aria-label="NFCA — Nature Finance Certification Alliance">NFCA</span>
         <div class="app-header__title">
-          Fife Farm Resilience Calculator
-          <span>Nature Finance Certification Alliance</span>
+          Fife Landscape Resilience Calculator
+          <span>Nature-based options on marginal land</span>
         </div>
       </div>
       <nav class="app-header__nav" aria-label="External links">
         <a
-          href="https://fife-shieldbelt.netlify.app"
+          href="https://resilience-fife.trigrammatic.com"
           class="app-header__link"
           target="_blank"
           rel="noopener noreferrer"
-        >&#8592; Summary Site</a>
+        >&#8592; Fife Landscape Resilience Summary</a>
       </nav>
     </div>
   </header>
@@ -95,11 +99,44 @@
       </div>
       <div id="controls-form">
 
-        <!-- STEP 1 — Location (Fife landscape area; state/URL still use biome keys) -->
-        <div class="step-accordion" id="step-biome" data-step="1">
+        <!-- STEP 1 — Biggest Problem (problem-first journey) -->
+        <div class="step-accordion" id="step-problem" data-step="1">
           <button class="step-accordion__trigger" aria-expanded="true"
-            aria-controls="step-biome-body" id="step-biome-trigger">
+            aria-controls="step-problem-body" id="step-problem-trigger">
             <span class="step-accordion__number" aria-hidden="true">1</span>
+            <span class="step-accordion__label">Biggest Problem</span>
+            <span class="step-accordion__summary" id="step-problem-summary">Not selected</span>
+            <svg class="step-accordion__chevron" width="16" height="16" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+          <div class="step-accordion__body" id="step-problem-body"
+            role="region" aria-labelledby="step-problem-trigger">
+            <p class="form-hint mb-3">
+              Start with the challenge that matters most on your holding.
+              We’ll recommend a nature-based margin option (ShieldBelt) for that challenge;
+              other farm responses are noted for context, not sized here.
+              Fit / Other location / farm-type badges use your <strong>current</strong> location and farm type
+              (defaults until you change those steps).
+            </p>
+            <!-- Populated by populateProblemChips() in app.js -->
+            <div id="problem-chips" role="group" aria-label="Select your primary farming problem">
+              <p class="form-hint">Loading problem data…</p>
+            </div>
+            <p class="form-hint mt-3">
+              <button type="button" id="btn-browse-intervention" class="btn btn-ghost btn-sm escape-hatch-btn">
+                I already know the intervention
+              </button>
+            </p>
+          </div>
+        </div>
+
+        <!-- STEP 2 — Location (Fife landscape area; state/URL still use biome keys) -->
+        <div class="step-accordion" id="step-biome" data-step="2">
+          <button class="step-accordion__trigger" aria-expanded="false"
+            aria-controls="step-biome-body" id="step-biome-trigger">
+            <span class="step-accordion__number" aria-hidden="true">2</span>
             <span class="step-accordion__label">Your Location</span>
             <span class="step-accordion__summary" id="step-biome-summary">🌊 East Neuk Coast</span>
             <svg class="step-accordion__chevron" width="16" height="16" viewBox="0 0 24 24"
@@ -107,7 +144,7 @@
               <polyline points="6 9 12 15 18 9"/>
             </svg>
           </button>
-          <div class="step-accordion__body" id="step-biome-body"
+          <div class="step-accordion__body" id="step-biome-body" hidden
             role="region" aria-labelledby="step-biome-trigger">
             <p class="form-hint mb-3">
               Select the primary landscape context for your holding. Each location has 22 ShieldBelt variants.
@@ -161,11 +198,11 @@
           </div>
         </div>
 
-        <!-- STEP 2 — Farm Type -->
-        <div class="step-accordion" id="step-farmtype" data-step="2">
+        <!-- STEP 3 — Farm Type -->
+        <div class="step-accordion" id="step-farmtype" data-step="3">
           <button class="step-accordion__trigger" aria-expanded="false"
             aria-controls="step-farmtype-body" id="step-farmtype-trigger">
-            <span class="step-accordion__number" aria-hidden="true">2</span>
+            <span class="step-accordion__number" aria-hidden="true">3</span>
             <span class="step-accordion__label">Farm Type</span>
             <span class="step-accordion__summary" id="step-farmtype-summary">General Cropping</span>
             <svg class="step-accordion__chevron" width="16" height="16" viewBox="0 0 24 24"
@@ -210,31 +247,6 @@
                 </div>
               </label>
             </fieldset>
-          </div>
-        </div>
-
-        <!-- STEP 3 — Biggest Problem -->
-        <div class="step-accordion" id="step-problem" data-step="3">
-          <button class="step-accordion__trigger" aria-expanded="false"
-            aria-controls="step-problem-body" id="step-problem-trigger">
-            <span class="step-accordion__number" aria-hidden="true">3</span>
-            <span class="step-accordion__label">Biggest Problem</span>
-            <span class="step-accordion__summary" id="step-problem-summary">Not selected</span>
-            <svg class="step-accordion__chevron" width="16" height="16" viewBox="0 0 24 24"
-              fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <polyline points="6 9 12 15 18 9"/>
-            </svg>
-          </button>
-          <div class="step-accordion__body" id="step-problem-body" hidden
-            role="region" aria-labelledby="step-problem-trigger">
-            <p class="form-hint mb-3">
-              Select the challenge that matters most on your holding.
-              The calculator will recommend the highest-scoring ShieldBelt variant.
-            </p>
-            <!-- Populated by populateProblemChips() in app.js -->
-            <div id="problem-chips" role="group" aria-label="Select your primary farming problem">
-              <p class="form-hint">Loading problem data…</p>
-            </div>
           </div>
         </div>
 
@@ -378,7 +390,7 @@
           </div>
         </div>
 
-        <!-- STEP 6 — Credit Price -->
+        <!-- STEP 6 — Assumptions (demoted carbon price) -->
         <div class="step-accordion" id="step-price" data-step="6">
           <button class="step-accordion__trigger" aria-expanded="false"
             aria-controls="step-price-body" id="step-price-trigger">
@@ -499,26 +511,28 @@
          --------------------------------------------------------------- -->
     <section class="panel-right" id="results-panel" aria-label="Results" aria-live="polite">
 
-      <!-- Mobile: Adjust Inputs button at top of results -->
+      <!-- Mobile: Adjust inputs button at top of results -->
       <div class="mobile-results-nav mobile-results-nav--top">
         <button id="btn-adjust-inputs-top" class="btn btn-ghost mobile-results-nav__btn" type="button">
-          &#9881; Adjust Inputs
+          &#9881; Adjust inputs
         </button>
       </div>
 
-      <!-- Empty state -->
+      <!-- Empty state — gated until problem or Confirm on browse path -->
       <div id="results-empty" class="card" style="min-height:420px;">
         <div class="empty-state">
           <div class="empty-state__icon">🌿</div>
-          <h2 class="empty-state__title">ShieldBelt Outcomes</h2>
-          <p class="empty-state__body">
-            Results appear here automatically as you choose a location and variant.
-            Select a problem to get a personalised recommendation.
+          <h2 class="empty-state__title">Nature-based margins, sized for your challenge</h2>
+          <p class="empty-state__body" id="results-empty-body">
+            This calculator explores <strong>nature-based solutions on marginal land</strong>
+            (ShieldBelt linear field margins)—not every farm fix.
+            Select your biggest problem to see a recommended margin option and outcomes,
+            or choose <em>I already know the intervention</em> to browse variants, then Confirm.
           </p>
-          <a href="https://fife-shieldbelt.netlify.app"
+          <a href="https://resilience-dreel-burn.trigrammatic.com"
             class="btn btn-ghost btn-sm mt-3"
             target="_blank" rel="noopener noreferrer">
-            View the ShieldBelt Guide &#8599;
+            View the Dreel Burn Landscape Resilience Guide &#8599;
           </a>
         </div>
       </div>
@@ -619,10 +633,10 @@
           </div>
         </div>
 
-        <!-- ─── SECTION 2 — Wider Ecosystem Services ─────────────── -->
+        <!-- ─── SECTION 2 — Wider Ecosystem Service Value ─────────── -->
         <div class="results-section card" id="section-wider-eco">
           <div class="card__header">
-            <span class="card__title">Wider Ecosystem Services</span>
+            <span class="card__title">Wider Ecosystem Service Value</span>
             <!-- Placement toggle -->
             <div class="seg-toggle" role="group" aria-label="Placement">
               <button class="seg-toggle__btn active" data-placement="riparian">Riparian</button>
@@ -700,25 +714,55 @@
           <div id="biodiversity-impacts" class="agronomic-notes text-sm mt-3 text-muted" style="line-height:1.6;"></div>
         </div>
 
-        <!-- ─── Share / Save / Compare ──────────────────────────────── -->
-        <div class="results-section export-panel flex gap-3 flex-wrap">
-          <button class="btn btn-ghost" id="btn-copy-link" type="button">
-            &#8682; Copy link
-          </button>
+        <!-- ─── Advisor handoff (planning brief + share) ─────────────── -->
+        <div id="advisor-handoff" class="results-section card advisor-handoff">
+          <div class="card__header">
+            <span class="card__title">Discuss with an advisor</span>
+          </div>
+          <p class="text-sm" id="advisor-handoff-copy" style="line-height:1.6;margin:0 0 0.75rem;">
+            Use this as a starting point for planning a ShieldBelt margin with an appropriate advisor.
+          </p>
+          <ul class="advisor-checklist text-sm" id="advisor-checklist">
+            <li>Photos of the field margin and drainage context</li>
+            <li>Tenancy / ownership constraints and labour window</li>
+            <li>Any designations, NVZ, or scheme eligibility notes</li>
+            <li>Open questions from the diagnosis and planning notes above</li>
+          </ul>
+          <p class="text-sm text-muted" id="share-link-hint" style="margin:0.75rem 0 0;line-height:1.5;">
+            The share link restores problem, a short diagnosis &amp; other-responses snapshot, location, farm type, variant, and strip length so an advisor can reopen this scenario.
+          </p>
+          <div class="flex gap-3 flex-wrap mt-3">
+            <button class="btn btn-primary" id="btn-print-brief" type="button">
+              Print planning brief
+            </button>
+            <button class="btn btn-ghost" id="btn-share-advisor" type="button">
+              Copy link for your advisor
+            </button>
+            <button class="btn btn-ghost" id="btn-email-scenario" type="button">
+              Email scenario link
+            </button>
+          </div>
+        </div>
+
+        <!-- ─── Save / Compare ─────────────────────────────────────── -->
+        <div class="results-section export-panel flex gap-3 flex-wrap" style="align-items:center;">
           <button class="btn btn-ghost" id="btn-save-scenario" type="button">
             &#128190; Save scenario
           </button>
           <button class="btn btn-ghost" id="btn-compare-scenarios" type="button">
             &#9783; Compare across Scenarios
           </button>
+          <p class="text-sm text-muted save-browser-note" style="margin:0;flex-basis:100%;">
+            Saved in this browser only.
+          </p>
         </div>
 
       </div><!-- /results-content -->
 
-      <!-- Mobile: Adjust Inputs button at bottom of results -->
+      <!-- Mobile: Adjust inputs button at bottom of results -->
       <div class="mobile-results-nav mobile-results-nav--bottom">
         <button id="btn-adjust-inputs-bottom" class="btn btn-ghost mobile-results-nav__btn" type="button">
-          &#9881; Adjust Inputs
+          &#9881; Adjust inputs
         </button>
       </div>
 
@@ -744,7 +788,7 @@
     <div class="modal-compare__body" style="padding:20px;background:#fff;overflow-y:auto;flex:1;min-height:0;">
       <p class="text-sm text-muted mb-3" id="modal-compare-desc" hidden></p>
       <div id="modal-compare-empty" class="text-sm text-muted" style="display:none;">
-        No saved scenarios yet — use <strong>Save scenario</strong> below the results, then open this view to compare Net Agronomic Benefit, 25-Year Carbon Revenue, and Wider Ecosystem Value.
+        No saved scenarios yet — use <strong>Save scenario</strong> below the results (saved in this browser only), then open this view to compare Net Agronomic Benefit, 25-Year Carbon Revenue, and Wider Ecosystem Service Value.
       </div>
       <div id="modal-compare-charts">
         <div class="modal-chart-block">
@@ -756,8 +800,8 @@
           <canvas id="chart-compare-carbon" aria-label="25-Year Carbon Revenue comparison" role="img"></canvas>
         </div>
         <div class="modal-chart-block">
-          <h3 class="modal-chart-title">Wider Ecosystem Value (£/yr)</h3>
-          <canvas id="chart-compare-eco" aria-label="Wider Ecosystem Value comparison" role="img"></canvas>
+          <h3 class="modal-chart-title">Wider Ecosystem Service Value (£/yr)</h3>
+          <canvas id="chart-compare-eco" aria-label="Wider Ecosystem Service Value comparison" role="img"></canvas>
         </div>
       </div>
     </div>
@@ -767,15 +811,57 @@
        FOOTER
        =================================================================== -->
   <footer class="app-footer" role="contentinfo">
-    <strong>Fife ShieldBelt</strong>
-    <span class="app-footer__dots">·</span>
-    <strong>NFCA Research</strong>
-    <span class="app-footer__dots">·</span>
-    168 interventions
-    <span class="app-footer__dots">·</span>
-    6 Fife landscape areas
-    <span class="app-footer__dots">·</span>
-    <a href="https://natcert.earth" target="_blank" rel="noopener noreferrer">natcert.earth</a>
+    <p class="app-footer__title">
+      <strong>Fife Landscape Resilience Calculator</strong>
+    </p>
+    <p class="app-footer__meta">
+      Nature-based options on marginal land
+      <span class="app-footer__dots">·</span>
+      168 location–variant records across 6 Fife landscape areas
+    </p>
+
+    <div class="app-footer__funders">
+      <p class="app-footer__funder-text">
+        This project has been supported by
+        <a href="https://www.nature.scot/funding-and-projects/firns-facility-investment-ready-nature-scotland" target="_blank" rel="noopener noreferrer">The Facility for Investment Ready Nature in Scotland</a>,
+        delivered by
+        <a href="https://www.nature.scot/" target="_blank" rel="noopener noreferrer">NatureScot</a>
+        in collaboration with
+        <a href="https://www.gov.scot/" target="_blank" rel="noopener noreferrer">The Scottish Government</a>
+        and in partnership with the
+        <a href="https://www.heritagefund.org.uk/" target="_blank" rel="noopener noreferrer">National Lottery Heritage Fund</a>.
+      </p>
+      <p class="app-footer__funder-thanks">Thanks to National Lottery players.</p>
+      <div class="app-footer__logo-panel">
+        <div class="app-footer__logos">
+          <img
+            class="app-footer__logo app-footer__logo--heritage"
+            src="images/funders/heritage-fund-stamp-gd-en.png"
+            alt="National Lottery Heritage Fund"
+            width="240"
+            height="240"
+            loading="lazy"
+            decoding="async"
+          />
+          <img
+            class="app-footer__logo app-footer__logo--lockup"
+            src="images/funders/scotgov-naturescot-lockup.png"
+            alt="Scottish Government and NatureScot"
+            width="401"
+            height="96"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+      </div>
+    </div>
+
+    <p class="app-footer__credit">
+      <a href="https://trigrammatic.com/en/work/nature-finance" target="_blank" rel="noopener noreferrer">Built by Trigrammatic</a>
+    </p>
+
+    <!-- Populated only when RESILIENCE_WIDE_TOOL_URL is set in app.js -->
+    <div id="resilience-wide-bridge" class="resilience-wide-bridge" hidden></div>
   </footer>
 
 </div><!-- /app-wrapper -->

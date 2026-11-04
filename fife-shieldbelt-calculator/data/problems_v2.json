@@ -158,10 +158,11 @@
     "Solution_Community": "Engage with FCCT regarding rerouting eroded footpaths.",
     "Solution_Emerging_Tech_Landscaping": "Engineered salt-marsh restoration to absorb wave energy.",
     "Relevant_ShieldBelt_Variants": [
-      "20m Riparian Flood Wood",
-      "12m Native Shelterbelt",
+      "20m Coastal Erosion Wood",
+      "12m Coastal Salt-Spray Screen",
       "6m Shallow Root Shrubs",
-      "20m Coastal Erosion Wood"
+      "20m Riparian Flood Wood",
+      "3m Fence-line hedge"
     ],
     "Linked_Solution_Directory_Keys": []
   },
@@ -497,9 +498,11 @@
       "6m Botanical Shrub Strip",
       "6m Hedge and margin",
       "12m Urban Air-Quality Screen",
+      "3m Fence-line hedge",
       "12m Urban Foraging Wood",
       "20m Urban Flood Buffer",
-      "6m Urban Foraging Strip"
+      "6m Urban Foraging Strip",
+      "12m Thermal Microclimate Belt"
     ],
     "Linked_Solution_Directory_Keys": [
       "Plasma Slurry treatment (Norway)"
@@ -584,7 +587,7 @@
     "Problem_Code": "SOILORGAN_LOW",
     "Stated_Symptom": "Soil organic matter declining / soils losing structure and water-holding capacity",
     "Agronomic_Root_Cause": "Intensive tillage, potato/root vegetable production, lack of cover crops breaking down soil aggregates",
-    "Applicable_Biomes": "Dreel Burn Catchment",
+    "Applicable_Biomes": "All",
     "Applicable_Farm_Types": "General Cropping, Arable",
     "Routing_Trigger": "soilMetrics.organicMatter < 3.0",
     "Farmer_Diagnosis_Copy": "When soils lose organic matter, they lose their ability to hold water, support crop growth, and store carbon. Reduced tillage, cover crops, and multi-species leys work together with linear shelterbelts to protect and rebuild your soil capital.",
@@ -610,16 +613,16 @@
   {
     "Category": "Water",
     "Problem_Code": "DROUGHT_BURN",
-    "Stated_Symptom": "Dreel Burn / watercourses running low or dry in summer \u2013 aquatic stress and irrigation risk",
+    "Stated_Symptom": "Watercourses / burns running low or dry in summer – aquatic stress and irrigation risk",
     "Agronomic_Root_Cause": "Insufficient water infiltration and soil storage capacity across catchment; historical abstraction; climate-driven drought",
-    "Applicable_Biomes": "Dreel Burn Catchment",
+    "Applicable_Biomes": "All",
     "Applicable_Farm_Types": "General Cropping, Arable, Dairy, Horticulture",
     "Routing_Trigger": "sepaMetrics.streamFlow.summerLow <= threshold OR irrigationAbstractionRisk == true",
     "Farmer_Diagnosis_Copy": "When the burn runs low, abstraction licences get harder to obtain and aquatic wildlife suffers. Improving soil infiltration catchment-wide, combined with rainwater harvesting and buffer woodland, is the most effective way to manage summer water stress. Note: dense riparian woodland directly on small, drought-prone burns may increase evapotranspiration and worsen summer low-flows. Prioritise upstream soil infiltration (treelines, contour swales, organic matter improvement) and leaky woody dams over bank-edge canopy planting on small burns (SAC review, April 2026).",
     "Solution_Agronomic": "Rainwater harvesting (roof-mounted 50,000L systems); irrigation lagoons; reduced summer abstraction",
     "Solution_Infrastructure": "Offline Treatment Wetlands to store and slowly release water; check dams in ditches Leaky woody dams on tributary burns to slow the flow and recharge groundwaters. Rainwater harvesting lagoons.",
     "Solution_Precision_Tech": "SEPA telemetry river-level sensors; hyper-local weather stations for irrigation scheduling",
-    "Solution_Community": "Catchment-level water abstraction groups; coordinated irrigation scheduling across DBIRP farms",
+    "Solution_Community": "Catchment-level water abstraction groups; coordinated irrigation scheduling across neighbouring farms",
     "Solution_Emerging_Tech_Landscaping": "Saturated Riparian Buffers (Iowa) to recharge groundwater; Keyline Design to route water across contour",
     "Relevant_ShieldBelt_Variants": [
       "12m Planted Contour Swale",
@@ -639,9 +642,9 @@
   {
     "Category": "Biodiversity",
     "Problem_Code": "HEDGEROW_SPARSE",
-    "Stated_Symptom": "Farm has inadequate hedgerow network \u2013 fields large and open, poor habitat connectivity",
+    "Stated_Symptom": "Farm has inadequate hedgerow network – fields large and open, poor habitat connectivity",
     "Agronomic_Root_Cause": "Historical removal of hedgerows during farm intensification; insufficient replanting",
-    "Applicable_Biomes": "Dreel Burn Catchment",
+    "Applicable_Biomes": "All",
     "Applicable_Farm_Types": "General Cropping, Arable, Dairy",
     "Routing_Trigger": "biodivMetrics.hedgerowDensity < 50m/ha",
     "Farmer_Diagnosis_Copy": "Open fields with no hedgerows are exposed to wind erosion, have low biodiversity, and struggle to meet the Whole Farm Plan biodiversity audit requirements. A hedgerow network can pay back through shelter, long-term soil protection and, where eligible, AECS payments; carbon income is small and combining it with grants needs an ONCRA ruling.",
@@ -670,7 +673,7 @@
     "Problem_Code": "LIVESTOCK_RIPARIAN",
     "Stated_Symptom": "Cattle/livestock accessing burns and ditches, causing bank erosion and diffuse pollution",
     "Agronomic_Root_Cause": "Unfenced watercourses; no standoff infrastructure; intensive grazing pressure on riparian zones",
-    "Applicable_Biomes": "Dreel Burn Catchment",
+    "Applicable_Biomes": "All",
     "Applicable_Farm_Types": "Dairy, Mixed",
     "Routing_Trigger": "livestockMetrics.waterCourseAccess == true OR fioRisk.livestock == HIGH",
     "Farmer_Diagnosis_Copy": "Unrestricted livestock access to burns is one of the biggest sources of diffuse pollution in Fife and can trigger SEPA enforcement. Fencing the burn, combined with a standoff pad and riparian planting, is a low-cost way to protect your water quality, reduce your regulatory risk, and generate biodiversity and carbon income.",
@@ -678,7 +681,7 @@
     "Solution_Infrastructure": "NZ-style Woodchip Standoff Pads at key water access points; fencing setback from bank",
     "Solution_Precision_Tech": "GPS-collared virtual fencing (Halter / Nofence) to dynamically exclude from riparian zones",
     "Solution_Community": "Catchment-level water abstraction groups; FIO beach monitoring coordination with SEPA",
-    "Solution_Emerging_Tech_Landscaping": "Saturated Riparian Buffers (Iowa) \u2013 modified for Scottish conditions",
+    "Solution_Emerging_Tech_Landscaping": "Saturated Riparian Buffers (Iowa) – modified for Scottish conditions",
     "Relevant_ShieldBelt_Variants": [
       "20m Riparian Flood Wood",
       "20m Riparian Flood Buffer",
@@ -699,7 +702,7 @@
     "Problem_Code": "CARBON_BASELINE",
     "Stated_Symptom": "No carbon audit in place / farm not yet measuring or managing its carbon footprint",
     "Agronomic_Root_Cause": "Carbon auditing not yet mandatory; limited farm advisory support; cost and complexity",
-    "Applicable_Biomes": "Dreel Burn Catchment",
+    "Applicable_Biomes": "All",
     "Applicable_Farm_Types": "General Cropping, Arable, Dairy, Horticulture",
     "Routing_Trigger": "carbonMetrics.auditStatus == NONE OR carbonMetrics.auditAge > 5",
     "Farmer_Diagnosis_Copy": "By 2028, all Scottish farms must complete a carbon audit to receive basic payment. Starting now gives you time to make changes that reduce your footprint and potentially open up carbon credit income through schemes like ONCRA and the UK Woodland Carbon Code.",
@@ -729,7 +732,7 @@
     "Problem_Code": "ASH_DIEBACK",
     "Stated_Symptom": "Tree disease killing mature trees in hedgerows and woodland (ash dieback, Phytophthora variants, Larch disease)",
     "Agronomic_Root_Cause": "Hymenoscyphus fraxineus (ash dieback) dominant in East Neuk hedgerows; Phytophthora lateralis threat to lawson cypress; Phytophthora ramorum affecting larch in wider Fife. Broadening to capture range of emerging fungal and oomycete threats to hedgerow and farm woodland tree populations.",
-    "Applicable_Biomes": "Dreel Burn Catchment",
+    "Applicable_Biomes": "All",
     "Applicable_Farm_Types": "General Cropping, Arable, Mixed",
     "Routing_Trigger": "biodivMetrics.ashDieback == CONFIRMED",
     "Farmer_Diagnosis_Copy": "Ash dieback is reshaping hedgerows and woodland across Fife. Infected trees should be retained as standing deadwood where safe (invaluable for bats, woodpeckers, fungi) and gaps replanted with disease-resistant species. This is actually an opportunity to diversify your hedgerow from monoculture hawthorn/ash into a genuinely species-rich native mix.",
@@ -768,13 +771,13 @@
     "Solution_Emerging_Tech_Landscaping": "Use AI weather prediction to adjust harvest schedules proactively.",
     "Relevant_ShieldBelt_Variants": [
       "12m Native Shelterbelt",
-      "12m Native Shelterbelt"
+      "12m Coastal Salt-Spray Screen",
+      "12m Thermal Microclimate Belt",
+      "3m Fence-line hedge"
     ],
     "Linked_Solution_Directory_Keys": [
       "Silicon Biostimulants",
-      "Variable-Rate Plant Growth Regulators (PGRs)",
-      "12m Native Shelterbelt",
-      "12m Thermal Microclimate Belt"
+      "Variable-Rate Plant Growth Regulators (PGRs)"
     ]
   },
   {
@@ -839,12 +842,14 @@
     "Solution_Community": "Share local weather data and maturity mapping with neighboring farms.",
     "Solution_Emerging_Tech_Landscaping": "Hyper-local weather stations feeding into AI crop maturation predictors.",
     "Relevant_ShieldBelt_Variants": [
+      "12m Thermal Microclimate Belt",
       "12m Native Shelterbelt",
-      "12m Native Shelterbelt"
+      "12m Montane Snow-Fence",
+      "3m Fence-line hedge"
     ],
     "Linked_Solution_Directory_Keys": [
-      "12m Thermal Microclimate Belt",
-      "Desiccation Timing Models"
+      "Desiccation Timing Models",
+      "Early-maturing crop varieties"
     ]
   },
   {

@@ -1,5 +1,5 @@
 /**
- * db.js — Fife Farm Resilience Calculator
+ * db.js — Fife Landscape Resilience Calculator
  *
  * Data layer: fetches /data/fife_interventions_db_v12.json once per page load
  * and holds all 168 records in a plain JS array.  The service worker caches

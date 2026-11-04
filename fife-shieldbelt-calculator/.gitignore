@@ -1,5 +1,6 @@
 # Dependencies
 node_modules/
+.wrangler/
 
 # Lock files (optional — remove this line if you want to commit package-lock.json)
 package-lock.json

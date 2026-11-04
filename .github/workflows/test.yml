@@ -1,0 +1,27 @@
+name: npm test
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'fife-shieldbelt-calculator/**'
+      - '.github/workflows/test.yml'
+  pull_request:
+    paths:
+      - 'fife-shieldbelt-calculator/**'
+      - '.github/workflows/test.yml'
+
+jobs:
+  unit:
+    name: Unit + content tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: fife-shieldbelt-calculator
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Run npm test
+        run: npm test

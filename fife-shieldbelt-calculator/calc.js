@@ -1,6 +1,6 @@
 import { normaliseScenario, incrementalIncome, scenarioFunding } from './scenario.js';
 /**
- * calc.js — Fife Farm Resilience Calculator
+ * calc.js — Fife Landscape Resilience Calculator
  * Pure calculation engine — no DOM, no side effects.
  * All functions are deterministic given the same inputs and v2 record.
  *
@@ -8,8 +8,6 @@ import { normaliseScenario, incrementalIncome, scenarioFunding } from './scenari
  *   avoided costs, windbreak yield, pest regulation,
  *   thermal regulation, SSER biodiversity units,
  *   disaggregated CREW (air filtration / catchment hydrology / water purification)
- *
- * Author: NFCA / Fife ShieldBelt project
  */
 
 // ---------------------------------------------------------------------------

@@ -1,11 +1,9 @@
 import { SCENARIO_DEFAULTS, normaliseScenario } from './scenario.js';
 /**
- * app.js — Fife Farm Resilience Calculator
+ * app.js — Fife Landscape Resilience Calculator
  * Full application wiring: DB → calc → charts → DOM.
  * Implements the Problem→Solution engine, URL state, comparison modal,
  * service worker registration, and all event handlers.
- *
- * Author: NFCA / Fife ShieldBelt project
  */
 
 import { dbReady, getByBiome, getById, getAll, getHedgeTemplate, BIOMES, FARM_TYPES } from './db.js';
@@ -13,6 +11,18 @@ import { buildHedgeRecord, normaliseConfig, parseConfigKey, configKey, presetFor
          FORMS, SPECIES, TREES, POSITIONS, DEFAULT_PRESET } from './hedge-config.js';
 import { calculate, fmt, fmtGBP, fmtCarbon, fmtSSER, parseWidth, CARBON_ROUTES } from './calc.js';
 import { hBar, hStackedBar, lineChart, radarChart, htmlLegend, clearCharts } from './charts.js';
+import {
+  encodeSnapshotParam,
+  decodeSnapshotParam,
+  truncText,
+} from './url-snapshot.js';
+
+/**
+ * Sister resilience-wide UX bridge. Keep null until that product exists —
+ * the footer slot stays hidden so we never promise a dead link.
+ * Set to an absolute URL to surface “Explore broader farm options elsewhere”.
+ */
+const RESILIENCE_WIDE_TOOL_URL = null;
 
 // =============================================================================
 // A. Domain constants
@@ -108,6 +118,14 @@ const state = {
   carbonRoute:          'oncra', // 'oncra' | 'contribution' (v12.1)
   scenario:             { ...SCENARIO_DEFAULTS },
   grants:               'aecs',  // 'aecs' | 'none' (v12.1)
+  // Journey gating: full outcomes only after problem OR explicit browse path
+  browseMode:           false,
+  outcomesUnlocked:     false,
+  // P1 relevance filters for problem chips
+  prioritiseFits:       true,
+  recommendationMeta:   null, // { reasons, score } for active recommendation
+  // Share-URL snapshot of problem + solution-map (advisor context)
+  urlSnapshot:          null,
   // Derived (never set directly by user)
   biomeRecords:    [],
   currentRecord:   null,
@@ -115,6 +133,126 @@ const state = {
   lastResults:     null,
   activeProblem:   null,
 };
+
+/** Short biome labels used inside Applicable_Biomes strings */
+const BIOME_SHORT = {
+  [BIOMES.EAST_NEUK]:   'East Neuk Coast',
+  [BIOMES.FORTH_URBAN]: 'Forth Urban Coast',
+  [BIOMES.HOWE]:        'Howe of Fife & Eden',
+  [BIOMES.LOMOND]:      'Lomond & Cleish Uplands',
+  [BIOMES.NORTH_FIFE]:  'North Fife Hills & Tay',
+  [BIOMES.WEST_CLAY]:   'West Fife Claylands',
+};
+
+/** Category → thin planning questions for advisor handoff */
+const PLANNING_QUESTIONS_BY_CATEGORY = {
+  Water: [
+    'Where does water enter and leave the field margin in a wet event?',
+    'Any SEPA designations, culverts, or neighbour downstream risk?',
+    'Is tenancy / ownership clear on the proposed strip length?',
+  ],
+  Soil: [
+    'Which slope / headland loses soil first after heavy rain?',
+    'Any tile-drain outfalls or compaction pans to work around?',
+    'What labour window exists for establishment this season?',
+  ],
+  Climate: [
+    'Which fields suffer wind, frost hollows, or heat stress most?',
+    'Does shelter need to protect livestock, crops, or both?',
+    'Any planning or scheme constraints on taller canopy?',
+  ],
+  Biology: [
+    'Where do pests / pollination shortfalls show up in yield maps?',
+    'Can spraying windows leave space for beneficial insects?',
+    'Any supermarket / assurance biodiversity requirements?',
+  ],
+  Compliance: [
+    'Which NVZ, GAEC, or audit findings drive the urgency?',
+    'What evidence would your advisor need for scheme claims?',
+    'Are buffer widths already counted toward compliance?',
+  ],
+  Social: [
+    'Where do trespass, spray-drift, or neighbour complaints concentrate?',
+    'Any rights of way or edge-of-settlement design constraints?',
+    'Who needs to be in the room for a boundary decision?',
+  ],
+  Economic: [
+    'Is the goal cashflow, cost avoidance, or scheme income first?',
+    'What length can you fund / grant-match without overstretching?',
+    'Any carbon or nature-finance registration already started?',
+  ],
+  Livestock: [
+    'Which paddocks need shade, shelter, or riparian exclusion?',
+    'How will fencing and water points interact with the strip?',
+    'Any welfare / assurance scheme standards to meet?',
+  ],
+  Biodiversity: [
+    'What habitat gaps would an auditor or buyer flag today?',
+    'Can standing deadwood or disease-hit trees be retained safely?',
+    'Who locally coordinates pollinators, bats, or catchment groups?',
+  ],
+  Carbon: [
+    'Do you need a baseline audit before registering credits?',
+    'Is the margin eligible for WCC / similar additionality rules?',
+    'Who will own and verify the carbon claim long-term?',
+  ],
+};
+
+/** Category → advisor role hint for handoff MVP */
+const ADVISOR_ROLE_BY_CATEGORY = {
+  Water:        'a flood / catchment or land-drainage advisor',
+  Soil:         'an agronomist or soils advisor',
+  Climate:      'an agronomist or climate-adaptation advisor',
+  Biology:      'an agronomist or integrated pest management advisor',
+  Compliance:   'an NVZ / compliance or farm-environment advisor',
+  Social:       'a community or land-agent advisor',
+  Economic:     'a farm-business or nature-finance advisor',
+  Livestock:    'a livestock / grazing advisor',
+  Biodiversity: 'a nature / ecology advisor',
+  Carbon:       'a nature-finance or carbon-scheme advisor',
+};
+
+function unlockOutcomes({ browse = false } = {}) {
+  state.outcomesUnlocked = true;
+  if (browse) state.browseMode = true;
+}
+
+function lockOutcomesUnlessBrowse() {
+  // Keep charts after clearing a problem only if the browse path was already confirmed.
+  if (state.problemCode) return;
+  if (state.browseMode && state.outcomesUnlocked) return;
+  state.outcomesUnlocked = false;
+}
+
+function shouldShowOutcomes() {
+  // browseMode marks the escape-hatch path / URL flag; charts wait for outcomesUnlocked
+  // (Confirm, Calculate, shared URL restore, or a selected problem).
+  return state.outcomesUnlocked || !!state.problemCode;
+}
+
+function showEmptyOutcomes() {
+  document.getElementById('results-empty')?.classList.remove('hidden');
+  document.getElementById('results-content')?.classList.add('hidden');
+  updateEmptyStateCopy();
+}
+
+/** Empty-state copy differs once the user is on the browse path but has not Confirmed yet. */
+function updateEmptyStateCopy() {
+  const body = document.getElementById('results-empty-body');
+  if (!body) return;
+  if (state.browseMode && !state.problemCode && !state.outcomesUnlocked) {
+    body.innerHTML =
+      'Browse path selected. Pick a location and ShieldBelt variant, then press ' +
+      '<strong>Confirm selection</strong> (or <strong>Calculate Outcomes</strong>) to size the margin and show results. ' +
+      'No variant is auto-sized until you confirm.';
+    return;
+  }
+  body.innerHTML =
+    'This calculator explores <strong>nature-based solutions on marginal land</strong> ' +
+    '(ShieldBelt linear field margins)—not every farm fix. ' +
+    'Select your biggest problem to see a recommended margin option and outcomes, ' +
+    'or choose <em>I already know the intervention</em> to browse variants, then Confirm.';
+}
 
 // =============================================================================
 // A. Problems data
@@ -199,19 +337,88 @@ function initBiomeSelector() {
         || state.biomeRecords.find(r => r.variant.split('.')[0] === prevName.split('.')[0]));
       state.variantId = same?.id ?? null;
       populateVariantSelector();
+      populateProblemChips();
       if (state.problemCode) {
-        const rec = recommendVariant(state.problemCode, state.biomeRecords, state.farmType);
-        if (rec) { state.variantId = rec.id; syncVariantSelect(); }
+        const rec = recommendVariant(state.problemCode, state.biomeRecords, state.farmType, { storeMeta: true });
+        if (rec) {
+          state.variantId = rec.id;
+          state.recommendedVariantId = rec.id;
+          syncVariantSelect();
+        }
       }
       await applyVariantAndRecalc();
-      closeStep(1); openStep(2);
+      closeStep(2); openStep(3); // Location → Farm Type
     });
   });
 }
 
 // =============================================================================
-// Problem chips
+// Problem chips — relevance helpers (P1)
 // =============================================================================
+
+function problemFitsBiome(problem, biome) {
+  const raw = String(problem?.Applicable_Biomes || '').trim();
+  if (!raw || /^all$/i.test(raw)) return true;
+  const short = BIOME_SHORT[biome] || '';
+  if (!short) return true;
+  // Honour explicit NOT-primary notes (e.g. FLOOD_RIP vs East Neuk)
+  const notPrimary = new RegExp(`NOT\\s+primary[^)]*${short.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'i');
+  if (notPrimary.test(raw)) return false;
+  return raw.includes(short);
+}
+
+function problemFitsFarmType(problem, farmType) {
+  const raw = String(problem?.Applicable_Farm_Types || '').trim();
+  if (!raw || /^all$/i.test(raw)) return true;
+  const parts = raw.split(',').map(s => s.trim()).filter(Boolean);
+  if (parts.includes(farmType)) return true;
+  // Treat "Arable" / "Horticulture" / "Mixed" as soft matches for closest UI farm types
+  if (farmType === 'Cereals' && parts.some(p => /Arable|Horticulture/i.test(p))) return true;
+  if (farmType === 'General Cropping' && parts.some(p => /Arable|Horticulture|Mixed/i.test(p))) return true;
+  if (farmType === 'Dairy' && parts.some(p => /Mixed/i.test(p))) return true;
+  if (farmType === 'LFA Grazing' && parts.some(p => /Mixed/i.test(p))) return true;
+  return false;
+}
+
+function problemRelevance(problem) {
+  const biomeOk = problemFitsBiome(problem, state.biome);
+  const farmOk  = problemFitsFarmType(problem, state.farmType);
+  let rank = 0;
+  if (biomeOk && farmOk) rank = 3;
+  else if (biomeOk || farmOk) rank = 2;
+  else rank = 0;
+  return { biomeOk, farmOk, rank, isFit: rank >= 3 };
+}
+
+function fitContextLabel() {
+  const biome = (BIOME_DISPLAY[state.biome] || state.biome || '').replace(/^[^\w]*\s*/, '');
+  return `${biome} · ${state.farmType}`;
+}
+
+function renderProblemFilterBar(container) {
+  let bar = document.getElementById('problem-filter-bar');
+  if (!bar) {
+    bar = document.createElement('div');
+    bar.id = 'problem-filter-bar';
+    bar.className = 'problem-filter-bar';
+    container.appendChild(bar);
+  }
+  bar.innerHTML = `
+    <p class="problem-filter-bar__context" id="problem-fit-context">
+      Fit badges use your <strong>current</strong> location &amp; farm type:
+      <span class="problem-filter-bar__context-values">${fitContextLabel()}</span>
+      <span class="problem-filter-bar__context-note">(defaults until you change steps 2–3)</span>
+    </p>
+    <label class="problem-filter-bar__opt">
+      <input type="checkbox" id="filter-prioritise-fits" ${state.prioritiseFits ? 'checked' : ''} />
+      Prioritise fits for location &amp; farm type
+    </label>
+  `;
+  bar.querySelector('#filter-prioritise-fits')?.addEventListener('change', (e) => {
+    state.prioritiseFits = e.target.checked;
+    populateProblemChips();
+  });
+}
 
 function populateProblemChips() {
   const container = document.getElementById('problem-chips');
@@ -223,14 +430,19 @@ function populateProblemChips() {
     return;
   }
 
-  // Group by Category
+  renderProblemFilterBar(container);
+
+  // Group by Category; within each category, sort fits first when prioritising
   const grouped = {};
   for (const p of problemsData) {
-    (grouped[p.Category] = grouped[p.Category] || []).push(p);
+    const rel = problemRelevance(p);
+    // Keep poor fits visible but muted — do not hide entirely
+    (grouped[p.Category] = grouped[p.Category] || []).push({ problem: p, rel });
   }
 
-  for (const [cat, problems] of Object.entries(grouped)) {
-    // Category header
+  for (const [cat, items] of Object.entries(grouped)) {
+    items.sort((a, b) => b.rel.rank - a.rel.rank);
+
     const header = document.createElement('div');
     header.className = 'problem-category-header';
     header.textContent = `${CATEGORY_ICONS[cat] || '●'} ${cat}`;
@@ -239,18 +451,34 @@ function populateProblemChips() {
     const row = document.createElement('div');
     row.className = 'problem-chips-row';
 
-    for (const p of problems) {
+    for (const { problem: p, rel } of items) {
       const btn = document.createElement('button');
       btn.type      = 'button';
       btn.className = 'problem-chip';
       btn.dataset.code = p.Problem_Code;
+      if (state.prioritiseFits && !rel.isFit) btn.classList.add('problem-chip--muted');
+      if (rel.biomeOk && rel.farmOk) btn.classList.add('problem-chip--fit');
 
       const symptom = p.Stated_Symptom.length > 40
         ? p.Stated_Symptom.slice(0, 40) + '…'
         : p.Stated_Symptom;
 
+      const badges = [];
+      if (!rel.biomeOk) badges.push('<span class="problem-chip__badge">Other location</span>');
+      if (!rel.farmOk)  badges.push('<span class="problem-chip__badge">Other farm type</span>');
+      if (rel.biomeOk && rel.farmOk) badges.push('<span class="problem-chip__badge problem-chip__badge--fit">Fit</span>');
+
       btn.setAttribute('aria-pressed', String(p.Problem_Code === state.problemCode));
-      btn.innerHTML = `<span class="problem-chip__icon">${CATEGORY_ICONS[cat] || ''}</span>${symptom}`;
+      btn.title = [
+        p.Stated_Symptom,
+        `Biomes: ${p.Applicable_Biomes}`,
+        `Farm types: ${p.Applicable_Farm_Types}`,
+      ].join('\n');
+      btn.innerHTML = `
+        <span class="problem-chip__icon">${CATEGORY_ICONS[cat] || ''}</span>
+        <span class="problem-chip__label">${symptom}</span>
+        ${badges.length ? `<span class="problem-chip__badges">${badges.join('')}</span>` : ''}
+      `;
       btn.addEventListener('click', () => handleProblemChipClick(p.Problem_Code));
 
       row.appendChild(btn);
@@ -258,7 +486,6 @@ function populateProblemChips() {
     container.appendChild(row);
   }
 
-  // Clear button (rendered once at the top)
   if (state.problemCode) renderProblemClearBtn();
 }
 
@@ -274,36 +501,65 @@ function renderProblemClearBtn() {
   btn.style.cssText = 'width:100%;margin-bottom:8px;';
   btn.textContent = '✕ Clear problem filter';
   btn.addEventListener('click', handleClearProblem);
-  container.insertAdjacentElement('afterbegin', btn);
+  const filterBar = document.getElementById('problem-filter-bar');
+  if (filterBar) filterBar.insertAdjacentElement('afterend', btn);
+  else container.insertAdjacentElement('afterbegin', btn);
 }
 
 async function handleProblemChipClick(code) {
   state.problemCode   = code;
   state.activeProblem = problemsByCode[code];
+  unlockOutcomes();
   updateProblemChipUI(code);
   renderProblemClearBtn();
   setText('step-problem-summary', state.activeProblem?.Stated_Symptom?.slice(0, 30) + '…' || code);
 
-  const rec = recommendVariant(code, state.biomeRecords, state.farmType);
+  const rec = recommendVariant(code, state.biomeRecords, state.farmType, { storeMeta: true });
   if (rec) {
     state.variantId            = rec.id;
     state.recommendedVariantId = rec.id;
     syncVariantSelect();
+  } else {
+    state.recommendationMeta = null;
   }
 
   await applyVariantAndRecalc();
-  closeStep(3); openStep(4);
+  closeStep(1); openStep(2); // Problem → Location
 }
 
 async function handleClearProblem() {
   state.problemCode   = null;
   state.activeProblem = null;
+  state.recommendedVariantId = null;
+  state.recommendationMeta = null;
+  state.urlSnapshot = null;
   document.getElementById('btn-clear-problem')?.remove();
   setText('step-problem-summary', 'Not selected');
   updateProblemChipUI(null);
   const panel = document.getElementById('problem-panel');
   if (panel) panel.hidden = true;
-  if (state.results) renderResults(state.results);
+  updatePrintBriefSnapshot(null);
+  updateAdvisorHandoffCopy(null);
+  lockOutcomesUnlessBrowse();
+  if (shouldShowOutcomes() && state.results) renderResults(state.results);
+  else showEmptyOutcomes();
+}
+
+/** Escape hatch: power users skip problem and browse ShieldBelt variants. */
+function handleBrowseIntervention() {
+  // Mark browse intent only — do not unlock charts or auto-size the first variant.
+  // Confirm selection / Calculate Outcomes unlocks and sizes.
+  state.browseMode = true;
+  state.outcomesUnlocked = false;
+  state.variantId = null;
+  state.currentRecord = null;
+  state.results = null;
+  syncVariantSelect();
+  renderVariantDetail(null);
+  closeStep(1);
+  openStep(2);
+  openStep(4);
+  showEmptyOutcomes();
 }
 
 function updateProblemChipUI(activeCode) {
@@ -329,12 +585,17 @@ function initFarmTypeSelector() {
       if (!radio.checked) return;
       state.farmType = radio.value;
       setText('step-farmtype-summary', radio.value);
+      populateProblemChips();
       if (state.problemCode) {
-        const rec = recommendVariant(state.problemCode, state.biomeRecords, state.farmType);
-        if (rec) { state.variantId = rec.id; syncVariantSelect(); }
+        const rec = recommendVariant(state.problemCode, state.biomeRecords, state.farmType, { storeMeta: true });
+        if (rec) {
+          state.variantId = rec.id;
+          state.recommendedVariantId = rec.id;
+          syncVariantSelect();
+        }
       }
       await applyVariantAndRecalc();
-      closeStep(2); openStep(3);
+      closeStep(3); openStep(4); // Farm Type → Variant
     });
   });
 }
@@ -400,9 +661,10 @@ function initVariantSelector() {
 
 function initConfirmVariant() {
   document.getElementById('btn-confirm-variant')?.addEventListener('click', () => {
+    unlockOutcomes({ browse: !state.problemCode });
     closeStep(4);
-    openStep(5);
-    openStep(6);
+    openStep(5); // Length; Assumptions (step 6) stays collapsed
+    applyVariantAndRecalc();
   });
 }
 
@@ -660,57 +922,125 @@ function evalRoutingTrigger(trigger, record, farmType) {
 }
 
 /**
- * Score and rank all records in a biome against a problem.
- * Returns the top-ranked record, or null.
+ * Score one record against a problem; returns { score, reasons[] }.
  */
-function recommendVariant(problemCode, biomeRecords, farmType) {
-  const problem = problemsByCode[problemCode];
-  if (!problem || !biomeRecords.length) return null;
-
+function scoreVariantForProblem(problem, record, farmType) {
+  let score = 0;
+  const reasons = [];
+  const problemCode = problem.Problem_Code;
   const rawVariants = problem.Relevant_ShieldBelt_Variants;
   const targetVariants = (Array.isArray(rawVariants) ? rawVariants : [])
     .map(v => {
       const spaceIdx = v.indexOf(' ');
       return spaceIdx < 0
-        ? { width: '', nameFrag: v.toLowerCase() }
-        : { width: v.slice(0, spaceIdx), nameFrag: v.slice(spaceIdx + 1).toLowerCase() };
+        ? { width: '', nameFrag: v.toLowerCase(), label: v }
+        : { width: v.slice(0, spaceIdx), nameFrag: v.slice(spaceIdx + 1).toLowerCase(), label: v };
     });
 
+  const vname = record.variant.toLowerCase();
+  const width = record.width;
+
+  // 1. Direct variant match (0–40 pts)
+  let matchedLabel = null;
+  let matchPts = 0;
+  for (const tv of targetVariants) {
+    const nameMatch  = vname.includes(tv.nameFrag);
+    const widthMatch = width === tv.width;
+    if (nameMatch && widthMatch) { matchPts = 40; matchedLabel = tv.label; break; }
+    if (nameMatch)               { matchPts = 20; matchedLabel = tv.label; break; }
+  }
+  score += matchPts;
+  if (matchedLabel && matchPts >= 40) {
+    reasons.push(`Listed against this challenge (${matchedLabel})`);
+  } else if (matchedLabel) {
+    reasons.push(`Related listed option (${matchedLabel})`);
+  }
+
+  // 2. Routing trigger (0–30 pts)
+  const triggerPts = evalRoutingTrigger(problem.Routing_Trigger, record, farmType);
+  score += triggerPts;
+  if (triggerPts >= 30) {
+    reasons.push('Strongest match on the routing metric for this problem');
+  } else if (triggerPts > 0) {
+    reasons.push('Partial fit on the problem routing signal');
+  }
+
+  // 3. Farm type relevance (0–15 pts)
+  const applicableFTs = String(problem.Applicable_Farm_Types || '').split(',').map(s => s.trim());
+  if (applicableFTs.includes(farmType)) {
+    score += 15;
+    reasons.push(`Suited to ${farmType}`);
+  } else if (/^all$/i.test(problem.Applicable_Farm_Types || '')) {
+    score += 5;
+  }
+
+  // 4. SSER bonus (0–10 pts)
+  const sser = record.registry?.sserGrossUnitsPerKm || 0;
+  const sserPts = Math.min(sser / 100, 1) * 10;
+  score += sserPts;
+  if (sserPts >= 8) reasons.push('High nature-finance (SSER) density for the margin');
+
+  // 5. Carbon bonus for carbon problems (0–5 pts)
+  if (['CARBON_INCOME', 'CARBON_BASELINE'].includes(problemCode)) {
+    const cPts = Math.min(record.seq50yrTotal / 900, 1) * 5;
+    score += cPts;
+    if (cPts >= 3) reasons.push('Strong 50-year carbon sequestration profile');
+  }
+
+  return { score, reasons: reasons.slice(0, 3) };
+}
+
+/**
+ * Score and rank all records in a biome against a problem.
+ * Returns the top-ranked record, or null.
+ * Also stores recommendation meta (reasons) on state when requested.
+ */
+function recommendVariant(problemCode, biomeRecords, farmType, { storeMeta = false } = {}) {
+  const problem = problemsByCode[problemCode];
+  if (!problem || !biomeRecords.length) {
+    if (storeMeta) state.recommendationMeta = null;
+    return null;
+  }
+
   const scored = biomeRecords.map(record => {
-    let score = 0;
-    const vname = record.variant.toLowerCase();
-    const width = record.width;
-
-    // 1. Direct variant match (0–40 pts)
-    for (const tv of targetVariants) {
-      const nameMatch  = vname.includes(tv.nameFrag);
-      const widthMatch = width === tv.width;
-      if (nameMatch && widthMatch) { score += 40; break; }
-      if (nameMatch)               { score += 20; break; }
-    }
-
-    // 2. Routing trigger (0–30 pts)
-    score += evalRoutingTrigger(problem.Routing_Trigger, record, farmType);
-
-    // 3. Farm type relevance (0–15 pts)
-    const applicableFTs = problem.Applicable_Farm_Types.split(', ');
-    if (applicableFTs.includes(farmType))         score += 15;
-    else if (problem.Applicable_Farm_Types === 'All') score += 5;
-
-    // 4. SSER bonus (0–10 pts)
-    const sser = record.registry?.sserGrossUnitsPerKm || 0;
-    score += Math.min(sser / 100, 1) * 10;
-
-    // 5. Carbon bonus for carbon problems (0–5 pts)
-    if (['CARBON_INCOME', 'CARBON_BASELINE'].includes(problemCode)) {
-      score += Math.min(record.seq50yrTotal / 900, 1) * 5;
-    }
-
-    return { record, score };
+    const { score, reasons } = scoreVariantForProblem(problem, record, farmType);
+    return { record, score, reasons };
   });
 
   scored.sort((a, b) => b.score - a.score);
-  return scored[0]?.record || null;
+  const top = scored[0] || null;
+  if (storeMeta) {
+    state.recommendationMeta = top
+      ? { reasons: top.reasons, score: top.score, variantId: top.record.id }
+      : null;
+  }
+  return top?.record || null;
+}
+
+function explainRecommendation(problem, record) {
+  if (!problem || !record) return [];
+  if (
+    state.recommendationMeta?.variantId === record.id &&
+    Array.isArray(state.recommendationMeta.reasons) &&
+    state.recommendationMeta.reasons.length
+  ) {
+    return state.recommendationMeta.reasons;
+  }
+  return scoreVariantForProblem(problem, record, state.farmType).reasons;
+}
+
+function buildPlanningQuestions(problem, record) {
+  const base = PLANNING_QUESTIONS_BY_CATEGORY[problem?.Category]
+    || [
+      'Photos of the field margin and drainage context',
+      'Tenancy / ownership constraints and labour window',
+      'Any designations or scheme eligibility notes',
+    ];
+  const questions = base.slice(0, 3);
+  if (record?.width) {
+    questions.push(`Does a ${record.width} footprint fit this headland without severing a productive block?`);
+  }
+  return questions.slice(0, 4);
 }
 
 /** Returns top 3 alternate variants for "Also consider" section. */
@@ -761,20 +1091,43 @@ function renderProblemPanel(problem, record, otherVariants = []) {
        <strong>${record.variant}</strong>`
     : '<em class="text-muted">No variant matched</em>';
 
-  // Linked solution pills
+  const whyReasons = isRecommended ? explainRecommendation(problem, record) : [];
+  const whyHTML = whyReasons.length
+    ? `<div class="why-recommended" id="why-recommended">
+         <div class="problem-panel__section-label">Why this option</div>
+         <ul class="why-recommended__list">
+           ${whyReasons.map(r => `<li>${r}</li>`).join('')}
+         </ul>
+       </div>`
+    : '';
+
+  const planningQs = buildPlanningQuestions(problem, record);
+  const planningHTML = `
+    <div class="planning-notes" id="planning-notes">
+      <div class="problem-panel__section-label">Planning questions for your advisor</div>
+      <ul class="planning-notes__list">
+        ${planningQs.map(q => `<li>${q}</li>`).join('')}
+      </ul>
+    </div>`;
+
+  // Related topics — no Solutions Directory promise
   const linkedKeys = Array.isArray(problem.Linked_Solution_Directory_Keys)
     ? problem.Linked_Solution_Directory_Keys
     : [];
   const pillsHTML = linkedKeys.map(k =>
-    `<span class="solution-pill" title="Solutions Directory — coming soon">${k}</span>`
+    `<a class="solution-pill solution-pill--link" href="fife-shieldbelt-topics.html" title="Related topic (not sized in this calculator)">${k}</a>`
   ).join('');
 
-  // "Also consider" variant chips
+  // "Also consider" — clickable ShieldBelt variant chips
   const alsoConsiderHTML = otherVariants.length
     ? `<div class="problem-panel__section-label">Also Consider</div>
-       <div class="solution-pills">
+       <div class="solution-pills" role="group" aria-label="Alternate ShieldBelt variants">
          ${otherVariants.map(v =>
-           `<span class="solution-pill"><span class="badge-width" data-width="${v.width}" style="font-size:0.7em">${v.width}</span> ${v.variant}</span>`
+           `<button type="button" class="solution-pill solution-pill--action"
+              data-variant-id="${v.id}"
+              title="Size this ShieldBelt variant">
+              <span class="badge-width" data-width="${v.width}" style="font-size:0.7em">${v.width}</span> ${v.variant}
+            </button>`
          ).join('')}
        </div>`
     : '';
@@ -782,6 +1135,9 @@ function renderProblemPanel(problem, record, otherVariants = []) {
   const communityStyle = problem.Solution_Community === 'None directly applicable.'
     ? 'style="color:var(--c-muted);font-style:italic;"'
     : '';
+
+  const advisorRole = ADVISOR_ROLE_BY_CATEGORY[problem.Category]
+    || 'an agronomist or nature-finance advisor';
 
   panel.innerHTML = `
     <div class="problem-panel__section-label" style="font-size:1rem;font-weight:700;color:var(--c-forest);margin-bottom:0.5rem;">Solution Summary</div>
@@ -801,9 +1157,15 @@ function renderProblemPanel(problem, record, otherVariants = []) {
       ${variantLabel}: ${variantChip}
     </div>
 
+    ${whyHTML}
+    ${planningHTML}
     ${alsoConsiderHTML}
 
-    <div class="problem-panel__section-label">5-Point Solution Map</div>
+    <div class="problem-panel__section-label">Other responses often considered</div>
+    <p class="solution-map__note text-sm text-muted">
+      Advisors often weigh several response types. This app only sizes ShieldBelt linear margins
+      (nature-based options on marginal land)—not the alternatives below.
+    </p>
     <div class="solution-map">
       <div class="solution-map__row">
         <span class="solution-map__icon">🌱</span>
@@ -843,10 +1205,164 @@ function renderProblemPanel(problem, record, otherVariants = []) {
     </div>
 
     ${pillsHTML ? `
-    <div class="problem-panel__section-label">Linked Solutions</div>
+    <div class="problem-panel__section-label">Related topics (not sized here)</div>
     <div class="solution-pills">${pillsHTML}</div>
     ` : ''}
+
+    <div class="problem-panel__section-label">Discuss with an advisor</div>
+    <p class="advisor-hint text-sm">
+      Bring this diagnosis and the sized ShieldBelt option to ${advisorRole}.
+      Print a planning brief or share the scenario link below — it restores problem, diagnosis context, other-responses snapshot, location, farm type, and margin length.
+    </p>
   `;
+
+  // Wire clickable "Also consider" chips
+  panel.querySelectorAll('[data-variant-id]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const id = btn.getAttribute('data-variant-id');
+      if (!id) return;
+      state.variantId = id;
+      syncVariantSelect();
+      unlockOutcomes();
+      await applyVariantAndRecalc();
+    });
+  });
+
+  updateAdvisorHandoffCopy(problem);
+  updatePrintBriefSnapshot(problem, record, whyReasons, planningQs, state.lastResults);
+}
+
+function updateAdvisorHandoffCopy(problem) {
+  const el = document.getElementById('advisor-handoff-copy');
+  if (!el) return;
+  if (!problem) {
+    el.textContent = 'Use this as a starting point for planning a ShieldBelt margin with an appropriate advisor. Copy the link to reopen this exact scenario.';
+    return;
+  }
+  const role = ADVISOR_ROLE_BY_CATEGORY[problem.Category]
+    || 'an agronomist or nature-finance advisor';
+  el.textContent = `This is a planning start—not a prescription. Discuss the sized margin option with ${role}. The share link restores your problem, a short diagnosis & other-responses snapshot, location, farm type, variant, and length.`;
+}
+
+function placementLabel(placement) {
+  return ({
+    riparian: 'Riparian / watercourse edge',
+    crossSlope: 'Cross-slope / contour',
+    downSlope: 'Down-slope',
+  })[placement] || placement;
+}
+
+function solutionMapRowsHtml(problem, snapshotMap = null) {
+  const rows = [
+    ['a', 'Agronomic', problem?.Solution_Agronomic, snapshotMap?.a],
+    ['i', 'Infrastructure', problem?.Solution_Infrastructure, snapshotMap?.i],
+    ['p', 'Precision Tech', problem?.Solution_Precision_Tech, snapshotMap?.p],
+    ['c', 'Community', problem?.Solution_Community, snapshotMap?.c],
+    ['e', 'Emerging Tech', problem?.Solution_Emerging_Tech_Landscaping, snapshotMap?.e],
+  ];
+  return rows.map(([, label, live, snap]) => {
+    const text = truncText(live || snap || '—', 160);
+    return `<div class="print-brief__map-row"><dt>${label}</dt><dd>${text}</dd></div>`;
+  }).join('');
+}
+
+/** Populate print-only planning brief (P2 richer one-pager layout). */
+function updatePrintBriefSnapshot(problem, record, whyReasons = [], planningQs = [], results = null) {
+  const el = document.getElementById('print-brief-snapshot');
+  const footerEl = document.getElementById('print-brief-footer');
+  if (!el) return;
+
+  const snap = state.urlSnapshot;
+  const effectiveProblem = problem || (snap ? {
+    Problem_Code: snap.code,
+    Stated_Symptom: snap.s,
+    Farmer_Diagnosis_Copy: snap.d,
+    Category: snap.cat,
+    Solution_Agronomic: snap.m?.a,
+    Solution_Infrastructure: snap.m?.i,
+    Solution_Precision_Tech: snap.m?.p,
+    Solution_Community: snap.m?.c,
+    Solution_Emerging_Tech_Landscaping: snap.m?.e,
+  } : null);
+
+  const r = results || state.lastResults;
+  const shareUrl = typeof window !== 'undefined' ? window.location.href : '';
+  const biomeLabel = BIOME_DISPLAY[state.biome] || state.biome;
+  const variantLine = record
+    ? `${record.width} · ${record.variant}`
+    : 'No ShieldBelt variant matched yet';
+
+  // Browse-without-problem: still print a sizing brief when outcomes exist
+  if (!effectiveProblem && !r) {
+    el.hidden = true;
+    el.innerHTML = '';
+    if (footerEl) footerEl.textContent = '';
+    return;
+  }
+
+  const advisorRole = effectiveProblem
+    ? (ADVISOR_ROLE_BY_CATEGORY[effectiveProblem.Category]
+      || 'an agronomist or nature-finance advisor')
+    : 'an agronomist or nature-finance advisor';
+  const why = (whyReasons.length ? whyReasons : (problem ? explainRecommendation(problem, record) : []))
+    .map(item => `<li>${item}</li>`).join('');
+  const qs = (planningQs.length ? planningQs : (problem ? buildPlanningQuestions(problem, record) : []))
+    .map(q => `<li>${q}</li>`).join('');
+  const outcomesHtml = r ? `
+    <div class="print-brief__block print-brief__outcomes">
+      <strong>Sized outcomes (indicative)</strong>
+      <dl class="print-brief__meta print-brief__meta--outcomes">
+        <div><dt>Net agronomic</dt><dd>${fmtGBP(r.netAgronomicBenefit)}/yr</dd></div>
+        <div><dt>25-yr carbon</dt><dd>${fmtGBP(r.seq25yrRevenue)}</dd></div>
+        <div><dt>Wider ecosystem</dt><dd>${fmtGBP(r.widerEcoValue)}/yr</dd></div>
+      </dl>
+    </div>` : '';
+  const mapHtml = effectiveProblem ? solutionMapRowsHtml(problem, snap?.m) : '';
+  const problemMeta = effectiveProblem ? `
+      <div><dt>Problem</dt><dd>${effectiveProblem.Problem_Code || '—'} — ${effectiveProblem.Stated_Symptom || '—'}</dd></div>
+      <div><dt>Category</dt><dd>${effectiveProblem.Category || '—'}</dd></div>` : `
+      <div><dt>Entry path</dt><dd>Browse by intervention (no problem selected)</dd></div>`;
+
+  el.hidden = false;
+  el.innerHTML = `
+    <h2 class="print-brief__heading">ShieldBelt planning brief</h2>
+    <p class="print-brief__lede">Nature-based options on marginal land — starting point for advisor discussion (not a prescription).</p>
+    <dl class="print-brief__meta">
+      ${problemMeta}
+      <div><dt>Location</dt><dd>${biomeLabel}</dd></div>
+      <div><dt>Farm type</dt><dd>${state.farmType}</dd></div>
+      <div><dt>Sized margin</dt><dd>${variantLine} · ${state.lengthM.toLocaleString('en-GB')} m</dd></div>
+      <div><dt>Placement</dt><dd>${placementLabel(state.placement)} · windbreak ${state.windbreakOrient}</dd></div>
+      <div><dt>Credit price</dt><dd>£${state.creditPrice}/tCO₂e (assumption)</dd></div>
+    </dl>
+    ${effectiveProblem ? `<p class="print-brief__diagnosis"><strong>Diagnosis:</strong> ${effectiveProblem.Farmer_Diagnosis_Copy || '—'}</p>` : ''}
+    ${why ? `<div class="print-brief__block"><strong>Why this ShieldBelt option</strong><ul>${why}</ul></div>` : ''}
+    ${outcomesHtml}
+    ${mapHtml ? `<div class="print-brief__block">
+      <strong>Other responses often considered</strong>
+      <p class="print-brief__note" style="margin-top:4px;">Context only — not sized in this calculator.</p>
+      <dl class="print-brief__map">${mapHtml}</dl>
+    </div>` : ''}
+    ${qs ? `<div class="print-brief__block"><strong>Open questions</strong><ul>${qs}</ul></div>` : ''}
+    <div class="print-brief__block">
+      <strong>Bring to the meeting</strong>
+      <ul>
+        <li>Photos of the field margin and drainage context</li>
+        <li>Tenancy / ownership constraints and labour window</li>
+        <li>Any designations, NVZ, or scheme eligibility notes</li>
+        <li>This brief and the sized outcomes above</li>
+      </ul>
+    </div>
+    <p class="print-brief__advisor"><strong>Discuss with:</strong> ${advisorRole}.</p>
+    <p class="print-brief__note">This calculator only sizes ShieldBelt linear margins (NbS on marginal land). Other farm responses stay as honest context—not calculable peers.</p>
+    ${shareUrl ? `<p class="print-brief__share"><strong>Scenario link:</strong> <span class="print-brief__url">${shareUrl}</span></p>` : ''}
+  `;
+
+  if (footerEl) {
+    footerEl.textContent = shareUrl
+      ? `Scenario link: ${shareUrl}`
+      : 'Fife Landscape Resilience Calculator';
+  }
 }
 
 // =============================================================================
@@ -856,11 +1372,31 @@ function renderProblemPanel(problem, record, otherVariants = []) {
 function renderResults(results) {
   if (!results) return;
 
+  if (!shouldShowOutcomes()) {
+    showEmptyOutcomes();
+    return;
+  }
+
   document.getElementById('results-empty')?.classList.add('hidden');
   document.getElementById('results-content')?.classList.remove('hidden');
 
   const r = results;
   const c = state.currentRecord;
+
+  // Print header date for planning brief
+  const printHeader = document.querySelector('.print-header');
+  if (printHeader) {
+    printHeader.setAttribute('data-date', new Date().toLocaleDateString('en-GB'));
+  }
+
+  if (!state.activeProblem) updateAdvisorHandoffCopy(null);
+  updatePrintBriefSnapshot(
+    state.activeProblem,
+    state.currentRecord,
+    state.recommendationMeta?.reasons || [],
+    [],
+    r
+  );
 
   flashStatBoxes();
   updateSSERWidthColor(r.width);
@@ -956,7 +1492,7 @@ function renderResults(results) {
     `;
   }
 
-  // --- Section 2: Wider Ecosystem Services radar (v8: nitrate vs phosphorus separate) ---
+  // --- Section 2: Wider Ecosystem Service Value radar (v8: nitrate vs phosphorus separate) ---
   setCanvasLabel('chart-water-radar', `Water and catchment radar for ${r.variantName}`);
   radarChart(
     'chart-water-radar',
@@ -1367,6 +1903,22 @@ function encodeStateToURL() {
     p.set('hedge', configKey(state.hedgeCfg));
   }
   if (state.problemCode) p.set('problem', state.problemCode);
+  // Compact problem + solution-map snapshot for advisor share clarity (P2)
+  const problemForSnap = state.activeProblem
+    || (state.problemCode && problemsByCode[state.problemCode])
+    || null;
+  if (problemForSnap) {
+    const snap = encodeSnapshotParam(problemForSnap);
+    if (snap) {
+      p.set('snap', snap);
+      state.urlSnapshot = decodeSnapshotParam(snap);
+    }
+  }
+  // Snapshot flags so advisors reopen the same problem-aware scenario
+  if (state.browseMode && !state.problemCode) p.set('browse', '1');
+  if (state.recommendedVariantId && state.variantId === state.recommendedVariantId) {
+    p.set('rec', '1');
+  }
 
   const url = `${window.location.pathname}?${p.toString()}`;
   window.history.replaceState({}, '', url);
@@ -1398,6 +1950,15 @@ function restoreStateFromURL() {
   const rawProblem = p.get('problem');
   if (rawProblem && problemsByCode[rawProblem]) state.problemCode = rawProblem;
 
+  // Restore encoded diagnosis + solution-map snapshot (even if problem code missing)
+  const decodedSnap = decodeSnapshotParam(p.get('snap'));
+  if (decodedSnap) {
+    state.urlSnapshot = decodedSnap;
+    if (!state.problemCode && decodedSnap.code && problemsByCode[decodedSnap.code]) {
+      state.problemCode = decodedSnap.code;
+    }
+  }
+
   if (p.has('variant'))  state._urlVariantNum  = p.get('variant'); // resolved after records load
   // v12: legacy hedge links (2 = Dense Wildlife Hedge, 3 = Heritage Species Hedge) map to HV2 and HV3
   if (state._urlVariantNum === '2' || state._urlVariantNum === '3') state._urlVariantNum = 'HV' + state._urlVariantNum;
@@ -1406,6 +1967,7 @@ function restoreStateFromURL() {
     state.hedgeCfg = normaliseConfig(rawHedge).cfg;
     state.hedgeBasePreset = state._urlVariantNum ?? null;
   }
+  if (p.get('browse') === '1') state.browseMode = true;
 }
 
 // =============================================================================
@@ -1419,8 +1981,7 @@ function showLoadingScreen() {
     el.id = 'loading-screen';
     el.innerHTML = `
       <div class="loading-screen__inner">
-        <div class="loading-screen__logo">NFCA</div>
-        <div class="loading-screen__title">Farm Resilience Calculator</div>
+        <div class="loading-screen__title">Fife Landscape Resilience Calculator</div>
         <div class="loading-screen__spinner"></div>
         <div class="loading-screen__msg">Loading intervention data…</div>
       </div>
@@ -1457,7 +2018,7 @@ function showUpdateBannerOnce() {
   banner.setAttribute('role', 'status');
   const span = document.createElement('span');
   span.className = 'update-banner__text';
-  span.textContent = 'A new version of the Farm Resilience Calculator is available.';
+  span.textContent = 'A new version of the Fife Landscape Resilience Calculator is available.';
   const btn = document.createElement('button');
   btn.type = 'button';
   btn.className = 'update-banner__btn';
@@ -1791,7 +2352,9 @@ function handleReset() {
     biome: BIOMES.EAST_NEUK, variantId: null, farmType: 'General Cropping',
     placement: 'crossSlope', lengthM: 1000, creditPrice: 70,
     problemCode: null, windbreakOrient: 'NS', hedgeCfg: null, hedgeBasePreset: null, carbonRoute: 'oncra', grants: 'aecs', scenario: { ...SCENARIO_DEFAULTS },
-    biomeRecords: [], currentRecord: null, results: null, activeProblem: null,
+    browseMode: false, outcomesUnlocked: false,
+    recommendationMeta: null, urlSnapshot: null,
+    biomeRecords: [], currentRecord: null, results: null, lastResults: null, activeProblem: null,
   });
   document.getElementById('hedge-config')?.classList.add('hidden');
   syncFundingToggles();
@@ -1803,16 +2366,22 @@ function handleReset() {
   if (slider) { slider.value = 70; }
   const display = document.getElementById('credit-price-display');
   if (display) display.textContent = '£70';
+  setText('step-problem-summary', 'Not selected');
 
   document.querySelectorAll('input[name="biome"]').forEach(r => { r.checked = r.value === BIOMES.EAST_NEUK; });
   document.querySelectorAll('input[name="farm-type"]').forEach(r => { r.checked = r.value === 'General Cropping'; });
 
   clearCharts();
-  document.getElementById('results-empty')?.classList.remove('hidden');
-  document.getElementById('results-content')?.classList.add('hidden');
+  showEmptyOutcomes();
   document.getElementById('problem-panel') && (document.getElementById('problem-panel').hidden = true);
   document.getElementById('btn-clear-problem')?.remove();
   updateProblemChipUI(null);
+  updateAdvisorHandoffCopy(null);
+  updatePrintBriefSnapshot(null);
+
+  // Return to problem-first entry
+  closeStep(2); closeStep(3); closeStep(4); closeStep(5); closeStep(6);
+  openStep(1);
 
   window.history.replaceState({}, '', window.location.pathname);
 }
@@ -2048,13 +2617,18 @@ function escapeHTML(s) {
 // =============================================================================
 
 async function applyVariantAndRecalc() {
-  if (!state.variantId && state.biomeRecords.length) {
+  if (!state.variantId && state.biomeRecords.length && shouldShowOutcomes()) {
     // v12 default: HV2 Hedge and margin (programme default), else the first option
     const def = state.biomeRecords.find(r => r.variant.startsWith(DEFAULT_PRESET + '.'));
     state.variantId = (def ?? state.biomeRecords[0])?.id || null;
     syncVariantSelect();
   }
-  if (!state.variantId) return;
+  if (!state.variantId) {
+    renderBiomeContextCard(state.biome);
+    renderVariantDetail(null);
+    if (!shouldShowOutcomes()) showEmptyOutcomes();
+    return;
+  }
 
   const base = await getById(state.variantId);
   if (!base) return;
@@ -2079,7 +2653,7 @@ async function applyVariantAndRecalc() {
   renderVariantDetail(state.currentRecord);
   updateLengthDerived();
   await recalc();
-  scrollToResults();
+  if (shouldShowOutcomes()) scrollToResults();
 }
 
 async function recalc() {
@@ -2103,9 +2677,92 @@ async function recalc() {
 
   state.results     = calculate(inputs, state.currentRecord);
   state.lastResults = state.results;
-  renderResults(state.results);
   renderHedgeConfig();   // installed-length figures in the configurator follow the strip length
+  if (shouldShowOutcomes()) {
+    renderResults(state.results);
+    encodeStateToURL();
+  } else {
+    showEmptyOutcomes();
+  }
+}
+
+function copyShareLink() {
   encodeStateToURL();
+  // Refresh brief so printed/shared URL matches the encoded snap
+  if (state.activeProblem) {
+    updatePrintBriefSnapshot(
+      state.activeProblem,
+      state.currentRecord,
+      state.recommendationMeta?.reasons || [],
+      [],
+      state.lastResults
+    );
+  }
+  const href = window.location.href;
+  navigator.clipboard.writeText(href)
+    .then(() => showToast('Advisor link copied — includes problem, diagnosis & margin scenario'))
+    .catch(() => showToast('Copy failed — copy the address bar URL instead'));
+}
+
+/** Quick mailto handoff — no partner destination; opens the user's email client with the scenario URL. */
+function emailScenarioLink() {
+  if (!shouldShowOutcomes()) {
+    showToast('Select a problem or confirm a variant first');
+    return;
+  }
+  encodeStateToURL();
+  const href = window.location.href;
+  const symptom = state.activeProblem?.Stated_Symptom?.slice(0, 80) || 'ShieldBelt margin scenario';
+  const subject = encodeURIComponent(`Fife Landscape Resilience planning scenario — ${symptom}`);
+  const body = encodeURIComponent(
+    `Here is a ShieldBelt (NbS on marginal land) scenario from the Fife Landscape Resilience Calculator.\n\n` +
+    `Open this link to restore the problem, diagnosis snapshot, location, farm type, variant, and strip length:\n\n` +
+    `${href}\n\n` +
+    `This is a planning start for discussion — not a grant or implementation quote.`
+  );
+  window.location.href = `mailto:?subject=${subject}&body=${body}`;
+}
+
+function printPlanningBrief() {
+  if (!shouldShowOutcomes()) {
+    showToast('Select a problem or confirm a variant first');
+    return;
+  }
+  // Ensure URL encodes current scenario before print/share
+  encodeStateToURL();
+  updatePrintBriefSnapshot(
+    state.activeProblem,
+    state.currentRecord,
+    state.recommendationMeta?.reasons || [],
+    [],
+    state.lastResults
+  );
+  const printHeader = document.querySelector('.print-header');
+  if (printHeader) {
+    printHeader.setAttribute('data-date', new Date().toLocaleDateString('en-GB'));
+  }
+  window.print();
+}
+
+/** Show optional bridge only when RESILIENCE_WIDE_TOOL_URL is set. */
+function renderResilienceWideBridge() {
+  const el = document.getElementById('resilience-wide-bridge');
+  if (!el) return;
+  if (!RESILIENCE_WIDE_TOOL_URL) {
+    el.hidden = true;
+    el.innerHTML = '';
+    return;
+  }
+  el.hidden = false;
+  el.innerHTML = `
+    <a class="resilience-wide-bridge__link" href="${RESILIENCE_WIDE_TOOL_URL}"
+       target="_blank" rel="noopener noreferrer">
+      Explore broader farm options elsewhere
+    </a>
+    <span class="resilience-wide-bridge__note text-sm text-muted">
+      Separate resilience-wide tool — this calculator stays focused on ShieldBelt margins.
+    </span>
+  `;
 }
 
 // =============================================================================
@@ -2196,13 +2853,18 @@ async function init() {
       delete state._urlVariantNum;
     }
 
-    // Resolve problem→variant recommendation
+    // Resolve problem→variant recommendation; unlock if URL carried a journey entry
     if (state.problemCode) {
       state.activeProblem = problemsByCode[state.problemCode] || null;
-      const rec = recommendVariant(state.problemCode, state.biomeRecords, state.farmType);
+      const rec = recommendVariant(state.problemCode, state.biomeRecords, state.farmType, { storeMeta: true });
       if (rec && !state.variantId) state.variantId = rec.id;
+      if (rec) state.recommendedVariantId = rec.id;
       updateProblemChipUI(state.problemCode);
       if (state.activeProblem) renderProblemClearBtn();
+      unlockOutcomes();
+    } else if (state._urlVariantNum || state.variantId || state.browseMode) {
+      // Shared / bookmarked variant link = explicit browse path
+      unlockOutcomes({ browse: true });
     }
 
     // Initialise all controls and event handlers
@@ -2219,14 +2881,17 @@ async function init() {
     initFundingToggles();
     initModal();
 
-    document.getElementById('btn-calculate')?.addEventListener('click', applyVariantAndRecalc);
+    document.getElementById('btn-browse-intervention')?.addEventListener('click', handleBrowseIntervention);
+
+    document.getElementById('btn-calculate')?.addEventListener('click', async () => {
+      unlockOutcomes({ browse: !state.problemCode });
+      await applyVariantAndRecalc();
+    });
     document.getElementById('btn-reset')?.addEventListener('click', handleReset);
 
-    document.getElementById('btn-copy-link')?.addEventListener('click', () => {
-      navigator.clipboard.writeText(window.location.href)
-        .then(() => showToast('Copied!'))
-        .catch(() => showToast('Copy failed'));
-    });
+    document.getElementById('btn-share-advisor')?.addEventListener('click', copyShareLink);
+    document.getElementById('btn-email-scenario')?.addEventListener('click', emailScenarioLink);
+    document.getElementById('btn-print-brief')?.addEventListener('click', printPlanningBrief);
 
     document.getElementById('btn-save-scenario')?.addEventListener('click', () => {
       if (state.lastResults) saveScenario(null, state, state.lastResults);
@@ -2235,11 +2900,15 @@ async function init() {
     initMobileDrawer();
     renderSavedScenarios();
     renderBiomeContextCard(state.biome);
+    renderResilienceWideBridge();
 
     // FIX [print/canvas]: re-render charts synchronously before printing so
     // canvas bitmaps are committed — some browsers clear canvas before print.
     window.addEventListener('beforeprint', () => {
-      if (state.results) renderResults(state.results);
+      if (state.results && shouldShowOutcomes()) {
+        encodeStateToURL();
+        renderResults(state.results);
+      }
     });
 
     // FIX [iOS PWA]: IndexedDB on iOS PWA may be evicted after 7 days inactivity
@@ -2250,8 +2919,9 @@ async function init() {
       document.querySelector('.app-header__inner')?.appendChild(banner);
     }
 
-    // Run initial calculation
+    // Prepare variant/calc data; only show full outcomes when journey is unlocked
     await applyVariantAndRecalc();
+    updateEmptyStateCopy();
 
     if (window.ResizeObserver) {
       const resultsContainer = document.getElementById('results-panel');
@@ -2263,7 +2933,7 @@ async function init() {
           resizeTimer = setTimeout(() => {
             // Only re-render if width actually changed (keyboard show/hide often only changes height on iOS)
             const newWidth = resultsContainer.clientWidth;
-            if (newWidth !== lastKnownWidth && state.results) {
+            if (newWidth !== lastKnownWidth && state.results && shouldShowOutcomes()) {
               lastKnownWidth = newWidth;
               renderResults(state.results);
             }
@@ -2273,7 +2943,7 @@ async function init() {
       }
     }
 
-    // Open step 1 by default
+    // Problem-first: open Biggest Problem by default
     openStep(1);
 
   } catch (err) {

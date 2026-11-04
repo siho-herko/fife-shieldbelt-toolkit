@@ -15,13 +15,15 @@ test.describe('Hedge configurator (v12)', () => {
   test('HV2 Hedge and margin is the default option', async ({ page }) => {
     await page.goto(BASE);
     await waitForAppReady(page);
+    await page.locator('#btn-browse-intervention').click();
+    await page.locator('#btn-calculate').click();
     await expect(title(page)).toHaveText('HV2. Hedge and margin');
     await expect(page.locator('#hedge-config')).not.toHaveClass(/hidden/);
     await expect(page).toHaveURL(/variant=HV2/);
   });
 
   test('adding trees to HV2 switches to the HV4 preset', async ({ page }) => {
-    await page.goto(BASE);
+    await page.goto(`${BASE}/?variant=HV2`);
     await waitForAppReady(page);
     await openStep(page, 4);
     await btn(page, 'trees', 'standards').click();
@@ -30,7 +32,7 @@ test.describe('Hedge configurator (v12)', () => {
   });
 
   test('native mix gives a custom hedge with its trade-offs and a shareable link', async ({ page }) => {
-    await page.goto(BASE);
+    await page.goto(`${BASE}/?variant=HV2`);
     await waitForAppReady(page);
     await openStep(page, 4);
     await btn(page, 'species', 'native').click();
@@ -45,7 +47,7 @@ test.describe('Hedge configurator (v12)', () => {
   });
 
   test('beside a watercourse: double row only, placement set to riparian', async ({ page }) => {
-    await page.goto(BASE);
+    await page.goto(`${BASE}/?variant=HV2`);
     await waitForAppReady(page);
     await openStep(page, 4);
     await btn(page, 'position', 'watercourse').click();
@@ -102,7 +104,7 @@ test.describe('Hedge configurator (v12)', () => {
   test('changing location keeps the hedge customisation', async ({ page }) => {
     await page.goto(`${BASE}/?variant=HV2&hedge=triple-speciesRich-standards-8-contour`);
     await waitForAppReady(page);
-    await openStep(page, 1);
+    await openStep(page, 2);
     await page.locator('.biome-card:has(input[name="biome"][value="Fife (Howe of Fife & Eden)"])').click();
     await expect(page.locator('#results-meta')).toContainText('Howe of Fife');
     await expect(title(page)).toContainText('Custom hedge (triple row, species-rich, with trees, in-field contour)');

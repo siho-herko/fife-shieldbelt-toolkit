@@ -10,8 +10,7 @@ html, body {
 }
 
 /* ==========================================================================
-   Fife Farm Resilience Calculator — Design System
-   Nature Finance Certification Alliance (NFCA)
+   Fife Landscape Resilience Calculator — Design System
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
@@ -23,7 +22,7 @@ html, body {
    ========================================================================== */
 
 :root {
-  /* NFCA Brand Colours */
+  /* Brand colours */
   --c-forest:   #1a3d2b;
   --c-negative: #9b2226;   /* costs / income foregone */
   --c-mid:      #2d6a4f;
@@ -221,6 +220,18 @@ input, select, textarea {
   min-width: 0;
   overflow: hidden;
   box-sizing: border-box;
+  /* Keep chart plane readable on narrow phones without forcing a tall empty card */
+  min-height: 140px;
+}
+
+@media (max-width: 480px) {
+  .results-chart-wrap {
+    min-height: 120px;
+  }
+
+  .results-chart-wrap canvas {
+    max-height: 220px;
+  }
 }
 
 .results-section-body .results-chart-wrap {
@@ -256,20 +267,6 @@ input, select, textarea {
   display: flex;
   align-items: center;
   gap: var(--space-3);
-}
-
-.app-header__logo {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.125rem;
-  color: var(--c-gold-lt);
-  letter-spacing: 0.08em;
-  background: rgba(244,197,66,0.12);
-  border: 1.5px solid var(--c-gold-lt);
-  border-radius: var(--radius-sm);
-  padding: 2px 8px;
-  line-height: 1.4;
-  flex-shrink: 0;
 }
 
 .app-header__title {
@@ -741,6 +738,7 @@ input, select, textarea {
 .problem-chip {
   display: inline-flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 6px;
   padding: 6px 14px;
   border: 1.5px solid var(--c-stone);
@@ -752,7 +750,8 @@ input, select, textarea {
   cursor: pointer;
   transition: all var(--transition-fast);
   user-select: none;
-  white-space: nowrap;
+  white-space: normal;
+  max-width: 100%;
 }
 
 .problem-chip:hover {
@@ -771,6 +770,198 @@ input, select, textarea {
 .problem-chip__icon {
   font-size: 0.9375rem;
   line-height: 1;
+}
+
+.problem-chip__label {
+  text-align: left;
+}
+
+.problem-chip__badges {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-left: 2px;
+}
+
+.problem-chip__badge {
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(26, 61, 43, 0.08);
+  color: var(--c-muted);
+  white-space: nowrap;
+}
+
+.problem-chip__badge--fit {
+  background: rgba(82, 183, 136, 0.18);
+  color: var(--c-forest);
+}
+
+.problem-chip--muted {
+  opacity: 0.55;
+}
+
+.problem-chip--fit {
+  border-color: rgba(82, 183, 136, 0.65);
+}
+
+.problem-chip--selected .problem-chip__badge,
+.problem-chip[aria-pressed="true"] .problem-chip__badge {
+  background: rgba(255, 255, 255, 0.18);
+  color: var(--c-cream);
+}
+
+.problem-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+  margin-bottom: 0.75rem;
+  padding: 0.65rem 0.75rem;
+  background: rgba(26, 61, 43, 0.04);
+  border: 1px solid var(--c-stone);
+  border-radius: var(--radius-md, 8px);
+}
+
+.problem-filter-bar__context {
+  flex: 1 1 100%;
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--c-ink);
+}
+
+.problem-filter-bar__context-values {
+  font-weight: 600;
+}
+
+.problem-filter-bar__context-note {
+  display: inline;
+  margin-left: 0.25rem;
+  color: var(--c-muted);
+  font-size: 0.75rem;
+}
+
+.problem-filter-bar__opt {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8125rem;
+  color: var(--c-ink);
+  cursor: pointer;
+  user-select: none;
+}
+
+.why-recommended,
+.planning-notes {
+  margin: 0.75rem 0 1rem;
+}
+
+.why-recommended__list,
+.planning-notes__list {
+  margin: 0.35rem 0 0;
+  padding-left: 1.15rem;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: var(--c-ink);
+}
+
+.why-recommended__list li + li,
+.planning-notes__list li + li {
+  margin-top: 0.25rem;
+}
+
+.print-brief-snapshot,
+.print-brief-footer {
+  display: none;
+}
+
+.print-brief__heading {
+  font-family: var(--font-display);
+  font-size: 13pt;
+  margin: 0 0 4px;
+  color: var(--c-forest);
+}
+
+.print-brief__lede {
+  font-size: 9pt;
+  color: var(--c-muted);
+  margin: 0 0 10px;
+  line-height: 1.4;
+}
+
+.print-brief__meta {
+  display: grid;
+  gap: 4px;
+  margin: 0 0 10px;
+  font-size: 9pt;
+}
+
+.print-brief__meta--outcomes {
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 6px 12px;
+  margin-top: 6px;
+}
+
+.print-brief__meta div,
+.print-brief__map-row {
+  display: grid;
+  grid-template-columns: 7.5rem 1fr;
+  gap: 6px;
+}
+
+.print-brief__meta dt,
+.print-brief__map-row dt {
+  font-weight: 700;
+  color: var(--c-muted);
+}
+
+.print-brief__meta dd,
+.print-brief__map-row dd {
+  margin: 0;
+}
+
+.print-brief__map {
+  margin: 4px 0 0;
+}
+
+.print-brief__diagnosis,
+.print-brief__note,
+.print-brief__advisor,
+.print-brief__share {
+  font-size: 9pt;
+  line-height: 1.45;
+  margin: 0 0 8px;
+}
+
+.print-brief__url {
+  word-break: break-all;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 8pt;
+}
+
+.print-brief__block {
+  font-size: 9pt;
+  margin: 0 0 8px;
+}
+
+.print-brief__block ul {
+  margin: 4px 0 0;
+  padding-left: 1.1rem;
+}
+
+.resilience-wide-bridge {
+  margin-top: 0.65rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 0.75rem;
+}
+
+.resilience-wide-bridge__link {
+  font-weight: 600;
 }
 
 /* ==========================================================================
@@ -1133,9 +1324,17 @@ input, select, textarea {
   background: var(--c-forest);
   color: rgba(232,245,238,0.7);
   text-align: center;
-  padding: var(--space-5) var(--space-5);
+  padding: var(--space-6) var(--space-5);
   font-size: 0.8125rem;
   line-height: 1.6;
+}
+
+.app-footer__title {
+  margin: 0 0 var(--space-2);
+}
+
+.app-footer__meta {
+  margin: 0 0 var(--space-5);
 }
 
 .app-footer strong {
@@ -1154,6 +1353,72 @@ input, select, textarea {
 .app-footer__dots {
   margin: 0 6px;
   opacity: 0.45;
+}
+
+.app-footer__funders {
+  max-width: 52rem;
+  margin: 0 auto var(--space-5);
+}
+
+.app-footer__funder-text,
+.app-footer__funder-thanks {
+  margin: 0 0 var(--space-3);
+  color: rgba(232,245,238,0.85);
+}
+
+.app-footer__funder-thanks {
+  margin-bottom: var(--space-4);
+}
+
+/* Light panel so black funder logos stay visible on the dark footer */
+.app-footer__logo-panel {
+  background: #F4EFE3;
+  border-radius: var(--radius-md, 8px);
+  padding: 32px;
+  display: flex;
+  justify-content: center;
+}
+
+.app-footer__logos {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+}
+
+.app-footer__logo {
+  display: block;
+  height: auto;
+  /* Never recolour, invert, crop or stretch funder marks */
+  filter: none;
+  mix-blend-mode: normal;
+}
+
+.app-footer__logo--heritage {
+  width: 240px;
+  height: 240px;
+  flex-shrink: 0;
+}
+
+.app-footer__logo--lockup {
+  width: min(401px, 100%);
+  height: auto;
+  max-height: 96px;
+  object-fit: contain;
+}
+
+@media (min-width: 768px) {
+  .app-footer__logos {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 48px;
+  }
+}
+
+.app-footer__credit {
+  margin: 0;
+  font-size: 0.75rem;
 }
 
 /* ==========================================================================
@@ -1271,10 +1536,6 @@ input, select, textarea {
 @media (max-width: 480px) {
   .biome-grid {
     grid-template-columns: 1fr 1fr;
-  }
-
-  .app-header__logo {
-    display: none;
   }
 
   .card__header {
@@ -1538,6 +1799,56 @@ input, select, textarea {
   word-break: break-word;
   box-sizing: border-box;
   position: relative;
+  border: none;
+  font-family: inherit;
+  text-align: left;
+  text-decoration: none;
+}
+
+.solution-pill--action {
+  cursor: pointer;
+  border: 1px solid var(--c-forest);
+  background: #fff;
+}
+
+.solution-pill--action:hover,
+.solution-pill--action:focus-visible {
+  background: var(--c-cream);
+  outline: 2px solid var(--c-gold);
+  outline-offset: 1px;
+}
+
+.solution-pill--link {
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.solution-map__note {
+  margin: 0 0 var(--space-2);
+  line-height: 1.55;
+}
+
+.advisor-hint {
+  margin: 0;
+  line-height: 1.55;
+  color: var(--c-ink);
+}
+
+.advisor-handoff {
+  border-left: 3px solid var(--c-forest);
+}
+
+.advisor-checklist {
+  margin: 0;
+  padding-left: 1.25rem;
+  line-height: 1.55;
+  color: var(--c-ink);
+}
+
+.escape-hatch-btn {
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 /* ==========================================================================
@@ -1730,6 +2041,19 @@ canvas {
 
 .print-header { display: none; }
 
+.print-header__title {
+  font-family: var(--font-display);
+  font-size: 14pt;
+  font-weight: 700;
+  color: var(--c-forest);
+}
+
+.print-header__sub {
+  font-size: 9pt;
+  color: var(--c-muted);
+  margin-top: 2px;
+}
+
 @media print {
   .app-header,
   .panel-left,
@@ -1740,10 +2064,30 @@ canvas {
   .seg-toggle,
   #btn-mobile-drawer,
   .drawer-backdrop,
+  .mobile-results-nav,
+  #btn-print-brief,
+  #btn-share-advisor,
+  #btn-email-scenario,
+  #share-link-hint,
+  #advisor-checklist,
+  .advisor-handoff .flex,
+  .resilience-wide-bridge,
   dialog { display: none !important; }
 
   .app-main  { display: block; padding: 0; }
   .panel-right { width: 100% !important; margin: 0 !important; }
+
+  #results-empty { display: none !important; }
+  #results-content { display: block !important; }
+
+  /* Prefer planning brief + key stats; demote heavy chart cards on paper */
+  #section-avoided-costs canvas,
+  #chart-eco-radar,
+  #chart-water-radar,
+  #chart-carbon,
+  #chart-carbon-cumul {
+    max-height: 160px;
+  }
 
   .print-header {
     display: block !important;
@@ -1751,11 +2095,52 @@ canvas {
     color: var(--c-forest);
     border-bottom: 2px solid var(--c-forest);
     padding-bottom: 8px;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
   }
-  .print-header::before {
-    content: "Fife Farm Resilience Calculator — NFCA · natcert.earth · " attr(data-date);
-    font-size: 11pt;
+  .print-header::after {
+    content: "Fife Landscape Resilience Calculator · " attr(data-date);
+    display: block;
+    font-size: 9pt;
+    margin-top: 4px;
+    color: var(--c-muted);
+  }
+
+  .print-brief-snapshot:not([hidden]) {
+    display: block !important;
+    border: 1px solid var(--c-stone);
+    padding: 10px 12px;
+    margin-bottom: 14px;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .print-brief-footer:not(:empty) {
+    display: block !important;
+    position: running(printFooter);
+    font-size: 8pt;
+    color: var(--c-muted);
+    word-break: break-all;
+  }
+
+  .print-brief__meta--outcomes {
+    border-top: 1px solid var(--c-stone);
+    padding-top: 6px;
+  }
+
+  .print-brief__map-row + .print-brief__map-row {
+    margin-top: 2px;
+  }
+
+  .advisor-handoff {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .why-recommended,
+  .planning-notes,
+  .problem-panel {
+    break-inside: avoid;
+    page-break-inside: avoid;
   }
 
   .card,
@@ -1764,7 +2149,10 @@ canvas {
 
   canvas { max-width: 100%; }
 
-  @page { size: A4 portrait; margin: 15mm; }
+  @page {
+    size: A4 portrait;
+    margin: 14mm 14mm 18mm;
+  }
 }
 
 /* ============================================================================
@@ -1895,7 +2283,7 @@ canvas {
     background: var(--c-bg);
   }
 
-  /* "Adjust Inputs" nav buttons embedded in results panel */
+  /* "Adjust inputs" nav buttons embedded in results panel */
   .mobile-results-nav {
     display: flex;
     justify-content: center;
