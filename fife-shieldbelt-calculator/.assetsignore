@@ -14,6 +14,7 @@ package-lock.json
 playwright.config.js
 wrangler.toml
 wrangler.jsonc
+_redirects
 *.md
 *.tgz
 # Orphaned page carrying superseded v9-era figures (deleted on the refresh branch; still on origin/main)
