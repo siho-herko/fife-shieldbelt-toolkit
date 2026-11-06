@@ -1,5 +1,6 @@
 # Cloudflare Pages preview guard. Production is the Static Assets Worker, where
 # .assetsignore excludes these files entirely.
+# Kept on main so the legacy Pages production address receives the same guard.
 /tests/* / 302
 /scripts/* / 302
 /data/fife_interventions_db_v9.json / 302
