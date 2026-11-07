@@ -1,19 +1,23 @@
 /**
  * mobile-drawer-issues.spec.js
  *
- * Focused tests for three reported mobile drawer bugs:
+ * Focused tests for reported mobile drawer / chrome bugs:
  *  1. Inputs panel should start at the top of the screen when open
  *  2. "Calculate Outcomes" should close the drawer and show outputs
  *  3. "Go to Outputs" footer button must not be clipped at the bottom
+ *  4. Pixel 5 empty state: FAB must not sit under #btn-adjust-inputs-bottom
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect, devices } from '@playwright/test';
 import { waitForAppReady } from './helpers.js';
 
 const BASE = 'http://localhost:8080';
 
 // iPhone 14 Pro dimensions
 const MOBILE_VIEWPORT = { width: 390, height: 844 };
+
+// Playwright Pixel 5 CSS viewport (short enough to expose the empty-state overlap)
+const PIXEL5_VIEWPORT = devices['Pixel 5'].viewport;
 
 test.describe('Mobile drawer — issue fixes', () => {
   test.use({ viewport: MOBILE_VIEWPORT });
@@ -102,5 +106,54 @@ test.describe('Mobile drawer — issue fixes', () => {
     expect(bb).not.toBeNull();
     // A fully rendered button should be at least 36px tall
     expect(bb.height).toBeGreaterThanOrEqual(36);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Issue 4: Pixel 5 empty-state FAB must clear the bottom Adjust Inputs row
+// ---------------------------------------------------------------------------
+test.describe('Mobile chrome — Pixel 5 empty-state FAB clearance', () => {
+  test.use({ viewport: PIXEL5_VIEWPORT });
+
+  test.beforeEach(async ({ page }) => {
+    await page.goto(BASE);
+    await waitForAppReady(page);
+  });
+
+  test('Issue 4: FAB does not overlap #btn-adjust-inputs-bottom on empty state', async ({ page }) => {
+    await expect(page.locator('#results-empty')).toBeVisible();
+    await expect(page.locator('#btn-mobile-drawer')).toBeVisible();
+    await expect(page.locator('#btn-adjust-inputs-bottom')).toBeVisible();
+
+    const geometry = await page.evaluate(() => {
+      const fab = document.getElementById('btn-mobile-drawer');
+      const bottom = document.getElementById('btn-adjust-inputs-bottom');
+      const fabRect = fab.getBoundingClientRect();
+      const bottomRect = bottom.getBoundingClientRect();
+      const cx = fabRect.left + fabRect.width / 2;
+      const cy = fabRect.top + fabRect.height / 2;
+      const hit = document.elementFromPoint(cx, cy);
+      const overlap = !(
+        fabRect.right < bottomRect.left ||
+        fabRect.left > bottomRect.right ||
+        fabRect.bottom < bottomRect.top ||
+        fabRect.top > bottomRect.bottom
+      );
+      return {
+        overlap,
+        hitId: hit?.id || null,
+        hitIsFab: !!hit?.closest?.('#btn-mobile-drawer'),
+      };
+    });
+
+    expect(geometry.overlap).toBe(false);
+    expect(geometry.hitIsFab).toBe(true);
+    expect(geometry.hitId).not.toBe('btn-adjust-inputs-bottom');
+  });
+
+  test('Issue 4: FAB remains tappable and opens the drawer on empty state', async ({ page }) => {
+    await page.locator('#btn-mobile-drawer').click();
+    await page.waitForTimeout(400);
+    await expect(page.locator('.panel-left')).toHaveClass(/drawer-open/);
   });
 });
