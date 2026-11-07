@@ -1455,22 +1455,30 @@ function renderResults(results) {
 
   // --- Section 1: Agronomic Services radar ---
   setCanvasLabel('chart-eco-radar', `Agronomic services radar chart for ${r.variantName}`);
+  const ecoRadarAxes = ['Ecosystem Health', 'Habitat', 'Soil Carbon', 'Agronomic Yield', 'Pest Reg', 'Thermal'];
+  const ecoRadarValues = [
+    r.radarData.ecosystemHealth,
+    r.radarData.habitatDistinctiveness,
+    r.radarData.soilCarbonAndHealth,
+    r.radarData.agronomicYield,
+    Math.min((r.pestRegulationValue / (r.lengthM / 1000)) / 2, 100),
+    Math.min((r.thermalRegulationValue / (r.lengthM / 1000)) / 2, 100),
+  ];
   radarChart(
     'chart-eco-radar',
     ['Ecosystem\nHealth', 'Habitat', 'Soil Carbon', 'Agronomic\nYield', 'Pest Reg', 'Thermal'],
     [{
       label: r.variantName,
       color: '#52b788',
-      values: [
-        r.radarData.ecosystemHealth,
-        r.radarData.habitatDistinctiveness,
-        r.radarData.soilCarbonAndHealth,
-        r.radarData.agronomicYield,
-        Math.min((r.pestRegulationValue / (r.lengthM / 1000)) / 2, 100),
-        Math.min((r.thermalRegulationValue / (r.lengthM / 1000)) / 2, 100),
-      ],
+      values: ecoRadarValues,
     }],
     null
+  );
+  setChartTextAlt(
+    'chart-eco-radar',
+    'chart-eco-radar-desc',
+    `Agronomic services radar for ${r.variantName}`,
+    ecoRadarAxes.map((label, i) => [label, String(Math.round(ecoRadarValues[i]))])
   );
 
   // Pest, thermal & pollination chips
@@ -1494,22 +1502,30 @@ function renderResults(results) {
 
   // --- Section 2: Wider Ecosystem Service Value radar (v8: nitrate vs phosphorus separate) ---
   setCanvasLabel('chart-water-radar', `Water and catchment radar for ${r.variantName}`);
+  const waterRadarAxes = ['Flood Control', 'Sediment Trap', 'Nitrate Retention', 'Phosphorus Retention', 'Catchment Hydro', 'Water Quality'];
+  const waterRadarValues = [
+    r.sepaData.floodControl,
+    r.sepaData.sedimentTrapping,
+    r.sepaData.nitrateRetention,
+    r.sepaData.phosphorusRetention,
+    r.radarData.catchmentHydrology,
+    r.radarData.waterQuality,
+  ];
   radarChart(
     'chart-water-radar',
     ['Flood Control', 'Sediment Trap', 'Nitrate\nRetention', 'Phosphorus\nRetention', 'Catchment\nHydro', 'Water\nQuality'],
     [{
       label: r.variantName,
       color: '#2d6a4f',
-      values: [
-        r.sepaData.floodControl,
-        r.sepaData.sedimentTrapping,
-        r.sepaData.nitrateRetention,
-        r.sepaData.phosphorusRetention,
-        r.radarData.catchmentHydrology,
-        r.radarData.waterQuality,
-      ],
+      values: waterRadarValues,
     }],
     null
+  );
+  setChartTextAlt(
+    'chart-water-radar',
+    'chart-water-radar-desc',
+    `Water and catchment radar for ${r.variantName}`,
+    waterRadarAxes.map((label, i) => [label, String(Math.round(waterRadarValues[i]))])
   );
 
   const waterExtras = document.getElementById('water-sepa-extras');
@@ -1570,27 +1586,43 @@ function renderResults(results) {
   // --- Section 3: Avoided costs ---
   setCanvasLabel('chart-avoided-costs', `Avoided costs chart for ${r.variantName}`);
   const ac = r.avoidedCostsBreakdown;
+  const avoidedLabels = ['Flood control', 'Erosion avoided', 'Compaction avoided', 'Down erosion', 'Fuel savings'];
+  const avoidedValues = [ac.floodControl, ac.avoidedErosion, ac.avoidedCompaction, ac.avoidedDownErosion, ac.avoidedFuelCosts];
   hBar(
     'chart-avoided-costs',
-    ['Flood control', 'Erosion avoided', 'Compaction avoided', 'Down erosion', 'Fuel savings'],
-    [ac.floodControl, ac.avoidedErosion, ac.avoidedCompaction, ac.avoidedDownErosion, ac.avoidedFuelCosts],
+    avoidedLabels,
+    avoidedValues,
     [CHART_COLORS.carbon, CHART_COLORS.crew, CHART_COLORS.pest, CHART_COLORS.windbreak, CHART_COLORS.avoided],
     null,
     v => fmtGBP(v),
     null
   );
+  setChartTextAlt(
+    'chart-avoided-costs',
+    'chart-avoided-costs-desc',
+    `Avoided costs for ${r.variantName} (unvalidated scenario, not counted)`,
+    avoidedLabels.map((label, i) => [label, fmtGBP(avoidedValues[i])])
+  );
 
   // Productivity Benefits (windbreak)
   setCanvasLabel('chart-windbreak', `Productivity benefits chart for ${r.variantName}`);
   const wb2 = r.windbreakBreakdown;
+  const windLabels = ['Yield bump', 'Water retention', 'Nutrient pump'];
+  const windValues = [wb2.yieldBump, wb2.waterRetention, wb2.nutrientPump];
   hBar(
     'chart-windbreak',
-    ['Yield bump', 'Water retention', 'Nutrient pump'],
-    [wb2.yieldBump, wb2.waterRetention, wb2.nutrientPump],
+    windLabels,
+    windValues,
     [CHART_COLORS.carbon, CHART_COLORS.crew, CHART_COLORS.pest],
     null,
     v => fmtGBP(v),
     null
+  );
+  setChartTextAlt(
+    'chart-windbreak',
+    'chart-windbreak-desc',
+    `Productivity benefits for ${r.variantName} (unvalidated scenario, not counted)`,
+    windLabels.map((label, i) => [label, fmtGBP(windValues[i])])
   );
 
   // Income foregone row
@@ -1614,6 +1646,13 @@ function renderResults(results) {
     'chart-carbon-legend'
   );
   setText('chart-carbon-total', r.carbonSubstantiated ? `50yr gross per km: ${fmtCarbon(r.seq50yrTotal)} (provisional)` : `50yr per km: ${fmtCarbon(r.seq50yrTotal)} (unsubstantiated scenario)`);
+  const traj = Array.isArray(r.seqTrajectory) ? r.seqTrajectory : [];
+  setChartTextAlt(
+    'chart-carbon',
+    'chart-carbon-desc',
+    `Carbon sequestration trajectory for ${r.variantName} (tCO₂e per km cumulative)`,
+    xLabels.map((label, i) => [label, fmtCarbon(traj[i] ?? 0)])
+  );
 
   // --- Agronomic notes ---
   const agro = document.getElementById('agronomic-notes');
@@ -2610,6 +2649,35 @@ function aecsSummary(a, g, km) {
 
 function escapeHTML(s) {
   return String(s ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+}
+
+/**
+ * Update the aria-describedby text alternative for a chart canvas.
+ * rows: array of [label, displayValue] (displayValue already formatted).
+ */
+function setChartTextAlt(canvasId, descId, title, rows) {
+  const canvas = document.getElementById(canvasId);
+  const desc = document.getElementById(descId);
+  if (canvas) {
+    canvas.setAttribute('role', 'img');
+    canvas.setAttribute('aria-describedby', descId);
+  }
+  if (!desc) return;
+  const pairs = (rows || []).filter(([label]) => label != null);
+  const summary = pairs.length
+    ? pairs.map(([label, value]) => `${label}: ${value}`).join('; ')
+    : 'No data';
+  const body = pairs.map(([label, value]) => (
+    `<tr><th scope="row">${escapeHTML(label)}</th><td>${escapeHTML(value)}</td></tr>`
+  )).join('');
+  desc.innerHTML = `
+    <p class="chart-text-alt__summary">${escapeHTML(title)}. ${escapeHTML(summary)}.</p>
+    <table>
+      <caption>${escapeHTML(title)}</caption>
+      <thead><tr><th scope="col">Metric</th><th scope="col">Value</th></tr></thead>
+      <tbody>${body || '<tr><td colspan="2">No data</td></tr>'}</tbody>
+    </table>
+  `;
 }
 
 // =============================================================================

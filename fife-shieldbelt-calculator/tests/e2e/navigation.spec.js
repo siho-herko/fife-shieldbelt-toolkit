@@ -106,6 +106,37 @@ test.describe('App load', () => {
     );
   });
 
+  test('footer has §2.5 disclaimer and last-updated / rate-year line', async ({ page }) => {
+    await page.goto(BASE);
+    await waitForAppReady(page);
+    const disclaimer = page.locator('#app-disclaimer');
+    await expect(disclaimer).toHaveText(
+      'Indicative estimates for discussion, based on the sources listed below. Not financial, legal or agronomic advice. Check figures with a qualified adviser before making decisions.'
+    );
+    const updated = page.locator('#app-last-updated');
+    await expect(updated).toContainText('Last updated: 4 November 2026');
+    await expect(updated).toContainText('Farm Management Handbook February 2026');
+    await expect(updated).toContainText('AECS option pages checked 4 November 2026');
+  });
+
+  test('five result canvases expose aria-describedby text alternatives', async ({ page }) => {
+    await page.goto(BASE);
+    await waitForAppReady(page);
+    const charts = [
+      ['chart-eco-radar', 'chart-eco-radar-desc'],
+      ['chart-water-radar', 'chart-water-radar-desc'],
+      ['chart-avoided-costs', 'chart-avoided-costs-desc'],
+      ['chart-windbreak', 'chart-windbreak-desc'],
+      ['chart-carbon', 'chart-carbon-desc'],
+    ];
+    for (const [canvasId, descId] of charts) {
+      const canvas = page.locator(`#${canvasId}`);
+      await expect(canvas).toHaveAttribute('aria-describedby', descId);
+      await expect(page.locator(`#${descId}`)).toBeAttached();
+      await expect(page.locator(`#${descId}`)).not.toContainText('canvas not supported');
+    }
+  });
+
   test('html lang is en-GB and canonical points at resilience-calculator', async ({ page }) => {
     await page.goto(BASE);
     await expect(page.locator('html')).toHaveAttribute('lang', 'en-GB');

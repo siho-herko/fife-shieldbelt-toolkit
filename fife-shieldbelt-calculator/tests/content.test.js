@@ -172,6 +172,20 @@ const allCodes = problems.map(p => p.Problem_Code);
 assert(new Set(allCodes).size === allCodes.length, 'All Problem_Codes unique');
 
 // ---------------------------------------------------------------------------
+// 10b. British English spellings (spelling only)
+// ---------------------------------------------------------------------------
+console.log('\n--- 10b. British English ---');
+const US_SPELLING = /\b(fertilizer|fertilize|liters?|neighbors?|neighboring|optimize|maximize|utilizing|center|meter)\b/i;
+const usHits = [];
+for (const p of problems) {
+  for (const [key, val] of Object.entries(p)) {
+    if (typeof val !== 'string') continue;
+    if (US_SPELLING.test(val)) usHits.push(`${p.Problem_Code}.${key}`);
+  }
+}
+assert(usHits.length === 0, 'No US spellings in problem copy' + (usHits.length ? ` (${usHits.join(', ')})` : ''));
+
+// ---------------------------------------------------------------------------
 // 11. Relevant_ShieldBelt_Variants resolve against interventions DB
 // ---------------------------------------------------------------------------
 console.log('\n--- 11. Variant mappings resolve in interventions DB ---');
