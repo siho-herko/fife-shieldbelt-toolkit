@@ -372,7 +372,7 @@
                 <span class="form-input--unit__suffix">m</span>
               </div>
               <span class="form-hint" id="strip-length-hint">
-                1,000 m = 1 km (a typical field boundary). Results scale linearly.
+                1,000 m = 1 km (a typical field boundary). Results scale linearly with length — see <a href="#sources-method">Sources and method</a>.
               </span>
             </div>
             <div class="card card--flat mt-2" style="background:var(--c-cream);">
@@ -819,6 +819,135 @@
       <span class="app-footer__dots">·</span>
       168 location–variant records across 6 Fife landscape areas
     </p>
+
+    <section class="app-footer__sources" id="sources-method" aria-labelledby="sources-method-heading">
+      <p class="app-footer__disclaimer">
+        Indicative estimates for discussion, based on the sources listed below. Not financial, legal or agronomic advice. Check figures with a qualified adviser before making decisions.
+      </p>
+
+      <details class="app-footer__sources-details">
+        <summary id="sources-method-heading">Sources and method</summary>
+        <div class="app-footer__sources-body">
+          <p>
+            Draft for Si review — do not treat as approved until the figures register entries below are confirmed.
+            Every figure family here traces to <span class="app-footer__mono">docs/figures-register.csv</span>
+            (with provenance notes where that register points to them). Status words such as VERIFIED, CITED, JUDGEMENT, SI, DERIVED, INDICATIVE and WITHDRAWN are the register’s own labels.
+          </p>
+
+          <h3>How results scale with strip length</h3>
+          <p>
+            Per-kilometre rates in the dataset are multiplied by installed length in kilometres (length in metres ÷ 1,000).
+            That is why the strip-length hint says results scale linearly: it is the calculator’s arithmetic, not a field claim that every benefit grows in exact proportion at every site.
+          </p>
+
+          <h3>Carbon price</h3>
+          <p>
+            <strong>Default £70 per tCO₂e</strong> — register <em>Carbon price (default)</em>:
+            ONCRA central range £60–80; Si chose £70 (CITED + SI; 2026-10).
+            Register <em>Carbon price slider range</em>: Si decision 3 Nov 2026; £150 = upside case (SI).
+            Register <em>WCC price reference</em>: Woodland Carbon Code (WCC) 2025 volume-weighted average Pending Issuance Unit £28.32
+            (3 respondents; voluntary disclosure) (VERIFIED).
+          </p>
+
+          <h3>ONCRA net factor and claims</h3>
+          <p>
+            Register <em>ONCRA net factor</em>: illustrative default 0.64 of gross —
+            20% greenhouse-gas default × 20% buffer; 0.52 if Category 3 / 35% buffer.
+            Not a validated project factor (VERIFIED rules + JUDGEMENT scenario).
+            Register <em>ONCRA claims</em>: Potential (ex-ante) units support contribution claims only;
+            ONCRA is not CCP-eligible (Guidelines §§5.4–5.5; ICVCM status checked Oct 2026) (VERIFIED).
+          </p>
+
+          <h3>Hedge carbon (gross, 50 years)</h3>
+          <p>
+            Register <em>Hedge carbon by form</em> and <em>Hedge options (v12)</em>:
+            52.5 / 70.7 / 92.6 tCO₂e per km over 50 years for 2 m double / 3 m triple / 4.2 m productive forms
+            (<code>hedge_carbon_model.py</code> v2; JavaScript port in <code>hedge-config.js</code>).
+            Productive claim counted as soil + roots (41.2 when coppiced); standard trees not counted
+            (JUDGEMENT on VERIFIED/CITED inputs). Pool inputs and plateau choice are in register
+            <em>Dense Wildlife Hedge 3m carbon</em>, <em>Heritage Species Hedge 3m carbon</em>,
+            <em>Productive Hedge 4.2m carbon (programme)</em>, and <em>Hedge SOC plateau (model)</em>.
+          </p>
+
+          <h3>Income forgone</h3>
+          <p>
+            Register <em>Income forgone method</em> and <em>Income forgone (hedges, v12)</em>:
+            incremental cropped width × SAC Consulting / Farm Advisory Service Farm Management Handbook
+            February 2026 gross margins × selected productivity factor (default 0.7; JUDGEMENT; Si decision),
+            rounded to £10 (CITED + JUDGEMENT + SI).
+            Farm-type margins — register <em>Gross margin Cereals</em>, <em>Gross margin General Cropping</em>,
+            <em>Gross margin Dairy</em>, <em>Gross margin LFA</em> — are VERIFIED table inputs with JUDGEMENT
+            on means and LFA conversion; see
+            <span class="app-footer__mono">docs/provenance-gross-margins-and-margin-soc-2026-11-04.md</span>.
+            Example cereals outcomes from register <em>Income forgone (hedges, v12)</em>:
+            HV1 £200; HV2/HV3/HV4 £400; HV5 £670; HV6/HV8 £530; HV7 £670 after a 2 m statutory baseline (DERIVED).
+          </p>
+
+          <h3>Water quality (indicative avoided damage)</h3>
+          <p>
+            Register <em>Water retention by width (v12)</em>: Stutter, Costa &amp; Ó hUallacháin 2021 width-only fits
+            for sediment and total phosphorus retention (VERIFIED regression; JUDGEMENT transfer to site);
+            nitrate is not valued.
+            Register <em>Water purification (v12)</em> and <em>Sediment damage value (low case)</em>:
+            loads and delivery are JUDGEMENT; unit values £0.054/kg sediment low (Defra IA Defra1819 Table 22, 2014 prices; VERIFIED)
+            and £0.55/kg high (CREW CRW2024/04; CITED), with phosphorus £46.61 (CREW).
+            Totals use the low case. Register <em>Flood storage (rebuilt)</em> and <em>Air filtration</em>
+            are NOT VALUED in v11+ (WITHDRAWN).
+          </p>
+
+          <h3>What is shown but not counted in totals</h3>
+          <p>
+            Register <em>Pollination / windbreak / thermal / avoided chemical values</em>: unvalidated scenario values; excluded from totals (v11).
+            Register <em>Non-hedge variant carbon</em>: unsubstantiated scenario profiles; excluded from carbon value and net units (v11).
+            Register <em>Margin soil carbon (scenario)</em>: 28–50 tCO₂e per ha over 50 years is a JUDGEMENT placeholder and is NOT COUNTED
+            (provenance note in the gross-margins document).
+          </p>
+
+          <h3>AECS payments (when grants are on)</h3>
+          <p>
+            Register <em>AECS hedge payments (v12.1)</em>: capital £5.40/m planting (+£5.50/m per side stock fence);
+            Creation of Hedgerows £1.20/m/yr for 5 years (VERIFIED rates; COUNTED when grants are on; Si 4 Nov 2026).
+            Register <em>AECS strip payment</em>: Grass Strips / Water Margins £495.62/ha/yr on payable width beyond the statutory baseline
+            (JUDGEMENT on VERIFIED; RPID geometry confirmation still open). Rates checked against the register entries dated through 4 Nov 2026.
+          </p>
+
+          <h3>Planting costs and funding stack</h3>
+          <p>
+            Register <em>Hedge establishment cost (v12.3, user-adjustable)</em>: double-row low/central/high £11 / £16 / £23 per m;
+            triple and productive £14 / £20 / £30; standards and stock fence as in the register
+            (JUDGEMENT on CITED build-up and England / North York Moors cross-checks; no contractor quotes).
+            Register <em>Funding stack horizon and discount</em>: default 30 years / 3.5% (JUDGEMENT; not an ONCRA hurdle).
+            Present-value funding-gap examples in the register are DERIVED scenario outputs, not offers.
+          </p>
+
+          <h3>Biodiversity screening units</h3>
+          <p>
+            Register <em>SSE hedgerow units</em>; register <em>SSE margin units</em>:
+            SSE Biodiversity Toolkit v1.0 rules (VERIFIED) with JUDGEMENT inputs for condition, timing and connectivity.
+            Grassland margin units only if an ecologist accepts the habitat class.
+          </p>
+
+          <h3>Indicative landscape capacity (biome cards)</h3>
+          <p>
+            Register <em>Network indicative capacity (Fife)</em>: about 1,900 km split across biomes (550 / 400 / 330 / 280 / 220 / 150) —
+            legacy estimates; method not documented (INDICATIVE, unsourced).
+            Register <em>East Neuk potential network</em>: 330 km (INDICATIVE, unsourced).
+            These cards are context only; they are not design targets for a single farm.
+          </p>
+
+          <p class="app-footer__sources-authority">
+            Authority for shared public figures: <span class="app-footer__mono">docs/figures-register.csv</span>.
+            Do not invent replacements. Raise figure changes with Si.
+          </p>
+        </div>
+      </details>
+
+      <p class="app-footer__updated">
+        Last updated: <em>pending Si confirmation</em>
+        <span class="app-footer__dots">·</span>
+        Figures register current through 4 November 2026
+      </p>
+    </section>
 
     <div class="app-footer__funders">
       <p class="app-footer__funder-text">
