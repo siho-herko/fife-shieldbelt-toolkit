@@ -1,6 +1,9 @@
 import { test,expect } from '@playwright/test';
-import { waitForAppReady,openStep } from './helpers.js';
-async function inputs(page){if(await page.locator('#btn-mobile-drawer').isVisible())await page.locator('#btn-mobile-drawer').click();await openStep(page,6);}
+import { waitForAppReady, openStep, ensureInputsDrawerOpen } from './helpers.js';
+async function inputs(page) {
+  await ensureInputsDrawerOpen(page);
+  await openStep(page, 6);
+}
 test('zero-sales scenario survives sharing without an ONCRA pass',async({page})=>{
  await page.goto('/?variant=HV2');await waitForAppReady(page);await inputs(page);
  await page.getByText('Sales and sponsorship',{exact:true}).click();
