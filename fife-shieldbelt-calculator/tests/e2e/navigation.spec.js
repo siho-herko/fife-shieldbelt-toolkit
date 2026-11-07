@@ -127,6 +127,13 @@ test.describe('App load', () => {
     await expect(sources).toContainText('AECS hedge payments');
     await expect(sources).toContainText('scale linearly');
     await expect(sources).toContainText('pending Si confirmation');
+    // Open items must stay worded as open, not settled
+    await expect(sources).toContainText('Written ONCRA rulings');
+    await expect(sources).toContainText('remain open');
+    await expect(sources).toContainText('RPID geometry confirmation still open');
+    await expect(sources).toContainText('Contractor quotes are still open');
+    await expect(sources).toContainText('Field evidence for soil carbon remains open');
+    await expect(sources).toContainText('Grassland margin units remain open');
     await expect(page.locator('#strip-length-hint a[href="#sources-method"]')).toBeVisible();
   });
 
