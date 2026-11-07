@@ -33,9 +33,8 @@ export async function waitForAppReady(page) {
  * No-op on desktop. Idempotent — will not click if the drawer is already open
  * (the floating FAB toggles to "Go to Outputs" when open).
  *
- * Prefer the in-results Adjust Inputs buttons (open-only). On short viewports
- * such as Pixel 5, `#btn-adjust-inputs-bottom` sits above the FAB and
- * intercepts its taps (see `.mobile-results-nav--bottom` z-index 210).
+ * Prefer the in-results Adjust Inputs buttons (open-only). They do not toggle
+ * closed the way the FAB does once the drawer is open.
  */
 export async function ensureInputsDrawerOpen(page) {
   const fab = page.locator('#btn-mobile-drawer');

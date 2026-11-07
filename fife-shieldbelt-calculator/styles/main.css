@@ -2197,6 +2197,31 @@ canvas {
 }
 
 @media (max-width: 767px) {
+  /*
+   * Short empty-state layouts (e.g. Pixel 5 393×727): the in-flow bottom
+   * "Adjust inputs" row used to land on the fixed FAB hotspot. Fill the
+   * results column and pin that row above the FAB with padding, instead of
+   * covering the FAB with z-index.
+   */
+  .panel-right {
+    min-height: calc(100dvh - var(--header-height) - 2 * var(--space-4));
+  }
+
+  /* Override the inline min-height:420px so the empty card can flex-fill */
+  #results-empty:not(.hidden) {
+    min-height: 0 !important;
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #results-empty:not(.hidden) .empty-state {
+    flex: 1 1 auto;
+    /* Tighter vertical padding so the bottom Adjust row clears the FAB
+       on short viewports (Pixel 5 empty state was overlapping). */
+    padding-block: var(--space-4);
+  }
+
   /* Floating trigger button — fixed at bottom of viewport */
   .mobile-drawer-trigger {
     display: block;
@@ -2295,14 +2320,16 @@ canvas {
   }
 
   .mobile-results-nav--bottom {
-    margin-top: 0.5rem;
-    padding-bottom: 5rem; /* clear the floating button */
-    /* Sit above the fixed "Adjust inputs" FAB (z-index 200) so taps reach this row */
-    position: relative;
-    z-index: 210;
-    background: var(--c-bg);
-    padding-top: 0.5rem;
+    /* Pin below results; padding clears the fixed FAB (bottom + height + gap) */
+    margin-top: auto;
     margin-bottom: 0;
+    flex-shrink: 0;
+    padding-top: 0.5rem;
+    padding-bottom: calc(1.25rem + 2.5rem + 1rem);
+    position: relative;
+    /* Below FAB (z-index 200) — spatial clearance is the overlap fix */
+    z-index: 1;
+    background: var(--c-bg);
     box-shadow: 0 -4px 12px rgba(26, 61, 43, 0.06);
   }
 
