@@ -3,7 +3,7 @@
  * Increment SHIELDBELT_CACHE_VERSION on every release so old caches are dropped.
  * Keep LAST_UPDATED / RATE_YEAR_NOTE in step with the footer copy in index.html.
  */
-var SHIELDBELT_CACHE_VERSION = '1.9.1';
+var SHIELDBELT_CACHE_VERSION = '1.9.2';
 /** ISO date matching dataset metadata.last_updated (v12.3). */
 var SHIELDBELT_LAST_UPDATED = '2026-11-04';
 /** Human-readable page date (British English). */
