@@ -17,6 +17,8 @@ import {
   selectBiome,
   confirmVariant,
   statBoxText,
+  ensureInputsDrawerOpen,
+  ensureInputsDrawerClosed,
 } from './helpers.js';
 
 const BASE = 'http://localhost:8080';
@@ -144,6 +146,7 @@ test.describe('Accordion manual toggle', () => {
   });
 
   test('aria-expanded attribute matches open state', async ({ page }) => {
+    await ensureInputsDrawerOpen(page);
     const trigger = page.locator('.step-accordion[data-step="2"] .step-accordion__trigger');
     await expect(trigger).toHaveAttribute('aria-expanded', 'false');
     await trigger.click();
@@ -548,6 +551,7 @@ test.describe('URL state', () => {
   test('URL params are written after unlocking outcomes', async ({ page }) => {
     await page.goto(BASE);
     await waitForAppReady(page);
+    await ensureInputsDrawerOpen(page);
     await page.locator('#btn-browse-intervention').click();
     await page.waitForTimeout(300);
     // Browse alone no longer encodes — Confirm unlocks outcomes and writes URL state
@@ -644,6 +648,8 @@ test.describe('Solution Summary panel', () => {
   });
 
   test('Also consider chips are clickable buttons', async ({ page }) => {
+    // Results-panel pills sit under the full-screen drawer — dismiss it first on mobile.
+    await ensureInputsDrawerClosed(page);
     const alts = page.locator('#problem-panel button.solution-pill--action');
     const count = await alts.count();
     if (count > 0) {
