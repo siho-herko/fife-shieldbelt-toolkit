@@ -106,6 +106,39 @@ test.describe('App load', () => {
     );
   });
 
+  test('footer has standard disclaimer and Sources and method tied to the figures register', async ({ page }) => {
+    await page.goto(BASE);
+    await waitForAppReady(page);
+    const footer = page.locator('.app-footer');
+    await expect(footer).toContainText(
+      'Indicative estimates for discussion, based on the sources listed below. Not financial, legal or agronomic advice. Check figures with a qualified adviser before making decisions.'
+    );
+    const sources = page.locator('#sources-method');
+    await expect(sources).toBeVisible();
+    await expect(sources).toContainText('Sources and method');
+    await sources.locator('summary').click();
+    await expect(sources).toContainText('docs/figures-register.csv');
+    await expect(sources).toContainText('Carbon price (default)');
+    await expect(sources).toContainText('£70');
+    await expect(sources).toContainText('WCC price reference');
+    await expect(sources).toContainText('£28.32');
+    await expect(sources).toContainText('ONCRA net factor');
+    await expect(sources).toContainText('0.64');
+    await expect(sources).toContainText('Income forgone method');
+    await expect(sources).toContainText('Water purification (v12)');
+    await expect(sources).toContainText('AECS hedge payments');
+    await expect(sources).toContainText('scale linearly');
+    await expect(sources).toContainText('pending Si confirmation');
+    // Open items must stay worded as open, not settled
+    await expect(sources).toContainText('Written ONCRA rulings');
+    await expect(sources).toContainText('remain open');
+    await expect(sources).toContainText('RPID geometry confirmation still open');
+    await expect(sources).toContainText('Contractor quotes are still open');
+    await expect(sources).toContainText('Field evidence for soil carbon remains open');
+    await expect(sources).toContainText('Grassland margin units remain open');
+    await expect(page.locator('#strip-length-hint a[href="#sources-method"]')).toBeVisible();
+  });
+
   test('html lang is en-GB and canonical points at resilience-calculator', async ({ page }) => {
     await page.goto(BASE);
     await expect(page.locator('html')).toHaveAttribute('lang', 'en-GB');
