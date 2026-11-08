@@ -1416,6 +1416,37 @@ input, select, textarea {
   }
 }
 
+.app-footer__disclaimer {
+  max-width: 52rem;
+  margin: 0 auto var(--space-3);
+  color: rgba(232,245,238,0.85);
+}
+
+.app-footer__updated {
+  max-width: 52rem;
+  margin: 0 auto var(--space-5);
+  color: rgba(232,245,238,0.7);
+  font-size: 0.75rem;
+}
+
+.chart-text-alt {
+  /* Screen-reader / no-canvas text alternative; visually hidden */
+  margin: 0;
+}
+
+.chart-text-alt table,
+.chart-text-alt p {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .app-footer__credit {
   margin: 0;
   font-size: 0.75rem;
