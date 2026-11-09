@@ -2041,6 +2041,19 @@ function wireWaitingWorker(worker) {
 
 async function registerServiceWorker() {
   if (!('serviceWorker' in navigator)) return;
+
+  // Retired Pages origin: never re-register; send this tab to the Worker host.
+  // Do not touch localStorage / IndexedDB / cookies (origin-bound; share URL carries state).
+  if (location.hostname === 'fife-shieldbelt-toolkit.pages.dev') {
+    location.replace(
+      'https://resilience-calculator.trigrammatic.com'
+      + location.pathname
+      + location.search
+      + location.hash
+    );
+    return;
+  }
+
   const hadControllerAtLoad = !!navigator.serviceWorker.controller;
   navigator.serviceWorker.addEventListener('controllerchange', () => {
     if (!navigator.serviceWorker.controller) return;

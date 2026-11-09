@@ -5,7 +5,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "test": "node tests/calc.test.js && node tests/content.test.js && node tests/hedge.test.js && node tests/scenario.test.js && node tests/url-snapshot.test.js",
+    "test": "node tests/calc.test.js && node tests/content.test.js && node tests/hedge.test.js && node tests/scenario.test.js && node tests/url-snapshot.test.js && node tests/sw-retire.test.js",
     "test:hedge": "node tests/hedge.test.js",
     "test:calc": "node tests/calc.test.js",
     "test:content": "node tests/content.test.js",
