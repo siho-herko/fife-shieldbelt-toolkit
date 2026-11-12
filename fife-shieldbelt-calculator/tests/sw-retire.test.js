@@ -42,10 +42,15 @@ const swSource = readFileSync(new URL('../sw.js', import.meta.url), 'utf8');
 const versionSource = readFileSync(new URL('../version.js', import.meta.url), 'utf8');
 const headersSource = readFileSync(new URL('../_headers', import.meta.url), 'utf8');
 const appSource = readFileSync(new URL('../app.js', import.meta.url), 'utf8');
+const redirectsSource = readFileSync(new URL('../_redirects', import.meta.url), 'utf8');
 
 console.log('\n=== Service worker retire-host tests ===\n');
 
 console.log('--- Source / config contracts ---');
+check(
+  !/^\s*\/\*\s+https:\/\/resilience-calculator\.trigrammatic\.com\//m.test(redirectsSource),
+  '_redirects has no /* catch-all to resilience-calculator (Worker loop)'
+);
 check(
   /SHIELDBELT_CACHE_VERSION\s*=\s*'1\.9\.0'/.test(versionSource),
   'version.js cache stays at 1.9.0 (not bumped for host-check)'

@@ -14,6 +14,9 @@ package-lock.json
 playwright.config.js
 wrangler.toml
 wrangler.jsonc
+# Keep _redirects out of the downloadable asset tree. This does NOT stop
+# Workers Static Assets from applying redirect rules in that file — never put
+# a host catch-all to resilience-calculator.trigrammatic.com in _redirects.
 _redirects
 *.md
 *.tgz

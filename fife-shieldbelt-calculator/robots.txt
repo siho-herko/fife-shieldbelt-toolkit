@@ -1,0 +1,3 @@
+# Public calculator — allow indexing of the app shell.
+User-agent: *
+Allow: /
