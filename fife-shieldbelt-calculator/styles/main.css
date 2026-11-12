@@ -2338,6 +2338,23 @@ canvas {
   }
 }
 
+/*
+ * Narrow empty-state follow-up to the ≤767px FAB clearance above.
+ * At ~320px the empty copy wraps taller than on Pixel 5 (393), so
+ * #btn-adjust-inputs-bottom still AABB-overlaps the FAB despite the
+ * padding. Tighten empty-state + panel gap only on these widths.
+ */
+@media (max-width: 360px) {
+  .panel-right:has(#results-empty:not(.hidden)) {
+    gap: var(--space-3);
+  }
+
+  #results-empty:not(.hidden) .empty-state {
+    padding-block: var(--space-2);
+    gap: var(--space-2);
+  }
+}
+
 /* ============================================================================
    BIOME CONTEXT CARD
    ============================================================================ */
